@@ -1,6 +1,14 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  server: {
+    // https: {
+    //   key: fs.readFileSync('./server.key', 'utf8'),
+    //   cert: fs.readFileSync('./certificate.crt', 'utf8')
+    // },
+    port: 80,
+    host: 'lalka-palka.xyz'
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - learn-upd',

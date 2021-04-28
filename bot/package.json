@@ -1,0 +1,27 @@
+{
+  "name": "npm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "dev": "nodemon bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dima1501/safetymenu.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dima1501/safetymenu/issues"
+  },
+  "homepage": "https://github.com/dima1501/safetymenu#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.6.3",
+    "telegraf": "^3.38.0",
+    "telegraf-inline-menu": "^5.3.0",
+    "telegram-keyboard": "^2.2.2",
+    "vue3-qr-code-styling": "^1.4.4"
+  }
+}

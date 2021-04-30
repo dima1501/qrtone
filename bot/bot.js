@@ -65,14 +65,16 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
         { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'}}}
       ]).toArray()
 
-      for (let i = 0; i < user[0].list[0].messages.length; i++) {
-        api.acceptOrderTelegram({ sockets: user[0].sockets, orderId: user[0].list[0].orderId, guestId: user[0].list[0].guestId })
-        ctx.telegram.editMessageText(
-          user[0].list[0].messages[i].chat.id,
-          user[0].list[0].messages[i].message_id,
-          user[0].list[0].messages[i].message_id,
-          `${ctx.update.callback_query.message.text.replace('⏳', '✅')}`,
-        );
+      if (user[0]) {
+        for (let i = 0; i < user[0].list[0].messages.length; i++) {
+          api.acceptOrderTelegram({ sockets: user[0].sockets, orderId: user[0].list[0].orderId, guestId: user[0].list[0].guestId })
+          ctx.telegram.editMessageText(
+            user[0].list[0].messages[i].chat.id,
+            user[0].list[0].messages[i].message_id,
+            user[0].list[0].messages[i].message_id,
+            `${ctx.update.callback_query.message.text.replace('⏳', '✅')}`,
+          );
+        }
       }
     } catch (error) {
       console.error(error)

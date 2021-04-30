@@ -74,21 +74,22 @@
                         v-btn(depressed color="yellow" @click="makeOrder") Заказать
 
         transition(name="slide-fade")
-            .cart(v-if="$store.state.view.isOrdersOpened")
+            .cart(v-if="$store.state.view.isOrdersOpened && this.$store.state.guest.user")
                 .cart__top
                     .cart__back(@click="closeCart")
                         v-icon(light) mdi-arrow-left
                     h2.cart__title Заказы
                     a.cart__subtitle(@click="openCart") Корзина
                 .cart__content
-                    .sorder(v-for="(item, key) in reversedOrders" v-bind:key="key")
-                        h3.sorder__title(v-if="item.status === 'pending'") Ожидает подтверждения
-                        h3.sorder__title(v-if="item.status === 'accepted'") Подтвержден
-                        .sorder__status.sorder__status--wait
-                            v-icon(dark) mdi-alarm
-                        .sorder__goods
-                            .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key") {{ good.name }} x {{ good.count }}
-                        .sorder__price Итого: {{ getOrderPrice(item) }}р
+                    .cart__orders-col
+                        .sorder(v-for="(item, key) in this.$store.state.guest.user.orders" v-bind:key="key")
+                            h3.sorder__title(v-if="item.status === 'pending'") Ожидает подтверждения
+                            h3.sorder__title(v-if="item.status === 'accepted'") Подтвержден
+                            .sorder__status.sorder__status--wait
+                                v-icon(dark) mdi-alarm
+                            .sorder__goods
+                                .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key") {{ good.name }} x {{ good.count }}
+                            .sorder__price Итого: {{ getOrderPrice(item) }}р
         InfoPopup(v-if="infoPopup")
 
 </template>
@@ -134,9 +135,6 @@ export default {
                 total += i.price * i.count
             }
             return total
-        },
-        reversedOrders: function () {
-            return this.$store.state.guest.user.orders.reverse()
         }
     },
     methods: {
@@ -314,6 +312,12 @@ export default {
             .v-btn {
                 width: 100%;
             }
+        }
+    }
+    &__orders {
+        &-col {
+            display: flex;
+            flex-direction: column-reverse;
         }
     }
 }

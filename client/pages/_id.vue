@@ -444,7 +444,11 @@ export default {
         padding: 5px 10px;
         flex-shrink: 0;
         font-size: 14px;
+        text-decoration: none;
+        transition: color .3s, background-color .3s;
+        color: rgb(107, 107, 107);
         &.is-active {
+            color: #000;
             background: #dcdee2;
         }
     }

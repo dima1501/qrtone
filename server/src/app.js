@@ -1,5 +1,7 @@
 const path = require('path')
 
+const config = require('./config/config')
+
 const express = require('express')
 
 const cookieParser = require('cookie-parser')
@@ -13,14 +15,14 @@ const server = require("http").createServer(app)
 
 const io = require("socket.io")(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: config.ORIGIN,
         credentials: true
     },
     transport: ['websocket', 'polling']
 });
 
 server.listen(8000, () => {
-    console.log(`Listening on http://localhost:8000`);
+    console.log(`:8000`);
 });
 
 const websocketAPI = require('./websocket')

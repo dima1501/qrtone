@@ -1,13 +1,23 @@
 import colors from 'vuetify/es5/util/colors'
 
+const config = {
+  port: process.env.NODE_ENV !== 'production' ? '3000' : '80',
+  test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'lalka-palka.xyz',
+  apiserver: process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' :'lalka-palka.xyz:8000',
+}
+
 export default {
+  env: {
+    dev: config.test,
+    server: config.apiserver
+  },
   server: {
     // https: {
     //   key: fs.readFileSync('./server.key', 'utf8'),
     //   cert: fs.readFileSync('./certificate.crt', 'utf8')
     // },
-    port: 80,
-    host: 'lalka-palka.xyz'
+    port: config.port,
+    host: config.test
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -57,7 +67,7 @@ export default {
   },
 
   proxy: {
-    '/api/': 'http://localhost:8000'
+    '/api/': config.apiserver
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

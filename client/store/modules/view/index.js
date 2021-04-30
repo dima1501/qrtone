@@ -25,7 +25,9 @@ const state = {
       tables: null,
       place: null
     }
-  }
+  },
+  isOrdersOpened: false,
+  isCartOpened: false
 }
 
 export default {

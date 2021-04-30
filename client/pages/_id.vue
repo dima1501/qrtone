@@ -22,21 +22,15 @@
                             :to="{ path: `${$nuxt.$route.path}`, hash: `#${item}` }"
                             v-if="$store.state.guest.parsedMenu[item]"
                             ) {{item}}
-                    
-                        // nuxt-link(to='#null').scrollactive-item asd
-                        // <a href="#null" class="scrollactive-item">Home</a>
-                        // <a href="#Супы" class="scrollactive-item">About Us</a>
-                        // <a href="#Салаты" class="scrollactive-item">Portfolio</a>
-                        // <a href="#Пицца" class="scrollactive-item">Contact</a>
                 .menu
                     .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat")
                         .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat]' v-bind:key="key")
                             .menu__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.image + ')' }")
                             .menu__item-content
                                 .menu__item-content-inner
-                                    .menu__item-name {{ item.name }} {{item.count}}
+                                    .menu__item-name {{ item.name }}
                                     .menu__item-weight {{ item.weight }}
-                                .menu__item-button(@click="addToCart(item)") {{ item.price }}
+                                .menu__item-button(@click="addToCart(item)" v-if="!$store.state.guest.user.cart.find(e => e._id == item._id)") {{ item.price }}p
 
                                 // то что ниже я писал в 6 утра и мне очень стыдно, но оно работает
                                 .menu__counter(v-if="$store.state.guest.user && $store.state.guest.user.cart.find(e => e._id == item._id)")
@@ -46,20 +40,20 @@
                         
         transition(name="slide-fade")
             .commands(v-if="commands")
-                v-btn.commands__item(depressed @click="isCartEmpty = !isCartEmpty") Позвать официанта
+                v-btn.commands__item(depressed) Позвать официанта
                 v-btn.commands__item(depressed) Попросить счет
                 v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
 
         transition(name="slide-fade")
-            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.cart.length" @click="isCartOpened = !isCartOpened") Корзина <span> {{ getTotalPrice }} </span>
+            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.cart.length" @click="openCart") Корзина <span> {{ getTotalPrice }}p </span>
 
         transition(name="slide-fade")
-            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.orders.length && !$store.state.guest.user.cart.length" @click="isOrdersOpened = !isOrdersOpened") Мои заказы {{ $store.state.guest.user.orders.length }}
+            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.orders.length && !$store.state.guest.user.cart.length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
         
         transition(name="slide-fade")
-            .cart(v-if="$store.state.guest.user && isCartOpened")
+            .cart(v-if="$store.state.guest.user && $store.state.view.isCartOpened")
                 .cart__top
-                    .cart__back(@click="isCartOpened = !isCartOpened")
+                    .cart__back(@click="closeCart")
                         v-icon(light) mdi-arrow-left
                     h2.cart__title Корзина
                     a.cart__subtitle(@click="openOrders") Заказы
@@ -73,27 +67,28 @@
                                 .menu__counter-control.minus(@click="minus(item)") -
                                 .menu__counter-value {{ item.count }}
                                 .menu__counter-control.plus(@click="plus(item)") +
-                        .cart__item-price {{ item.price }}
+                        .cart__item-price {{ item.price }}p
                 .cart__bottom(v-if="$store.state.guest.user.cart.length")
-                    .cart__bottom-price {{getTotalPrice}}
+                    .cart__bottom-price {{getTotalPrice}}p
                     .cart__bottom-control
                         v-btn(depressed color="yellow" @click="makeOrder") Заказать
 
         transition(name="slide-fade")
-            .cart(v-if="isOrdersOpened")
+            .cart(v-if="$store.state.view.isOrdersOpened")
                 .cart__top
-                    .cart__back(@click="isOrdersOpened = !isOrdersOpened")
+                    .cart__back(@click="closeCart")
                         v-icon(light) mdi-arrow-left
                     h2.cart__title Заказы
                     a.cart__subtitle(@click="openCart") Корзина
                 .cart__content
                     .sorder(v-for="(item, key) in reversedOrders" v-bind:key="key")
-                        h3.sorder__title {{ item.status }}
+                        h3.sorder__title(v-if="item.status === 'pending'") Ожидает подтверждения
+                        h3.sorder__title(v-if="item.status === 'accepted'") Подтвержден
                         .sorder__status.sorder__status--wait
                             v-icon(dark) mdi-alarm
                         .sorder__goods
                             .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key") {{ good.name }} x {{ good.count }}
-                        .sorder__price {{ getOrderPrice(item) }}
+                        .sorder__price Итого: {{ getOrderPrice(item) }}р
         InfoPopup(v-if="infoPopup")
 
 </template>
@@ -172,12 +167,17 @@ export default {
             })
         },
         openOrders() {
-            this.isOrdersOpened = true
-            this.isCartOpened = false
+            this.$store.state.view.isOrdersOpened = true
+            this.$store.state.view.isCartOpened = false
         },
         openCart() {
-            this.isCartOpened = !this.isCartOpened
-            this.isOrdersOpened = false
+            console.log(1)
+            this.$store.state.view.isOrdersOpened = false
+            this.$store.state.view.isCartOpened = true
+        },
+        closeCart() {
+            this.$store.state.view.isOrdersOpened = false
+            this.$store.state.view.isCartOpened = false
         },
         getOrderPrice(item) {
             let total = 0
@@ -239,11 +239,11 @@ export default {
 
 .cart-btn {
     position: fixed;
-    left: 15px;
-    right: 15px;
-    bottom: 50px;
-    width: calc(100% - 30px);
-    max-width: 370px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    border-radius: 0;
     span {
         margin-left: 40px;
     }
@@ -292,6 +292,13 @@ export default {
         &-content {
             flex-grow: 1;
             padding-right: 15px;
+        }
+        &-counter {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 150px;
         }
     }
     &__bottom {
@@ -388,12 +395,17 @@ export default {
         justify-content: space-between;
         width: 100%;
         border-radius: 14px;
+        margin-top: 10px;
 
         &-control {
             border-radius: 5px;
-            background-color: rgb(245, 245, 28);
-            width: 25px;
-            height: 25px;
+            background-color: rgb(224, 223, 223);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 14px;
         }
     }
 }
@@ -451,7 +463,7 @@ export default {
         top: 190px;
         background-color: #fff;
         border-radius: 10px;
-        padding: 20px 15px;
+        padding: 20px 15px 45px 15px;
     }
 }
 

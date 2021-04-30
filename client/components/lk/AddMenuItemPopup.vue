@@ -26,7 +26,7 @@
                                 type="text")
                         .e-card__line
                             .e-card__line-label Цена:
-                            input(type="text").e-card__line-input
+                            input(type="text" v-model="newItem.price").e-card__line-input
                         .e-card__line
                             .e-card__line-label Категория:
                             v-text-field(

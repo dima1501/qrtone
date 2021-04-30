@@ -1,4 +1,4 @@
-require("dotenv").config({ path: "../server/.env" })
+require("dotenv").config({ path: "../.env" })
 
 const Telegraf = require('telegraf')
 const {Extra,  Markup, Stage, session } = Telegraf

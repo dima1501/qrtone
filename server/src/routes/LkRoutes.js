@@ -169,14 +169,16 @@ router.post('/api/accept-order', auth(), async (req, res) => {
             { $match: {'messages.orderId': req.body.order.orderId } },
             { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'}}}
         ]).toArray()
-
-        for (let i = 0; i < user[0].list[0].messages.length; i++) {
-            bot.editMessageText(
-                user[0].list[0].messages[i].chat.id,
-                user[0].list[0].messages[i].message_id,
-                user[0].list[0].messages[i].message_id,
-                `${user[0].list[0].messages[i].text.replace('⏳', '✅')}`,
-            );
+        
+        if (user[0]) {
+            for (let i = 0; i < user[0].list[0].messages.length; i++) {
+                bot.editMessageText(
+                    user[0].list[0].messages[i].chat.id,
+                    user[0].list[0].messages[i].message_id,
+                    user[0].list[0].messages[i].message_id,
+                    `${user[0].list[0].messages[i].text.replace('⏳', '✅')}`,
+                );
+            }
         }
     }
 

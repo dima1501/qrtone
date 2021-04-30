@@ -145,6 +145,9 @@ const makeOrder = async (store, data) => {
         if (order) {
             store.state.user.orders.push(order.data)
             store.state.user.cart = []
+
+            store.rootState.view.isCartOpened = false
+            store.rootState.view.isOrdersOpened = true
         }
     } catch (error) {
         console.error(error)

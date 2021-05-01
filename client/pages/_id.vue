@@ -19,7 +19,7 @@
                         nuxt-link.w-cats__item.scrollactive-item(
                             v-for='(item, key) of $store.state.guest.companyData.categories' 
                             v-bind:key="key" 
-                            :to="{ path: `${$nuxt.$route.path}`, hash: `#${item}` }"
+                            :to="{ path: `${$nuxt.$route.fullPath}`, hash: `#${item}` }"
                             v-if="$store.state.guest.parsedMenu[item]"
                             ) {{item}}
                 .menu
@@ -90,7 +90,8 @@
                             .sorder__goods
                                 .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key") {{ good.name }} x {{ good.count }}
                             .sorder__price Итого: {{ getOrderPrice(item) }}р
-        InfoPopup(v-if="infoPopup")
+        transition(name="slide-fade")
+            InfoPopup(v-if="$store.state.view.popup.infoPopup")
 
 </template>
 
@@ -106,7 +107,6 @@ export default {
     data() {
         return {
             commands: false,
-            infoPopup: false,
             isCartEmpty: true,
             isCartOpened: false,
             isOrdersOpened: false,
@@ -142,7 +142,7 @@ export default {
             this.commands = !this.commands
         },
         toggleInfoPopup() {
-            this.infoPopup = !this.infoPopup
+            this.$store.state.view.popup.infoPopup = !this.$store.state.view.popup.infoPopup
         },
         addToCart(item) {
             this.$store.dispatch('guest/addToCart', item)

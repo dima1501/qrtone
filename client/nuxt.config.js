@@ -21,12 +21,12 @@ export default {
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - learn-upd',
-    title: 'learn-upd',
+    // titleTemplate: 'My amazing Nuxt application | %s',
+    title: 'QRTONE',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' }
+      { hid: 'description', name: 'description', content: 'Сервис бесконтактного меню для ресторанов и кафе. С доступом по QR коду и уведомлениями в telegram' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }

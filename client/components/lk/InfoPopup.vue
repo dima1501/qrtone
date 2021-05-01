@@ -1,13 +1,15 @@
 <template lang="pug">
     .popup
         .popup__container
-            .popup__closer
+            .popup__closer(@click="closePopup")
                 v-icon(dark) mdi-close
             .popup__content
                 h2.popup__title Инфо
-                h3 Nuahule Smoke
-                h4 8 800 555 35 35
-                h4 @nuas
+                h3 {{ $store.state.guest.companyData.name }}
+                h3 {{ $store.state.guest.companyData.places.find(e => e._id == $nuxt.$route.query.place).phone }}
+                h3 {{ $store.state.guest.companyData.places.find(e => e._id == $nuxt.$route.query.place).inst }}
+                h3 {{ $store.state.guest.companyData.places.find(e => e._id == $nuxt.$route.query.place).vk }}
+                h3 {{ $store.state.guest.companyData.places.find(e => e._id == $nuxt.$route.query.place).wa }}
                 
 </template>
 
@@ -16,6 +18,11 @@ export default {
     data() {
         return {
             
+        }
+    },
+    methods: {
+        closePopup() {
+            this.$store.state.view.popup.infoPopup = false
         }
     }
 }

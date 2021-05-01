@@ -31,7 +31,8 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             goods: user.goods,
             photo: user.photo,
             background: user.background,
-            categories: user.categories
+            categories: user.categories,
+            places: user.places
         }
         res.status(200).send(publicUser)
     }

@@ -24,7 +24,8 @@ const state = {
       visible: false,
       tables: null,
       place: null
-    }
+    },
+    infoPopup: false
   },
   isOrdersOpened: false,
   isCartOpened: false

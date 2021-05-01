@@ -40,8 +40,13 @@
                         
         transition(name="slide-fade")
             .commands(v-if="commands")
-                v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
-                v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
+                transition(name="fade" mode="out-in")
+                    .commands__actions(v-if="!isCommandSend" key="commands")
+                        v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
+                        v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
+                    .commands__success(v-if="isCommandSend" key="success")
+                        .commands__success-title 💫<br>Уведомление отправлено
+                        v-btn.commands__item(depressed @click="closeCommands") Спасибо
 
         transition(name="slide-fade")
             v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.cart.length" @click="openCart") Корзина <span> {{ getTotalPrice }}p </span>
@@ -106,6 +111,7 @@ export default {
     data() {
         return {
             commands: false,
+            isCommandSend: false,
             isCartEmpty: true,
             isCartOpened: false,
             isOrdersOpened: false,
@@ -139,6 +145,7 @@ export default {
     methods: {
         toggleCommandsMenu() {
             this.commands = !this.commands
+            this.isCommandSend = false
         },
         toggleInfoPopup() {
             this.$store.state.view.popup.infoPopup = !this.$store.state.view.popup.infoPopup
@@ -188,6 +195,12 @@ export default {
             action.place = this.$nuxt.$route.query.place
             action.table = this.$nuxt.$route.query.table
             this.$store.dispatch('guest/fastAction', action)
+
+            this.isCommandSend = true
+        },
+        closeCommands() {
+            this.isCommandSend = false
+            this.commands = false
         }
     }
 }
@@ -497,6 +510,17 @@ export default {
   opacity: 0;
 }
 
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity .5s;
+}
+    
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+
 .header {
     position: fixed;
     left: 0;
@@ -541,9 +565,24 @@ export default {
     border-radius: 14px;
     box-shadow: 0 0 30px rgba(0,0,0,0.15);
     width: 300px;
-    display: flex;
-    flex-direction: column;
     padding: 20px;
+    &__actions {
+        display: flex;
+        flex-direction: column;
+    }
+    &__success {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        &-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .v-btn {
+            width: 100%;
+        }
+    }
     &__item {
         margin-bottom: 15px;
         &:last-child {

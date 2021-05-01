@@ -34,6 +34,20 @@
 
         .settings__section
             .settings__section-top
+                h2.settings__section-title Быстрые действия
+                .settings__section-link(@click="addFastAction") Добавить действие
+            p <code>@table</code> отображает номер столика, с которого поступил запрос
+            .options
+                .option(v-for="(action, key) in $store.state.auth.user.actions" v-bind:key="key")
+                    .option__title {{ action.callText }}
+                    .option__text Текст уведомления - {{ action.notifyText }}
+                    .option__text Текст кнопки подтверждения - {{ action.buttonText }}
+                    .option__actions
+                        .options__action-item Изменить
+                        .options__action-item Удалить
+    
+        .settings__section
+            .settings__section-top
                 h2.settings__section-title Заведения
                 .settings__section-link(@click="openAddPlacePopup") Добавить заведение
             .places(v-if="$store.state.auth.user.places.length")
@@ -125,12 +139,24 @@ export default {
         },
         uploadCompanyBackground() {
             this.$store.dispatch('lk/updateCompanyBackground', this.newCompanyBackgroundFile)
+        },
+        addFastAction() {
+
         }
     }
 }
 </script>
 
 <style lang="scss">
+
+.option {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #F5F7FB;
+    border-radius: 16px;
+    padding: 20px;
+}
+
 .settings {
     &__title {
         margin-bottom: 20px;

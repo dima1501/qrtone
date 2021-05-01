@@ -6,6 +6,7 @@
             .popup__content
                 h2.popup__title Инфо
                 h3 {{ $store.state.guest.companyData.name }}
+                // тут можно упростить, передав инфу в компонент todo
                 h3 {{ $store.state.guest.companyData.places.find(e => e._id == $nuxt.$route.query.place).phone }}
                 h3 {{ $store.state.guest.companyData.places.find(e => e._id == $nuxt.$route.query.place).inst }}
                 h3 {{ $store.state.guest.companyData.places.find(e => e._id == $nuxt.$route.query.place).vk }}

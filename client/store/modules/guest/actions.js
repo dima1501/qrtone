@@ -170,6 +170,22 @@ const acceptOrder = async (store, order) => {
     }
 }
 
+const fastAction = async (store, data) => {
+    try {
+        const action = await axios({
+            method: 'post',
+            url: '/api/fast-action',
+            data: { data }
+        })
+        if (action) {
+            console.log('completed')
+            // order.status = 'accepted'
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 export default {
     checkAuth,
     login,
@@ -181,6 +197,7 @@ export default {
     updateCart,
     makeOrder,
     loadOrders,
-    acceptOrder
+    acceptOrder,
+    fastAction
   }
   

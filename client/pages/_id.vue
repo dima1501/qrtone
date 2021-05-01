@@ -32,7 +32,7 @@
                                     .menu__item-weight {{ item.weight }}
                                 .menu__item-button(@click="addToCart(item)" v-if="!$store.state.guest.user.cart.find(e => e._id == item._id)") {{ item.price }}p
 
-                                // то что ниже я писал в 6 утра и мне очень стыдно, но оно работает
+                                // 4 строки ниже я писал в 6 утра и мне очень стыдно, но оно работает
                                 .menu__counter(v-if="$store.state.guest.user && $store.state.guest.user.cart.find(e => e._id == item._id)")
                                     .menu__counter-control.minus(@click="minus($store.state.guest.user.cart.find(e => e._id == item._id))") -
                                     .menu__counter-value {{ $store.state.guest.user.cart.find(e => e._id == item._id).count }}
@@ -40,8 +40,7 @@
                         
         transition(name="slide-fade")
             .commands(v-if="commands")
-                v-btn.commands__item(depressed) Позвать официанта
-                v-btn.commands__item(depressed) Попросить счет
+                v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
                 v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
 
         transition(name="slide-fade")
@@ -74,7 +73,7 @@
                         v-btn(depressed color="yellow" @click="makeOrder") Заказать
 
         transition(name="slide-fade")
-            .cart(v-if="$store.state.view.isOrdersOpened && this.$store.state.guest.user")
+            .cart(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
                 .cart__top
                     .cart__back(@click="closeCart")
                         v-icon(light) mdi-arrow-left
@@ -82,7 +81,7 @@
                     a.cart__subtitle(@click="openCart") Корзина
                 .cart__content
                     .cart__orders-col
-                        .sorder(v-for="(item, key) in this.$store.state.guest.user.orders" v-bind:key="key")
+                        .sorder(v-for="(item, key) in $store.state.guest.user.orders" v-bind:key="key")
                             h3.sorder__title(v-if="item.status === 'pending'") Ожидает подтверждения
                             h3.sorder__title(v-if="item.status === 'accepted'") Подтвержден
                             .sorder__status.sorder__status--wait
@@ -183,6 +182,12 @@ export default {
                 total += i.price * i.count
             }
             return total
+        },
+        fastAction(action) {
+            action.userId = this.$nuxt.$route.params.id
+            action.place = this.$nuxt.$route.query.place
+            action.table = this.$nuxt.$route.query.table
+            this.$store.dispatch('guest/fastAction', action)
         }
     }
 }
@@ -410,6 +415,7 @@ export default {
             justify-content: center;
             align-items: center;
             border-radius: 14px;
+            cursor: pointer;
         }
     }
 }

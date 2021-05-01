@@ -36,22 +36,28 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
   })
 
   bot.action('like', async (ctx) => {
-    // const user = await db.collection("users").findOne({bot_token: ctx.session.userId})
-    const user = await db.collection("users").aggregate({ $match: {"messages.chat.id" : ctx.update.callback_query.message.chat.id}}).toArray()
+    try {
+      const user = await db.collection("users").aggregate([
+        { $match: { bot_token: ctx.session.bot_token } },
+        { $unwind: '$messages'},
+        { $match: {'messages.chatId': {$in: [ctx.update.callback_query.message.chat.id]}}},
+        { $match: {'messages.messageId': {$in: [ctx.update.callback_query.message.message_id]}}},
+        { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'}}}
+      ]).toArray()
 
-    if (user) {
-      for (let i = 0; i < user[0].messages.length; i++) {
-        if (user[0].messages[i].find(e => e.message_id === ctx.update.callback_query.message.message_id && e.chat.id === ctx.update.callback_query.message.chat.id)) {
-          for (let q = 0; q < user[0].messages[i].length; q++) {
-            ctx.telegram.editMessageText(
-              user[0].messages[i][q].chat.id,
-              user[0].messages[i][q].message_id,
-              user[0].messages[i][q].message_id,
-              `${ctx.update.callback_query.message.text.replace("🙋🏼‍♂️", "✅")} ${user[0].messages[i][q].chat.first_name} откликнулся`,
-            );
-          }
+      if (user[0]) {
+        for (let i = 0; i < user[0].list[0].messages.length; i++) {
+          // api.acceptOrderTelegram({ sockets: user[0].sockets, orderId: user[0].list[0].orderId, guestId: user[0].list[0].guestId })
+          ctx.telegram.editMessageText(
+            user[0].list[0].messages[i].chat.id,
+            user[0].list[0].messages[i].message_id,
+            user[0].list[0].messages[i].message_id,
+            `${ctx.update.callback_query.message.text}, ${user[0].list[0].messages[i].chat.first_name} откликнулся`,
+          );
         }
       }
+    } catch (error) {
+      console.error(error)
     }
   })
 

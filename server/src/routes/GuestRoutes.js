@@ -12,15 +12,48 @@ const OrderModel = require('../models/Order')
 // telegram area
 const Markup = require('telegraf/markup')
 const bot = require('../../../bot/bot')
-
-const callSomebodyBtn = Markup.inlineKeyboard([
-    Markup.callbackButton('🏃 Уже бегу', 'like')
-]).extra()
   
 const acceptOrderBtn = Markup.inlineKeyboard([
     Markup.callbackButton('✅ Подтвердить заказ', 'accept')
 ]).extra()
 // telegram area
+
+router.post('/api/fast-action', authGuest(), async (req, res) => {
+    try {
+        const user = await req.db.collection('users').findOne({ _id: ObjectId(req.body.data.userId) })
+        if (user) {
+            const button = Markup.inlineKeyboard([
+                Markup.callbackButton(req.body.data.buttonText, 'like')
+            ]).extra()
+
+            const notify = req.body.data.notifyText
+
+            let data = {
+                messages: [],
+                chatId: [],
+                messageId: [],
+                guestId: req.user._id
+            }
+        
+            if (user.telegram[req.body.data.place]) {
+                for (let i = 0; i < user.telegram[req.body.data.place].length; i++) {
+                    data.messages.push(await bot.sendMessage(user.telegram[req.body.data.place][i].chatId, `${notify.replace('@table', req.body.data.table)} \n`, button));
+                    data.chatId.push( data.messages[i].chat.id )
+                    data.messageId.push( data.messages[i].message_id )
+                }
+            }
+
+            await req.db.collection('users').updateOne(
+                { _id: ObjectId(req.body.data.userId) },
+                { $push: { messages: data } }
+            )
+
+            res.status(200).send(true)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
 
 router.get('/api/get-user-data/:id', async (req, res) => {
     const user = await req.db.collection('users').findOne({ _id: ObjectId(req.params.id) })
@@ -32,7 +65,8 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             photo: user.photo,
             background: user.background,
             categories: user.categories,
-            places: user.places
+            places: user.places,
+            actions: user.actions
         }
         res.status(200).send(publicUser)
     }

@@ -25,7 +25,8 @@ const state = {
       tables: null,
       place: null
     },
-    infoPopup: false
+    infoPopup: false,
+    addActionPopup: false
   },
   isOrdersOpened: false,
   isCartOpened: false

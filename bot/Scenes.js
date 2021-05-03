@@ -143,7 +143,6 @@ class SceneGenerator {
 
             let find = false
             if (user) {
-                ctx.session.userId = ctx.message.text
                 for (let i in user.telegram) {
                     if (user.telegram[i].find(x => x.chatId == ctx.update.message.chat.id)) {
                         ctx.session.currentPlaceId = i

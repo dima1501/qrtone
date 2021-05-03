@@ -11,6 +11,7 @@ const auth = require('../middlewares/AuthMiddleware')
 
 const PlaceModel = require('../models/Places')
 const MenuItemModel = require('../models/MenuItem')
+const ActionItemModel = require('../models/Action')
 
 router.post("/api/update-user-name", auth(), async (req, res) => {
     try {
@@ -161,51 +162,69 @@ router.post('/api/update-categories', auth(), async (req, res) => {
 })
 
 router.post('/api/accept-order', auth(), async (req, res) => {
-
-    if (!req.body.telegram) {
-        const user = await req.db.collection("users").aggregate([
-            { $match: { _id: ObjectId(req.user._id) } },
-            { $unwind: '$messages'},
-            { $match: {'messages.orderId': req.body.order.orderId } },
-            { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'}}}
-        ]).toArray()
-        
-        if (user[0]) {
-            for (let i = 0; i < user[0].list[0].messages.length; i++) {
-                bot.editMessageText(
-                    user[0].list[0].messages[i].chat.id,
-                    user[0].list[0].messages[i].message_id,
-                    user[0].list[0].messages[i].message_id,
-                    `${user[0].list[0].messages[i].text.replace('⏳', '✅')}`,
-                );
+    try {
+        if (!req.body.telegram) {
+            const user = await req.db.collection("users").aggregate([
+                { $match: { _id: ObjectId(req.user._id) } },
+                { $unwind: '$messages'},
+                { $match: {'messages.orderId': req.body.order.orderId } },
+                { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'}}}
+            ]).toArray()
+            
+            if (user[0]) {
+                for (let i = 0; i < user[0].list[0].messages.length; i++) {
+                    bot.editMessageText(
+                        user[0].list[0].messages[i].chat.id,
+                        user[0].list[0].messages[i].message_id,
+                        user[0].list[0].messages[i].message_id,
+                        `${user[0].list[0].messages[i].text.replace('⏳', '✅')}`,
+                    );
+                }
             }
         }
-    }
 
-    const accept = await req.db.collection('users').updateOne(
-        { ['orders.'+ req.body.order.guestId +'.orderId']: req.body.order.orderId },
-        { $set: { ['orders.'+ req.body.order.guestId +'.$.status']: 'accepted' } },
-        false,
-        true
-    )
+        const accept = await req.db.collection('users').updateOne(
+            { ['orders.'+ req.body.order.guestId +'.orderId']: req.body.order.orderId },
+            { $set: { ['orders.'+ req.body.order.guestId +'.$.status']: 'accepted' } },
+            false,
+            true
+        )
 
-    const guest = await req.db.collection('guests').findOne({ _id: ObjectId(req.body.order.guestId) })
+        const guest = await req.db.collection('guests').findOne({ _id: ObjectId(req.body.order.guestId) })
 
-    if (guest.socket) {
-        websocket.acceptOrder({
-            socket: guest.socket,
-            orderId: req.body.order.orderId
+        if (guest.socket) {
+            websocket.acceptOrder({
+                socket: guest.socket,
+                orderId: req.body.order.orderId
+            })
+        }
+
+        websocket.acceptOrderAdmin({
+            sockets: req.body.order.sockets,
+            orderId: req.body.order.orderId,
+            guestId: req.body.order.guestId
         })
+
+        if (accept) {
+            res.status(200).send(true)
+        }
+    } catch (error) {
+        console.error(error)
     }
+})
 
-    websocket.acceptOrderAdmin({
-        sockets: req.body.order.sockets,
-        orderId: req.body.order.orderId,
-        guestId: req.body.order.guestId
-    })
-
-    if (accept) {
-        res.status(200).send(true)
+router.post('/api/add-action', auth(), async (req, res) => {
+    try {
+        const action = await new ActionItemModel(req.body)
+        const upload = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $push: { 'actions': action } }
+        )
+        if (upload) {
+            res.status(200).json(action)
+        }
+    } catch (error) {
+        
     }
 })
 

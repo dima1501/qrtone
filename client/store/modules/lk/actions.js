@@ -194,6 +194,22 @@ const updateCategories = async (store) => {
   }
 }
 
+const addNewAction = async (store, data) => {
+  try {
+    const add = await axios({
+      method: 'post',
+      url: '/api/add-action',
+      data
+    })
+    if (add.data) {
+      store.rootState.auth.user.actions.push(add.data)
+      store.rootState.view.popup.addActionPopup = false
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
     updateUserName,
     updateCompanyLogo,
@@ -203,5 +219,6 @@ export default {
     updatePlaces,
     addNewMenuItem,
     updateGood,
-    updateCategories
+    updateCategories,
+    addNewAction
 }

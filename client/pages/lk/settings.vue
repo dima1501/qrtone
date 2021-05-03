@@ -39,7 +39,7 @@
             p <code>@table</code> отображает номер столика, с которого поступил запрос
             .options
                 .option(v-for="(action, key) in $store.state.auth.user.actions" v-bind:key="key")
-                    .option__title {{ action.callText }}
+                    .option__title Текст кнопки на сайте - {{ action.callText }}
                     .option__text Текст уведомления - {{ action.notifyText }}
                     .option__text Текст кнопки подтверждения - {{ action.buttonText }}
                     .option__actions
@@ -85,7 +85,11 @@
                         .subs__list-item Заполним ваше меню, нужно только фото или документ
 
         AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
+
+        AddActionPopup(v-if="$store.state.view.popup.addActionPopup")
+
         EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
+
 </template>
 
 <script>
@@ -109,8 +113,6 @@ export default {
         },
         openEditPlacePopup(place) {
             this.editablePlace = Object.assign({}, place)
-            console.log(place)
-            console.log(this.editablePlace)
             this.$store.state.view.popup.editPlacePopup.visible = true
         },
         updateUserName() {
@@ -141,7 +143,7 @@ export default {
             this.$store.dispatch('lk/updateCompanyBackground', this.newCompanyBackgroundFile)
         },
         addFastAction() {
-
+            this.$store.state.view.popup.addActionPopup = true
         }
     }
 }

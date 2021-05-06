@@ -9,26 +9,36 @@
                     v-form(
                         @submit.prevent="fetchAddItem"
                         v-model="isAddItemValid")
-                        div {{list}}
-                        draggable(
-                            v-model="list"
-                            items=".dz-preview"
-                            ghost-class="ghost"
-                            :sort="false"
-                            @change="log")
-                            dropzone(
-                                id="#foo" 
-                                @vdropzone-file-added="afterComplete" 
-                                :options="dropOptions"
-                                @vdropzone-drag-over="dragOver"
-                                @vdropzone-drag-leave="dragLeave"
-                                @vdropzone-removed-file="vremoved")
-                                .dz-message__inner
-                                    v-icon(light) mdi-camera
-                                    transition(name="slide-fade" mode="out-in")
-                                        .dz-message__title(v-if="!isDragOver" key='1') Перетащите файлы сюда <br> или кликните, чтобы загрузить фото
-                                        .dz-message__title(v-if="isDragOver" key='2') Можно отпускать
+                        dropzone(
+                            ref="dropzone"
+                            id="#foo" 
+                            @vdropzone-file-added="afterComplete" 
+                            :options="dropOptions"
+                            @vdropzone-drag-over="dragOver"
+                            @vdropzone-drag-leave="dragLeave"
+                            @vdropzone-removed-file="vremoved")
+                            .dz-message__inner
+                                v-icon(light) mdi-camera
+                                transition(name="slide-fade" mode="out-in")
+                                    .dz-message__title(v-if="!isDragOver" key='1') Перетащите файлы сюда <br> или кликните, чтобы загрузить фото
+                                    .dz-message__title(v-if="isDragOver" key='2') Можно отпускать
+                        div {{drag}}
 
+                        draggable(
+                            class="previews"
+                            v-model="uploadImages"
+                            v-bind="dragOptions"
+                            @start="drag = true"
+                            @end="drag = false")
+        
+                            transition-group(type="transition" :name="!drag ? 'flip-list' : null")
+                                .preview(v-for="(element, i) in uploadImages" :key="element.upload.uuid")
+                                    .preview__img(v-bind:style="{ backgroundImage: 'url(' + element.dataURL + ')' }")
+                                    .preview__bottom
+                                        .preview__remove
+                                            v-icon(light) mdi-trash-can-outline
+                                        .preview__drag
+                                            v-icon(light) mdi-drag-horizontal
                         .e-card__line
                             .e-card__line-label Название:
                             v-text-field(
@@ -91,7 +101,7 @@ export default {
     },
     data() {
         return {
-            list: [],
+            drag: false,
             isDragOver: false,
             isAddItemValid: false,
             newItemImageFile: null,
@@ -126,9 +136,19 @@ export default {
             }
         }
     },
+    computed: {
+        dragOptions() {
+            return {
+                animation: 200,
+                group: "description",
+                disabled: false,
+                ghostClass: "ghost"
+            };
+        }
+    },
     methods: {
         log() {
-
+            console.log(123)
         },
         fetchAddItem() {
             this.$store.dispatch('lk/addNewMenuItem', {
@@ -148,6 +168,7 @@ export default {
             this.$store.state.view.popup.addMenuItemPopup.visible = false
         },
         afterComplete(file) {
+            console.log(file)
             this.isDragOver = false
             this.uploadImages.push(file)
         },
@@ -178,6 +199,28 @@ export default {
 
 
 <style lang="scss">
+.flip-list-move {
+  transition: transform 0.5s;
+}
+
+.previews {
+    span {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+.sortable-ghost {
+    opacity: 0.5;
+}
+.preview {
+    &__img {
+        width: 80px;
+        height: 80px;
+        background-size: cover;
+        background-position: center;
+    }
+}
+
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all .12s ease;
 }

@@ -9,14 +9,26 @@
                     v-form(
                         @submit.prevent="fetchAddItem"
                         v-model="isAddItemValid")
-                        .e-card__img
-                            .e-card__img-pic(v-if="newItemImageSrc" v-bind:style="{ backgroundImage: 'url(' + newItemImageSrc + ')' }")
-                            v-file-input(
-                                accept="image/*"
-                                placeholder=""
-                                prepend-icon="mdi-camera"
-                                label="Загрузить изображение"
-                                @change="addImage")
+                        div {{list}}
+                        draggable(
+                            v-model="list"
+                            items=".dz-preview"
+                            ghost-class="ghost"
+                            :sort="false"
+                            @change="log")
+                            dropzone(
+                                id="#foo" 
+                                @vdropzone-file-added="afterComplete" 
+                                :options="dropOptions"
+                                @vdropzone-drag-over="dragOver"
+                                @vdropzone-drag-leave="dragLeave"
+                                @vdropzone-removed-file="vremoved")
+                                .dz-message__inner
+                                    v-icon(light) mdi-camera
+                                    transition(name="slide-fade" mode="out-in")
+                                        .dz-message__title(v-if="!isDragOver" key='1') Перетащите файлы сюда <br> или кликните, чтобы загрузить фото
+                                        .dz-message__title(v-if="isDragOver" key='2') Можно отпускать
+
                         .e-card__line
                             .e-card__line-label Название:
                             v-text-field(
@@ -24,24 +36,44 @@
                                 :rules="nameRules"
                                 v-model="newItem.name"
                                 type="text")
-                        .e-card__line
-                            .e-card__line-label Цена:
-                            input(type="text" v-model="newItem.price").e-card__line-input
+
                         .e-card__line
                             .e-card__line-label Категория:
+                            v-select(:items="$store.state.auth.user.categories" v-model="newItem.category")
+                        v-btn(
+                            color="blue"
+                            @click="addCategory"
+                        ) Новая категория
+                                
+                        .e-card__line(v-for="(i, key) in prices" v-bind:key="key")
+                            .e-card__line-label.short Цена:
                             v-text-field(
-                                ref="cat"
+                                ref="price"
                                 :rules="nameRules"
-                                v-model="newItem.category"
-                                type="text")
-                        .e-card__line
-                            .e-card__line-label Вес:
-                            input(type="text").e-card__line-input
+                                v-model="newItem.prices[i - 1]"
+                                type="number")
+                            .e-card__line-label.short Вес:
+                            v-text-field(
+                                ref="price"
+                                :rules="prices > 1 ? nameRules : [true]"
+                                v-model="newItem.weights[i - 1]"
+                                type="number")
+                            .e-card__remove(
+                                @click="removePriceItem(i)"
+                                v-if="i > 1")
+                                v-icon(light) mdi-trash-can-outline
+                        
+                        v-btn(
+                            color="blue"
+                            :disabled="!newItem.weights[prices - 1] || !newItem.prices[prices - 1]"
+                            @click="addPrice"
+                        ) Добавить цену и вес
+
                         div(v-for="place in $store.state.auth.user.places")
                             label {{ place.name }}
                             input(type='checkbox' @change="togglePlace(place)" :id="place.id")
                         .e-card__bottom
-                            // v-btn(color="red" @click="closePopup").e-card__bottom-item Отмена
+                            v-btn(color="red" @click="closePopup").e-card__bottom-item Отмена
                             v-btn(
                                 color="blue" 
                                 :disabled="!isAddItemValid"
@@ -50,16 +82,27 @@
 </template>
 
 <script>
+import Dropzone from 'nuxt-dropzone'
+import draggable from 'vuedraggable'
 export default {
+    components: {
+      Dropzone,
+      draggable
+    },
     data() {
         return {
+            list: [],
+            isDragOver: false,
             isAddItemValid: false,
             newItemImageFile: null,
             newItemImageSrc: null,
+            uploadImages: [],
+            prices: 1,
             newItem: {
-                image: null,
+                images: [],
                 name: '',
-                price: null,
+                prices: [],
+                weights: [],
                 category: null,
                 weight: null,
                 places: []
@@ -67,21 +110,29 @@ export default {
             nameRules: [
                 (v) => !!v || 'error_company_name',
             ],
+            dropOptions: {
+                url: "https://httpbin.org/post",
+                autoProcessQueue: false,
+                maxFilesize: 5,
+                // maxFiles: 4,
+                chunking: true,
+                chunkSize: 500,
+                thumbnailWidth: 83,
+                thumbnailHeight: 83,
+                addRemoveLinks: true,
+                acceptedFiles: 'image/*',
+                dictRemoveFile: '',
+                dictRemoveFileConfirmation: null
+            }
         }
     },
     methods: {
-        addImage(e) {
-            if (e) {
-                this.newItemImageSrc = URL.createObjectURL(e)
-                this.newItemLogoFile = e
-            } else {
-                this.newItemImageSrc = null
-                this.newItemLogoFile = null
-            }
+        log() {
+
         },
         fetchAddItem() {
             this.$store.dispatch('lk/addNewMenuItem', {
-                image: this.newItemLogoFile,
+                images: this.uploadImages,
                 item: this.newItem
             })
         },
@@ -95,6 +146,31 @@ export default {
         },
         closePopup() {
             this.$store.state.view.popup.addMenuItemPopup.visible = false
+        },
+        afterComplete(file) {
+            this.isDragOver = false
+            this.uploadImages.push(file)
+        },
+        dragOver() {
+            this.isDragOver = true
+        },
+        dragLeave() {
+            this.isDragOver = false
+        },
+        vremoved(file) {
+            const index = this.uploadImages.indexOf(file)
+            this.uploadImages.splice(index, 1)
+        } ,
+        addPrice() {
+            this.prices += 1
+        },
+        removePriceItem(i) {
+            this.newItem.prices.splice(i - 1, 1)
+            this.newItem.weights.splice(i - 1, 1)
+            this.prices -= 1
+        },
+        addCategory() {
+
         }
     }
 }
@@ -102,6 +178,115 @@ export default {
 
 
 <style lang="scss">
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all .12s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: all .12s ease;
+}
+.fade-enter, .fade-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.vue-dropzone {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.dz-image {
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 10px;
+    }
+}
+
+.dz-preview {
+    position: relative;
+    width: 23.5%;
+    margin: 0 2% 2% 0;
+    border: 1px solid #00364d;
+    border-radius: 10px;
+    &:nth-child(4n + 1) {
+        margin-right: 0;
+    }
+    &:hover {
+        .dz-remove {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}
+
+.dz-remove {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s, visibility .3s;
+    transform: translate(-50%, -50%);
+    text-decoration: none;
+    &:after {
+        content: '-';
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+        color: red;
+        border-radius: 50%;
+        box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        font-size: 18px;
+        font-weight: bold;
+    }
+}
+
+.dz-message {
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 2%;
+    &:hover {
+        .dz-message__inner {
+            background-color: #F5F7FB;
+        }
+    }
+    &__inner {
+        height: 130px;
+        border-radius: 14px;
+        border: 1px dashed #00293B;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        pointer-events: none;
+
+        
+    }
+    &__title {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+.dz-details,
+.dz-progress,
+.dz-error-message,
+.dz-success-mark,
+.dz-error-mark {
+    display: none;
+}
+
 .popup {
     position: fixed;
     left: 0;
@@ -173,6 +358,9 @@ export default {
             width: 100px;
             margin-right: 20px;
             flex-shrink: 0;
+            &.short {
+                width: 60px;
+            }
         }
         &-input {
             flex-grow: 1;

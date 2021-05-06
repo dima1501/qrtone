@@ -1,3 +1,5 @@
+const config = require('./config/config')
+
 const axios = require("axios")
 
 let ioCopy = null
@@ -11,7 +13,7 @@ module.exports = {
         try {
           await axios({
             method: 'delete',
-            url: 'http://localhost:8000/api/delete-socket-id/' + socket.id
+            url: `${config.ORIGIN}/${socket.id}`
           })
         } catch (error) {
           console.error(error)

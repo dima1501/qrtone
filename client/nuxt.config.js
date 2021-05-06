@@ -40,6 +40,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: './plugins/socket.client.js' },
+    { src: './plugins/vue2-dropzone.client.js' },
+    { src: './plugins/dragdrop.client.js' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

@@ -25,8 +25,8 @@
                         .m-item__available
                             .m-item__available-title Доступно в:
                             div(v-for="(place, key) in $store.state.auth.user.places" :key="key")
-                                label {{ place.name }}
-                                input(type='checkbox' :id="place.id" @change="toggleActivePlace(good, place)" :checked="good.places.find(p => p.id === place.id)")
+                                label(:for="`${good._id}${place._id}`") {{ place.name }}
+                                input(type='checkbox' :id="`${good._id}${place._id}`" @change="toggleActivePlace(good, place)" :checked="good.places.find(p => p._id === place._id)")
         
         EditMenuItemPopup(v-if='$store.state.view.popup.editMenuItemPopup.visible')
         AddMenuItemPopup(v-if='$store.state.view.popup.addMenuItemPopup.visible')

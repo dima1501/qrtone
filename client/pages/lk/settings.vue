@@ -43,8 +43,8 @@
                     .option__text Текст уведомления - {{ action.notifyText }}
                     .option__text Текст кнопки подтверждения - {{ action.buttonText }}
                     .option__actions
-                        .options__action-item Изменить
-                        .options__action-item Удалить
+                        .options__action-item(@click="editAction(action)") Изменить
+                        .options__action-item(@click="deleteAction(action)") Удалить
     
         .settings__section
             .settings__section-top
@@ -90,6 +90,8 @@
 
         EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
 
+        EditActionPopup(v-if="$store.state.view.popup.editActionPopup.visible" :editableAction="editableAction")
+
 </template>
 
 <script>
@@ -104,7 +106,8 @@ export default {
             newCompanyLogoFile: null,
             newCompanyBackgroundSrc: null,
             newCompanyBackgroundFile: null,
-            editablePlace: null
+            editablePlace: null,
+            editableAction: null
         }
     },
     methods: {
@@ -114,6 +117,10 @@ export default {
         openEditPlacePopup(place) {
             this.editablePlace = Object.assign({}, place)
             this.$store.state.view.popup.editPlacePopup.visible = true
+        },
+        editAction(action) {
+            this.editableAction = Object.assign({}, action)
+            this.$store.state.view.popup.editActionPopup.visible = true
         },
         updateUserName() {
             this.$store.dispatch('lk/updateUserName', this.newCompanyName)
@@ -144,6 +151,12 @@ export default {
         },
         addFastAction() {
             this.$store.state.view.popup.addActionPopup = true
+        },
+        deleteAction(action) {
+            var ask = confirm(`Вы действительно хотите удалить действие "${action.callText}"?`);
+            if (ask) {
+                this.$store.dispatch('lk/deleteAction', action._id)
+            }
         }
     }
 }

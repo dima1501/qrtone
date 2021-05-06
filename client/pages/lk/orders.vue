@@ -8,29 +8,37 @@
                 h3.board__section-name Последние заказы
                 // nuxt-link(to='/lk/orders').board__section-link Все заказы
             .board__section-orders
-                div(v-for="(item, key) in $store.state.auth.user.orders" v-bind:key="key")
-                    .board__section-orders-item(v-for="(order, key) in item" v-bind:key="key")
-                        .sorder
-                            h3.sorder__title {{ order.status }}
-                            .sorder__status.sorder__status--wait
-                                v-icon(dark) mdi-alarm
-                            .sorder__goods
-                                .sorder__line(v-for="(good, i) in order.goods" v-bind:key="i") {{good.name}} x {{good.count}}
-                            .sorder__btn(@click='acceptOrder(order)') Подтвердить
+                .sorder(v-for="(order, key) in $store.state.auth.user.orders" v-bind:key="key")
+                    h3.sorder__title {{ order.status }}
+                    .sorder__status.sorder__status--wait
+                        v-icon(dark) mdi-alarm
+                    .sorder__time(v-if="order.timestamp") {{ formatTime(order.timestamp) }}
+                    .sorder__goods
+                        .sorder__line(v-for="(good, key) in order.goods" v-bind:key="key") {{good.name}} x {{good.count}}
+                    .sorder__btn(@click='acceptOrder(order)') Подтвердить
 
 </template>
 
 <script>
+import moment from 'moment';
 
 export default {
     layout: 'lk',
     data() {
-        return {}
+        return {
+            orders: []
+        }
     },
     methods: {
         acceptOrder(order) {
             this.$store.dispatch('guest/acceptOrder', order)
+        },
+        formatTime(time) {
+            return moment(time).local().locale('ru').calendar();
         }
+    },
+    mounted() {
+        
     }
 }
 </script>

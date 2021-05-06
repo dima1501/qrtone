@@ -6,7 +6,8 @@ const state = {
   user: null,
   peer: null,
   peerId: null,
-  parsedMenu: {}
+  parsedMenu: {},
+  parsedOrders: []
 }
 
 export default {

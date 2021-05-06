@@ -35,14 +35,10 @@ export default {
       this.$store.dispatch("auth/setSocketId", msg, { root: true });
     },
     async newOrder(data) { 
-      if (this.$store.state.auth.user.orders[data.id]) {
-        this.$store.state.auth.user.orders[data.id].push(data.order)
-      } else {
-        Vue.set(this.$store.state.auth.user.orders, data.id, [data.order])
-      }
+      this.$store.state.auth.user.orders.push(data.order)
     },
     async acceptOrderAdmin(data) {
-      this.$store.state.auth.user.orders[data.guestId].find(e => e.orderId === data.orderId).status = 'accepted'
+      this.$store.state.auth.user.orders.find(e => e.orderId === data.orderId).status = 'accepted'
     }
   },
   mounted() {

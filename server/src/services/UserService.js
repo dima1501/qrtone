@@ -42,9 +42,9 @@ class UserService {
         return
       }
 
-      return req.db
-        .collection('users')
-        .findOne({ _id: ObjectId(session.userId) })
+      return req.db.collection('users').findOne(
+        { _id: ObjectId(session.userId) }
+      )
     } catch (err) {
       console.error(err)
     }
@@ -54,17 +54,14 @@ class UserService {
     try {
       const session = await req.db.collection('sessions').findOne(
         { sessionId },
-        {
-          projection: { userId: 1 },
-        }
+        { projection: { userId: 1 } }
       )
       if (!session) {
         return
       }
 
-      return req.db
-        .collection('guests')
-        .findOne({ _id: ObjectId(session.userId) })
+      return req.db.collection('guests').findOne(
+        { _id: ObjectId(session.userId) })
     } catch (err) {
       console.error(err)
     }

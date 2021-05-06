@@ -70,7 +70,7 @@ const loadData = async (store, data) => {
     try {
         const user = await axios({
             method: 'get',
-            url: '/api/get-user-data/' + data
+            url: `/api/get-user-data/${data.id}/${data.place}`
         })
         if (user) {
             store.state.companyData = user.data
@@ -178,7 +178,7 @@ const fastAction = async (store, data) => {
             data: { data }
         })
         if (action) {
-            console.log('completed')
+            // console.log('completed')
             // order.status = 'accepted'
         }
     } catch (error) {

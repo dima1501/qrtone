@@ -30,7 +30,7 @@
                                 .menu__item-content-inner
                                     .menu__item-name {{ item.name }}
                                     .menu__item-weight {{ item.weight }}
-                                .menu__item-button(@click="addToCart(item)" v-if="!$store.state.guest.user.cart.find(e => e._id == item._id)") {{ item.price }}p
+                                .menu__item-button(@click="addToCart(item)" v-if="!$store.state.guest.user.cart.find(e => e._id == item._id)") {{ item.price }} ₽
 
                                 // 4 строки ниже я писал в 6 утра и мне очень стыдно, но оно работает
                                 .menu__counter(v-if="$store.state.guest.user && $store.state.guest.user.cart.find(e => e._id == item._id)")
@@ -38,18 +38,18 @@
                                     .menu__counter-value {{ $store.state.guest.user.cart.find(e => e._id == item._id).count }}
                                     .menu__counter-control.plus(@click="plus($store.state.guest.user.cart.find(e => e._id == item._id))") +
                         
-        transition(name="slide-fade")
-            .commands(v-if="commands")
-                transition(name="fade" mode="out-in")
-                    .commands__actions(v-if="!isCommandSend" key="commands")
-                        v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
-                        v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
-                    .commands__success(v-if="isCommandSend" key="success")
-                        .commands__success-title 💫<br>Уведомление отправлено
-                        v-btn.commands__item(depressed @click="closeCommands") Спасибо
+        transition(name="slide-fade" mode="out-in")
+            .commands(v-if="commands && !isCommandSend" key="commands")
+                .commands__actions
+                    v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
+                    v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
+            .commands(v-if="commands && isCommandSend" key="success")  
+                .commands__success
+                    .commands__success-title 💫<br>Уведомление отправлено
+                    v-btn.commands__item(depressed @click="closeCommands") Спасибо
 
         transition(name="slide-fade")
-            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.cart.length" @click="openCart") Корзина <span> {{ getTotalPrice }}p </span>
+            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.cart.length" @click="openCart") Корзина <span> {{ getTotalPrice }} ₽ </span>
 
         transition(name="slide-fade")
             v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.orders.length && !$store.state.guest.user.cart.length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
@@ -71,9 +71,9 @@
                                 .menu__counter-control.minus(@click="minus(item)") -
                                 .menu__counter-value {{ item.count }}
                                 .menu__counter-control.plus(@click="plus(item)") +
-                        .cart__item-price {{ item.price }}p
+                        .cart__item-price {{ item.price }} ₽
                 .cart__bottom(v-if="$store.state.guest.user.cart.length")
-                    .cart__bottom-price {{getTotalPrice}}p
+                    .cart__bottom-price {{getTotalPrice}} ₽
                     .cart__bottom-control
                         v-btn(depressed color="yellow" @click="makeOrder") Заказать
 
@@ -91,9 +91,10 @@
                             h3.sorder__title(v-if="item.status === 'accepted'") Подтвержден
                             .sorder__status.sorder__status--wait
                                 v-icon(dark) mdi-alarm
+                            div {{ getTime(item.timestamp) }}
                             .sorder__goods
                                 .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key") {{ good.name }} x {{ good.count }}
-                            .sorder__price Итого: {{ getOrderPrice(item) }}р
+                            .sorder__price Итого: {{ getOrderPrice(item) }} ₽
         transition(name="slide-fade")
             InfoPopup(v-if="$store.state.view.popup.infoPopup")
 
@@ -105,6 +106,8 @@ import Vue from 'vue';
 import VueScrollactive from 'vue-scrollactive';
 
 Vue.use(VueScrollactive);
+
+import moment from 'moment';
 
 export default {
     layout: 'main',
@@ -143,6 +146,9 @@ export default {
         }
     },
     methods: {
+        getTime(time) {
+            return moment(time).local().calendar()
+        },
         toggleCommandsMenu() {
             this.commands = !this.commands
             this.isCommandSend = false

@@ -145,21 +145,22 @@ const addNewMenuItem = async (store, data) => {
         }
       }
     }
-    if (data.image) {
-      const bodyFormData = new FormData();
-      bodyFormData.append("image", data.image);
-  
-      const uploadPhoto = await axios({
-        method: "post",
-        url: "/api/upload-menu-item-image",
-        data: bodyFormData,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    if (data.images.length) {
+      data.images.forEach(async e => {
+        const bodyFormData = new FormData();
+        bodyFormData.append("image", e);
 
-      if (uploadPhoto.data) {
-        data.item.image = uploadPhoto.data.path
-        uploadItem(data)
-      }
+        const uploadPhoto = await axios({
+          method: "post",
+          url: "/api/upload-menu-item-image",
+          data: bodyFormData,
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        if (uploadPhoto.data) {
+            data.item.images.push(uploadPhoto.data.path)
+          }
+      })
+      uploadItem(data)
     } else {
       uploadItem(data)
     }
@@ -210,6 +211,42 @@ const addNewAction = async (store, data) => {
   }
 }
 
+const editAction = async (store, data) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/update-action',
+      data
+    })
+    if (update.data) {
+      const action = store.rootState.auth.user.actions.find(e => e._id == update.data._id)
+      store.rootState.view.popup.editActionPopup.visible = false
+
+      Object.assign(action, update.data)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const deleteAction = async (store, id) => {
+  try {
+    const remove = await axios({
+      method: 'delete',
+      url: `/api/delete-action/${id}`
+    })
+    if (remove.data) {
+      const action = store.rootState.auth.user.actions.find(e => e._id == id)
+      const index = store.rootState.auth.user.actions.indexOf(action);
+      if (index > -1) {
+        store.rootState.auth.user.actions.splice(index, 1);
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
     updateUserName,
     updateCompanyLogo,
@@ -220,5 +257,7 @@ export default {
     addNewMenuItem,
     updateGood,
     updateCategories,
-    addNewAction
+    addNewAction,
+    editAction,
+    deleteAction
 }

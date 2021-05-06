@@ -26,7 +26,10 @@ const state = {
       place: null
     },
     infoPopup: false,
-    addActionPopup: false
+    addActionPopup: false,
+    editActionPopup: {
+      visible: false
+    }
   },
   isOrdersOpened: false,
   isCartOpened: false

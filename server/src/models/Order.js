@@ -7,7 +7,8 @@ const Guest = class Guest {
     this.guestId = id,
     this.status = data.status,
     this.table = data.table,
-    this.place = data.place
+    this.place = data.place,
+    this.timestamp = Date.now()
   }
 }
 

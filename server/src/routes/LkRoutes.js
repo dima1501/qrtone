@@ -184,11 +184,8 @@ router.post('/api/accept-order', auth(), async (req, res) => {
         }
 
         const accept = await req.db.collection('users').updateOne(
-            { ['orders.'+ req.body.order.guestId +'.orderId']: req.body.order.orderId },
-            { $set: { ['orders.'+ req.body.order.guestId +'.$.status']: 'accepted' } },
-            false,
-            true
-        )
+            { 'orders.orderId': req.body.order.orderId },
+            { $set: { 'orders.$.status': 'accepted' } } )
 
         const guest = await req.db.collection('guests').findOne({ _id: ObjectId(req.body.order.guestId) })
 
@@ -222,6 +219,37 @@ router.post('/api/add-action', auth(), async (req, res) => {
         )
         if (upload) {
             res.status(200).json(action)
+        }
+    } catch (error) {
+        
+    }
+})
+
+router.post('/api/update-action', auth(), async (req, res) => {
+    try {
+        const action = await new ActionItemModel(req.body)
+        const update = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id), "actions._id": action._id },
+            { $set: { "actions.$" : action } }
+        )
+        if (update) {
+            res.status(200).json(action)
+        }
+    } catch (error) {
+        
+    }
+})
+
+router.delete('/api/delete-action/:id', auth(), async (req, res) => {
+    try {
+        const remove = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $pull: { actions: { _id: req.params.id } } }
+        )
+        if (remove) {
+            res.status(200).send(true)
+        } else {
+            res.status(300).send(false)
         }
     } catch (error) {
         

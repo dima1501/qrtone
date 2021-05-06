@@ -55,13 +55,13 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
     }
 })
 
-router.get('/api/get-user-data/:id', async (req, res) => {
+router.get('/api/get-user-data/:id/:place', async (req, res) => {
     const user = await req.db.collection('users').findOne({ _id: ObjectId(req.params.id) })
     if (user) {
         const publicUser = {
             _id: ObjectId(req.params.id),
             name: user.name,
-            goods: user.goods,
+            goods: user.goods.filter(e => e.places.find(e => e._id == req.params.place)),
             photo: user.photo,
             background: user.background,
             categories: user.categories,
@@ -88,7 +88,7 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
     const makeOrder = await req.db.collection('users').updateOne(
         { _id: ObjectId(req.body.data.id) },
-        { $push: { ['orders.' + req.user._id]: order } }
+        { $push: { 'orders': order } }
     )
     const clearCart = await req.db.collection('guests').updateOne(
         { _id: ObjectId(req.user._id) },
@@ -107,7 +107,7 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
     let str = []
     for (let i = 0; i < order.goods.length; i++) {
-        str.push(`${i + 1}) ${order.goods[i].name}, ${order.goods[i].price}р., x${order.goods[i].count}\n-----------------------------\n`)
+        str.push(`${i + 1}) ${order.goods[i].name}, ${order.goods[i].price} ₽, x${order.goods[i].count}\n-----------------------------\n`)
     }
 
     let data = {
@@ -137,11 +137,16 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 })
 
 router.post('/api/load-orders', authGuest(), async (req, res) => {
-    const orders = await req.db.collection('users').findOne(
-        { _id: ObjectId(req.body.data) }
-    )
-    if (orders.orders[req.user._id]) {
-        res.status(200).json(orders.orders[req.user._id])
+    const orders = await req.db.collection("users").aggregate([
+        { $match: { _id: ObjectId(req.body.data) } },
+        { $unwind: '$orders' },
+        { $match: {'orders.guestId': req.user._id } },
+        { $sort: { 'orders.timestamp': 1 } },
+        { $group: {_id: '$_id', list: {$push: '$orders'} } }
+    ]).toArray()
+
+    if (orders[0].list) {
+        res.status(200).json(orders[0].list)
     } else {
         res.status(200).json([])
     }

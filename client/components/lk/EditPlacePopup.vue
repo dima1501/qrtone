@@ -141,7 +141,7 @@ export default {
     &__line {
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
+        // margin-bottom: 10px;
         &:last-child {
             margin-bottom: 0;
         }

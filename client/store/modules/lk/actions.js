@@ -129,12 +129,13 @@ const updatePlaces = async (store, data) => {
 
 const addNewMenuItem = async (store, data) => {
   try {
-    const uploadItem = async () => {
+    const uploadItem = async (data) => {
       const add = await axios({
         method: 'post',
         url: '/api/add-menu-item',
-        data: { data }
+        data: { data: data.item }
       })
+      console.log(add)
 
       if (add) {
         store.rootState.auth.user.goods.push(add.data)
@@ -146,9 +147,9 @@ const addNewMenuItem = async (store, data) => {
       }
     }
     if (data.images.length) {
-      data.images.forEach(async e => {
+      for (let i in data.images) {
         const bodyFormData = new FormData();
-        bodyFormData.append("image", e);
+        bodyFormData.append("image", data.images[i].file);
 
         const uploadPhoto = await axios({
           method: "post",
@@ -157,9 +158,10 @@ const addNewMenuItem = async (store, data) => {
           headers: { "Content-Type": "multipart/form-data" },
         });
         if (uploadPhoto.data) {
-            data.item.images.push(uploadPhoto.data.path)
-          }
-      })
+          data.item.images.push(uploadPhoto.data.path)
+        }
+      }
+
       uploadItem(data)
     } else {
       uploadItem(data)
@@ -247,6 +249,24 @@ const deleteAction = async (store, id) => {
   }
 }
 
+const updateCats = async (store, data) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/update-categories-drag',
+      data: {
+        categories: store.rootState.auth.user.categories
+      }
+    })
+    console.log(update)
+    if (update.data) {
+      
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
     updateUserName,
     updateCompanyLogo,
@@ -259,5 +279,6 @@ export default {
     updateCategories,
     addNewAction,
     editAction,
-    deleteAction
+    deleteAction,
+    updateCats
 }

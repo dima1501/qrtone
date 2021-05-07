@@ -17,7 +17,7 @@
                     .m-item(v-for="(good, key) in $store.state.auth.parsedMenu[item]" v-bind:key="key")
                         .m-item__edit(@click="openEditPopup")
                             v-icon(dark) mdi-pencil-outline
-                        .m-item__img
+                        .m-item__img {{good.images}}
                         .m-item__name {{ good.name }}
                         .m-item__price Цена: {{ good.price }}
                         .m-item__weight Вес: {{ good.weight }}
@@ -30,6 +30,7 @@
         
         EditMenuItemPopup(v-if='$store.state.view.popup.editMenuItemPopup.visible')
         AddMenuItemPopup(v-if='$store.state.view.popup.addMenuItemPopup.visible')
+        AddCategoryPopup(v-if='$store.state.view.popup.addCategoryPopup.visible')
 </template>
 
 <script>

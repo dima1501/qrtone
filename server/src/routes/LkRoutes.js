@@ -99,7 +99,7 @@ router.get("/api/load-places", auth(), async (req, res) => {
 
 router.post("/api/add-menu-item", auth(), async (req, res) => {
     try {
-        const menuItem = await new MenuItemModel(req.body.data.item)
+        const menuItem = await new MenuItemModel(req.body.data)
         const add = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
             { $push: { goods: menuItem } }
@@ -221,7 +221,7 @@ router.post('/api/add-action', auth(), async (req, res) => {
             res.status(200).json(action)
         }
     } catch (error) {
-        
+        console.error(error)
     }
 })
 
@@ -236,7 +236,7 @@ router.post('/api/update-action', auth(), async (req, res) => {
             res.status(200).json(action)
         }
     } catch (error) {
-        
+        console.error(error)
     }
 })
 
@@ -252,7 +252,21 @@ router.delete('/api/delete-action/:id', auth(), async (req, res) => {
             res.status(300).send(false)
         }
     } catch (error) {
-        
+        console.error(error)
+    }
+})
+
+router.post('/api/update-categories-drag', auth(), async (req, res) => {
+    try {
+        const update = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $set: { "categories" : req.body.categories } }
+        )
+        if (update) {
+            res.status(200).send(true)
+        }
+    } catch (error) {
+        console.error(error)
     }
 })
 

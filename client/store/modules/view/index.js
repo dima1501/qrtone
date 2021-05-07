@@ -29,6 +29,9 @@ const state = {
     addActionPopup: false,
     editActionPopup: {
       visible: false
+    },
+    addCategoryPopup: {
+      visible: false
     }
   },
   isOrdersOpened: false,

@@ -22,7 +22,6 @@
                                 transition(name="slide-fade" mode="out-in")
                                     .dz-message__title(v-if="!isDragOver" key='1') Перетащите файлы сюда <br> или кликните, чтобы загрузить фото
                                     .dz-message__title(v-if="isDragOver" key='2') Можно отпускать
-                        div {{drag}}
 
                         draggable(
                             class="previews"
@@ -30,30 +29,27 @@
                             v-bind="dragOptions"
                             @start="drag = true"
                             @end="drag = false")
-        
                             transition-group(type="transition" :name="!drag ? 'flip-list' : null")
-                                .preview(v-for="(element, i) in uploadImages" :key="element.upload.uuid")
-                                    .preview__img(v-bind:style="{ backgroundImage: 'url(' + element.dataURL + ')' }")
+                                .preview(v-for="(element, i) in uploadImages" :key="element.file.upload.uuid")
+                                    .preview__img(v-bind:style="{ backgroundImage: 'url(' + element.src + ')' }")
                                     .preview__bottom
-                                        .preview__remove
+                                        .preview__bottom-item(@click="removePic(element.file)")
                                             v-icon(light) mdi-trash-can-outline
-                                        .preview__drag
+                                        .preview__bottom-item
                                             v-icon(light) mdi-drag-horizontal
                         .e-card__line
-                            .e-card__line-label Название:
                             v-text-field(
                                 ref="name"
                                 :rules="nameRules"
                                 v-model="newItem.name"
+                                label="Название"
                                 type="text")
 
                         .e-card__line
-                            .e-card__line-label Категория:
-                            v-select(:items="$store.state.auth.user.categories" v-model="newItem.category")
-                        v-btn(
-                            color="blue"
-                            @click="addCategory"
-                        ) Новая категория
+                            // .e-card__line-label Категория:
+                            v-select(:items="$store.state.auth.user.categories" v-model="newItem.category" :rules="nameRules" label="Категория")
+
+                        .e-card__add-link(@click="addCategoryPopup") Управление категориями
                                 
                         .e-card__line(v-for="(i, key) in prices" v-bind:key="key")
                             .e-card__line-label.short Цена:
@@ -61,13 +57,15 @@
                                 ref="price"
                                 :rules="nameRules"
                                 v-model="newItem.prices[i - 1]"
-                                type="number")
+                                type="number"
+                                prefix="₽").mr-5
                             .e-card__line-label.short Вес:
                             v-text-field(
                                 ref="price"
                                 :rules="prices > 1 ? nameRules : [true]"
                                 v-model="newItem.weights[i - 1]"
-                                type="number")
+                                type="number"
+                                prefix="г.")
                             .e-card__remove(
                                 @click="removePriceItem(i)"
                                 v-if="i > 1")
@@ -124,7 +122,6 @@ export default {
                 url: "https://httpbin.org/post",
                 autoProcessQueue: false,
                 maxFilesize: 5,
-                // maxFiles: 4,
                 chunking: true,
                 chunkSize: 500,
                 thumbnailWidth: 83,
@@ -144,11 +141,11 @@ export default {
                 disabled: false,
                 ghostClass: "ghost"
             };
-        }
+        },
     },
     methods: {
-        log() {
-            console.log(123)
+        removePic(file) {
+            this.$refs.dropzone.removeFile(file)
         },
         fetchAddItem() {
             this.$store.dispatch('lk/addNewMenuItem', {
@@ -168,9 +165,11 @@ export default {
             this.$store.state.view.popup.addMenuItemPopup.visible = false
         },
         afterComplete(file) {
-            console.log(file)
             this.isDragOver = false
-            this.uploadImages.push(file)
+            this.uploadImages.push({
+                file: file,
+                src: URL.createObjectURL(file)
+            })
         },
         dragOver() {
             this.isDragOver = true
@@ -179,7 +178,8 @@ export default {
             this.isDragOver = false
         },
         vremoved(file) {
-            const index = this.uploadImages.indexOf(file)
+            const fl = this.uploadImages.find(e => e.file == file)
+            const index = this.uploadImages.indexOf(fl)
             this.uploadImages.splice(index, 1)
         } ,
         addPrice() {
@@ -190,8 +190,8 @@ export default {
             this.newItem.weights.splice(i - 1, 1)
             this.prices -= 1
         },
-        addCategory() {
-
+        addCategoryPopup() {
+            this.$store.state.view.popup.addCategoryPopup.visible = true
         }
     }
 }
@@ -213,11 +213,27 @@ export default {
     opacity: 0.5;
 }
 .preview {
+    width: 23.5%;
+    margin: 0 2% 2% 0;
+    &:nth-child(4n) {
+        margin-right: 0;
+    }
+
     &__img {
-        width: 80px;
-        height: 80px;
+        width: 100%;
+        height: 84px;
         background-size: cover;
         background-position: center;
+        border: 1px solid #00364d;
+        border-radius: 10px;
+    }
+    &__bottom {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &-item {
+            cursor: pointer;
+        }
     }
 }
 
@@ -242,30 +258,8 @@ export default {
     flex-wrap: wrap;
 }
 
-.dz-image {
-    img {
-        max-width: 100%;
-        height: auto;
-        display: block;
-        border-radius: 10px;
-    }
-}
-
 .dz-preview {
-    position: relative;
-    width: 23.5%;
-    margin: 0 2% 2% 0;
-    border: 1px solid #00364d;
-    border-radius: 10px;
-    &:nth-child(4n + 1) {
-        margin-right: 0;
-    }
-    &:hover {
-        .dz-remove {
-            opacity: 1;
-            visibility: visible;
-        }
-    }
+    display: none;
 }
 
 .dz-remove {
@@ -393,7 +387,7 @@ export default {
     &__line {
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
+        // margin-bottom: 10px;
         &:last-child {
             margin-bottom: 0;
         }
@@ -402,7 +396,7 @@ export default {
             margin-right: 20px;
             flex-shrink: 0;
             &.short {
-                width: 60px;
+                width: auto;
             }
         }
         &-input {
@@ -421,6 +415,14 @@ export default {
             margin: 0 10px;
             cursor: pointer;
         }
+    }
+    &__add-link {
+        text-align: center;
+        margin: 0 0 10px 0;
+        color: rgb(25, 118, 210);
+        cursor: pointer;
+        // text-decoration: underline;
+        font-size: 14px;
     }
 }
 </style>

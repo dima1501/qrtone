@@ -184,23 +184,23 @@ const editMenuItem = async (store, data) => {
         let item = category.find(e => e._id == add.data._id)
 
         if (!item) {
-          
-          // for (let i in store.rootState.auth.parsedMenu) {
-          //   let menu = store.rootState.auth.parsedMenu[i]
-          //   const findItem = menu.find(e => e._id == add.data._id)
-          //   if (findItem) {
-          //     const index = menu.indexOf(findItem)
-          //     menu.splice(index, 1);
-          //   }
-          // }
-          // category.push(add.data)
-          // const index = 
-          // Vue.set(category, index, add.data)
+          const parsedItem = store.rootState.auth.user.goods.find(e => e._id == add.data._id)
+          const index = store.rootState.auth.user.goods.indexOf(parsedItem)
+          Vue.set(store.rootState.auth.user.goods, index, add.data)
+          store.rootState.auth.parsedMenu = {}
+
+          for (let item of store.rootState.auth.user.goods) {
+            if (store.rootState.auth.parsedMenu[item.category]) {
+              store.rootState.auth.parsedMenu[item.category].push(item)
+            } else {
+              store.rootState.auth.parsedMenu[item.category] = [item]
+            }
+          }
         } else {
           let index = category.indexOf(item)
           Vue.set(category, index, add.data)
-          store.rootState.view.popup.editMenuItemPopup.visible = false
         }
+        store.rootState.view.popup.editMenuItemPopup.visible = false
       }
     }
 

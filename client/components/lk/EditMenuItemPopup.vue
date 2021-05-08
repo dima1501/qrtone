@@ -56,14 +56,14 @@
                             v-text-field(
                                 ref="price"
                                 :rules="nameRules"
-                                v-model="newItem.prices[i - 1]"
+                                v-model="updatedMenuItem.prices[i - 1]"
                                 type="number"
                                 prefix="₽").mr-5
                             .e-card__line-label.short Вес:
                             v-text-field(
                                 ref="price"
                                 :rules="prices > 1 ? nameRules : [true]"
-                                v-model="newItem.weights[i - 1]"
+                                v-model="updatedMenuItem.weights[i - 1]"
                                 type="number"
                                 prefix="г.")
                             .e-card__remove(
@@ -71,14 +71,14 @@
                                 v-if="i > 1")
                                 v-icon(light) mdi-trash-can-outline
                         
-                        .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !newItem.weights[prices - 1] || !newItem.prices[prices - 1] }") Добавить цену и вес
+                        .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !updatedMenuItem.weights[prices - 1] || !updatedMenuItem.prices[prices - 1] }") Добавить цену и вес
 
                         .e-card__section
                             h4(v-if="!$store.state.auth.user.dops.length") Дополнения к блюду
-                            v-select(v-if="$store.state.auth.user.dops.length" :items="$store.state.auth.user.dops" v-model="newItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
+                            v-select(v-if="$store.state.auth.user.dops.length" :items="$store.state.auth.user.dops" v-model="updatedMenuItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
                             .e-card__add-link(@click="addDopPopup") Управление дополнениями
 
-                        .e-card__section
+                        // .e-card__section
                             h4 Активировать в:
                             div(v-for="place in $store.state.auth.user.places")
                                 label {{ place.name }}
@@ -87,9 +87,10 @@
                         .e-card__bottom
                             v-btn(color="red" @click="closePopup").e-card__bottom-item Отмена
                             v-btn(
-                                color="blue" 
+                                color="blue"
+                                :disabled="!isAddItemValid"
                                 type="submit"
-                            ).e-card__bottom-item Создать
+                            ).e-card__bottom-item Сохранить
 </template>
 
 <script>
@@ -144,6 +145,9 @@ export default {
     mounted() {
         this.updatedMenuItem = Object.assign({}, this.editableMenuItem)
         this.updatedMenuItem.images = [...this.editableMenuItem.images]
+        this.updatedMenuItem.prices = [...this.editableMenuItem.prices]
+        this.updatedMenuItem.weights = [...this.editableMenuItem.weights]
+        this.prices = this.updatedMenuItem.prices.length
     },
     computed: {
         dragOptions() {
@@ -169,7 +173,7 @@ export default {
             })
         },
         togglePlace(place) {
-            const arr = this.newItem.places
+            const arr = this.updatedMenuItem.places
             if (arr.indexOf(place) > -1) {
                 arr.splice(arr.indexOf(place), 1)
             } else {
@@ -182,11 +186,6 @@ export default {
         afterComplete(file) {
             this.isDragOver = false
 
-            // this.uploadImages.push({
-            //     file: file,
-            //     src: URL.createObjectURL(file)
-            // })
-
             this.updatedMenuItem.images.unshift({
                 file: file,
                 src: URL.createObjectURL(file)
@@ -198,19 +197,14 @@ export default {
         dragLeave() {
             this.isDragOver = false
         },
-        vremoved(file) {
-            // const fl = this.uploadImages.find(e => e.file == file)
-            // const index = this.uploadImages.indexOf(fl)
-            // this.uploadImages.splice(index, 1)
-        } ,
         addPrice() {
-            if (this.newItem.weights[this.prices - 1] || this.newItem.prices[this.prices - 1]) {
+            if (this.updatedMenuItem.weights[this.prices - 1] || this.updatedMenuItem.prices[this.prices - 1]) {
                 this.prices += 1
             }
         },
         removePriceItem(i) {
-            this.newItem.prices.splice(i - 1, 1)
-            this.newItem.weights.splice(i - 1, 1)
+            this.updatedMenuItem.prices.splice(i - 1, 1)
+            this.updatedMenuItem.weights.splice(i - 1, 1)
             this.prices -= 1
         },
         addCategoryPopup() {
@@ -218,6 +212,11 @@ export default {
         },
         addDopPopup() {
             this.$store.state.view.popup.addDopPopup.visible = true
+        },
+        vremoved(file) {
+            // const fl = this.uploadImages.find(e => e.file == file)
+            // const index = this.uploadImages.indexOf(fl)
+            // this.uploadImages.splice(index, 1)
         }
     }
 }

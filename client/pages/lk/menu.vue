@@ -29,8 +29,6 @@
 
                         .m-item__category Категория: {{ $store.state.auth.user.categories.find(e => e._id == good.category).name }}
                         .m-item__dops
-                            // .m-item__dops-item(v-for="(item, key) in good.dops" :key="key") {{ $store.state.auth.user.dops.find(e => e._id === item).name }} {{ $store.state.auth.user.dops.find(e => e._id === item).price }}
-
                             .m-item__dops-item(v-for="(dop, idx) in good.dops" :key="idx" v-if="$store.state.auth.user.dops.find(e => e._id === dop)") {{ $store.state.auth.user.dops.find(e => e._id === dop).name }} {{ $store.state.auth.user.dops.find(e => e._id === dop).price }}
 
                         .m-item__available

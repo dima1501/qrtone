@@ -3,53 +3,74 @@
         .menu__top
             h1.menu__top-title Меню
             .menu__top-add(@click="openAddPopup") Добавить товар
+            .menu__top-add(@click="openCatPopup") Управление категориями
         .menu__content
             .menu__empty(v-if="!$store.state.auth.user.goods.length") В меню пока что нет товаров
 
-            div(v-for="(item, key) in $store.state.auth.user.categories" v-if="$store.state.auth.user.goods && $store.state.auth.parsedMenu[item]").menu__section
+            div(v-for="(item, key) in $store.state.auth.user.categories" v-bind:key="key" v-if="$store.state.auth.user.goods && $store.state.auth.parsedMenu[item._id]").menu__section
                 .menu__title
-                    h1.menu__title-text {{ item }}
-                    .menu__title-buttons
-                        v-icon(light @click="upCategory(item, key)").menu__title-buttons-item.up mdi-arrow-up-circle-outline
-                        v-icon(light @click="downCategory(item, key)").menu__title-buttons-item.down mdi-arrow-down-circle-outline
+                    h1.menu__title-text {{ item.name }}
 
                 .menu__list
-                    .m-item(v-for="(good, key) in $store.state.auth.parsedMenu[item]" v-bind:key="key")
-                        .m-item__edit(@click="openEditPopup")
+                    .m-item(v-for="(good, key) in $store.state.auth.parsedMenu[item._id]" v-bind:key="key")
+                        .m-item__edit(@click="openEditPopup(good)")
                             v-icon(dark) mdi-pencil-outline
-                        .m-item__img {{good.images}}
+
+                        .m-item__img(v-if="good.images.length")
+                            img(v-for="(image, key) in good.images" :key="key" :src="`../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
+                            VueSlickCarousel(:arrows="false" :dots="true" v-if="good.images.length > 1")
+                                img(v-for="(image, key) in good.images" :key="key" :src="`../uploads/${image}`")
+
                         .m-item__name {{ good.name }}
-                        .m-item__price Цена: {{ good.price }}
-                        .m-item__weight Вес: {{ good.weight }}
-                        .m-item__category Категория: {{ good.category }}
+
+                        .m-item__line(v-for="(item, key) in good.prices" :key="key")
+                            .m-item__price Цена: {{ good.prices[key] }}
+                            .m-item__weight Вес: {{ good.weights[key] }}
+
+                        .m-item__category Категория: {{ $store.state.auth.user.categories.find(e => e._id == good.category).name }}
+                        .m-item__dops
+                            // .m-item__dops-item(v-for="(item, key) in good.dops" :key="key") {{ $store.state.auth.user.dops.find(e => e._id === item).name }} {{ $store.state.auth.user.dops.find(e => e._id === item).price }}
+
+                            .m-item__dops-item(v-for="(dop, idx) in good.dops" :key="idx" v-if="$store.state.auth.user.dops.find(e => e._id === dop)") {{ $store.state.auth.user.dops.find(e => e._id === dop).name }} {{ $store.state.auth.user.dops.find(e => e._id === dop).price }}
+
                         .m-item__available
                             .m-item__available-title Доступно в:
                             div(v-for="(place, key) in $store.state.auth.user.places" :key="key")
                                 label(:for="`${good._id}${place._id}`") {{ place.name }}
                                 input(type='checkbox' :id="`${good._id}${place._id}`" @change="toggleActivePlace(good, place)" :checked="good.places.find(p => p._id === place._id)")
         
-        EditMenuItemPopup(v-if='$store.state.view.popup.editMenuItemPopup.visible')
+        EditMenuItemPopup(v-if='$store.state.view.popup.editMenuItemPopup.visible' v-bind:editableMenuItem="editableMenuItem")
         AddMenuItemPopup(v-if='$store.state.view.popup.addMenuItemPopup.visible')
         AddCategoryPopup(v-if='$store.state.view.popup.addCategoryPopup.visible')
+        AddDopPopup(v-if='$store.state.view.popup.addDopPopup.visible')
+
 </template>
 
 <script>
+import VueSlickCarousel from 'vue-slick-carousel'
+import 'vue-slick-carousel/dist/vue-slick-carousel.css'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+
 export default {
     layout: 'lk',
+    components: {
+        VueSlickCarousel
+    },
     data() {
         return {
-            
+            editableMenuItem: null
         }
     },
-    mounted() {
-        
-    },
     methods: {
-        openEditPopup() {
+        openEditPopup(item) {
+            this.editableMenuItem = item
             this.$store.state.view.popup.editMenuItemPopup.visible = true
         },
         openAddPopup() {
             this.$store.state.view.popup.addMenuItemPopup.visible = true
+        },
+        openCatPopup() {
+            this.$store.state.view.popup.addCategoryPopup.visible = true
         },
         toggleActivePlace(good, place) {
             const find = good.places.find(p => p._id === place._id)
@@ -60,36 +81,6 @@ export default {
                 good.places.push(place)
                 this.$store.dispatch("lk/updateGood", good)
             }
-        },
-        downCategory(input, index) {
-            let nextCat = 0
-            for (let i = this.$store.state.auth.user.categories.length - 1; i > index; i--) {
-                if (this.$store.state.auth.parsedMenu[this.$store.state.auth.user.categories[i]]) {
-                    nextCat = i
-                }
-            }
-
-            let numberOfDeletedElm = 1;
-            const elm = this.$store.state.auth.user.categories.splice(index, numberOfDeletedElm)[0];
-            numberOfDeletedElm = 0;
-            this.$store.state.auth.user.categories.splice(nextCat, numberOfDeletedElm, elm);
-
-            this.$store.dispatch('lk/updateCategories')
-        },
-        upCategory(input, index) {
-            let nextCat = 0
-            for (let i = 0; i < index; i++) {
-                if (this.$store.state.auth.parsedMenu[this.$store.state.auth.user.categories[i]]) {
-                    nextCat = i
-                }
-            }
-
-            let numberOfDeletedElm = 1;
-            const elm = this.$store.state.auth.user.categories.splice(index, numberOfDeletedElm)[0];
-            numberOfDeletedElm = 0;
-            this.$store.state.auth.user.categories.splice(nextCat, numberOfDeletedElm, elm);
-
-            this.$store.dispatch('lk/updateCategories')
         }
     }
 }   
@@ -122,6 +113,7 @@ export default {
             text-decoration: underline;
             position: relative;
             top: 5px;
+            margin-right: 30px;
         }
     }
 
@@ -184,7 +176,11 @@ export default {
     flex-direction: column;
     &__img {
         width: 100px;
-        height: 100px;
+        margin-bottom: 30px;
+        // height: 100px;
+        &-pic {
+            width: 100%;
+        }
     }
     &__edit {
         position: absolute;
@@ -203,6 +199,19 @@ export default {
         .v-icon {
             color: #000;
         }
+    }
+    &__line {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        margin: 5px 0;
+        border-top: 1px solid rgb(230, 230, 230);
+        border-bottom: 1px solid rgb(230, 230, 230);
+    }
+
+    &__dops {
+        display: flex;
+        flex-wrap: wrap;
     }
 }
 </style>

@@ -4,56 +4,49 @@
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
-                h2.popup__title Управление категориями
-                p Изменения сохранятся автоматически
+                h2.popup__title Управление дополнениями
                 .cats
                     .cats__add
                         .cats__add-field
                             v-text-field(
-                                ref="newCat"
-                                v-model="newCat"
+                                ref="newDop"
+                                v-model="newDop.name"
                                 type="text"
-                                label="Новая категория")
+                                label="Новое дополнение")
+                            v-text-field(
+                                ref="newDop"
+                                v-model="newDop.price"
+                                type="number"
+                                label="Стоимость"
+                                prefix="₽")
                             transition(name="slide-fade" mode="out-in")
-                                .cats__item-controls-btn(@click="create" v-if="newCat.length")
+                                .cats__item-controls-btn(@click="create" v-if="newDop.name.length")
                                     v-icon(light) mdi-checkbox-marked-circle-outline
 
-                    draggable(
-                        class="drag"
-                        v-model="$store.state.auth.user.categories"
-                        v-bind="dragOptions"
-                        @start="drag = true"
-                        @end="drag = false"
-                        handle=".handle"
-                        @change="change")
-                        transition-group(type="transition" :name="!drag ? 'flip-list' : null")
-                            CategoryItem(v-for="(cat, i) in $store.state.auth.user.categories" :key="cat._id" :cat="cat")
+                    DopItem(v-for="(dop, i) in $store.state.auth.user.dops" :key="dop._id" :dop="dop")
 
 </template>
 
 <script>
-import draggable from 'vuedraggable'
 
 export default {
-    components: {
-      draggable
-    },
     data() {
         return {
             drag: false,
-            newCat: ''
+            newDop: {
+                name: '',
+                price: null
+            }
         }
     },
     methods: {
         closePopup() {
-            this.$store.state.view.popup.addCategoryPopup.visible = false
-        },
-        change() {
-            this.$store.dispatch('lk/updateCats')
+            this.$store.state.view.popup.addDopPopup.visible = false
         },
         create() {
-            this.$store.dispatch('lk/createCat', this.newCat)
-            this.newCat = ''
+            this.$store.dispatch('lk/createDop', this.newDop)
+            this.newDop.name = ''
+            this.newDop.price = null
         }
     },
     computed: {

@@ -47,7 +47,7 @@
 
                         .e-card__line
                             // .e-card__line-label Категория:
-                            v-select(:items="$store.state.auth.user.categories" v-model="newItem.category" :rules="nameRules" label="Категория")
+                            v-select(:items="$store.state.auth.user.categories" v-model="newItem.category" :rules="nameRules" label="Категория" item-text="name" item-value="_id")
 
                         .e-card__add-link(@click="addCategoryPopup") Управление категориями
                                 
@@ -71,15 +71,19 @@
                                 v-if="i > 1")
                                 v-icon(light) mdi-trash-can-outline
                         
-                        v-btn(
-                            color="blue"
-                            :disabled="!newItem.weights[prices - 1] || !newItem.prices[prices - 1]"
-                            @click="addPrice"
-                        ) Добавить цену и вес
+                        .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !newItem.weights[prices - 1] || !newItem.prices[prices - 1] }") Добавить цену и вес
 
-                        div(v-for="place in $store.state.auth.user.places")
-                            label {{ place.name }}
-                            input(type='checkbox' @change="togglePlace(place)" :id="place.id")
+                        .e-card__section
+                            h4(v-if="!$store.state.auth.user.dops.length") Дополнения к блюду
+                            v-select(v-if="$store.state.auth.user.dops.length" :items="$store.state.auth.user.dops" v-model="newItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
+                            .e-card__add-link(@click="addDopPopup") Управление дополнениями
+
+                        .e-card__section
+                            h4 Активировать в:
+                            div(v-for="place in $store.state.auth.user.places")
+                                label {{ place.name }}
+                                input(type='checkbox' @change="togglePlace(place)" :id="place.id")
+
                         .e-card__bottom
                             v-btn(color="red" @click="closePopup").e-card__bottom-item Отмена
                             v-btn(
@@ -113,7 +117,8 @@ export default {
                 weights: [],
                 category: null,
                 weight: null,
-                places: []
+                places: [],
+                dops: []
             },
             nameRules: [
                 (v) => !!v || 'error_company_name',
@@ -144,6 +149,7 @@ export default {
         },
     },
     methods: {
+        dopSelectText: item => `${item.name} ${item.price} ₽`,
         removePic(file) {
             this.$refs.dropzone.removeFile(file)
         },
@@ -183,7 +189,9 @@ export default {
             this.uploadImages.splice(index, 1)
         } ,
         addPrice() {
-            this.prices += 1
+            if (this.newItem.weights[this.prices - 1] || this.newItem.prices[this.prices - 1]) {
+                this.prices += 1
+            }
         },
         removePriceItem(i) {
             this.newItem.prices.splice(i - 1, 1)
@@ -192,6 +200,9 @@ export default {
         },
         addCategoryPopup() {
             this.$store.state.view.popup.addCategoryPopup.visible = true
+        },
+        addDopPopup() {
+            this.$store.state.view.popup.addDopPopup.visible = true
         }
     }
 }
@@ -421,8 +432,15 @@ export default {
         margin: 0 0 10px 0;
         color: rgb(25, 118, 210);
         cursor: pointer;
-        // text-decoration: underline;
         font-size: 14px;
+        transition: color .3s;
+        &.disabled {
+            pointer-events: none;
+            color: rgba(0, 0, 0, 0.4);
+        }
+    }
+    &__section {
+        margin: 10px 0;
     }
 }
 </style>

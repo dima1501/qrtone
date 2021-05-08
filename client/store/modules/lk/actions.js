@@ -1,4 +1,5 @@
 const axios = require('axios').default
+import Vue from 'vue'
 
 const updateUserName = async (store, data) => {
   try {
@@ -135,9 +136,8 @@ const addNewMenuItem = async (store, data) => {
         url: '/api/add-menu-item',
         data: { data: data.item }
       })
-      console.log(add)
 
-      if (add) {
+      if (add.data) {
         store.rootState.auth.user.goods.push(add.data)
         if (store.rootState.auth.parsedMenu[add.data.category]) {
           store.rootState.auth.parsedMenu[add.data.category].push(add.data)
@@ -161,11 +161,71 @@ const addNewMenuItem = async (store, data) => {
           data.item.images.push(uploadPhoto.data.path)
         }
       }
-
       uploadItem(data)
     } else {
       uploadItem(data)
     }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const editMenuItem = async (store, data) => {
+  try {
+    const upload = async (data) => {
+      const add = await axios({
+        method: 'post',
+        url: '/api/update-menu-item',
+        data: { data: data.item }
+      })
+
+      if (add.data) {
+        let category = store.rootState.auth.parsedMenu[add.data.category]
+        let item = category.find(e => e._id == add.data._id)
+
+        if (!item) {
+          
+          // for (let i in store.rootState.auth.parsedMenu) {
+          //   let menu = store.rootState.auth.parsedMenu[i]
+          //   const findItem = menu.find(e => e._id == add.data._id)
+          //   if (findItem) {
+          //     const index = menu.indexOf(findItem)
+          //     menu.splice(index, 1);
+          //   }
+          // }
+          // category.push(add.data)
+          // const index = 
+          // Vue.set(category, index, add.data)
+        } else {
+          let index = category.indexOf(item)
+          Vue.set(category, index, add.data)
+          store.rootState.view.popup.editMenuItemPopup.visible = false
+        }
+      }
+    }
+
+    if (data.item.images.length) {
+      for (let i in data.item.images) {
+        if (data.item.images[i].file) {
+          const bodyFormData = new FormData();
+          bodyFormData.append("image", data.item.images[i].file);
+
+          const uploadPhoto = await axios({
+            method: "post",
+            url: "/api/upload-menu-item-image",
+            data: bodyFormData,
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          if (uploadPhoto.data) {
+            data.item.images[i] = uploadPhoto.data.path
+          }
+        }
+      }
+      upload(data)
+    } else {
+    upload(data)
+    }
+
   } catch (error) {
     console.error(error)
   }
@@ -177,20 +237,6 @@ const updateGood = async (store, data) => {
       method: 'post',
       url: '/api/update-good',
       data,
-    })
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const updateCategories = async (store) => {
-  try {
-    await axios({
-      method: 'post',
-      url: '/api/update-categories',
-      data: {
-        categories: store.rootState.auth.user.categories
-      },
     })
   } catch (error) {
     console.error(error)
@@ -258,9 +304,100 @@ const updateCats = async (store, data) => {
         categories: store.rootState.auth.user.categories
       }
     })
-    console.log(update)
     if (update.data) {
       
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const removeCat = async (store, cat) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/remove-category',
+      data: { cat }
+    })
+    if (update.data) {
+      const index = store.rootState.auth.user.categories.indexOf(cat)
+      store.rootState.auth.user.categories.splice(index, 1);
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const removeDop = async (store, dop) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/remove-dop',
+      data: { dop }
+    })
+    if (update.data) {
+      const index = store.rootState.auth.user.dops.indexOf(dop)
+      store.rootState.auth.user.dops.splice(index, 1);
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const editCat = async (store, cat) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/edit-category',
+      data: { cat }
+    })
+    if (update.data) {
+      
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const editDop = async (store, dop) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/edit-dop',
+      data: { dop }
+    })
+    if (update.data) {
+      
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const createCat = async (store, cat) => {
+  try {
+    const create = await axios({
+      method: 'post',
+      url: '/api/create-category',
+      data: { cat }
+    })
+    if (create.data) {
+      store.rootState.auth.user.categories.unshift(create.data)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const createDop = async (store, dop) => {
+  try {
+    const create = await axios({
+      method: 'post',
+      url: '/api/create-dop',
+      data: { dop }
+    })
+    if (create.data) {
+      store.rootState.auth.user.dops.unshift(create.data)
     }
   } catch (error) {
     console.error(error)
@@ -276,9 +413,15 @@ export default {
     updatePlaces,
     addNewMenuItem,
     updateGood,
-    updateCategories,
     addNewAction,
     editAction,
     deleteAction,
-    updateCats
+    updateCats,
+    removeCat,
+    editCat,
+    createCat,
+    createDop,
+    editDop,
+    removeDop,
+    editMenuItem
 }

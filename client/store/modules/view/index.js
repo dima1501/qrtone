@@ -32,6 +32,9 @@ const state = {
     },
     addCategoryPopup: {
       visible: false
+    },
+    addDopPopup: {
+      visible: false
     }
   },
   isOrdersOpened: false,

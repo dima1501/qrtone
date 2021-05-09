@@ -10,7 +10,8 @@ const MenuItem = class MenuItem {
         this.category = data.category,
         this.places = data.places,
         this.dops = data.dops,
-        this.count = 0
+        this.count = 0,
+        this.order = 0
     }
   }
   

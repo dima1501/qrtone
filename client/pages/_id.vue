@@ -19,13 +19,16 @@
                         nuxt-link.w-cats__item.scrollactive-item(
                             v-for='(item, key) of $store.state.guest.companyData.categories' 
                             v-bind:key="key" 
-                            :to="{ path: `${$nuxt.$route.fullPath}`, hash: `#${item}` }"
-                            v-if="$store.state.guest.parsedMenu[item]"
-                            ) {{item}}
+                            :to="{ path: `${$nuxt.$route.fullPath}`, hash: `#${item._id}` }"
+                            v-if="$store.state.guest.parsedMenu[item._id]"
+                            ) {{item.name}}
                 .menu
-                    .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat")
-                        .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat]' v-bind:key="key")
-                            .menu__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.image + ')' }")
+                    .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id")
+                        .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key" v-bind:style="{ order: item.order ? item.order : 'unset' }")
+                            
+                            .menu__item-img
+                                .menu__item-img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+
                             .menu__item-content
                                 .menu__item-content-inner
                                     .menu__item-name {{ item.name }}
@@ -181,7 +184,6 @@ export default {
             this.$store.state.view.isCartOpened = false
         },
         openCart() {
-            console.log(1)
             this.$store.state.view.isOrdersOpened = false
             this.$store.state.view.isCartOpened = true
         },
@@ -377,12 +379,20 @@ export default {
         }
         
         &-img {
+            position: relative;
             height: 32vw;
-            background-position: center;
-            background-size: cover;
             flex-shrink: 0;
             @media screen and (min-width: 768px) {
                 height: 20vw;
+            }
+            &-pic {
+                position: absolute;
+                left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                background-position: center;
+            background-size: cover;
             }
         }
         &-name {

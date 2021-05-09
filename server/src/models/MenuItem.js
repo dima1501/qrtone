@@ -11,7 +11,8 @@ const MenuItem = class MenuItem {
         this.places = data.places,
         this.dops = data.dops,
         this.count = 0,
-        this.order = 0
+        this.order = 0,
+        this.cartPrices = []
     }
   }
   

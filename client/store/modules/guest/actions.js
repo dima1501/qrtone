@@ -87,14 +87,29 @@ const loadData = async (store, data) => {
     }
 }
 
-const addToCart = async (store, item) => {
+const addToCart = async (store, data) => {
     try {
-        if (store.state.user.cart.indexOf(item) > -1) {
-            item.count += 1
+        const menuItem = store.state.user.cart.find(e => e._id == data.item._id)
+
+        if (menuItem) {
+            menuItem.count += 1
+            menuItem.cartPrices.push(data.price)
         } else {
-            item.count = 1
-            store.state.user.cart.push(item)
+            data.item.count = 1
+            data.item.cartPrices = [data.price]
+            store.state.user.cart.push(data.item)
         }
+
+        store.dispatch('updateCart', store.state.user.cart)
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const addToCartSimple = async (store, item) => {
+    try {
+        item.count = 1
+        store.state.user.cart.push(item)
         store.dispatch('updateCart', store.state.user.cart)
     } catch (error) {
         console.error(error)
@@ -108,6 +123,23 @@ const minusCartItem = async (store, item) => {
             store.state.user.cart.splice(index, 1);
         }
         item.count--
+        store.dispatch('updateCart', store.state.user.cart)
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const minusCartItemMulti = async (store, data) => {
+    try {
+        const menuItem = store.state.user.cart.find(e => e._id == data.item._id)
+
+        if (menuItem.count == 1) {
+            const index = store.state.user.cart.indexOf(menuItem)
+            store.state.user.cart.splice(index, 1);
+        }
+        const priceIndex = menuItem.cartPrices.indexOf(data.price)
+        menuItem.cartPrices.splice(priceIndex, 1)
+        menuItem.count--
         store.dispatch('updateCart', store.state.user.cart)
     } catch (error) {
         console.error(error)
@@ -198,6 +230,8 @@ export default {
     makeOrder,
     loadOrders,
     acceptOrder,
-    fastAction
+    fastAction,
+    minusCartItemMulti,
+    addToCartSimple
   }
   

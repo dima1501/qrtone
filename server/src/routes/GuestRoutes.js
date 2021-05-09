@@ -145,7 +145,7 @@ router.post('/api/load-orders', authGuest(), async (req, res) => {
         { $group: {_id: '$_id', list: {$push: '$orders'} } }
     ]).toArray()
 
-    if (orders[0].list) {
+    if (orders[0] && orders[0].list) {
         res.status(200).json(orders[0].list)
     } else {
         res.status(200).json([])

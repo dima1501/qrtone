@@ -25,22 +25,8 @@
                 .menu
                     .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id")
                         .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key" v-bind:style="{ order: item.order ? item.order : 'unset' }")
-                            
-                            .menu__item-img
-                                .menu__item-img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+                            MenuItem(v-bind:item="item")
 
-                            .menu__item-content
-                                .menu__item-content-inner
-                                    .menu__item-name {{ item.name }}
-                                    .menu__item-weight {{ item.weight }}
-                                .menu__item-button(@click="addToCart(item)" v-if="!$store.state.guest.user.cart.find(e => e._id == item._id)") {{ item.price }} ₽
-
-                                // 4 строки ниже я писал в 6 утра и мне очень стыдно, но оно работает
-                                .menu__counter(v-if="$store.state.guest.user && $store.state.guest.user.cart.find(e => e._id == item._id)")
-                                    .menu__counter-control.minus(@click="minus($store.state.guest.user.cart.find(e => e._id == item._id))") -
-                                    .menu__counter-value {{ $store.state.guest.user.cart.find(e => e._id == item._id).count }}
-                                    .menu__counter-control.plus(@click="plus($store.state.guest.user.cart.find(e => e._id == item._id))") +
-                        
         transition(name="slide-fade" mode="out-in")
             .commands(v-if="commands && !isCommandSend" key="commands")
                 .commands__actions
@@ -108,12 +94,19 @@
 import Vue from 'vue';
 import VueScrollactive from 'vue-scrollactive';
 
+import VueSlickCarousel from 'vue-slick-carousel'
+import 'vue-slick-carousel/dist/vue-slick-carousel.css'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+
 Vue.use(VueScrollactive);
 
 import moment from 'moment';
 
 export default {
     layout: 'main',
+    components: {
+        VueSlickCarousel
+    },
     data() {
         return {
             commands: false,
@@ -143,7 +136,13 @@ export default {
         getTotalPrice: function () {
             let total = 0
             for (let i of this.$store.state.guest.user.cart) {
-                total += i.price * i.count
+                if (i.cartPrices.length) {
+                    for (let n in i.cartPrices) {
+                        total += +i.prices[i.cartPrices[n]]
+                    }
+                } else {
+                    total += +i.prices[0] * i.count
+                }
             }
             return total
         }
@@ -380,19 +379,15 @@ export default {
         
         &-img {
             position: relative;
-            height: 32vw;
             flex-shrink: 0;
-            @media screen and (min-width: 768px) {
-                height: 20vw;
-            }
+            margin-bottom: 30px;
             &-pic {
-                position: absolute;
-                left: 0;
-                top: 0;
-                right: 0;
-                bottom: 0;
+                height: 32vw;
                 background-position: center;
-            background-size: cover;
+                background-size: cover;
+                @media screen and (min-width: 768px) {
+                    height: 20vw;
+                }
             }
         }
         &-name {

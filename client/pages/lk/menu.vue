@@ -12,30 +12,42 @@
                     h1.menu__title-text {{ item.name }}
 
                 .menu__list
-                    .m-item(v-for="(good, key) in $store.state.auth.parsedMenu[item._id]" v-bind:key="key")
-                        .m-item__edit(@click="openEditPopup(good)")
-                            v-icon(dark) mdi-pencil-outline
+                    draggable(
+                        class="drag"
+                        v-model="$store.state.auth.parsedMenu[item._id]"
+                        v-bind="dragOptions(item._id)"
+                        @start="drag = true"
+                        @end="drag = false"
+                        handle=".handles"
+                        @change="change")
+                        transition-group(type="transition" :name="!drag ? null : null")
+                            .m-item(v-for="(good, key) in $store.state.auth.parsedMenu[item._id]" :key="good._id" v-bind:style="{ order: (good.order && !drag) ? good.order : 'unset' }")
+                                .m-item__controls
+                                    .m-item__controls-item(@click="openEditPopup(good)")
+                                        v-icon(dark) mdi-pencil-outline
+                                    .m-item__controls-item.handles
+                                        v-icon(dark) mdi-drag
 
-                        .m-item__img(v-if="good.images.length")
-                            img(v-for="(image, key) in good.images" :key="key" :src="`../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
-                            VueSlickCarousel(:arrows="false" :dots="true" v-if="good.images.length > 1")
-                                img(v-for="(image, key) in good.images" :key="key" :src="`../uploads/${image}`")
+                                .m-item__img(v-if="good.images.length")
+                                    img(v-for="(image, key) in good.images" :key="key" :src="`../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
+                                    VueSlickCarousel(:arrows="false" :dots="true" v-if="good.images.length > 1")
+                                        img(v-for="(image, key) in good.images" :key="key" :src="`../uploads/${image}`")
 
-                        .m-item__name {{ good.name }}
+                                .m-item__name {{ good.name }}
 
-                        .m-item__line(v-for="(item, key) in good.prices" :key="key")
-                            .m-item__price Цена: {{ good.prices[key] }}
-                            .m-item__weight Вес: {{ good.weights[key] }}
+                                .m-item__line(v-for="(item, key) in good.prices" :key="key")
+                                    .m-item__price Цена: {{ good.prices[key] }}
+                                    .m-item__weight Вес: {{ good.weights[key] }}
 
-                        .m-item__category Категория: {{ $store.state.auth.user.categories.find(e => e._id == good.category).name }}
-                        .m-item__dops
-                            .m-item__dops-item(v-for="(dop, idx) in good.dops" :key="idx" v-if="$store.state.auth.user.dops.find(e => e._id === dop)") {{ $store.state.auth.user.dops.find(e => e._id === dop).name }} {{ $store.state.auth.user.dops.find(e => e._id === dop).price }}
+                                .m-item__category Категория: {{ $store.state.auth.user.categories.find(e => e._id == good.category).name }}
+                                .m-item__dops
+                                    .m-item__dops-item(v-for="(dop, idx) in good.dops" :key="idx" v-if="$store.state.auth.user.dops.find(e => e._id === dop)") {{ $store.state.auth.user.dops.find(e => e._id === dop).name }} {{ $store.state.auth.user.dops.find(e => e._id === dop).price }}
 
-                        .m-item__available
-                            .m-item__available-title Доступно в:
-                            div(v-for="(place, key) in $store.state.auth.user.places" :key="key")
-                                label(:for="`${good._id}${place._id}`") {{ place.name }}
-                                input(type='checkbox' :id="`${good._id}${place._id}`" @change="toggleActivePlace(good, place)" :checked="good.places.find(p => p._id === place._id)")
+                                .m-item__available
+                                    .m-item__available-title Доступно в:
+                                    div(v-for="(place, key) in $store.state.auth.user.places" :key="key")
+                                        label(:for="`${good._id}${place._id}`") {{ place.name }}
+                                        input(type='checkbox' :id="`${good._id}${place._id}`" @change="toggleActivePlace(good, place)" :checked="good.places.find(p => p._id === place._id)")
         
         EditMenuItemPopup(v-if='$store.state.view.popup.editMenuItemPopup.visible' v-bind:editableMenuItem="editableMenuItem")
         AddMenuItemPopup(v-if='$store.state.view.popup.addMenuItemPopup.visible')
@@ -45,6 +57,7 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import VueSlickCarousel from 'vue-slick-carousel'
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
@@ -52,14 +65,35 @@ import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 export default {
     layout: 'lk',
     components: {
-        VueSlickCarousel
+        VueSlickCarousel,
+        draggable
     },
     data() {
         return {
+            drag: false,
             editableMenuItem: null
         }
     },
     methods: {
+        dragOptions(id) {
+            return {
+                animation: 200,
+                group: `draggable_${id}`,
+                disabled: false,
+                ghostClass: "ghost"
+            };
+        },
+        change(e) {
+            const cat = this.$store.state.auth.parsedMenu[e.moved.element.category]
+            const arr = []
+
+            for (let i in cat) {
+                cat[i].order = i
+                arr.push(cat[i]._id)
+            } 
+
+            this.$store.dispatch("lk/updateOrder", arr)
+        },
         openEditPopup(item) {
             this.editableMenuItem = item
             this.$store.state.view.popup.editMenuItemPopup.visible = true
@@ -85,8 +119,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.menu {
+.flip-list-move {
+  transition: transform 0.5s;
+}
 
+.drag {
+    width: 100%;
+
+    & > span {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
+.menu {
     &__empty {
         display: flex;
         justify-content: center;
@@ -180,22 +226,29 @@ export default {
             width: 100%;
         }
     }
-    &__edit {
+    &__controls {
         position: absolute;
         right: 10px;
         top: 10px;
         cursor: pointer;
-        &::after {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 5px;
-            right: 5px;
-            bottom: 5px;
-            cursor: pointer;
-        }
-        .v-icon {
-            color: #000;
+        display: flex;
+        align-items: center;
+        z-index: 2;
+        &-item {
+            position: relative;
+            margin-left: 10px;
+            &::after {
+                content: '';
+                position: absolute;
+                left: 5px;
+                top: 5px;
+                right: 5px;
+                bottom: 5px;
+                cursor: pointer;
+            }
+            .v-icon {
+                color: #000;
+            }
         }
     }
     &__line {

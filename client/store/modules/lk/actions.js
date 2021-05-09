@@ -404,6 +404,21 @@ const createDop = async (store, dop) => {
   }
 }
 
+const updateOrder = async (store, data) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/update-order',
+      data: { data }
+    })
+    if (update.data) {
+      
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
     updateUserName,
     updateCompanyLogo,
@@ -423,5 +438,6 @@ export default {
     createDop,
     editDop,
     removeDop,
-    editMenuItem
+    editMenuItem,
+    updateOrder
 }

@@ -360,4 +360,19 @@ router.post('/api/create-dop', auth(), async (req, res) => {
     }
 })
 
+router.post('/api/update-order', auth(), async (req, res) => {
+    try {
+        for (let i in req.body.data) {
+            const update = await req.db.collection('users').updateOne(
+                { _id: ObjectId(req.user._id), "goods._id": req.body.data[i] },
+                { $set: { "goods.$.order" : i } }
+            )
+        }
+       
+        res.status(200).send(true)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 module.exports = router

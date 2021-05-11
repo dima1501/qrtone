@@ -13,7 +13,7 @@ module.exports = {
         try {
           await axios({
             method: 'delete',
-            url: `${config.ORIGIN}/${socket.id}`
+            url: `${config.SERVER}/api/delete-socket-id/${socket.id}`
           })
         } catch (error) {
           console.error(error)

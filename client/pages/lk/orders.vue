@@ -14,8 +14,13 @@
                         v-icon(dark) mdi-alarm
                     .sorder__time(v-if="order.timestamp") {{ formatTime(order.timestamp) }}
                     .sorder__goods
-                        .sorder__line(v-for="(good, key) in order.goods" v-bind:key="key") {{good.name}} x {{good.count}}
-                    .sorder__btn(@click='acceptOrder(order)') Подтвердить
+                        .sorder__line(v-for="(good, key) in order.goods" v-bind:key="key")
+                            div {{ good.name }}
+                            .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
+                                div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
+                        div Итого: {{ getOrderPrice(order) }}р
+                            
+                    .sorder__btn(@click='acceptOrder(order)' v-if="order.status == 'pending'") Подтвердить
 
 </template>
 
@@ -35,11 +40,26 @@ export default {
         },
         formatTime(time) {
             return moment(time).local().locale('ru').calendar();
+        },
+        getCustomArr(arr) {
+            const newArr = []
+            for (let i in arr) {
+                if (newArr.indexOf(arr[i]) == -1) {
+                    newArr.push(arr[i])
+                }
+            }
+            return newArr.sort(function(a, b) { return a - b; })
+        },
+        getOrderPrice(item) {
+            let total = 0
+            for (let i of item.goods) {
+                for (let n in i.cartPrices) {
+                    total += +i.prices[i.cartPrices[n]]
+                }
+            }
+            return total
         }
     },
-    mounted() {
-        
-    }
 }
 </script>
 

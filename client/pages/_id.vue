@@ -52,15 +52,21 @@
                     a.cart__subtitle(@click="openOrders") Заказы
                 .cart__content
                     h3.cart__empty(v-if="!$store.state.guest.user.cart.length") Корзина пуста
+
+
                     .cart__item(v-for="(item, key) in $store.state.guest.user.cart" v-bind:key="key")
-                        .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.image + ')' }")
+                        .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
                         .cart__item-content
                             .cart__item-name {{ item.name }}
-                            .cart__item-counter
-                                .menu__counter-control.minus(@click="minus(item)") -
-                                .menu__counter-value {{ item.count }}
-                                .menu__counter-control.plus(@click="plus(item)") +
-                        .cart__item-price {{ item.price }} ₽
+
+                            div(v-for="(price, idx) in getCustomArr(item.cartPrices)").cart__item-price
+                                div {{item.prices[price]}}р - {{item.weights[price]}}г
+                            
+                                .cart__item-counter
+                                    .menu__counter-control.minus(@click="minusMulti(item, price)") -
+                                    .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
+                                    .menu__counter-control.plus(@click="plusMulti(item, price)") +
+
                 .cart__bottom(v-if="$store.state.guest.user.cart.length")
                     .cart__bottom-price {{getTotalPrice}} ₽
                     .cart__bottom-control
@@ -82,7 +88,11 @@
                                 v-icon(dark) mdi-alarm
                             div {{ getTime(item.timestamp) }}
                             .sorder__goods
-                                .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key") {{ good.name }} x {{ good.count }}
+                                .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key")
+                                    div {{ good.name }}
+                                    .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
+                                        div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
+
                             .sorder__price Итого: {{ getOrderPrice(item) }} ₽
         transition(name="slide-fade")
             InfoPopup(v-if="$store.state.view.popup.infoPopup")
@@ -136,20 +146,37 @@ export default {
         getTotalPrice: function () {
             let total = 0
             for (let i of this.$store.state.guest.user.cart) {
-                if (i.cartPrices.length) {
-                    for (let n in i.cartPrices) {
-                        total += +i.prices[i.cartPrices[n]]
-                    }
-                } else {
-                    total += +i.prices[0] * i.count
+                for (let n in i.cartPrices) {
+                    total += +i.prices[i.cartPrices[n]]
                 }
             }
             return total
         }
     },
     methods: {
+        plusMulti(item, checkedPrice) {
+            this.$store.dispatch('guest/addToCart', {
+                item: item,
+                price: checkedPrice
+            })
+        },
+        minusMulti(item, checkedPrice) {
+            this.$store.dispatch('guest/minusCartItemMulti', {
+                item: item,
+                price: checkedPrice
+            })
+        },
+        getCustomArr(arr) {
+            const newArr = []
+            for (let i in arr) {
+                if (newArr.indexOf(arr[i]) == -1) {
+                    newArr.push(arr[i])
+                }
+            }
+            return newArr.sort(function(a, b) { return a - b; })
+        },
         getTime(time) {
-            return moment(time).local().calendar()
+            return moment(time).local().locale('ru').calendar()
         },
         toggleCommandsMenu() {
             this.commands = !this.commands
@@ -193,7 +220,9 @@ export default {
         getOrderPrice(item) {
             let total = 0
             for (let i of item.goods) {
-                total += i.price * i.count
+                for (let n in i.cartPrices) {
+                    total += +i.prices[i.cartPrices[n]]
+                }
             }
             return total
         },
@@ -257,6 +286,14 @@ export default {
     &__btn {
         margin-top: auto;
         text-align: center;
+    }
+
+    &__line {
+        &-item {
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #000;
+        }
     }
 }
 
@@ -322,6 +359,11 @@ export default {
             align-items: center;
             justify-content: space-between;
             width: 150px;
+        }
+        &-price {
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #000;
         }
     }
     &__bottom {

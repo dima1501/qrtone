@@ -6,6 +6,7 @@ const config = {
   DB_URI: process.env.DB_URI,
   PORT: process.env.PORT || 3000,
   ORIGIN: process.env.ORIGIN || "http://localhost:3000",
+  SERVER: process.env.SERVER || "http://localhost:8000"
 }
 
 module.exports = config

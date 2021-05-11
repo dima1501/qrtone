@@ -105,10 +105,36 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
         })
     }
 
+    const getOrderPrice = (order) => {
+        let total = 0
+        for (let i of order.goods) {
+            for (let n in i.cartPrices) {
+                total += +i.prices[i.cartPrices[n]]
+            }
+        }
+        return total
+    }
+
+    const getCustomArr = (arr) => {
+        const newArr = []
+        for (let i in arr) {
+            if (newArr.indexOf(arr[i]) == -1) {
+                newArr.push(arr[i])
+            }
+        }
+        return newArr.sort(function(a, b) { return a - b })
+    }
+
     let str = []
     for (let i = 0; i < order.goods.length; i++) {
-        str.push(`${i + 1}) ${order.goods[i].name}, ${order.goods[i].price} ₽, x${order.goods[i].count}\n-----------------------------\n`)
+        str.push(`${i + 1}) ${order.goods[i].name}\n`)
+        for (let n = 0; n < getCustomArr(order.goods[i].cartPrices).length; n++) {
+            str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}р ${order.goods[i].weights[order.goods[i].cartPrices[n]]}г x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length } \n`)
+            str.push(`-----\n`)
+        }
     }
+
+    str.push(`\n ${getOrderPrice(order)}p `)
 
     let data = {
         messages: [],

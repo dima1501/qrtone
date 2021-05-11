@@ -37,8 +37,9 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
 
   bot.action('like', async (ctx) => {
     try {
+      const tgUser = await db.collection('tgUsers').findOne({_id: ctx.update.callback_query.message.chat.id})
       const user = await db.collection("users").aggregate([
-        { $match: { bot_token: ctx.session.bot_token } },
+        { $match: { _id: ObjectId(tgUser.companyId) } },
         { $unwind: '$messages'},
         { $match: {'messages.chatId': {$in: [ctx.update.callback_query.message.chat.id]}}},
         { $match: {'messages.messageId': {$in: [ctx.update.callback_query.message.message_id]}}},
@@ -63,8 +64,9 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
 
   bot.action('accept', async (ctx) => {
     try {
+      const tgUser = await db.collection('tgUsers').findOne({_id: ctx.update.callback_query.message.chat.id})
       const user = await db.collection("users").aggregate([
-        { $match: { bot_token: ctx.session.bot_token } },
+        { $match: { _id: ObjectId(tgUser.companyId) } },
         { $unwind: '$messages'},
         { $match: {'messages.chatId': {$in: [ctx.update.callback_query.message.chat.id]}}},
         { $match: {'messages.messageId': {$in: [ctx.update.callback_query.message.message_id]}}},

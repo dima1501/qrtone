@@ -21,7 +21,7 @@
                         handle=".handles"
                         @change="change")
                         transition-group(type="transition" :name="!drag ? null : null")
-                            .m-item(v-for="(good, key) in $store.state.auth.parsedMenu[item._id]" :key="good._id" v-bind:style="{ order: (good.order && !drag) ? good.order : 'unset' }")
+                            .m-item(v-for="(good, key) in $store.state.auth.parsedMenu[item._id]" :key="good._id")
                                 .m-item__controls
                                     .m-item__controls-item(@click="openEditPopup(good)")
                                         v-icon(dark) mdi-pencil-outline

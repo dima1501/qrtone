@@ -81,6 +81,7 @@ const loadData = async (store, data) => {
                   store.state.parsedMenu[item.category] = [item]
                 }
             }
+            store.state.parsedMenu[item.category] = store.state.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
         }
     } catch (error) {
         console.error(error)

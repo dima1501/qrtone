@@ -7,11 +7,11 @@
 
         transition(name="slide-fade" mode="out-in")
             .cats__item-controls(v-if="!isEdit" key="3")
+                .cats__item-controls-btn(@click="remove" v-if="!$store.state.auth.user.goods.find(e => e.category == cat._id)")
+                    v-icon(light) mdi-trash-can-outline
                 .cats__item-controls-btn(@click="edit")
                     v-icon(light) mdi-pencil-outline
-                .cats__item-controls-btn(@click="remove")
-                    v-icon(light) mdi-trash-can-outline
-                .cats__item-controls-btn.handle
+                .cats__item-controls-btn.handleit
                     v-icon(light) mdi-drag
 
             .cats__item-controls(v-if="isEdit" key="4")

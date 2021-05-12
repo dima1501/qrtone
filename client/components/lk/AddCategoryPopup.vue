@@ -19,15 +19,17 @@
                                     v-icon(light) mdi-checkbox-marked-circle-outline
 
                     draggable(
-                        class="drag"
+                        ref="asdas"
+                        class="drags"
                         v-model="$store.state.auth.user.categories"
                         v-bind="dragOptions"
                         @start="drag = true"
                         @end="drag = false"
-                        handle=".handle"
-                        @change="change")
-                        transition-group(type="transition" :name="!drag ? 'flip-list' : null")
-                            CategoryItem(v-for="(cat, i) in $store.state.auth.user.categories" :key="cat._id" :cat="cat")
+                        handle=".handleit"
+                        @change="change"
+                        :forceFallback="true")
+                        div(v-for="(cat, i) in $store.state.auth.user.categories" :key="cat._id" )
+                            CategoryItem(:cat="cat")
 
 </template>
 
@@ -41,14 +43,21 @@ export default {
     data() {
         return {
             drag: false,
-            newCat: ''
+            newCat: '',
+            updatedCats: []
         }
+    },
+    mounted() {
+        this.updatedCats = [...this.$store.state.auth.user.categories]
+        this.$store.state.auth.user.categories.length = 0
+        this.$store.state.auth.user.categories = this.updatedCats
     },
     methods: {
         closePopup() {
             this.$store.state.view.popup.addCategoryPopup.visible = false
         },
-        change() {
+        change(e) {
+            console.log(e)
             this.$store.dispatch('lk/updateCats')
         },
         create() {
@@ -60,7 +69,7 @@ export default {
         dragOptions() {
             return {
                 animation: 200,
-                group: "description2",
+                group: "categories",
                 disabled: false,
                 ghostClass: "ghost"
             };
@@ -85,7 +94,7 @@ export default {
 }
 
 .popup {
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 0;
     right: 0;

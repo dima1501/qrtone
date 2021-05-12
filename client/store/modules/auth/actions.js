@@ -16,6 +16,7 @@ const checkAuth = async (store, data) => {
         } else {
           store.state.parsedMenu[item.category] = [item]
         }
+        store.state.parsedMenu[item.category] = store.state.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
       }
     }
   } catch (err) {
@@ -43,7 +44,9 @@ const registrationAction = async (store, data) => {
         } else {
           store.state.parsedMenu[item.category] = [item]
         }
+        store.state.parsedMenu[item.category] = store.state.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
       }
+      
     } else {
       console.log('Ошибка')
     }
@@ -73,6 +76,7 @@ const loginAction = async (store, data) => {
         } else {
           store.state.parsedMenu[item.category] = [item]
         }
+        store.state.parsedMenu[item.category] = store.state.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
       }
     }
   } catch (error) {

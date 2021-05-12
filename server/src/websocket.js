@@ -52,5 +52,19 @@ module.exports = {
     } catch (error) {
       console.error(error)
     }
+  },
+  fastAction: async (data) => {
+    try {
+      data.sockets.forEach(id => {
+        ioCopy.to(id).emit('newFastAction', data.data);
+      });
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  acceptFastAction: async (data) => {
+    data.sockets.forEach(id => {
+      ioCopy.to(id).emit('acceptFastAction', data.data);
+    });
   }
 }

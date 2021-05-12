@@ -8,6 +8,7 @@ const websocket = require('../websocket')
 const authGuest = require('../middlewares/AuthGuestMiddleware')
 
 const OrderModel = require('../models/Order')
+const { nanoid } = require('nanoid')
 
 // telegram area
 const Markup = require('telegraf/markup')
@@ -29,12 +30,17 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
             const notify = req.body.data.notifyText
 
             let data = {
+                _id: nanoid(),
                 messages: [],
                 chatId: [],
                 messageId: [],
-                guestId: req.user._id
+                guestId: req.user._id,
+                notify: notify,
+                table: req.body.data.table,
+                status: 'pending',
+                buttonText: req.body.data.buttonText
             }
-        
+
             if (user.telegram[req.body.data.place]) {
                 for (let i = 0; i < user.telegram[req.body.data.place].length; i++) {
                     data.messages.push(await bot.sendMessage(user.telegram[req.body.data.place][i].chatId, `${notify.replace('@table', req.body.data.table)} \n`, button));
@@ -43,9 +49,16 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
                 }
             }
 
+            if (user.sockets.length) {
+                websocket.fastAction({
+                    sockets: user.sockets,
+                    data
+                })
+            }
+
             await req.db.collection('users').updateOne(
                 { _id: ObjectId(req.body.data.userId) },
-                { $push: { messages: data } }
+                { $push: { messages: data } },
             )
 
             res.status(200).send(true)

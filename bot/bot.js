@@ -43,12 +43,12 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
         { $unwind: '$messages'},
         { $match: {'messages.chatId': {$in: [ctx.update.callback_query.message.chat.id]}}},
         { $match: {'messages.messageId': {$in: [ctx.update.callback_query.message.message_id]}}},
-        { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'}}}
+        { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'}, id: {$push: '$_id'} } }
       ]).toArray()
 
       if (user[0]) {
         for (let i = 0; i < user[0].list[0].messages.length; i++) {
-          // api.acceptOrderTelegram({ sockets: user[0].sockets, orderId: user[0].list[0].orderId, guestId: user[0].list[0].guestId })
+          api.acceptFastAction({ sockets: user[0].sockets, data: { _id: user[0].list[0]._id } })
           ctx.telegram.editMessageText(
             user[0].list[0].messages[i].chat.id,
             user[0].list[0].messages[i].message_id,
@@ -70,7 +70,7 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
         { $unwind: '$messages'},
         { $match: {'messages.chatId': {$in: [ctx.update.callback_query.message.chat.id]}}},
         { $match: {'messages.messageId': {$in: [ctx.update.callback_query.message.message_id]}}},
-        { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'}}}
+        { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'},  } }
       ]).toArray()
 
       if (user[0]) {

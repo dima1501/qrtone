@@ -68,7 +68,8 @@ const User = class User {
         buttonText: '🏃 Хорошо'
       }
     ],
-    this.dops = []
+    this.dops = [],
+    this.notifications = []
   }
 }
 

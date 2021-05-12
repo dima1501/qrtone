@@ -1,26 +1,30 @@
 <template lang="pug">
     .board(v-if="$store.state.auth.user")
-        // .board__top
-            // .board__top-time {{ moment().locale('ru').format('LL') }}
-        h1.board__place Название места
-        .board__section
-            .board__section-top
-                h3.board__section-name Последние заказы
-                // nuxt-link(to='/lk/orders').board__section-link Все заказы
-            .board__section-orders
-                .sorder(v-for="(order, key) in $store.state.auth.user.orders" v-bind:key="key")
-                    h3.sorder__title {{ order.status }}
-                    .sorder__status.sorder__status--wait
-                        v-icon(dark) mdi-alarm
-                    .sorder__time(v-if="order.timestamp") {{ formatTime(order.timestamp) }}
-                    .sorder__goods
-                        .sorder__line(v-for="(good, key) in order.goods" v-bind:key="key")
-                            div {{ good.name }}
-                            .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
-                                div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
-                        div Итого: {{ getOrderPrice(order) }}р
-                            
-                    .sorder__btn(@click='acceptOrder(order)' v-if="order.status == 'pending'") Подтвердить
+        .board__orders
+            // .board__top
+                // .board__top-time {{ moment().locale('ru').format('LL') }}
+            h1.board__place Название места
+            .board__section
+                .board__section-top
+                    h3.board__section-name Последние заказы
+                    // nuxt-link(to='/lk/orders').board__section-link Все заказы
+                .board__section-orders
+                    .sorder(v-for="(order, key) in $store.state.auth.user.orders" v-bind:key="key")
+                        h3.sorder__title {{ order.status }}
+                        .sorder__status.sorder__status--wait
+                            v-icon(dark) mdi-alarm
+                        .sorder__time(v-if="order.timestamp") {{ formatTime(order.timestamp) }}
+                        .sorder__goods
+                            .sorder__line(v-for="(good, key) in order.goods" v-bind:key="key")
+                                div {{ good.name }}
+                                .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
+                                    div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
+                            div Итого: {{ getOrderPrice(order) }}р
+                                
+                        .sorder__btn(@click='acceptOrder(order)' v-if="order.status == 'pending'") Подтвердить
+
+        .board__aside
+            Aside
 
 </template>
 
@@ -65,6 +69,11 @@ export default {
 
 <style lang="scss">
 .board {
+    display: flex;
+    &__aside {
+        width: 300px;
+        flex-shrink: 0;
+    }
     &__top {
         margin-bottom: 20px;
         display: flex;

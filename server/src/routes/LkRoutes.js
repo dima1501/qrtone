@@ -5,8 +5,6 @@ const { ObjectId } = require('mongodb').ObjectID
 
 const websocket = require('../websocket')
 
-const bot = require('../../../bot/bot')
-
 const auth = require('../middlewares/AuthMiddleware')
 
 const PlaceModel = require('../models/Places')
@@ -14,6 +12,11 @@ const MenuItemModel = require('../models/MenuItem')
 const ActionItemModel = require('../models/Action')
 const CategoryModel = require('../models/Category')
 const DopModel = require('../models/Dop')
+
+// telegram area
+const Markup = require('telegraf/markup')
+const bot = require('../../../bot/bot')
+// telegram area
 
 router.post("/api/update-user-name", auth(), async (req, res) => {
     try {
@@ -370,6 +373,40 @@ router.post('/api/update-order', auth(), async (req, res) => {
         }
        
         res.status(200).send(true)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/api/accept-fast-action', auth(), async (req, res) => {
+    try {
+        const accept = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id), "messages._id": req.body.data._id },
+            { $set: { "messages.$.status" : 'accepted' } }
+        )
+
+        for (let i = 0; i < req.body.data.messages.length; i++) {
+            bot.editMessageText(
+                req.body.data.messages[i].chat.id,
+                req.body.data.messages[i].message_id,
+                req.body.data.messages[i].message_id,
+                `${req.body.data.messages[i].text.replace('⏳', '✅')}`,
+            );
+        }
+
+        if (req.user.sockets.length) {
+            websocket.acceptFastAction({
+                sockets: req.user.sockets,
+                data: req.body.data
+            })
+        }
+
+        if (accept) {
+            res.status(200).send(true)
+        } else {
+            res.status(404).send(false)
+        }
+        
     } catch (error) {
         console.error(error)
     }

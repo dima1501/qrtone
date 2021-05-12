@@ -16,21 +16,6 @@ export default {
     Sidebar,
   },
   sockets: {
-    // updateOrdersUser(msg) {
-    //   this.$store.dispatch('menu/updateOrders', this.$store.state.menu.orders)
-    // },
-    // async updateOrdersAdmin(msg) {
-    //   this.$store.state.auth.user.orders.length = 0
-
-    //   const orders = await axios({
-    //     method: "get",
-    //     url: "/get-orders"
-    //   });
-
-    //   if (orders) {
-    //     this.$store.state.auth.user.orders = orders.data
-    //   }
-    // },
     async updateSocketId(msg) {
       this.$store.dispatch("auth/setSocketId", msg, { root: true });
     },
@@ -39,6 +24,12 @@ export default {
     },
     async acceptOrderAdmin(data) {
       this.$store.state.auth.user.orders.find(e => e.orderId === data.orderId).status = 'accepted'
+    },
+    async newFastAction(data) {
+      this.$store.state.auth.user.messages.push(data)
+    },
+    async acceptFastAction(data) {
+      this.$store.state.auth.user.messages.find(e => e._id == data._id).status = 'accepted'
     }
   },
   mounted() {

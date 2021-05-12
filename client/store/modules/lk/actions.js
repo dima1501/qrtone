@@ -419,6 +419,22 @@ const updateOrder = async (store, data) => {
   }
 }
 
+const acceptFastAction = async (store, data) => {
+  try {
+    const accept = await axios({
+      method: 'post',
+      url: '/api/accept-fast-action',
+      data: { data }
+    })
+    if (accept.data) {
+      store.rootState.auth.user.messages.find(e => e._id == data._id).status = 'accepted'
+    }
+
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
     updateUserName,
     updateCompanyLogo,
@@ -439,5 +455,6 @@ export default {
     editDop,
     removeDop,
     editMenuItem,
-    updateOrder
+    updateOrder,
+    acceptFastAction
 }

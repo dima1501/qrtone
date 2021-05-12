@@ -3,7 +3,9 @@
         .board__orders
             // .board__top
                 // .board__top-time {{ moment().locale('ru').format('LL') }}
-            h1.board__place Название места
+
+            v-select(:items="$store.state.auth.user.places" v-model="place" label="Выберите заведение" item-text="name" item-value="_id" @change="changePlace")
+
             .board__section
                 .board__section-top
                     h3.board__section-name Последние заказы
@@ -14,6 +16,7 @@
                         .sorder__status.sorder__status--wait
                             v-icon(dark) mdi-alarm
                         .sorder__time(v-if="order.timestamp") {{ formatTime(order.timestamp) }}
+                        .sorder__time Столик {{ order.table }}
                         .sorder__goods
                             .sorder__line(v-for="(good, key) in order.goods" v-bind:key="key")
                                 div {{ good.name }}
@@ -35,10 +38,26 @@ export default {
     layout: 'lk',
     data() {
         return {
-            orders: []
+            orders: [],
+            place: ''
+        }
+    },
+    mounted() {
+        const place = localStorage.getItem("place")
+        if (place) {
+            this.place = place
+            this.$store.dispatch('lk/loadOdrders', this.place)
         }
     },
     methods: {
+        changePlace() {
+            localStorage.setItem("place", this.place);
+            this.$store.dispatch('lk/setPlaceSocketId', {
+                place: this.place,
+                socketId: this.$nuxt.$socket.id
+            })
+            this.$store.dispatch('lk/loadOdrders', this.place)
+        },
         acceptOrder(order) {
             this.$store.dispatch('guest/acceptOrder', order)
         },
@@ -70,6 +89,10 @@ export default {
 <style lang="scss">
 .board {
     display: flex;
+    &__orders {
+        flex-grow: 1;
+        padding-right: 20px;
+    }
     &__aside {
         width: 300px;
         flex-shrink: 0;
@@ -99,6 +122,8 @@ export default {
         &-orders {
             display: flex;
             flex-wrap: wrap;
+            flex-direction: column-reverse;
+            
             &-item {
                 // width: calc(33.3333% - 20px);
                 margin-right: 20px;

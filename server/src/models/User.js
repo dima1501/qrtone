@@ -69,7 +69,8 @@ const User = class User {
       }
     ],
     this.dops = [],
-    this.notifications = []
+    this.notifications = [],
+    this.sockets = {}
   }
 }
 

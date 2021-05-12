@@ -435,6 +435,35 @@ const acceptFastAction = async (store, data) => {
   }
 }
 
+const setPlaceSocketId = async (store, data) => {
+  try {
+    const set = await axios({
+      method: 'post',
+      url: '/api/set-place-socket-id',
+      data: { data }
+    })
+    if (set.data) {
+      
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const loadOdrders = async (store, data) => {
+  try {
+    const load = await axios({
+      method: 'get',
+      url: `/api/load-orders-place/${data}`
+    })
+    if (load.data[0]) {
+      store.rootState.auth.user.orders = load.data[0].list
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
     updateUserName,
     updateCompanyLogo,
@@ -456,5 +485,7 @@ export default {
     removeDop,
     editMenuItem,
     updateOrder,
-    acceptFastAction
+    acceptFastAction,
+    setPlaceSocketId,
+    loadOdrders
 }

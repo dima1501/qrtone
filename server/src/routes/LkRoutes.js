@@ -412,4 +412,31 @@ router.post('/api/accept-fast-action', auth(), async (req, res) => {
     }
 })
 
+router.post('/api/set-place-socket-id', auth(), async (req, res) => {
+    try {
+        const set = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $push: { ['sockets.' + req.body.data.place]: req.body.data.socketId } }
+        )
+        res.status(200).send(true)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.get('/api/load-orders-place/:id', auth(), async (req, res) => {
+    try {
+        const orders = await req.db.collection("users").aggregate([
+            { $match: { _id: ObjectId(req.user._id) } },
+            { $unwind: '$orders'},
+            { $match: {'orders.place': req.params.id } },
+            { $group: {_id: '$_id', list: {$push: '$orders'}}}
+        ]).toArray()
+
+        res.status(200).send(orders)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 module.exports = router

@@ -133,10 +133,10 @@ router.post('/api/set-socket-id-guest', authGuest(), async (req, res) => {
 
 router.delete('/api/delete-socket-id/:id', auth(), async (req, res) => {
   try {
-    // await req.db.collection('users').updateOne(
-    //   { 'sockets': { $in: [req.params.id] } },
-    //   { $pull: { 'sockets': req.params.id } }
-    // )
+    await req.db.collection('users').updateOne(
+      { 'sockets.socketId': req.params.id },
+      {'$pull': { "sockets": { "socketId": req.params.id } } }
+    )
     res.send(true)
   } catch (error) {
     console.error(error)

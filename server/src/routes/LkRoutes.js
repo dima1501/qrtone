@@ -194,7 +194,7 @@ router.post('/api/accept-order', auth(), async (req, res) => {
         }
 
         websocket.acceptOrderAdmin({
-            sockets: req.body.order.sockets,
+            sockets: req.user ? req.user.sockets : req.body.order.sockets[0],
             orderId: req.body.order.orderId,
             guestId: req.body.order.guestId
         })
@@ -412,11 +412,18 @@ router.post('/api/accept-fast-action', auth(), async (req, res) => {
     }
 })
 
+
+
 router.post('/api/set-place-socket-id', auth(), async (req, res) => {
     try {
+        await req.db.collection('users').updateOne(
+            { 'sockets.socketId': req.body.data.socketId },
+            {'$pull': { "sockets": { "socketId": req.body.data.socketId } } }
+        )
+
         const set = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
-            { $push: { ['sockets.' + req.body.data.place]: req.body.data.socketId } }
+            { $push: { 'sockets': {place: req.body.data.place, socketId: req.body.data.socketId } } }
         )
         res.status(200).send(true)
     } catch (error) {
@@ -432,8 +439,9 @@ router.get('/api/load-orders-place/:id', auth(), async (req, res) => {
             { $match: {'orders.place': req.params.id } },
             { $group: {_id: '$_id', list: {$push: '$orders'}}}
         ]).toArray()
-
-        res.status(200).send(orders)
+        if (orders) {
+            res.status(200).send(orders)
+        }
     } catch (error) {
         console.error(error)
     }

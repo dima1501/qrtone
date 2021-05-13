@@ -112,7 +112,7 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
     if (user.sockets.length) {
         websocket.makeOrder({
-            sockets: user.sockets,
+            sockets: user.sockets.filter(e => e.place == req.body.data.order.place),
             order: order,
             id: req.user._id
         })

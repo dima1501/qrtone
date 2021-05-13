@@ -37,7 +37,9 @@ const registrationAction = async (store, data) => {
       // eslint-disable-next-line no-undef
         // $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
       $nuxt.$router.push('/lk/settings')
-      store.dispatch("auth/setSocketId", $nuxt.$socket.id, { root: true });
+
+      // store.dispatch("auth/setSocketId", $nuxt.$socket.id, { root: true });
+
       for (let item of store.state.user.goods) {
         if (store.state.parsedMenu[item.category]) {
           store.state.parsedMenu[item.category].push(item)
@@ -69,7 +71,9 @@ const loginAction = async (store, data) => {
       // $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
       $nuxt.$router.push('/lk/settings')
       // eslint-disable-next-line no-undef
-      store.dispatch('auth/setSocketId', $nuxt.$socket.id, { root: true })
+
+      // store.dispatch('auth/setSocketId', $nuxt.$socket.id, { root: true })
+
       for (let item of store.state.user.goods) {
         if (store.state.parsedMenu[item.category]) {
           store.state.parsedMenu[item.category].push(item)
@@ -84,13 +88,16 @@ const loginAction = async (store, data) => {
   }
 }
 
-const setSocketId = async (store, socketId) => {
+const setSocketId = async (store, data) => {
   try {
-    await axios({
-      method: 'post',
-      url: '/api/set-socket-id',
-      data: { socketId }
-    })
+    console.log(data)
+    if (data.place) {
+      await axios({
+        method: 'post',
+        url: '/api/set-place-socket-id',
+        data: { data }
+      })
+    }
   } catch (error) {
     console.error(error)
   }

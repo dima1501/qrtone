@@ -22,8 +22,8 @@ module.exports = {
     });
   },
   makeOrder: async (data) => {
-    data.sockets.forEach(id => {
-      ioCopy.to(id).emit('newOrder', data);
+    data.sockets.forEach(e => {
+      ioCopy.to(e.socketId).emit('newOrder', data);
     });
   },
   acceptOrder: async (data) => {
@@ -31,14 +31,14 @@ module.exports = {
   },
   acceptOrderAdmin: async (data) => {
     for (let i in data.sockets) {
-      ioCopy.to(data.sockets[i]).emit('acceptOrderAdmin', data)
+      ioCopy.to(data.sockets[i].socketId).emit('acceptOrderAdmin', data)
     }
   },
   acceptOrderTelegram: async (data) => {
     try {
       await axios({
         method: 'post',
-        url: 'http://localhost:8000/api/accept-order',
+        url: `${config.SERVER}/api/accept-order`,
         data: {
           order: {
             guestId: data.guestId,

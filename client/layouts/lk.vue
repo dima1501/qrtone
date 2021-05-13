@@ -17,7 +17,12 @@ export default {
   },
   sockets: {
     async updateSocketId(msg) {
-      this.$store.dispatch("auth/setSocketId", msg, { root: true });
+
+      this.$store.dispatch("auth/setSocketId", {
+        socketId: msg,
+        place: localStorage.getItem('place')
+      }, { root: true });
+      
     },
     async newOrder(data) { 
       this.$store.state.auth.user.orders.push(data.order)

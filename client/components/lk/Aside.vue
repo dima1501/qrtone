@@ -3,8 +3,8 @@
     h2 Уведомления
     .aside__inner
         .aside__item(
-            v-if="$store.state.auth.user.messages.length && message.notify"
-            v-for="(message, key) in $store.state.auth.user.messages" :key="key")
+            v-if="$store.state.auth.user.notifications.length"
+            v-for="(message, key) in $store.state.auth.user.notifications" :key="key")
             .aside__item-title {{ message.notify.replace('@table', message.table) }}
             v-btn(depressed white @click="accept(message)" v-if="message.status == 'pending'") {{ message.buttonText }}
 </template>

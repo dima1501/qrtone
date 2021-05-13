@@ -31,10 +31,10 @@ export default {
       this.$store.state.auth.user.orders.find(e => e.orderId === data.orderId).status = 'accepted'
     },
     async newFastAction(data) {
-      this.$store.state.auth.user.messages.push(data)
+      this.$store.state.auth.user.notifications.push(data)
     },
     async acceptFastAction(data) {
-      this.$store.state.auth.user.messages.find(e => e._id == data._id).status = 'accepted'
+      this.$store.state.auth.user.notifications.find(e => e._id == data._id).status = 'accepted'
     }
   },
   mounted() {

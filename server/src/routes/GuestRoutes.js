@@ -38,7 +38,8 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
                 notify: notify,
                 table: req.body.data.table,
                 status: 'pending',
-                buttonText: req.body.data.buttonText
+                buttonText: req.body.data.buttonText,
+                place: req.body.data.place
             }
 
             if (user.telegram[req.body.data.place]) {
@@ -51,14 +52,14 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
 
             if (user.sockets.length) {
                 websocket.fastAction({
-                    sockets: user.sockets,
+                    sockets: user.sockets.filter(e => e.place == req.body.data.place),
                     data
                 })
             }
 
             await req.db.collection('users').updateOne(
                 { _id: ObjectId(req.body.data.userId) },
-                { $push: { messages: data } },
+                { $push: { notifications: data } },
             )
 
             res.status(200).send(true)

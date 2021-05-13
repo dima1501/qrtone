@@ -40,15 +40,15 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
       const tgUser = await db.collection('tgUsers').findOne({_id: ctx.update.callback_query.message.chat.id})
       const user = await db.collection("users").aggregate([
         { $match: { _id: ObjectId(tgUser.companyId) } },
-        { $unwind: '$messages'},
-        { $match: {'messages.chatId': {$in: [ctx.update.callback_query.message.chat.id]}}},
-        { $match: {'messages.messageId': {$in: [ctx.update.callback_query.message.message_id]}}},
-        { $group: {_id: '$_id', list: {$push: '$messages'}, sockets: {$push: '$sockets'}, id: {$push: '$_id'} } }
+        { $unwind: '$notifications'},
+        { $match: {'notifications.chatId': {$in: [ctx.update.callback_query.message.chat.id]}}},
+        { $match: {'notifications.messageId': {$in: [ctx.update.callback_query.message.message_id]}}},
+        { $group: {_id: '$_id', list: {$push: '$notifications'}, sockets: {$push: '$sockets'}, id: {$push: '$_id'} } }
       ]).toArray()
-
+console.log(user[0].list[0])
       if (user[0]) {
         for (let i = 0; i < user[0].list[0].messages.length; i++) {
-          api.acceptFastAction({ sockets: user[0].sockets, data: { _id: user[0].list[0]._id } })
+          api.acceptFastActionTelegram({ sockets: user[0].sockets[0], data: { _id: user[0].list[0]._id } })
           ctx.telegram.editMessageText(
             user[0].list[0].messages[i].chat.id,
             user[0].list[0].messages[i].message_id,

@@ -381,8 +381,8 @@ router.post('/api/update-order', auth(), async (req, res) => {
 router.post('/api/accept-fast-action', auth(), async (req, res) => {
     try {
         const accept = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id), "messages._id": req.body.data._id },
-            { $set: { "messages.$.status" : 'accepted' } }
+            { _id: ObjectId(req.user._id), "notifications._id": req.body.data._id },
+            { $set: { "notifications.$.status" : 'accepted' } }
         )
 
         for (let i = 0; i < req.body.data.messages.length; i++) {
@@ -412,7 +412,13 @@ router.post('/api/accept-fast-action', auth(), async (req, res) => {
     }
 })
 
-
+router.post('/api/accept-fasst-action-tg', auth(), async (req, res) => {
+    const accept = await req.db.collection('users').updateOne(
+        { "notifications._id": req.body._id },
+        { $set: { "notifications.$.status" : 'accepted' } }
+    )
+    res.status(200).send(true)
+})
 
 router.post('/api/set-place-socket-id', auth(), async (req, res) => {
     try {
@@ -441,6 +447,22 @@ router.get('/api/load-orders-place/:id', auth(), async (req, res) => {
         ]).toArray()
         if (orders) {
             res.status(200).send(orders)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.get('/api/load-actions-place/:id', auth(), async (req, res) => {
+    try {
+        const notifications = await req.db.collection("users").aggregate([
+            { $match: { _id: ObjectId(req.user._id) } },
+            { $unwind: '$notifications'},
+            { $match: {'notifications.place': req.params.id } },
+            { $group: {_id: '$_id', list: {$push: '$notifications'}}}
+        ]).toArray()
+        if (notifications) {
+            res.status(200).send(notifications)
         }
     } catch (error) {
         console.error(error)

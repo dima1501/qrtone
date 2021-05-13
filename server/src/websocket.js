@@ -1,6 +1,7 @@
 const config = require('./config/config')
 
 const axios = require("axios")
+const e = require('express')
 
 let ioCopy = null
 
@@ -55,16 +56,34 @@ module.exports = {
   },
   fastAction: async (data) => {
     try {
-      data.sockets.forEach(id => {
-        ioCopy.to(id).emit('newFastAction', data.data);
+      data.sockets.forEach(e => {
+        ioCopy.to(e.socketId).emit('newFastAction', data.data);
       });
     } catch (error) {
       console.error(error)
     }
   },
   acceptFastAction: async (data) => {
-    data.sockets.forEach(id => {
-      ioCopy.to(id).emit('acceptFastAction', data.data);
+    data.sockets.forEach(e => {
+      ioCopy.to(e.socketId).emit('acceptFastAction', data.data);
     });
+  },
+  acceptFastActionTelegram: async (data) => {
+    try {
+      console.log(data)
+      await axios({
+        method: 'post',
+        url: `${config.SERVER}/api/accept-fasst-action-tg`,
+        data: {
+          _id: data.data._id
+        }
+      })
+      data.sockets.forEach(e => {
+        ioCopy.to(e.socketId).emit('acceptFastAction', data.data);
+      });
+      return true
+    } catch (error) {
+      console.error(error)
+    }
   }
 }

@@ -46,17 +46,20 @@ export default {
         const place = localStorage.getItem("place")
         if (place) {
             this.place = place
-            this.$store.dispatch('lk/loadOdrders', this.place)
+            this.$store.dispatch('lk/loadOrders', place)
+            this.$store.dispatch('lk/loadActions', place)
         }
     },
     methods: {
         changePlace() {
+            console.log(123)
             localStorage.setItem("place", this.place);
             this.$store.dispatch('lk/setPlaceSocketId', {
                 place: this.place,
                 socketId: this.$nuxt.$socket.id
             })
-            this.$store.dispatch('lk/loadOdrders', this.place)
+            this.$store.dispatch('lk/loadOrders', this.place)
+            this.$store.dispatch('lk/loadActions', this.place)
         },
         acceptOrder(order) {
             this.$store.dispatch('guest/acceptOrder', order)

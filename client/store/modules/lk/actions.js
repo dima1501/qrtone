@@ -427,7 +427,7 @@ const acceptFastAction = async (store, data) => {
       data: { data }
     })
     if (accept.data) {
-      store.rootState.auth.user.messages.find(e => e._id == data._id).status = 'accepted'
+      store.rootState.auth.user.notifications.find(e => e._id == data._id).status = 'accepted'
     }
 
   } catch (error) {
@@ -450,7 +450,7 @@ const setPlaceSocketId = async (store, data) => {
   }
 }
 
-const loadOdrders = async (store, data) => {
+const loadOrders = async (store, data) => {
   try {
     const load = await axios({
       method: 'get',
@@ -458,6 +458,22 @@ const loadOdrders = async (store, data) => {
     })
     if (load.data[0]) {
       store.rootState.auth.user.orders = load.data[0].list
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const loadActions = async (store, data) => {
+  try {
+    const load = await axios({
+      method: 'get',
+      url: `/api/load-actions-place/${data}`
+    })
+    if (load.data[0]) {
+      store.rootState.auth.user.notifications = load.data[0].list
+    } else {
+      store.rootState.auth.user.notifications = []
     }
   } catch (error) {
     console.error(error)
@@ -487,5 +503,6 @@ export default {
     updateOrder,
     acceptFastAction,
     setPlaceSocketId,
-    loadOdrders
+    loadOrders,
+    loadActions
 }

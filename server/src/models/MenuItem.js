@@ -12,7 +12,9 @@ const MenuItem = class MenuItem {
         this.dops = data.dops,
         this.count = 0,
         this.order = 0,
-        this.cartPrices = []
+        this.cartPrices = [],
+        this.translation = data.translation,
+        this.description = data.description
     }
   }
   

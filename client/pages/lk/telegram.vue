@@ -3,13 +3,14 @@
     .telega
         h1.page__title Телеграм бот
         .telegram
-            // .telegram__content Чтобы воспользоваться ботом, перейдите по ссылке <a href="https://t.me/SafetyMenuBot" target="_blank">t.me/SafetyMenuBot</a> или отсканируйте QR код. Далее потребуется ввести код <span>123</span>
             .telegram__content Чтобы воспользоваться ботом, перейдите по ссылке <a href="https://t.me/SafetyMenuBot" target="_blank">t.me/SafetyMenuBot</a> или отсканируйте QR код. Далее потребуется ввести код <span>{{$store.state.auth.user.bot_token}}</span>
             .telegram__qr(v-html="qr")
         p.page__note
+    h2 Подключенные пользователи
     div(v-if="$store.state.auth.user.telegram")
-      .t-line(v-for="(place, key) in $store.state.auth.user.telegram" v-bind:key="key") 
-        div(v-for="(item, key) in place" v-bind:key="key") {{ item.user.first_name }} {{ item.user.last_name }}
+      .t-line(v-for="(place, key) of $store.state.auth.user.places" v-bind:key="key" v-if="$store.state.auth.user.telegram[place._id].length") 
+        h3 {{place.name}}
+        div(v-for="(item, key) in $store.state.auth.user.telegram[place._id]" v-bind:key="key") {{ item.user.first_name }} {{ item.user.last_name }}
 
 
 </template>

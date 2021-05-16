@@ -1,8 +1,6 @@
-const { nanoid } = require('nanoid')
-
 const Category = class Category {
   constructor(data) {
-    this._id = nanoid(),
+    this._id = Math.random().toString(36).substring(7),
     this.name = data
   }
 }

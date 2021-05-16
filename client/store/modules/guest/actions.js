@@ -7,6 +7,7 @@ const checkAuth = async (store, data) => {
         url: '/api/checkauth-guest'
       })
       if (user.data) {
+          console.log(user.data)
         store.state.user = user.data
         store.dispatch('loadOrders', data)
       } else {
@@ -67,25 +68,25 @@ const login = async (store, data) => {
 }
 
 const loadData = async (store, data) => {
-    try {
-        const user = await axios({
-            method: 'get',
-            url: `/api/get-user-data/${data.id}/${data.place}`
-        })
-        if (user) {
-            store.state.companyData = user.data
-            for (let item of store.state.companyData.goods) {
-                if (store.state.parsedMenu[item.category]) {
-                  store.state.parsedMenu[item.category].push(item)
-                } else {
-                  store.state.parsedMenu[item.category] = [item]
-                }
-                store.state.parsedMenu[item.category] = store.state.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
-            }
-        }
-    } catch (error) {
-        console.error(error)
-    }
+    // try {
+    //     const user = await axios({
+    //         method: 'get',
+    //         url: `/api/get-user-data/${data.id}/${data.place}`
+    //     })
+    //     if (user) {
+    //         store.state.companyData = user.data
+    //         for (let item of store.state.companyData.goods) {
+    //             if (store.state.parsedMenu[item.category]) {
+    //               store.state.parsedMenu[item.category].push(item)
+    //             } else {
+    //               store.state.parsedMenu[item.category] = [item]
+    //             }
+    //             store.state.parsedMenu[item.category] = store.state.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
+    //         }
+    //     }
+    // } catch (error) {
+    //     console.error(error)
+    // }
 }
 
 const addToCart = async (store, data) => {

@@ -70,7 +70,6 @@ module.exports = {
   },
   acceptFastActionTelegram: async (data) => {
     try {
-      console.log(data)
       await axios({
         method: 'post',
         url: `${config.SERVER}/api/accept-fasst-action-tg`,

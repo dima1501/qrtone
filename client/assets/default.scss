@@ -1,0 +1,30 @@
+.v-application {
+    font-family: $body-font-family;
+}
+
+.m-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 18px;
+}
+
+input {
+    &[type=text],
+    &[type=password],
+    &[type=email],
+    &[type=number] {
+        background-color: $color-white;
+        display: block;
+        width: 100%;
+        font-size: 14px;
+        line-height: 20px;
+        padding: 14px 16px;
+        color: $color-black;
+        border: 1px solid $color-grey-light;
+        border-radius: 4px;
+    }
+}
+
+::placeholder {
+    color: $color-grey-dark;
+  }

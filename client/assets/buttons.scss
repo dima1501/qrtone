@@ -1,0 +1,19 @@
+.v-application {
+    .button {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 24px;
+        padding: 13px 41px;
+        text-decoration: none;
+        border-radius: 4px;
+        display: block;
+        cursor: pointer;
+        &.-black {
+            background-color: $color-black;
+            color: $color-white;
+        }
+        &.-transp {
+            color: $color-black;
+        }
+    }
+}

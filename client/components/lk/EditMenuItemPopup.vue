@@ -46,6 +46,22 @@
                                 type="text")
 
                         .e-card__line
+                            v-text-field(
+                                ref="translation"
+                                v-model="updatedMenuItem.translation"
+                                label="Перевод"
+                                type="text")
+
+                        .e-card__line
+                            v-textarea(
+                                v-model="updatedMenuItem.description"
+                                auto-grow
+                                label="Описание"
+                                rows="2"
+                                row-height="20"
+                            )
+
+                        .e-card__line
                             // .e-card__line-label Категория:
                             v-select(:items="$store.state.auth.user.categories" v-model="updatedMenuItem.category" :rules="nameRules" label="Категория" item-text="name" item-value="_id")
 

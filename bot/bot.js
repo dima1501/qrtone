@@ -45,7 +45,7 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
         { $match: {'notifications.messageId': {$in: [ctx.update.callback_query.message.message_id]}}},
         { $group: {_id: '$_id', list: {$push: '$notifications'}, sockets: {$push: '$sockets'}, id: {$push: '$_id'} } }
       ]).toArray()
-console.log(user[0].list[0])
+
       if (user[0]) {
         for (let i = 0; i < user[0].list[0].messages.length; i++) {
           api.acceptFastActionTelegram({ sockets: user[0].sockets[0], data: { _id: user[0].list[0]._id } })

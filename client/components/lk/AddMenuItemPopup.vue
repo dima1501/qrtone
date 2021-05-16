@@ -44,9 +44,24 @@
                                 v-model="newItem.name"
                                 label="Название"
                                 type="text")
+                        
+                        .e-card__line
+                            v-text-field(
+                                ref="translation"
+                                v-model="newItem.translation"
+                                label="Перевод"
+                                type="text")
 
                         .e-card__line
-                            // .e-card__line-label Категория:
+                            v-textarea(
+                                v-model="newItem.description"
+                                auto-grow
+                                label="Описание"
+                                rows="2"
+                                row-height="20"
+                            )
+
+                        .e-card__line
                             v-select(:items="$store.state.auth.user.categories" v-model="newItem.category" :rules="nameRules" label="Категория" item-text="name" item-value="_id")
 
                         .e-card__add-link(@click="addCategoryPopup") Управление категориями
@@ -118,7 +133,9 @@ export default {
                 category: null,
                 weight: null,
                 places: [],
-                dops: []
+                dops: [],
+                description: '',
+                translation: ''
             },
             nameRules: [
                 (v) => !!v || 'error_company_name',

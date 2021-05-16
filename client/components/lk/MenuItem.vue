@@ -4,35 +4,24 @@
             .menu-item__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
             VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
                 .menu-item__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
-        // Если несколько цен
-        // .menu-item__content(v-if="item.prices.length > 1")
+
         .menu-item__content
             .menu-item__content-inner
                 .menu-item__name {{ item.name }}
+                .menu-item__name {{ item.translation }}
+                .menu-item__name {{ item.description }}
                 .menu-item__price(v-for="(price, i) in item.prices" :key="i")
                     input.menu-item__price-radio(type="radio" :id="`${item._id}${i}`" :name="item._id" :value="i" v-model="checkedPrice")
                     label.menu-item__price-label(:for="`${item._id}${i}`") {{ item.prices[i] }}₽ {{ item.weights[i] }}г.
             .menu-item__button(
                 @click="plusMulti"
-                v-if="!$store.state.guest.user.cart.find(e => e._id == item._id) || $store.state.guest.user.cart.length && !$store.state.guest.user.cart.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length"
+                v-if="$store.state.guest.user.cart && !$store.state.guest.user.cart.find(e => e._id == item._id) || $store.state.guest.user.cart && $store.state.guest.user.cart.length && !$store.state.guest.user.cart.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length"
                 ) {{ item.prices[checkedPrice] }} ₽
                 
-            .menu-item__counter(v-if="$store.state.guest.user.cart.find(e => e._id == item._id) && $store.state.guest.user.cart.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length")
+            .menu-item__counter(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart.find(e => e._id == item._id) && $store.state.guest.user.cart.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length")
                 .menu-item__counter-control.minus(@click="minusMulti(item)") -
                 .menu-item__counter-value {{ $store.state.guest.user.cart.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length }}
                 .menu-item__counter-control.plus(@click="plusMulti()") +
-        // else
-        // .menu-item__content(v-if="item.prices.length == 1")
-        //     .menu-item__content-inner
-        //         .menu-item__name {{ item.name }}
-        //         .menu-item__name(v-if="item.weights[0]") {{ item.weights[0] }}г.
-
-        //     .menu-item__button(@click="addToCartSimple(item)" v-if="!$store.state.guest.user.cart.find(e => e._id == item._id)") {{ item.prices[0] }} ₽
-
-        //     .menu-item__counter(v-if="$store.state.guest.user.cart.find(e => e._id == item._id)")
-        //         .menu-item__counter-control.minus(@click="minus($store.state.guest.user.cart.find(e => e._id == item._id))") -
-        //         .menu-item__counter-value {{ $store.state.guest.user.cart.find(e => e._id == item._id).count }}
-        //         .menu-item__counter-control.plus(@click="plus($store.state.guest.user.cart.find(e => e._id == item._id))") +
 
 </template>
 

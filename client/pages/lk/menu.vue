@@ -7,7 +7,7 @@
         .menu__content
             .menu__empty(v-if="!$store.state.auth.user.goods.length") В меню пока что нет товаров
 
-            div(v-for="(item, key) in $store.state.auth.user.categories" v-bind:key="key" v-if="$store.state.auth.user.goods && $store.state.auth.parsedMenu[item._id]").menu__section
+            div(v-for="(item, key) in $store.state.auth.user.categories" v-bind:key="key" v-if="$store.state.auth.user.goods && $store.state.auth.parsedMenu[item._id] && $store.state.auth.parsedMenu[item._id].length").menu__section
                 .menu__title
                     h1.menu__title-text {{ item.name }}
 
@@ -34,6 +34,8 @@
                                         img(v-for="(image, key) in good.images" :key="key" :src="`../uploads/${image}`")
 
                                 .m-item__name {{ good.name }}
+                                .m-item__name {{ good.translation }}
+                                .m-item__name {{ good.description }}
 
                                 .m-item__line(v-for="(item, key) in good.prices" :key="key")
                                     .m-item__price Цена: {{ good.prices[key] }}

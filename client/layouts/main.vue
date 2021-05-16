@@ -33,7 +33,7 @@ export default {
       this.$store.dispatch("guest/loadData", {id: this.$route.params.id, place: this.$route.query.place }, { root: true });
   },
   mounted() {
-    if (!this.$store.state.guest.user) {
+    if (!this.$store.state.guest.user.length) {
       this.$store.dispatch("guest/checkAuth", this.$route.params.id);
     }
   }
@@ -63,6 +63,10 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.v-application {
+    font-family: $body-font-family;
 }
 
 </style>

@@ -1,8 +1,11 @@
 <template lang="pug">
-    .public(v-if="$store.state.guest.companyData && $store.state.guest.user")
+div
+    div(v-if="$fetchState.pending") 'pending'
+    div(v-else-if="$fetchState.error") 'error'
+    .public(v-else)
         header.header
             .header__inner
-                .header__logo
+                .header__logo(v-if="$store.state.guest.companyData.photo")
                     // nuxt-link(to="https://google.com" target="_blank").header__logo-link
                     img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
                 transition(name="slide-up")
@@ -38,21 +41,20 @@
                     v-btn.commands__item(depressed @click="closeCommands") Спасибо
 
         transition(name="slide-fade")
-            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.cart.length" @click="openCart") Корзина <span> {{ getTotalPrice }} ₽ </span>
+            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart && $store.state.guest.user.cart.length" @click="openCart") Корзина <span> {{ getTotalPrice }} ₽ </span>
 
         transition(name="slide-fade")
-            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user && $store.state.guest.user.orders.length && !$store.state.guest.user.cart.length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
+            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders && $store.state.guest.user.orders.length && !$store.state.guest.user.cart.length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
         
         transition(name="slide-fade")
-            .cart(v-if="$store.state.guest.user && $store.state.view.isCartOpened")
+            .cart(v-if="$store.state.guest.user.cart && $store.state.view.isCartOpened")
                 .cart__top
                     .cart__back(@click="closeCart")
                         v-icon(light) mdi-arrow-left
                     h2.cart__title Корзина
                     a.cart__subtitle(@click="openOrders") Заказы
                 .cart__content
-                    h3.cart__empty(v-if="!$store.state.guest.user.cart.length") Корзина пуста
-
+                    h3.cart__empty(v-if="$store.state.guest.user.cart && !$store.state.guest.user.cart.length") Корзина пуста
 
                     .cart__item(v-for="(item, key) in $store.state.guest.user.cart" v-bind:key="key")
                         .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
@@ -95,7 +97,7 @@
 
                             .sorder__price Итого: {{ getOrderPrice(item) }} ₽
         transition(name="slide-fade")
-            InfoPopup(v-if="$store.state.view.popup.infoPopup")
+            InfoPopup(v-show="$store.state.view.popup.infoPopup")
 
 </template>
 
@@ -108,9 +110,11 @@ import VueSlickCarousel from 'vue-slick-carousel'
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
+import moment from 'moment';
+
 Vue.use(VueScrollactive);
 
-import moment from 'moment';
+const axios = require('axios').default
 
 export default {
     layout: 'main',
@@ -125,7 +129,31 @@ export default {
             isCartOpened: false,
             isOrdersOpened: false,
             headerTop: 0,
-            isHeaderSticky: false
+            isHeaderSticky: false,
+        }
+    },
+    async fetch () {
+        try {
+            const id = this.$route.params.id, 
+                  place = this.$route.query.place
+
+            const user = await axios({
+                method: 'get',
+                url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}/${place}`
+            })
+
+            this.$store.state.guest.companyData = user.data
+
+            for (let item of this.$store.state.guest.companyData.goods) {
+                if (this.$store.state.guest.parsedMenu[item.category]) {
+                this.$store.state.guest.parsedMenu[item.category].push(item)
+                } else {
+                this.$store.state.guest.parsedMenu[item.category] = [item]
+                }
+                this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
+            }
+        } catch (error) {
+            console.error(error)
         }
     },
     mounted() {

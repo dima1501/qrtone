@@ -1,10 +1,10 @@
 .m-welcome {
     &__inner {
-        padding-top: 144px;
         display: flex;
+        align-items: center;
+        height: 100vh;
     }
     &__content {
-        padding-top: 64px;
         width: 600px;
         margin-right: 128px;
         flex-shrink: 0;
@@ -13,7 +13,7 @@
         font-weight: 700;
         font-size: 48px;
         line-height: 64px;
-        margin-bottom: 33px;
+        margin-bottom: 30px;
     }
     &__note {
         font-size: 12px;
@@ -26,12 +26,16 @@
         overflow: hidden;
         position: relative;
         video {
-            width: 120%;
-            border-radius: 20px;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
+            max-width: 120%;
+            height: auto;
+            display: block;
+            // height: 420px;
+            // width: 100%;
+            // border-radius: 20px;
+            // position: absolute;
+            // left: 50%;
+            // top: 50%;
+            // transform: translate(-50%, -50%);
         }
     }
 }

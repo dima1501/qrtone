@@ -1,8 +1,19 @@
 .m-form {
-    margin-bottom: 25px;
+    margin-bottom: 22px;
     display: flex;
     &__input {
+        position: relative;
         flex-grow: 1;
-        margin-right: 25px;
+        margin-right: 22px;
+        padding: 1px;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        transition: border-color .3s;
+        &.focused {
+            border: 2px solid $color-blue;
+        }
+    }
+    &__btn {
+        padding: 3px;
     }
 }

@@ -22,9 +22,27 @@ input {
         color: $color-black;
         border: 1px solid $color-grey-light;
         border-radius: 4px;
+        transition: background-color .3s, border-color .3s;
+
+        &.validation-failed {
+            background: $color-light-red;
+            border-color: $color-primary-red
+        }
+
+        &:focus {
+            outline-width: 0;
+        }
     }
 }
 
 ::placeholder {
     color: $color-grey-dark;
-  }
+}
+
+.error-label {
+    font-size: 12px;
+    line-height: 18px;
+    position: absolute;
+    top: calc(100% + 5px);
+    color: $color-primary-red;
+}

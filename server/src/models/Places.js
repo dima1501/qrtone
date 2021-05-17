@@ -7,7 +7,8 @@ const Places = class Places {
         this.phone = data.phone,
         this.inst = data.inst,
         this.vk = data.vk,
-        this.wa = data.wa
+        this.wa = data.wa,
+        this.tables = []
     }
   }
   

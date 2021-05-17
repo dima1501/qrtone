@@ -482,6 +482,30 @@ const loadActions = async (store, data) => {
   }
 }
 
+const updateTables = async (store, data) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: `/api/update-tables/`,
+      data: { data }
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const updateTGTables = async (store, data) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: `/api/update-tg-tables/`,
+      data: { data }
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
     updateUserName,
     updateCompanyLogo,
@@ -506,5 +530,7 @@ export default {
     acceptFastAction,
     setPlaceSocketId,
     loadOrders,
-    loadActions
+    loadActions,
+    updateTables,
+    updateTGTables
 }

@@ -50,6 +50,7 @@
             .settings__section-top
                 h2.settings__section-title Заведения
                 .settings__section-link(@click="openAddPlacePopup") Добавить заведение
+            
             .places(v-if="$store.state.auth.user.places.length")
                 .place(v-for="(place, key) in $store.state.auth.user.places" v-bind:key="key")
                     .place__edit(@click="openEditPlacePopup(place)")
@@ -57,6 +58,13 @@
                     .place__title {{ place.name }}
                     .place__phone {{ place.phone }}
                     .place__inst {{ place.inst }}
+
+                    .place__tables
+                        .place__tables-inner(v-if="place.tables && place.tables.length")
+                            .place__tables-item(v-for="(table, key) in place.tables" :key="key")
+                                .place__tables-item-name {{ formatTable(table) }}
+                        .place__tables-control(@click="editTables(place)") Управление столиками
+
             h4(v-if="!$store.state.auth.user.places.length") Для начала работы добавьте заведение
 
         .settings__section
@@ -92,6 +100,7 @@
 
         EditActionPopup(v-if="$store.state.view.popup.editActionPopup.visible" :editableAction="editableAction")
 
+        EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
 </template>
 
 <script>
@@ -107,7 +116,8 @@ export default {
             newCompanyBackgroundSrc: null,
             newCompanyBackgroundFile: null,
             editablePlace: null,
-            editableAction: null
+            editableAction: null,
+            editableTablesPlace: null
         }
     },
     methods: {
@@ -121,6 +131,10 @@ export default {
         editAction(action) {
             this.editableAction = Object.assign({}, action)
             this.$store.state.view.popup.editActionPopup.visible = true
+        },
+        editTables(place) {
+            this.editableTablesPlace = Object.assign({}, place)
+            this.$store.state.view.popup.editTablesPopup.visible = true
         },
         updateUserName() {
             this.$store.dispatch('lk/updateUserName', this.newCompanyName)
@@ -156,6 +170,13 @@ export default {
             var ask = confirm(`Вы действительно хотите удалить действие "${action.callText}"?`);
             if (ask) {
                 this.$store.dispatch('lk/deleteAction', action._id)
+            }
+        },
+        formatTable(table) {
+            if (typeof table == 'number') {
+                return table
+            } else {
+                return table.replace('%20', ' ')
             }
         }
     }
@@ -234,6 +255,19 @@ export default {
         cursor: pointer;
         .v-icon {
             color: #000;
+        }
+    }
+
+    &__tables {
+        &-inner {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        &-item {
+            padding: 10px;
+            background: #fff;
+            border-radius: 10px;
+            margin-right: 10px;
         }
     }
 }

@@ -143,7 +143,12 @@ class SceneGenerator {
             await ctx.scene.session.state.db.collection('users').updateOne(
                 { _id: ObjectId(userId) },
                 { $push: {
-                    ["telegram." + placeId]: { chatId: chatId, user: ctx.update.callback_query.from } }
+                    ["telegram." + placeId]: { 
+                        chatId: chatId, 
+                        user: ctx.update.callback_query.from,
+                        notifications: 'all',
+                        tables: []
+                    } }
                 }
             )
 
@@ -197,7 +202,12 @@ class SceneGenerator {
                     await ctx.scene.session.state.db.collection('users').updateOne(
                         { _id: ObjectId(user._id) },
                         { $push: {
-                            ["telegram." + user.places[0]._id]: { chatId: ctx.update.message.chat.id, user: ctx.update.message.from } }
+                            ["telegram." + user.places[0]._id]: {
+                                chatId: ctx.update.message.chat.id, 
+                                user: ctx.update.message.from,
+                                notifications: 'all',
+                                tables: []
+                            } }
                         }
                     )
                     await ctx.scene.session.state.db.collection('tgUsers').updateOne(

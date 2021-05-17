@@ -44,9 +44,12 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
 
             if (user.telegram[req.body.data.place]) {
                 for (let i = 0; i < user.telegram[req.body.data.place].length; i++) {
-                    data.messages.push(await bot.sendMessage(user.telegram[req.body.data.place][i].chatId, `${notify.replace('@table', req.body.data.table)} \n`, button));
-                    data.chatId.push( data.messages[i].chat.id )
-                    data.messageId.push( data.messages[i].message_id )
+                    const table = typeof req.body.data.table == 'number' ? req.body.data.table : req.body.data.table.replace(' ', '%20')
+                    if (user.telegram[req.body.data.place][i].notifications == 'all' || user.telegram[req.body.data.place][i].tables.indexOf(table) > -1) {
+                        data.messages.push(await bot.sendMessage(user.telegram[req.body.data.place][i].chatId, `${notify.replace('@table', req.body.data.table)} \n`, button));
+                        data.chatId.push( data.messages[i].chat.id )
+                        data.messageId.push( data.messages[i].message_id )
+                    }
                 }
             }
 
@@ -160,9 +163,12 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
     if (user.telegram[order.place]) {
         for (let i = 0; i < user.telegram[order.place].length; i++) {
-            data.messages.push(await bot.sendMessage(user.telegram[order.place][i].chatId, `⏳ Новый заказ, ${order.table} столик \n\n${str.join('')}`, acceptOrderBtn));
-            data.chatId.push( data.messages[i].chat.id )
-            data.messageId.push( data.messages[i].message_id )
+            const table = typeof order.table == 'number' ? order.table : order.table.replace(' ', '%20')
+            if (user.telegram[order.place][i].notifications == 'all' || user.telegram[order.place][i].tables.indexOf(table) > -1) {
+                data.messages.push(await bot.sendMessage(user.telegram[order.place][i].chatId, `⏳ Новый заказ, ${order.table} столик \n\n${str.join('')}`, acceptOrderBtn));
+                data.chatId.push( data.messages[i].chat.id )
+                data.messageId.push( data.messages[i].message_id )
+            }
         }
     }
 

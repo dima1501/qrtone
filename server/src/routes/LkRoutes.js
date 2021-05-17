@@ -469,4 +469,36 @@ router.get('/api/load-actions-place/:id', auth(), async (req, res) => {
     }
 })
 
+router.post('/api/update-tables', auth(), async (req, res) => {
+    try {
+        const update = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id), 'places._id': req.body.data._id },
+            { $set: { 'places.$.tables': req.body.data.tables } }
+        )
+        res.status(200).send(true)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/api/update-tg-tables', auth(), async (req, res) => {
+    try {
+        await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id),  ['telegram.' + req.body.data.placeId + '.chatId']: req.body.data.item.chatId },
+            { $set: {    
+                ["telegram." + req.body.data.placeId + ".$"]: { 
+                    chatId: req.body.data.item.chatId, 
+                    user: req.body.data.item.user,
+                    notifications: req.body.data.item.notifications,
+                    tables: req.body.data.item.tables
+                } }
+            }
+        )
+
+        res.status(200).send(true)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 module.exports = router

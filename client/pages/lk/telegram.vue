@@ -10,8 +10,16 @@
     div(v-if="$store.state.auth.user.telegram")
       .t-line(v-for="(place, key) of $store.state.auth.user.places" v-bind:key="key" v-if="$store.state.auth.user.telegram[place._id].length") 
         h3 {{place.name}}
-        div(v-for="(item, key) in $store.state.auth.user.telegram[place._id]" v-bind:key="key") {{ item.user.first_name }} {{ item.user.last_name }}
+        div(v-for="(item, key) in $store.state.auth.user.telegram[place._id]" v-bind:key="key").t-line__item
+          div {{ item.user.first_name }} {{ item.user.last_name }}
 
+          input(type="checkbox" id="notificationsToggle" :checked="item.notifications == 'all'" @change="toggleNotify($event, item, place)")
+          label(for="notificationsToggle") Получать уведомления со всех столиков
+
+          div(v-if="item.notifications == 'partially' || notificationsToggle")
+            h5 Отметьте столики, с которых должны приходить уведомления
+            .tables
+              .tables__item(v-for="(table, idx) in place.tables" v-bind:key="idx" @click="selectTable(table, item, place)" :class="{ active: item.tables.indexOf(table) > -1 }") {{ formatTable(table) }}
 
 </template>
 
@@ -22,14 +30,47 @@ export default {
   layout: 'lk',
   data() {
     return {
-      qr: null
+      qr: null,
+      notificationsToggle: null
     }
   },
   async mounted() {
     const qr = await QRCode.toString(`https://t.me/SafetyMenuBot`)
-
     this.qr = qr
   },
+  methods: {
+    formatTable(table) {
+      if (typeof table == 'number') {
+          return table
+      } else {
+          return table.replace('%20', ' ')
+      }
+    },
+    selectTable(table, item, place) {
+      item.notifications = 'partially'
+      if (item.tables.indexOf(table) == -1) {
+        item.tables.push(table)
+      } else {
+        item.tables.splice(item.tables.indexOf(table), 1)
+      }
+      this.$store.dispatch("lk/updateTGTables", {
+        placeId: place._id,
+        item
+      })
+    },
+    toggleNotify($event, item, place) {
+      this.notificationsToggle = !$event.target.checked
+      if ($event.target.checked) {
+        item.notifications = 'all'
+      } else {
+        item.notifications = 'partially'
+      }
+      this.$store.dispatch("lk/updateTGTables", {
+          placeId: place._id,
+          item
+      })
+    }
+  }
 }
 </script>
 
@@ -55,6 +96,27 @@ export default {
     background-color: rgb(224, 224, 224);
     padding: 2px 5px;
     border-radius: 3px;
+  }
+}
+
+.t-line {
+  &__item {
+    background-color: rgb(224, 224, 224);
+    padding: 10px;
+    margin-bottom: 30px;
+  }
+}
+
+.tables {
+  display: flex;
+  flex-wrap: wrap;
+  &__item {
+    padding: 10px;
+    border: 2px solid #000;
+    margin-right: 10px;
+    &.active {
+      background-color: $color-blue;
+    }
   }
 }
 </style>

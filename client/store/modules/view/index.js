@@ -35,6 +35,9 @@ const state = {
     },
     addDopPopup: {
       visible: false
+    },
+    editTablesPopup: {
+      visible: false
     }
   },
   isOrdersOpened: false,

@@ -8,13 +8,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import Sidebar from '../components/lk/Sidebar.vue'
-
 export default {
-  components: {
-    Sidebar,
-  },
   sockets: {
     async updateSocketId(msg) {
 
@@ -69,6 +63,7 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
 
 </style>
 

@@ -112,6 +112,8 @@
 </template>
 
 <script>
+import { transliterate as tr, slugify } from 'transliteration';
+
 export default {
     layout: 'lk',
     data() {
@@ -134,10 +136,12 @@ export default {
             this.updatedLinks[key] = e.target.value
         },
         updateLink(key, place) {
+            
+
             if (this.updatedLinks[key]) {
                 this.$store.dispatch('lk/updateLink', {
                     key,
-                    link: this.updatedLinks[key].split(' ').join('_'),
+                    link: tr(this.updatedLinks[key].split(' ').join('_')),
                     place
                 })
             }

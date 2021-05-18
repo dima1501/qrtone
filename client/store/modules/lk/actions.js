@@ -513,7 +513,6 @@ const updateLink = async (store, data) => {
       url: `/api/update-menu-link/`,
       data: { data }
     })
-    console.log(add.data)
     if (add.data.success) {
       console.log('success')
     } else {

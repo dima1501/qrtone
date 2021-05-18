@@ -1,4 +1,3 @@
-const { nanoid } = require('nanoid')
 
 const Places = class Places {
     constructor(data) {
@@ -9,7 +8,7 @@ const Places = class Places {
         this.vk = data.vk,
         this.wa = data.wa,
         this.tables = [],
-        this.link = null
+        this.link = data.link
     }
   }
   

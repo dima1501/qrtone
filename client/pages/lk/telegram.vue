@@ -8,7 +8,7 @@
         p.page__note
     h2 Подключенные пользователи
     div(v-if="$store.state.auth.user.telegram")
-      .t-line(v-for="(place, key) of $store.state.auth.user.places" v-bind:key="key" v-if="$store.state.auth.user.telegram[place._id].length") 
+      .t-line(v-for="(place, key) of $store.state.auth.user.places" v-bind:key="key" v-if="$store.state.auth.user.telegram[place._id] && $store.state.auth.user.telegram[place._id].length") 
         h3 {{place.name}}
         div(v-for="(item, key) in $store.state.auth.user.telegram[place._id]" v-bind:key="key").t-line__item
           div {{ item.user.first_name }} {{ item.user.last_name }}

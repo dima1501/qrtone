@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import { transliterate as tr, slugify } from 'transliteration';
+
 export default {
     data() {
         return {
@@ -60,7 +62,8 @@ export default {
                 phone: '',
                 inst: '',
                 vk: '',
-                wa: ''
+                wa: '',
+                link: ''
             },
             nameRules: [
                 (v) => !!v || 'error_company_name',
@@ -69,6 +72,8 @@ export default {
     },
     methods: {
         fetchAddPlace() {
+            this.addPlace.link = tr(this.addPlace.name).split(' ').join('_')
+            console.log(tr(this.addPlace.name))
             this.$store.dispatch('lk/addNewPlace', this.addPlace)
         },
         closePopup() {

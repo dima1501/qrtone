@@ -148,9 +148,9 @@ export default {
 
                 for (let item of this.$store.state.guest.companyData.goods) {
                     if (this.$store.state.guest.parsedMenu[item.category]) {
-                    this.$store.state.guest.parsedMenu[item.category].push(item)
+                        this.$store.state.guest.parsedMenu[item.category].push(item)
                     } else {
-                    this.$store.state.guest.parsedMenu[item.category] = [item]
+                        this.$store.state.guest.parsedMenu[item.category] = [item]
                     }
                     this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
                 }

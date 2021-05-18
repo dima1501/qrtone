@@ -65,6 +65,14 @@
                                 .place__tables-item-name {{ formatTable(table) }}
                         .place__tables-control(@click="editTables(place)") Управление столиками
 
+                    .place__link
+                        h4.place__link-title Ссылка на меню заведения
+
+                        .place__link-input
+                            .place__link-input-placeholder https://qrtone.com/m/
+                            input(type="text" :value="place.link" @input="functionToChangeValue($event, key)")
+                        .button.-black(@click="updateLink(key, place._id)") Сохранить
+
             h4(v-if="!$store.state.auth.user.places.length") Для начала работы добавьте заведение
 
         .settings__section
@@ -117,10 +125,23 @@ export default {
             newCompanyBackgroundFile: null,
             editablePlace: null,
             editableAction: null,
-            editableTablesPlace: null
+            editableTablesPlace: null,
+            updatedLinks: []
         }
     },
     methods: {
+        functionToChangeValue(e, key) {
+            this.updatedLinks[key] = e.target.value
+        },
+        updateLink(key, place) {
+            if (this.updatedLinks[key]) {
+                this.$store.dispatch('lk/updateLink', {
+                    key,
+                    link: this.updatedLinks[key],
+                    place
+                })
+            }
+        },
         openAddPlacePopup() {
             this.$store.state.view.popup.addPlacePopup.visible = true
         },
@@ -247,6 +268,7 @@ export default {
     padding: 20px;
     max-width: 400px;
     position: relative;
+    margin-bottom: 20px;
 
     &__edit {
         position: absolute;
@@ -268,6 +290,22 @@ export default {
             background: #fff;
             border-radius: 10px;
             margin-right: 10px;
+        }
+    }
+
+    &__link {
+        margin-top: 20px;
+        &-input {
+            position: relative;
+            &-placeholder {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            input {
+                padding-left: 180px;
+            }
         }
     }
 }

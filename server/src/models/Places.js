@@ -8,7 +8,8 @@ const Places = class Places {
         this.inst = data.inst,
         this.vk = data.vk,
         this.wa = data.wa,
-        this.tables = []
+        this.tables = [],
+        this.link = null
     }
   }
   

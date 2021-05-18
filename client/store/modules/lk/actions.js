@@ -506,6 +506,24 @@ const updateTGTables = async (store, data) => {
   }
 }
 
+const updateLink = async (store, data) => {
+  try {
+    const add = await axios({
+      method: 'post',
+      url: `/api/update-menu-link/`,
+      data: { data }
+    })
+    console.log(add.data)
+    if (add.data.success) {
+      console.log('success')
+    } else {
+      console.log('not')
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
     updateUserName,
     updateCompanyLogo,
@@ -532,5 +550,6 @@ export default {
     loadOrders,
     loadActions,
     updateTables,
-    updateTGTables
+    updateTGTables,
+    updateLink
 }

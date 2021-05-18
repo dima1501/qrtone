@@ -426,11 +426,13 @@ router.post('/api/set-place-socket-id', auth(), async (req, res) => {
             { 'sockets.socketId': req.body.data.socketId },
             {'$pull': { "sockets": { "socketId": req.body.data.socketId } } }
         )
-
-        const set = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id) },
-            { $push: { 'sockets': {place: req.body.data.place, socketId: req.body.data.socketId } } }
-        )
+        
+        if (req.user) {
+            const set = await req.db.collection('users').updateOne(
+                { _id: ObjectId(req.user._id) },
+                { $push: { 'sockets': {place: req.body.data.place, socketId: req.body.data.socketId } } }
+            )
+        }
         res.status(200).send(true)
     } catch (error) {
         console.error(error)
@@ -500,5 +502,29 @@ router.post('/api/update-tg-tables', auth(), async (req, res) => {
         console.error(error)
     }
 })
+
+router.post('/api/update-menu-link', auth(), async (req, res) => {
+    try {
+        const check = await req.db.collection('users').findOne(
+            { 'places.link': req.body.data.link }
+        )
+
+        if (!check) {
+            const add = await req.db.collection('users').updateOne(
+                { _id: ObjectId(req.user._id), 'places._id': req.body.data.place },
+                { $set: { 'places.$.link': req.body.data.link } }
+            )
+            if (add) {
+                res.status(200).send({success: true})
+            }
+        } else {
+            res.status(200).send({success: false})
+        }
+        
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 
 module.exports = router

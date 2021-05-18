@@ -21,7 +21,9 @@ const acceptOrderBtn = Markup.inlineKeyboard([
 
 router.post('/api/fast-action', authGuest(), async (req, res) => {
     try {
-        const user = await req.db.collection('users').findOne({ _id: ObjectId(req.body.data.userId) })
+        const user = await req.db.collection('users').findOne({ 'places.link': req.body.data.userId })
+        const place = user.places.find(e => e.link == req.body.data.userId)
+
         if (user) {
             const button = Markup.inlineKeyboard([
                 Markup.callbackButton(req.body.data.buttonText, 'like')
@@ -39,14 +41,15 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
                 table: req.body.data.table,
                 status: 'pending',
                 buttonText: req.body.data.buttonText,
-                place: req.body.data.place
+                place: place._id
             }
 
-            if (user.telegram[req.body.data.place]) {
-                for (let i = 0; i < user.telegram[req.body.data.place].length; i++) {
+            if (user.telegram[place._id]) {
+                for (let i = 0; i < user.telegram[place._id].length; i++) {
+                    console.log('tg')
                     const table = typeof req.body.data.table == 'number' ? req.body.data.table : req.body.data.table.replace(' ', '%20')
-                    if (user.telegram[req.body.data.place][i].notifications == 'all' || user.telegram[req.body.data.place][i].tables.indexOf(table) > -1) {
-                        data.messages.push(await bot.sendMessage(user.telegram[req.body.data.place][i].chatId, `${notify.replace('@table', req.body.data.table)} \n`, button));
+                    if (user.telegram[place._id][i].notifications == 'all' || user.telegram[place._id][i].tables.indexOf(table) > -1) {
+                        data.messages.push(await bot.sendMessage(user.telegram[place._id][i].chatId, `${notify.replace('@table', req.body.data.table)} \n`, button));
                         data.chatId.push( data.messages[i].chat.id )
                         data.messageId.push( data.messages[i].message_id )
                     }
@@ -54,14 +57,15 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
             }
 
             if (user.sockets.length) {
+                console.log('socket')
                 websocket.fastAction({
-                    sockets: user.sockets.filter(e => e.place == req.body.data.place),
+                    sockets: user.sockets.filter(e => e.place == place._id),
                     data
                 })
             }
 
             await req.db.collection('users').updateOne(
-                { _id: ObjectId(req.body.data.userId) },
+                { 'places.link': req.body.data.userId },
                 { $push: { notifications: data } },
             )
 
@@ -72,13 +76,18 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
     }
 })
 
-router.get('/api/get-user-data/:id/:place', async (req, res) => {
-    const user = await req.db.collection('users').findOne({ _id: ObjectId(req.params.id) })
+router.get('/api/get-user-data/:id', async (req, res) => {
+    const user = await req.db.collection('users').findOne(
+        { 'places.link': req.params.id }
+    )
+
+    const place = user.places.find(e => e.link == req.params.id)
+    
     if (user) {
         const publicUser = {
-            _id: ObjectId(req.params.id),
+            _id: ObjectId(user._id),
             name: user.name,
-            goods: user.goods.filter(e => e.places.find(e => e._id == req.params.place)),
+            goods: user.goods.filter(e => e.places.find(e => e._id == place._id)),
             photo: user.photo,
             background: user.background,
             categories: user.categories,
@@ -100,23 +109,25 @@ router.post('/api/update-cart', authGuest(), async (req, res) => {
 })
 
 router.post('/api/make-order', authGuest(), async (req, res) => {
+    const user = await req.db.collection('users').findOne({ 'places.link': req.body.data.order.place })
 
-    const order = new OrderModel(req.user._id, req.body.data.order)
+    const place = user.places.find(e => e.link == req.body.data.order.place)
+
+    const order = new OrderModel(req.user._id, req.body.data.order, place._id)
 
     const makeOrder = await req.db.collection('users').updateOne(
-        { _id: ObjectId(req.body.data.id) },
+        { 'places.link': req.body.data.order.place },
         { $push: { 'orders': order } }
     )
+
     const clearCart = await req.db.collection('guests').updateOne(
         { _id: ObjectId(req.user._id) },
         { $set: { 'cart': [] } }
     )
 
-    const user = await req.db.collection('users').findOne({ _id: ObjectId(req.body.data.id) })
-
     if (user.sockets.length) {
         websocket.makeOrder({
-            sockets: user.sockets.filter(e => e.place == req.body.data.order.place),
+            sockets: user.sockets.filter(e => e.place == place._id),
             order: order,
             id: req.user._id
         })
@@ -173,7 +184,7 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
     }
 
     await req.db.collection('users').updateOne(
-        { _id: ObjectId(req.body.data.id) },
+        { 'places.link': req.body.data.order.place },
         { $push: { messages: data } }
     )
     
@@ -184,9 +195,9 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
 router.post('/api/load-orders', authGuest(), async (req, res) => {
     const orders = await req.db.collection("users").aggregate([
-        { $match: { _id: ObjectId(req.body.data) } },
+        { $match: { 'places.link': req.body.data } },
         { $unwind: '$orders' },
-        { $match: {'orders.guestId': req.user._id } },
+        { $match: {'orders.guestId': ObjectId(req.user._id) } },
         { $sort: { 'orders.timestamp': 1 } },
         { $group: {_id: '$_id', list: {$push: '$orders'} } }
     ]).toArray()
@@ -195,6 +206,20 @@ router.post('/api/load-orders', authGuest(), async (req, res) => {
         res.status(200).json(orders[0].list)
     } else {
         res.status(200).json([])
+    }
+})
+
+router.get('/api/get-place-id/:id', async (req, res) => {
+    try {
+        console.log(1)
+        const user = await req.db.collection("users").findOne(
+            {  'places._id': req.params.id }
+        )
+        const place = user.places.find(e => e._id == req.params.id)
+
+        res.status(200).send(place.link)
+    } catch (error) {
+        console.error(error)
     }
 })
 

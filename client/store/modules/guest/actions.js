@@ -220,6 +220,20 @@ const fastAction = async (store, data) => {
     }
 }
 
+const redirect = async (store, data) => {
+    try {
+        const place = await axios({
+            method: 'get',
+            url: `/api/get-place-id/${data.placeId}`
+        })
+        console.log(place)
+        const link = `${process.env.LINK || "http://localhost:3000"}/m/${place.data}/?table=${data.table}`
+        this.$nuxt.$router.replace({ path: link })
+    } catch (error) {
+        
+    }
+}
+
 export default {
     checkAuth,
     login,
@@ -234,6 +248,7 @@ export default {
     acceptOrder,
     fastAction,
     minusCartItemMulti,
-    addToCartSimple
+    addToCartSimple,
+    redirect
   }
   

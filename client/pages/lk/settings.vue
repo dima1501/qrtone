@@ -136,8 +136,6 @@ export default {
             this.updatedLinks[key] = e.target.value
         },
         updateLink(key, place) {
-            
-
             if (this.updatedLinks[key]) {
                 this.$store.dispatch('lk/updateLink', {
                     key,

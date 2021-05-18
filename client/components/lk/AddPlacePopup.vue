@@ -73,7 +73,6 @@ export default {
     methods: {
         fetchAddPlace() {
             this.addPlace.link = tr(this.addPlace.name).split(' ').join('_')
-            console.log(tr(this.addPlace.name))
             this.$store.dispatch('lk/addNewPlace', this.addPlace)
         },
         closePopup() {

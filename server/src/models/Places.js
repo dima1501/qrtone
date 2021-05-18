@@ -1,4 +1,3 @@
-
 const Places = class Places {
     constructor(data) {
         this._id = Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6),

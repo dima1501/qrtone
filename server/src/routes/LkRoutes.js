@@ -63,6 +63,15 @@ router.post("/api/update-company-background", auth(), async (req, res) => {
 router.post("/api/add-new-place", auth(), async (req, res) => {
     try {
         const place = await new PlaceModel(req.body.data)
+        const check = await req.db.collection('users').findOne(
+            { 'places.link': place.link }
+        )
+        if (check) {
+            place.link = Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6)
+            console.log('already exists')
+        } else {
+            console.log('ok')
+        }
         const add = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
             { $push: { places: place} }

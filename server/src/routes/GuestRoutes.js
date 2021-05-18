@@ -81,9 +81,8 @@ router.get('/api/get-user-data/:id', async (req, res) => {
         { 'places.link': req.params.id }
     )
 
-    const place = user.places.find(e => e.link == req.params.id)
-    
     if (user) {
+        const place = user.places.find(e => e.link == req.params.id)
         const publicUser = {
             _id: ObjectId(user._id),
             name: user.name,
@@ -95,6 +94,8 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             actions: user.actions
         }
         res.status(200).send(publicUser)
+    } else {
+        res.status(200).send(false)
     }
 })
 
@@ -211,7 +212,6 @@ router.post('/api/load-orders', authGuest(), async (req, res) => {
 
 router.get('/api/get-place-id/:id', async (req, res) => {
     try {
-        console.log(1)
         const user = await req.db.collection("users").findOne(
             {  'places._id': req.params.id }
         )

@@ -226,11 +226,16 @@ const redirect = async (store, data) => {
             method: 'get',
             url: `/api/get-place-id/${data.placeId}`
         })
-        console.log(place)
-        const link = `${process.env.LINK || "http://localhost:3000"}/m/${place.data}/?table=${data.table}`
-        this.$nuxt.$router.replace({ path: link })
+        const link = `/m/${place.data}/?table=${data.table}`
+        if (place.data) {
+            console.log(place.data)
+            // $nuxt.$router.push({ path: '' })
+            // $nuxt.$router.push('/lk/settings')
+            // $nuxt.$router.push('/m/NuaPetra/?table=6')
+            $nuxt.$router.push({ path: place.data, query: { table: data.table } })
+        }
     } catch (error) {
-        
+        console.error(error)
     }
 }
 

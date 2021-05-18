@@ -118,6 +118,7 @@ Vue.use(VueScrollactive);
 const axios = require('axios').default
 
 export default {
+    name: 'main-page',
     layout: 'main',
     components: {
         VueSlickCarousel
@@ -135,22 +136,24 @@ export default {
     },
     async fetch () {
         try {
-            const id = this.$route.params.id
+            if (this.$route.params.id) {
+                const id = this.$route.params.id
 
-            const user = await axios({
-                method: 'get',
-                url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}`
-            })
+                const user = await axios({
+                    method: 'get',
+                    url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}`
+                })
 
-            this.$store.state.guest.companyData = user.data
+                this.$store.state.guest.companyData = user.data
 
-            for (let item of this.$store.state.guest.companyData.goods) {
-                if (this.$store.state.guest.parsedMenu[item.category]) {
-                this.$store.state.guest.parsedMenu[item.category].push(item)
-                } else {
-                this.$store.state.guest.parsedMenu[item.category] = [item]
+                for (let item of this.$store.state.guest.companyData.goods) {
+                    if (this.$store.state.guest.parsedMenu[item.category]) {
+                    this.$store.state.guest.parsedMenu[item.category].push(item)
+                    } else {
+                    this.$store.state.guest.parsedMenu[item.category] = [item]
+                    }
+                    this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
                 }
-                this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
             }
         } catch (error) {
             console.error(error)

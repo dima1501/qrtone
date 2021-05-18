@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  layout: 'main',
+  layout: 'public',
   data() {
     return {
       emailValidationErrors: [],

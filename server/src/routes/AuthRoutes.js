@@ -14,24 +14,29 @@ const SessionService = require('../services/SessionService')
 const crypto = require('crypto')
 
 router.post("/api/checkauth", auth(), async (req, res) => {
-  const preloadUser = {
-    _id: ObjectId(req.user._id),
-    name: req.user.name,
-    bot_token: req.user.bot_token,
-    photo: req.user.photo,
-    background: req.user.background,
-    places: req.user.places,
-    categories: req.user.categories,
-    telegram: req.user.telegram,
-    actions: req.user.actions,
-    goods: req.user.goods,
-    dops: req.user.dops,
-    orders: [],
-    messages: [],
-    notifications: [],
-    sockets: [],
+  if (req.user) {
+    const preloadUser = {
+      _id: ObjectId(req.user._id),
+      name: req.user.name,
+      bot_token: req.user.bot_token,
+      photo: req.user.photo,
+      background: req.user.background,
+      places: req.user.places,
+      categories: req.user.categories,
+      telegram: req.user.telegram,
+      actions: req.user.actions,
+      goods: req.user.goods,
+      dops: req.user.dops,
+      orders: [],
+      messages: [],
+      notifications: [],
+      sockets: [],
+    }
+      res.send(preloadUser);
+  } else {
+    res.send(false)
   }
-    res.send(preloadUser);
+  
 });
 
 router.post("/api/checkauth-guest", authGuest(), async (req, res) => {

@@ -4,7 +4,8 @@
 
 <script>
 export default {
-    mounted() {
+    created() {
+        this.$router.push({path: '/m/'})
         this.$store.dispatch('guest/redirect', {
             placeId: this.$route.query.place,
             table: this.$route.query.table

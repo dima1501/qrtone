@@ -137,7 +137,7 @@ export default {
             if (this.updatedLinks[key]) {
                 this.$store.dispatch('lk/updateLink', {
                     key,
-                    link: this.updatedLinks[key],
+                    link: this.updatedLinks[key].split(' ').join('_'),
                     place
                 })
             }

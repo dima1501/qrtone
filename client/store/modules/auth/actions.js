@@ -90,7 +90,6 @@ const loginAction = async (store, data) => {
 
 const setSocketId = async (store, data) => {
   try {
-    console.log(data)
     if (data.place) {
       await axios({
         method: 'post',

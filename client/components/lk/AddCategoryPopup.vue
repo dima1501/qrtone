@@ -57,7 +57,6 @@ export default {
             this.$store.state.view.popup.addCategoryPopup.visible = false
         },
         change(e) {
-            console.log(e)
             this.$store.dispatch('lk/updateCats')
         },
         create() {

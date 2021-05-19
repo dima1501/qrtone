@@ -34,6 +34,17 @@
 
         .settings__section
             .settings__section-top
+                h2 Уведомления
+            
+            .ntfcs
+                .ntfcs__item(v-if="notificationsEnabled == 'denied'")
+                    h4 Уведомления отключены в браузере <a href="https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop" target="_blank">как включить</a>
+                .ntfcs__item(v-else)
+                    input(type="checkbox" @input="notificationToggler($event)" id="ordersNotifications" :checked="notificationsEnabledLocal == 'true'")
+                    label(for="ordersNotifications") Уведомления в браузере
+
+        .settings__section
+            .settings__section-top
                 h2.settings__section-title Быстрые действия
                 .settings__section-link(@click="addFastAction") Добавить действие
             p <code>@table</code> отображает номер столика, с которого поступил запрос
@@ -112,7 +123,7 @@
 </template>
 
 <script>
-import { transliterate as tr, slugify } from 'transliteration';
+import { transliterate as tr } from 'transliteration';
 
 export default {
     layout: 'lk',
@@ -128,10 +139,29 @@ export default {
             editablePlace: null,
             editableAction: null,
             editableTablesPlace: null,
-            updatedLinks: []
+            updatedLinks: [],
+            notificationsEnabled: false,
+            notificationsEnabledLocal: false
         }
     },
+    async mounted() {
+        this.notificationsEnabled = Notification.permission
+        this.notificationsEnabledLocal = localStorage.getItem('notifications')
+    },
     methods: {
+        async notificationToggler(e) {
+            if (e.target.checked) {
+                const result = await Notification.requestPermission()
+                this.notificationsEnabled = result
+                if (this.notificationsEnabled == 'granted') {
+                    localStorage.setItem('notifications', true)
+                } else {
+                    localStorage.setItem('notifications', false)
+                }
+            } else {
+                localStorage.setItem('notifications', false)
+            }
+        },
         functionToChangeValue(e, key) {
             this.updatedLinks[key] = e.target.value
         },

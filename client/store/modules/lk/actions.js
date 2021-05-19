@@ -181,7 +181,11 @@ const editMenuItem = async (store, data) => {
 
       if (add.data) {
         let category = store.rootState.auth.parsedMenu[add.data.category]
-        let item = category.find(e => e._id == add.data._id)
+        let item
+
+        if (category) {
+          item = category.find(e => e._id == add.data._id)
+        }
 
         if (!item) {
           const parsedItem = store.rootState.auth.user.goods.find(e => e._id == add.data._id)
@@ -439,14 +443,17 @@ const acceptFastAction = async (store, data) => {
 
 const setPlaceSocketId = async (store, data) => {
   try {
-    const set = await axios({
-      method: 'post',
-      url: '/api/set-place-socket-id',
-      data: { data }
-    })
-    if (set.data) {
+    if (data.place) {
+      const set = await axios({
+        method: 'post',
+        url: '/api/set-place-socket-id',
+        data: { data }
+      })
+      if (set.data) {
       
+      }
     }
+    
   } catch (error) {
     console.error(error)
   }
@@ -460,6 +467,8 @@ const loadOrders = async (store, data) => {
     })
     if (load.data[0]) {
       store.rootState.auth.user.orders = load.data[0].list
+    } else {
+      store.rootState.auth.user.orders = []
     }
   } catch (error) {
     console.error(error)

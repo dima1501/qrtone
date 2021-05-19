@@ -52,7 +52,6 @@ export default {
     },
     methods: {
         changePlace() {
-            console.log(123)
             localStorage.setItem("place", this.place);
             this.$store.dispatch('lk/setPlaceSocketId', {
                 place: this.place,

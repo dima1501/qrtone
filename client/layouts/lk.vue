@@ -11,20 +11,26 @@
 export default {
   sockets: {
     async updateSocketId(msg) {
-
       this.$store.dispatch("auth/setSocketId", {
         socketId: msg,
         place: localStorage.getItem('place')
       }, { root: true });
-      
     },
-    async newOrder(data) { 
+    async newOrder(data) {
+      const notificationsEnabled = localStorage.getItem('notifications')
+      if (notificationsEnabled == 'true') {
+        const  notification = new Notification('Новый заказ', { body: '123' })
+      }
       this.$store.state.auth.user.orders.push(data.order)
     },
     async acceptOrderAdmin(data) {
       this.$store.state.auth.user.orders.find(e => e.orderId === data.orderId).status = 'accepted'
     },
     async newFastAction(data) {
+      const notificationsEnabled = localStorage.getItem('notifications')
+      if (notificationsEnabled == 'true') {
+        const  notification = new Notification('sad', { body: '123' })
+      }
       this.$store.state.auth.user.notifications.push(data)
     },
     async acceptFastAction(data) {

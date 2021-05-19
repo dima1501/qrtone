@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const { ObjectId } = require('mongodb').ObjectID
 const GuestModel = require('../models/Guest')
+const UserModel = require('../models/User')
 
 class UserService {
   async createUser(req) {

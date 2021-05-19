@@ -1,4 +1,5 @@
 const axios = require('axios').default
+const Vue = require('vue')
 
 const checkAuth = async (store, data) => {
     try {
@@ -7,7 +8,6 @@ const checkAuth = async (store, data) => {
         url: '/api/checkauth-guest'
       })
       if (user.data) {
-          console.log(user.data)
         store.state.user = user.data
         store.dispatch('loadOrders', data)
       } else {

@@ -68,9 +68,6 @@ router.post("/api/add-new-place", auth(), async (req, res) => {
         )
         if (check) {
             place.link = Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6)
-            console.log('already exists')
-        } else {
-            console.log('ok')
         }
         const add = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
@@ -113,12 +110,15 @@ router.get("/api/load-places", auth(), async (req, res) => {
 
 router.post("/api/add-menu-item", auth(), async (req, res) => {
     try {
+        console.log(123)
         const menuItem = await new MenuItemModel(req.body.data)
         const add = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
             { $push: { goods: menuItem } }
         )
+       
         if (add) {
+            
             res.send(menuItem)
         }
     } catch (err) {
@@ -430,6 +430,7 @@ router.post('/api/accept-fasst-action-tg', auth(), async (req, res) => {
 })
 
 router.post('/api/set-place-socket-id', auth(), async (req, res) => {
+    console.log(req.body)
     try {
         await req.db.collection('users').updateOne(
             { 'sockets.socketId': req.body.data.socketId },

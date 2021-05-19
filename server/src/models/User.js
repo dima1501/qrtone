@@ -70,7 +70,7 @@ const User = class User {
     ],
     this.dops = [],
     this.notifications = [],
-    this.sockets = {}
+    this.sockets = []
   }
 }
 

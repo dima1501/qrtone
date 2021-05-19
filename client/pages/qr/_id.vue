@@ -1,15 +1,19 @@
 <template lang="pug">
-    h1 asdsd
+    h1
 </template>
 
 <script>
 export default {
     created() {
-        this.$router.push({path: '/m/'})
-        this.$store.dispatch('guest/redirect', {
-            placeId: this.$route.query.place,
-            table: this.$route.query.table
-        })
+        if (!this.$route.query.place) {
+            this.$router.push({path: '/'})
+        } else {
+            this.$store.dispatch('guest/redirect', {
+                placeId: this.$route.query.place,
+                table: this.$route.query.table
+            })
+        }
+        
     }
 }
 </script>

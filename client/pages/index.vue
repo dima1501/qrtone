@@ -14,11 +14,11 @@
           .m-welcome__content
             h1.m-welcome__title Электронное QR меню <br>для ресторанов и кафе
             form.m-form(@submit.prevent="checkForm")
-              .m-form__input(:class="{ 'focused': isEmailFocused }")
+              //- .m-form__input(:class="{ 'focused': isEmailFocused }")
                 input(type="text" placeholder="Введите ваш email адрес" v-model="email" @input="checkForm" :class="{ 'validation-failed': emailValidationErrors[0] }" @focus="isEmailFocused = true" @blur="isEmailFocused = false")
                 .m-form__error.error-label {{ emailValidationErrors[0] }}
               .m-form__btn
-                button(type="submit").button.-short.-black Начать бесплатно
+                button(type="submit" to="auth/registration").button.-short.-black Начать бесплатно
             p.m-welcome__note Попробуйте QRTONE бесплатно в течение 14 дней, кредитная карта не требуется.<br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от QRTone.
           .m-welcome__media
             video(src="video2.mp4" autoplay muted loop)

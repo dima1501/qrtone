@@ -25,8 +25,8 @@
                 v-card-actions
                     v-btn(
                     text
-                    to="/login"
-                    ) {{ 'form_login' }}
+                    to="/auth/registration"
+                    ) {{ 'form_reg' }}
                     v-spacer
                     v-btn(
                     color="primary"

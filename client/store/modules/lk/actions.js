@@ -532,6 +532,50 @@ const updateLink = async (store, data) => {
   }
 }
 
+const subscribe = async (store, data) => {
+  try {
+    const subscribe = await axios({
+      method: 'post',
+      url: `/api/subscribe/`,
+      data: { data }
+    })
+    if (subscribe) {
+      store.rootState.auth.user.subscription = subscribe.data
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const improve = async (store, data) => {
+  try {
+    const improve = await axios({
+      method: 'post',
+      url: `/api/improve/`
+    })
+    if (improve) {
+      store.rootState.auth.user.subscription = improve.data
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const simplify = async (store, data) => {
+  try {
+    const simplify = await axios({
+      method: 'post',
+      url: `/api/simplify/`
+    })
+    if (simplify) {
+      store.rootState.auth.user.subscription = simplify.data
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
 export default {
     updateUserName,
     updateCompanyLogo,
@@ -559,5 +603,8 @@ export default {
     loadActions,
     updateTables,
     updateTGTables,
-    updateLink
+    updateLink,
+    subscribe,
+    improve,
+    simplify
 }

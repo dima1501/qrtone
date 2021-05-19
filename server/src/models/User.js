@@ -1,4 +1,5 @@
 const { nanoid } = require('nanoid')
+const moment = require('moment')
 
 const User = class User {
   constructor(name, password, email) {
@@ -70,7 +71,14 @@ const User = class User {
     ],
     this.dops = [],
     this.notifications = [],
-    this.sockets = []
+    this.sockets = [],
+    this.subscription = [
+      {
+        type: 'free',
+        started: moment()._d,
+        expires: moment().add(14, 'days')._d
+      }
+    ]
   }
 }
 

@@ -89,27 +89,55 @@
         .settings__section
             .settings__section-top
                 h2.settings__section-title Подписка
+
+                div(v-for="(subs, key) in $store.state.auth.user.subscription" :key="key" v-if="!isDateBefore(subs.expires)")
+                    div ||  {{ subs.type }} c  {{ formatDate(subs.started) }} до {{ formatDate(subs.expires) }} {{ !isDateBefore(subs.expires) ? 'Действующая' : 'Истекла' }} ||
+
+                //- div(v-if="$store.state.auth.user.subscription.type == 'free'")
+                //-     p(v-if="!isDateBefore($store.state.auth.user.subscription.expires)") Бесплатная подписка до {{ formatDate($store.state.auth.user.subscription.expires) }}
+                //-     p(v-else) Бесплатная подписка истекла {{ formatDate($store.state.auth.user.subscription.expires) }}
+
             .subs
-                .subs__item
-                    h3.subs__item-title ???руб/месяц
-                    .subs__item-content
-                        .subs__list
-                            .subs__list-item Цифровое меню с неограниченным количеством блюд и категорий
-                            .subs__list-item Активация/отключение позиций меню
-                            .subs__list-item Поддержка 12-ти языков
-                            .subs__list-item Несколько заведений
-                            .subs__list-item Стилизация QR-кода под ваш стиль
-                            .subs__list-item Быстрый запуск без ожидания менеджеров
-                            
-                .subs__item
-                    h3.subs__item-title ???руб/месяц
-                    .subs__item-content
-                        .subs__list-item Все пункты версии за ???p
-                        .subs__list-item Telegram бот для получения уведомлений от посетителей
-                        .subs__list-item Бронирование столика
-                        .subs__list-item Заказ к столику
-                        .subs__list-item Настраиваемые быстрые команды (Позвать официанта / Попросить счет и тд)
-                        .subs__list-item Заполним ваше меню, нужно только фото или документ
+                .subs__inner
+                    .subs__item
+                        h3.subs__item-title Standart
+                        .subs__item-content
+                            .subs__list
+                                .subs__list-item Цифровое меню с неограниченным количеством блюд и категорий
+                                .subs__list-item Активация/отключение позиций меню
+                                .subs__list-item Поддержка 12-ти языков
+                                .subs__list-item Несколько заведений
+                                .subs__list-item Стилизация QR-кода под ваш стиль
+                                .subs__list-item Быстрый запуск без ожидания менеджеров
+
+                        //- div(v-if="!$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'standart' || $store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'free'")
+                        
+                        div(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'premium' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
+                            .button.-black(@click="simplify()") Изменить на Standart
+                        div(v-else)
+                            .button.-black(@click="subscribe('standart', 1)") 1 месяц - 1000₽
+                            .button.-black(@click="subscribe('standart', 6)") Пол года - 5000₽
+                            .button.-black(@click="subscribe('standart', 12)") Год - 10000₽
+                                
+                    .subs__item
+                        h3.subs__item-title Premium
+                        .subs__item-content
+                            .subs__list-item Все пункты подписки Standart
+                            .subs__list-item Telegram бот для получения уведомлений от посетителей
+                            .subs__list-item Бронирование столика
+                            .subs__list-item Заказ к столику
+                            .subs__list-item Настраиваемые быстрые команды (Позвать официанта / Попросить счет и тд)
+                            .subs__list-item Заполним ваше меню, нужно только фото или документ
+
+                        div(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'standart' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
+                            .button.-black(@click="improve()") Улучшить до Premium
+                        div(v-else)
+                            .button.-black(@click="subscribe('premium', 1)") 1 месяц - 2000₽
+                            .button.-black(@click="subscribe('premium', 6)") Пол года - 10000₽
+                            .button.-black(@click="subscribe('premium', 12)") Год - 20000₽
+
+                .subs__note По вопросам изменения подписки пишите на <a href="mailto:info@qrtone.com">info@qrtone.com</a>
+
 
         AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
 
@@ -124,6 +152,7 @@
 
 <script>
 import { transliterate as tr } from 'transliteration';
+import moment from 'moment';
 
 export default {
     layout: 'lk',
@@ -149,6 +178,24 @@ export default {
         this.notificationsEnabledLocal = localStorage.getItem('notifications')
     },
     methods: {
+        simplify() {
+            var confirmation = confirm(`Вы действительно хотите изменить подписку на Standart? Перерасчет будет произведен автоматически`);
+            if (confirmation) this.$store.dispatch("lk/simplify")
+        },
+        improve() {
+            var confirmation = confirm(`Вы действительно хотите улучшить текущий план до Premium? Перерасчет будет произведен автоматически`);
+            if (confirmation) this.$store.dispatch("lk/improve")
+        },
+        subscribe(type, month) {
+            var confirmation = confirm(`Вы действительно хотите оформить подписку ${type} на ${month} ${month == 1 ? "месяц" : "месяцев"}`);
+            if (confirmation) this.$store.dispatch("lk/subscribe", {type, month})
+        },
+        formatDate(date) {
+            return moment(date).local().locale('ru').calendar()
+        },
+        isDateBefore(date) {
+            return moment(date).isBefore()
+        },
         async notificationToggler(e) {
             if (e.target.checked) {
                 const result = await Notification.requestPermission()
@@ -343,7 +390,9 @@ export default {
 }
 
 .subs {
-    display: flex;
+    &__inner {
+        display: flex;
+    }
     &__item {
         background: #F5F7FB;
         border-radius: 16px;
@@ -353,6 +402,13 @@ export default {
         &:last-child {
             margin-right: 0;
         }
+    }
+    &__list {
+        margin-bottom: 20px;
+    }
+    &__note {
+        margin: 20px 0;
+        text-align: center;
     }
 }
 </style>

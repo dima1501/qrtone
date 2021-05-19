@@ -18,6 +18,8 @@ const Markup = require('telegraf/markup')
 const bot = require('../../../bot/bot')
 // telegram area
 
+const moment = require('moment')
+
 router.post("/api/update-user-name", auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(
@@ -531,6 +533,74 @@ router.post('/api/update-menu-link', auth(), async (req, res) => {
             res.status(200).send({success: false})
         }
         
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/api/subscribe', auth(), async (req, res) => {
+    try {
+        const currentPlan = moment(req.user.subscription[req.user.subscription.length - 1].expires).isBefore() ? moment()._d : req.user.subscription[req.user.subscription.length - 1].expires
+        const sub = {
+            type: req.body.data.type,
+            started: currentPlan,
+            expires: moment(currentPlan).add(req.body.data.month, 'month')._d
+        }
+
+        if (req.user.subscription[req.user.subscription.length - 1].type == req.body.data.type) {
+            req.user.subscription[req.user.subscription.length - 1].expires = sub.expires
+        } else {
+            req.user.subscription.push(sub)
+        }
+
+        req.db.collection("users").updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $set: { 'subscription': req.user.subscription } }
+        )
+
+        res.status(200).send(req.user.subscription)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/api/improve', auth(), async (req, res) => {
+    try {
+        const started = req.user.subscription[req.user.subscription.length - 1].started
+        const expires = req.user.subscription[req.user.subscription.length - 1].expires
+
+        const diff = moment(expires).diff(started, 'hours', true) / 2
+
+        req.user.subscription[req.user.subscription.length - 1].type = 'premium'
+        req.user.subscription[req.user.subscription.length - 1].expires = moment(started).add(diff, 'hours')._d
+
+        req.db.collection("users").updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $set: { 'subscription': req.user.subscription } }
+        )
+
+        res.status(200).send(req.user.subscription)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/api/simplify', auth(), async (req, res) => {
+    try {
+        const started = req.user.subscription[req.user.subscription.length - 1].started
+        const expires = req.user.subscription[req.user.subscription.length - 1].expires
+
+        const diff = moment(expires).diff(started, 'hours', true) * 2
+
+        req.user.subscription[req.user.subscription.length - 1].type = 'standart'
+        req.user.subscription[req.user.subscription.length - 1].expires = moment(started).add(diff, 'hours')._d
+
+        req.db.collection("users").updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $set: { 'subscription': req.user.subscription } }
+        )
+
+        res.status(200).send(req.user.subscription)
     } catch (error) {
         console.error(error)
     }

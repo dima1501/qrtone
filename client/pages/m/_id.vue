@@ -11,7 +11,7 @@ div
                 transition(name="slide-up")
                     v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
                 .header__controls
-                    v-btn(depressed @click="toggleCommandsMenu") Быстрые команды
+                    v-btn(depressed @click="toggleCommandsMenu" v-if="this.$nuxt.$route.query.table") Быстрые команды
         .welcome
             .welcome__bg(v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
             .welcome__inner
@@ -53,7 +53,7 @@ div
                     .cart__back(@click="closeCart")
                         v-icon(light) mdi-arrow-left
                     h2.cart__title Корзина
-                    a.cart__subtitle(@click="openOrders") Заказы
+                    a.cart__subtitle(@click="openOrders" v-if="this.$nuxt.$route.query.table") Заказы
                 .cart__content
                     h3.cart__empty(v-if="$store.state.guest.user.cart && !$store.state.guest.user.cart.length") Корзина пуста
 
@@ -73,7 +73,8 @@ div
                 .cart__bottom(v-if="$store.state.guest.user.cart.length")
                     .cart__bottom-price {{getTotalPrice}} ₽
                     .cart__bottom-control
-                        v-btn(depressed color="yellow" @click="makeOrder") Заказать
+                        v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.table") Заказать
+                        v-btn(depressed color="yellow" v-else @click="qwe") кнопка, если столик не указан
 
         transition(name="slide-fade")
             .cart(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
@@ -185,6 +186,9 @@ export default {
         }
     },
     methods: {
+        qwe() {
+            console.log(moment().add(14, 'days'))
+        },
         plusMulti(item, checkedPrice) {
             this.$store.dispatch('guest/addToCart', {
                 item: item,

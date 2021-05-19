@@ -5,6 +5,11 @@
         Sidebar
       .page__content
         Nuxt
+      AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
+      AddActionPopup(v-if="$store.state.view.popup.addActionPopup")
+      EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
+      EditActionPopup(v-if="$store.state.view.popup.editActionPopup.visible" :editableAction="editableAction")
+      EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
 </template>
 
 <script>

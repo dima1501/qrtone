@@ -7,12 +7,9 @@
       .sidebar__company-logo(v-if="$store.state.auth.user.photo" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.auth.user.photo +')' }")
       .sidebar__company-name {{ $store.state.auth.user.name }}
     nav.sidebar__nav
-      // nuxt-link(to='/lk/dashboard').sidebar__nav-item
-        // .sidebar__nav-icon
-        // .sidebar__nav-name Дашборд
       nuxt-link(to='/lk/orders').sidebar__nav-item
         .sidebar__nav-icon
-        .sidebar__nav-name Заказы
+        .sidebar__nav-name Дэшборд
       nuxt-link(to='/lk/menu').sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name Меню
@@ -25,8 +22,10 @@
 </template>
 
 <script>
+
 export default {
-  name: 'Sidebar'
+  name: 'Sidebar',
+  
 }
 </script>
 

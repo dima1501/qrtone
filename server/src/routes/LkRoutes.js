@@ -432,7 +432,6 @@ router.post('/api/accept-fasst-action-tg', auth(), async (req, res) => {
 })
 
 router.post('/api/set-place-socket-id', auth(), async (req, res) => {
-    console.log(req.body)
     try {
         await req.db.collection('users').updateOne(
             { 'sockets.socketId': req.body.data.socketId },

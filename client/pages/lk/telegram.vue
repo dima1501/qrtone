@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="$store.state.auth.user")
+  div(v-if="$store.state.auth.user && isAvailable")
     .telega
         h1.page__title Телеграм бот
         .telegram
@@ -20,11 +20,15 @@
             h5 Отметьте столики, с которых должны приходить уведомления
             .tables
               .tables__item(v-for="(table, idx) in place.tables" v-bind:key="idx" @click="selectTable(table, item, place)" :class="{ active: item.tables.indexOf(table) > -1 }") {{ formatTable(table) }}
+  div(v-else)
+    h2 Доступно с подпиской Premium 
+    nuxt-link(to="/lk/settings") Настройки
 
 </template>
 
 <script>
 import QRCode from 'qrcode'
+import moment from 'moment';
 
 export default {
   layout: 'lk',
@@ -37,6 +41,14 @@ export default {
   async mounted() {
     const qr = await QRCode.toString(`https://t.me/SafetyMenuBot`)
     this.qr = qr
+  },
+  computed: {
+    isAvailable() {
+      const isStandart = this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].type == 'standart'
+      const isNotExpired = !moment(this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].expires).isBefore()
+      // const isTrial = !moment(this.$store.state.auth.user.subscription[0].expires).isBefore()
+      return !isStandart && isNotExpired
+    }
   },
   methods: {
     formatTable(table) {

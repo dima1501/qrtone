@@ -1,5 +1,5 @@
 <template lang="pug">
-    .board(v-if="$store.state.auth.user")
+    .board(v-if="$store.state.auth.user && isAvailable")
         .board__orders
             // .board__top
                 // .board__top-time {{ moment().locale('ru').format('LL') }}
@@ -29,6 +29,10 @@
         .board__aside
             Aside
 
+    div(v-else)
+        h2 Заказы доступны с подпиской Premium 
+        nuxt-link(to="/lk/settings") Настройки
+
 </template>
 
 <script>
@@ -48,6 +52,14 @@ export default {
             this.place = place
             this.$store.dispatch('lk/loadOrders', place)
             this.$store.dispatch('lk/loadActions', place)
+        }
+    },
+    computed: {
+        isAvailable() {
+            const isStandart = this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].type == 'standart'
+            const isNotExpired = !moment(this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].expires).isBefore()
+            // const isTrial = !moment(this.$store.state.auth.user.subscription[0].expires).isBefore()
+            return !isStandart && isNotExpired
         }
     },
     methods: {

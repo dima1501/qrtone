@@ -5,7 +5,7 @@
                 v-icon(dark) mdi-close
             .popup__content
                 h2.popup__title(v-if="!$store.state.view.popup.tablesPopup.tables") QR-код меню
-                h2.popup__title(v-if="$store.state.view.popup.tablesPopup.tables") QR-коды столиков # {{ $store.state.view.popup.tablesPopup.tables }}
+                h2.popup__title(v-else) QR-коды столиков # {{ $store.state.view.popup.tablesPopup.tables }}
                 .sqr
                     .sqr__pic(v-html="qr")
                     .sqr__name {{ $store.state.view.popup.styleQRPopup.place.name }}
@@ -64,12 +64,13 @@ export default {
     },
     methods: {
         updateQR() {
+            const id = this.$store.state.auth.user._id
             const place = this.$store.state.view.popup.styleQRPopup.place._id
 
-            const qrSvg = vkQr.createQR(`${place}`, {
-                qrSize: 256,
+            const qrSvg = vkQr.createQR(`${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`, {
+                qrSize: 190,
                 isShowLogo: this.settings.logo,
-                logoData: this.settings.logo ? 'http://localhost:3000/uploads/' + this.$store.state.auth.user.photo : '',
+                logoData: this.settings.logo ? `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.$store.state.auth.user.photo}` : '',
                 isShowBackground: true,
                 backgroundColor: this.settings.bgColor,
                 foregroundColor: this.settings.mainColor
@@ -96,10 +97,10 @@ export default {
                 }
 
                 for (let i = 0; i < tablesArr.length; i++) {
-                    const qrSvg = vkQr.createQR('WIFI:S:Nuahule;T:<WPA|WEP|>;P:greenking;;', {
+                    const qrSvg = vkQr.createQR(`${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`, {
                         qrSize: 256,
                         isShowLogo: this.settings.logo,
-                        logoData: this.settings.logo ? 'http://localhost:3000/uploads/' + this.$store.state.auth.user.photo : '',
+                        logoData: this.settings.logo ? `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.$store.state.auth.user.photo}` : '',
                         isShowBackground: true,
                         backgroundColor: this.settings.bgColor,
                         foregroundColor: this.settings.mainColor
@@ -107,7 +108,7 @@ export default {
                     fileDownload(qrSvg, `${place.name}-${tablesArr[i]}.svg`)
                 }
             } else {
-                fileDownload(this.qr, `${place.name}_simple_qr.svg`)
+                fileDownload(this.qr, `${place.name}_menu_qr.svg`)
             }
         }
     }

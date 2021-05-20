@@ -3,7 +3,8 @@
     .telega
         h1.page__title Телеграм бот
         .telegram
-            .telegram__content Чтобы воспользоваться ботом, перейдите по ссылке <a href="https://t.me/SafetyMenuBot" target="_blank">t.me/SafetyMenuBot</a> или отсканируйте QR код. Далее потребуется ввести код <span>{{$store.state.auth.user.bot_token}}</span>
+            .telegram__content(v-if="$store.state.auth.user.places.length") Чтобы воспользоваться ботом, перейдите по ссылке <a href="https://t.me/SafetyMenuBot" target="_blank">t.me/SafetyMenuBot</a> или отсканируйте QR код. Далее потребуется ввести код <span>{{$store.state.auth.user.bot_token}}</span>
+            .telegram__content(v-else) <span @click="openAddPlacePopup"> Создайте заведение</span>, чтобы начать использовать бота
             .telegram__qr(v-html="qr")
         p.page__note
     h2 Подключенные пользователи
@@ -51,6 +52,9 @@ export default {
     }
   },
   methods: {
+    openAddPlacePopup() {
+      this.$store.state.view.popup.addPlacePopup.visible = true
+    },
     formatTable(table) {
       if (typeof table == 'number') {
           return table

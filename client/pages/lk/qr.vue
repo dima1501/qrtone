@@ -116,7 +116,6 @@ export default {
             if (place) {
                 this.$store.state.view.popup.styleQRPopup.place = place
             }
-            console.log(this.$store.state.view.popup.styleQRPopup.place)
             this.$store.state.view.popup.tablesPopup.tables = null
             this.$store.state.view.popup.styleQRPopup.visible = true
         },

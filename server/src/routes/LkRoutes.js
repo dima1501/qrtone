@@ -112,7 +112,6 @@ router.get("/api/load-places", auth(), async (req, res) => {
 
 router.post("/api/add-menu-item", auth(), async (req, res) => {
     try {
-        console.log(123)
         const menuItem = await new MenuItemModel(req.body.data)
         const add = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },

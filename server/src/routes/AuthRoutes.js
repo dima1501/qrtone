@@ -66,7 +66,6 @@ router.post("/api/login", auth(), async (req, res) => {
 );
 
 router.post('/api/registration', auth(), async (req, res) => {
-  console.log(req.user)
   if (!req.user) {
       const findUser = await new UserService().findUserByUsername(req)
       if (findUser) {

@@ -1,5 +1,5 @@
 const axios = require('axios').default
-const Vue = require('vue')
+import Vue from 'vue'
 
 const checkAuth = async (store, data) => {
     try {
@@ -91,7 +91,8 @@ const loadData = async (store, data) => {
 
 const addToCart = async (store, data) => {
     try {
-        const menuItem = store.state.user.cart.find(e => e._id == data.item._id)
+        const place = store.state.companyData.places.find(e => e.link == data.place)
+        const menuItem = store.state.user.cart[place._id] ? store.state.user.cart[place._id].find(e => e._id == data.item._id) : false
 
         if (menuItem) {
             menuItem.count += 1
@@ -99,7 +100,12 @@ const addToCart = async (store, data) => {
         } else {
             data.item.count = 1
             data.item.cartPrices = [data.price]
-            store.state.user.cart.push(data.item)
+            
+            if (store.state.user.cart[place._id]) {
+                store.state.user.cart[place._id].push(data.item)
+            } else {
+                Vue.set(store.state.user.cart, place._id, [data.item])
+            }
         }
 
         store.dispatch('updateCart', store.state.user.cart)
@@ -133,11 +139,12 @@ const minusCartItem = async (store, item) => {
 
 const minusCartItemMulti = async (store, data) => {
     try {
-        const menuItem = store.state.user.cart.find(e => e._id == data.item._id)
+        const place = store.state.companyData.places.find(e => e.link == data.place)
+        const menuItem = store.state.user.cart[place._id].find(e => e._id == data.item._id)
 
         if (menuItem.count == 1) {
-            const index = store.state.user.cart.indexOf(menuItem)
-            store.state.user.cart.splice(index, 1);
+            const index = store.state.user.cart[place._id].indexOf(menuItem)
+            store.state.user.cart[place._id].splice(index, 1);
         }
         const priceIndex = menuItem.cartPrices.indexOf(data.price)
         menuItem.cartPrices.splice(priceIndex, 1)
@@ -178,7 +185,7 @@ const makeOrder = async (store, data) => {
         })
         if (order) {
             store.state.user.orders.push(order.data)
-            store.state.user.cart = []
+            store.state.user.cart[store.state.companyData.places.find(e => e.link == data.order.place)._id] = []
 
             store.rootState.view.isCartOpened = false
             store.rootState.view.isOrdersOpened = true

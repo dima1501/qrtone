@@ -14,7 +14,7 @@ module.exports = {
         try {
           await axios({
             method: 'delete',
-            url: `${config.SERVER}/api/delete-socket-id/${socket.id}`
+            url: `${config.API_SERVER}/api/delete-socket-id/${socket.id}`
           })
         } catch (error) {
           console.error(error)
@@ -39,7 +39,7 @@ module.exports = {
     try {
       await axios({
         method: 'post',
-        url: `${config.SERVER}/api/accept-order`,
+        url: `${config.API_SERVER}/api/accept-order`,
         data: {
           order: {
             guestId: data.guestId,
@@ -55,6 +55,7 @@ module.exports = {
     }
   },
   fastAction: async (data) => {
+    console.log('fast-action')
     try {
       data.sockets.forEach(e => {
         ioCopy.to(e.socketId).emit('newFastAction', data.data);

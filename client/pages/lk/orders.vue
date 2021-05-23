@@ -50,8 +50,8 @@ export default {
         const place = localStorage.getItem("place")
         if (place) {
             this.place = place
-            this.$store.dispatch('lk/loadOrders', place)
-            this.$store.dispatch('lk/loadActions', place)
+            // this.$store.dispatch('lk/loadOrders', place)
+            // this.$store.dispatch('lk/loadActions', place)
         }
     },
     computed: {

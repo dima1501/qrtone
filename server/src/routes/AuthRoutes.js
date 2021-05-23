@@ -27,9 +27,9 @@ router.post("/api/checkauth", auth(), async (req, res) => {
       actions: req.user.actions,
       goods: req.user.goods,
       dops: req.user.dops,
-      orders: [],
+      orders: req.user.orders,
       messages: [],
-      notifications: [],
+      notifications: req.user.notifications,
       sockets: [],
       subscription: req.user.subscription
     }

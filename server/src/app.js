@@ -20,14 +20,14 @@ const io = require("socket.io")(server, {
         credentials: true
     },
     transport: ['websocket', 'polling']
-});
+})
+
+const websocketAPI = require('./websocket')
+websocketAPI.start(io)
 
 server.listen(8000, () => {
     console.log(`:8000`);
 });
-
-const websocketAPI = require('./websocket')
-websocketAPI.start(io)
 
 app.use(express.json({limit: '50mb'}))
 app.use(express.static('public'))

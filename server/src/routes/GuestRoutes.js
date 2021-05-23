@@ -46,7 +46,6 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
 
             if (user.telegram[place._id]) {
                 for (let i = 0; i < user.telegram[place._id].length; i++) {
-                    console.log('tg')
                     const table = typeof req.body.data.table == 'number' ? req.body.data.table : req.body.data.table.replace(' ', '%20')
                     if (user.telegram[place._id][i].notifications == 'all' || user.telegram[place._id][i].tables.indexOf(table) > -1) {
                         data.messages.push(await bot.sendMessage(user.telegram[place._id][i].chatId, `${notify.replace('@table', req.body.data.table)} \n`, button));
@@ -57,7 +56,6 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
             }
 
             if (user.sockets.length) {
-                console.log('socket')
                 websocket.fastAction({
                     sockets: user.sockets.filter(e => e.place == place._id),
                     data

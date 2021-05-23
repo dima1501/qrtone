@@ -39,8 +39,8 @@ class SceneGenerator {
             }
 
             await db.collection('users').updateOne(
-                { _id: ObjectId(company._id) },
-                { $pull:{['telegram.' + user.place]: { 'chatId' : '' + ctx.update.message.chat.id } } } )
+                { _id: ObjectId(user.companyId) },
+                { $pull: {['telegram.' + user.place]: { 'chatId' : ctx.update.message.chat.id } } } )
             
             await db.collection('tgUsers').updateOne(
                 { _id: +ctx.update.message.chat.id },

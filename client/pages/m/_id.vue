@@ -2,7 +2,7 @@
 div
     div(v-if="$fetchState.pending") 'pending'
     div(v-else-if="$fetchState.error") 'error'
-    .public(v-else)
+    .public(v-else-if="$store.state.guest.user")
         header.header
             .header__inner
                 .header__logo(v-if="$store.state.guest.companyData.photo")
@@ -11,7 +11,7 @@ div
                 transition(name="slide-up")
                     v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
                 .header__controls
-                    v-btn(depressed @click="toggleCommandsMenu" v-if="this.$nuxt.$route.query.table") Быстрые команды
+                    v-btn(depressed @click="toggleCommandsMenu" v-if="$nuxt.$route.query.table") Быстрые команды
         .welcome
             .welcome__bg(v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
             .welcome__inner
@@ -28,8 +28,7 @@ div
                 .menu
                     .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id")
                         .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key") 123
-                            MenuItem(v-bind:item="item")
-                            div 123
+                            MenuItem(:item="item" :placeId="$nuxt.$route.params.id")
 
         transition(name="slide-fade" mode="out-in")
             .commands(v-if="commands && !isCommandSend" key="commands")
@@ -42,22 +41,23 @@ div
                     v-btn.commands__item(depressed @click="closeCommands") Спасибо
 
         transition(name="slide-fade")
-            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart && $store.state.guest.user.cart.length" @click="openCart") Корзина <span> {{ getTotalPrice }} ₽ </span>
+            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openCart") Корзина <span> {{ getTotalPrice }} ₽ </span>
 
-        transition(name="slide-fade")
-            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders && $store.state.guest.user.orders.length && !$store.state.guest.user.cart.length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
+        div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
+            transition(name="slide-fade")
+                v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] || $store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
         
         transition(name="slide-fade")
-            .cart(v-if="$store.state.guest.user.cart && $store.state.view.isCartOpened")
+            .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.view.isCartOpened")
                 .cart__top
                     .cart__back(@click="closeCart")
                         v-icon(light) mdi-arrow-left
                     h2.cart__title Корзина
                     a.cart__subtitle(@click="openOrders" v-if="this.$nuxt.$route.query.table") Заказы
                 .cart__content
-                    h3.cart__empty(v-if="$store.state.guest.user.cart && !$store.state.guest.user.cart.length") Корзина пуста
+                    h3.cart__empty(v-if="!$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length") Корзина пуста
 
-                    .cart__item(v-for="(item, key) in $store.state.guest.user.cart" v-bind:key="key")
+                    .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]" v-bind:key="key")
                         .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
                         .cart__item-content
                             .cart__item-name {{ item.name }}
@@ -70,11 +70,11 @@ div
                                     .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
                                     .menu__counter-control.plus(@click="plusMulti(item, price)") +
 
-                .cart__bottom(v-if="$store.state.guest.user.cart.length")
+                .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length")
                     .cart__bottom-price {{getTotalPrice}} ₽
                     .cart__bottom-control
                         v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.table") Заказать
-                        v-btn(depressed color="yellow" v-else @click="qwe") кнопка, если столик не указан
+                        v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
 
         transition(name="slide-fade")
             .cart(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
@@ -96,7 +96,6 @@ div
                                     div {{ good.name }}
                                     .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
                                         div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
-
                             .sorder__price Итого: {{ getOrderPrice(item) }} ₽
         transition(name="slide-fade")
             InfoPopup(v-show="$store.state.view.popup.infoPopup")
@@ -177,7 +176,7 @@ export default {
     computed: {
         getTotalPrice: function () {
             let total = 0
-            for (let i of this.$store.state.guest.user.cart) {
+            for (let i of this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)]) {
                 for (let n in i.cartPrices) {
                     total += +i.prices[i.cartPrices[n]]
                 }
@@ -186,17 +185,19 @@ export default {
         }
     },
     methods: {
-        qwe() {
-            console.log(moment().add(14, 'days'))
+        getPlaceId(place) {
+            return this.$store.state.guest.companyData.places.find(e => e.link == place)._id
         },
         plusMulti(item, checkedPrice) {
             this.$store.dispatch('guest/addToCart', {
+                place: this.$nuxt.$route.params.id,
                 item: item,
                 price: checkedPrice
             })
         },
         minusMulti(item, checkedPrice) {
             this.$store.dispatch('guest/minusCartItemMulti', {
+                place: this.$nuxt.$route.params.id,
                 item: item,
                 price: checkedPrice
             })
@@ -232,7 +233,7 @@ export default {
         makeOrder() {
             this.$store.dispatch('guest/makeOrder', {
                 order: {
-                    goods: this.$store.state.guest.user.cart,
+                    goods: this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)],
                     status: 'pending',
                     table: this.$nuxt.$route.query.table,
                     place: this.$nuxt.$route.params.id

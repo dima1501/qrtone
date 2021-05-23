@@ -386,7 +386,6 @@ const createCat = async (store, cat) => {
       data: { cat }
     })
     if (create.data) {
-      console.log(store.rootState.auth.parsedMenu)
       store.rootState.auth.user.categories.unshift(create.data)
       store.rootState.auth.parsedMenu[create.data._id] = []
     }

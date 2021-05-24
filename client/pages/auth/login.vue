@@ -1,6 +1,6 @@
 <template lang="pug">
     .auth
-        h1.auth__title Регистрация
+        h1.auth__title Вход в аккаунт
         .auth__content
             v-card(
             theme--light

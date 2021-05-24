@@ -29,7 +29,7 @@
                     v-btn(
                         color="primary"
                         text
-                        @click="openStyleQRPopup(e, $store.state.auth.user.places[0])"
+                        @click="openStyleQRPopup($store.state.auth.user.places[0])"
                     ) Стилизовать и скачать
                 div(v-else)
                     .button.-black(@click="openAddPlacePopup") Добавить заведение
@@ -61,7 +61,7 @@
                         v-btn(
                             color="primary"
                             text
-                            @click="openTablesPopup(e, $store.state.auth.user.places[0])"
+                            @click="openTablesPopup( $store.state.auth.user.places[0])"
                         ) Управление столиками
                     div(v-else)
                         .button.-black(@click="openAddPlacePopup") Добавить заведение
@@ -112,14 +112,14 @@ export default {
         checkMultiQRPlace(place) {
             this.$store.state.view.popup.tablesPopup.place = place
         },
-        openStyleQRPopup(e, place) {
+        openStyleQRPopup(place) {
             if (place) {
                 this.$store.state.view.popup.styleQRPopup.place = place
             }
             this.$store.state.view.popup.tablesPopup.tables = null
             this.$store.state.view.popup.styleQRPopup.visible = true
         },
-        openTablesPopup(e, place) {
+        openTablesPopup(place) {
             if (place) {
                 this.$store.state.view.popup.tablesPopup.place = place
             }

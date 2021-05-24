@@ -98,7 +98,7 @@ router.post('/api/registration-guest', authGuest(), async (req, res) => {
   }
 })
 
-router.get("/api/logout", auth(), async (req, res) => {
+router.post("/api/logout", auth(), async (req, res) => {
     if (!req.user) {
       return res.redirect("/");
     }

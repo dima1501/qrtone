@@ -133,10 +133,28 @@ const uploadNewLogo = async (store, data) => {
   }
 }
 
+const logout = async (store, data) => {
+  try {
+    const logout = await axios({
+      method: 'post',
+      url: '/api/logout'
+    })
+    if (logout) {
+      $nuxt.$router.push('/')
+      store.state.user = null
+      store.state.parsedMenu = {},
+      store.state.parsedOrders = []
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
   registrationAction,
   checkAuth,
   loginAction,
   setSocketId,
-  uploadNewLogo
+  uploadNewLogo,
+  logout
 }

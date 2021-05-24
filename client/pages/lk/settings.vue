@@ -137,6 +137,11 @@
                             .button.-black(@click="subscribe('premium', 12)") Год - 20000₽
 
                 .subs__note По вопросам изменения подписки пишите на <a href="mailto:info@qrtone.com">info@qrtone.com</a>
+
+        .settings__section
+            .settings__section-top
+                .settings__section-link.-red(@click="logOut()") Выйти из аккаунта
+        
         EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
         EditActionPopup(v-if="$store.state.view.popup.editActionPopup.visible" :editableAction="editableAction")
         EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
@@ -170,6 +175,9 @@ export default {
         this.notificationsEnabledLocal = localStorage.getItem('notifications')
     },
     methods: {
+        logOut() {
+            this.$store.dispatch("auth/logout")
+        },
         simplify() {
             var confirmation = confirm(`Вы действительно хотите изменить подписку на Standart? Перерасчет будет произведен автоматически`);
             if (confirmation) this.$store.dispatch("lk/simplify")
@@ -303,6 +311,9 @@ export default {
             color: rgb(13, 33, 218);
             margin-left: 20px;
             cursor: pointer;
+            &.-red {
+                color: $color-red;
+            }
         }
     }
     &__logo {

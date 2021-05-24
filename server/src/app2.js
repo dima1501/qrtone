@@ -9,7 +9,9 @@ const path = require('path'),
       cluster = require('cluster'),
       net = require('net'),
       sio_redis = require('socket.io-redis'),
-      farmhash = require('farmhash')
+      farmhash = require('farmhash'),
+      helmet = require('helmet')
+
 
 app.use(cors({credentials: true, origin: '*'}))
 
@@ -51,7 +53,8 @@ if (cluster.isMaster) {
     app.use(express.json({limit: '50mb'}))
     app.use(express.static('public'))
     app.use(cookieParser())
-    app.use('/static', express.static(path.join(__dirname, '/static')))
+    app.use('/static', express.static(path.join(__dirname, '/static')))\
+    app.use(helmet())
 
     app.use('/', routes)
 

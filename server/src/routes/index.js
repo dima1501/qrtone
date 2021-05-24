@@ -21,5 +21,6 @@ router.use("/", require("./AuthRoutes"));
 router.use("/", require("./LkRoutes"));
 router.use("/", require("./UploadRoutes"));
 router.use("/", require("./GuestRoutes"));
+router.use("/", require("./EmailRoutes"));
 
 module.exports = router;

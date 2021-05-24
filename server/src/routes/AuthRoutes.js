@@ -3,8 +3,6 @@ const router = express.Router()
 
 const { ObjectId } = require('mongodb').ObjectID
 
-const websocket = require('../websocket')
-
 const auth = require('../middlewares/AuthMiddleware')
 const authGuest = require('../middlewares/AuthGuestMiddleware')
 

@@ -5,7 +5,7 @@
     .sidebar__company
       // .sidebar__company-logo(v-bind:style="{ backgroundImage: 'url(' + ($store.state.auth.user.photo ? '../../uploads/' + $store.state.auth.user.photo : '' ) + ')' }")
       .sidebar__company-logo(v-if="$store.state.auth.user.photo" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.auth.user.photo +')' }")
-      .sidebar__company-name {{ $store.state.auth.user.name }}
+      .sidebar__company-name(@click="sendMail") {{ $store.state.auth.user.name }}
     nav.sidebar__nav
       nuxt-link(to='/lk/orders').sidebar__nav-item
         .sidebar__nav-icon
@@ -25,7 +25,11 @@
 
 export default {
   name: 'Sidebar',
-  
+  methods: {
+    sendMail() {
+      this.$store.dispatch("auth/regEmail")
+    }
+  }
 }
 </script>
 

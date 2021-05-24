@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        style(type='text/css').
+            h1 {
+                color: red;
+            }
+            @media screen and (max-width: 768px) {
+                h1 {
+                    font-size: 26px;
+                    color: black;
+                }
+            }
+    body
+        h1 Ну привет!
+        p #{name}

@@ -150,11 +150,28 @@ const logout = async (store, data) => {
   }
 }
 
+const regEmail = async (store, data) => {
+  try {
+    const sentMail = await axios({
+      method: 'post',
+      url: '/api/send-reg-email'
+    })
+    if (sentMail.data) {
+      console.log('sent')
+    } else {
+      console.log('error')
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
   registrationAction,
   checkAuth,
   loginAction,
   setSocketId,
   uploadNewLogo,
-  logout
+  logout,
+  regEmail
 }

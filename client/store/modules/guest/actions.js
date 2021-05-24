@@ -14,7 +14,7 @@ const checkAuth = async (store, data) => {
         store.dispatch('login')
       }
     } catch (err) {
-      console.error(error)
+      console.error(err)
     }
 }
 

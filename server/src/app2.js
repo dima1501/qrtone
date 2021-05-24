@@ -17,6 +17,7 @@ const port = 8000,
       num_processes = require('os').cpus().length;
 
 if (cluster.isMaster) {
+    console.log('isMaster')
 	const workers = [];
 
 	const spawn = function(i) {
@@ -44,6 +45,7 @@ if (cluster.isMaster) {
         console.log(`  Listening on ${config.ORIGIN}:${port}`);
     })
 } else {
+    console.log('worker')
 	const app = new express();
 
     app.use(express.json({limit: '50mb'}))

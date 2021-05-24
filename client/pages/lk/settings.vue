@@ -137,7 +137,9 @@
                             .button.-black(@click="subscribe('premium', 12)") Год - 20000₽
 
                 .subs__note По вопросам изменения подписки пишите на <a href="mailto:info@qrtone.com">info@qrtone.com</a>
-
+        EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
+        EditActionPopup(v-if="$store.state.view.popup.editActionPopup.visible" :editableAction="editableAction")
+        EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
 </template>
 
 <script>

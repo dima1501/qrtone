@@ -7,7 +7,15 @@ const state = {
   peer: null,
   peerId: null,
   parsedMenu: {},
-  parsedOrders: []
+  parsedOrders: [],
+  restore: {
+    isKeyValid: false,
+    isEmailSent: false,
+    email: '',
+    token: '',
+    newPassword: '',
+    newPasswordRepeat: ''
+  }
 }
 
 export default {

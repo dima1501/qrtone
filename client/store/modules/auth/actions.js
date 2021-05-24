@@ -33,6 +33,7 @@ const registrationAction = async (store, data) => {
     })
 
     if (registration.data) {
+      store.dispatch("auth/regEmail")
       store.state.user = registration.data
       // eslint-disable-next-line no-undef
         // $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
@@ -166,6 +167,67 @@ const regEmail = async (store, data) => {
   }
 }
 
+const sendRestoreEmail = async (store, data) => {
+  try {
+    const sentMail = await axios({
+      method: 'post',
+      url: '/api/send-restore-email',
+      data: { data }
+    })
+    if (sentMail.data) {
+      console.log('sent')
+    } else {
+      console.log('error')
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const checkKey = async (store, data) => {
+  try {
+    const check = await axios({
+      method: 'post',
+      url: '/api/check-key',
+      data: { data }
+    })
+    if (check.data) {
+      store.state.restore.isKeyValid = true
+      console.log('good')
+    } else {
+      console.log('not good')
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const updatePassword = async (store, data) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/update-password',
+      data: { data }
+    })
+    if (update.data) {
+      $nuxt.$router.push('/auth/login')
+      console.log('updated')
+      store.state.restore = {
+        isKeyValid: false,
+        isEmailSent: false,
+        email: '',
+        token: '',
+        newPassword: '',
+        newPasswordRepeat: ''
+      }
+    } else {
+      console.log('not')
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
   registrationAction,
   checkAuth,
@@ -173,5 +235,8 @@ export default {
   setSocketId,
   uploadNewLogo,
   logout,
-  regEmail
+  regEmail,
+  sendRestoreEmail,
+  checkKey,
+  updatePassword
 }

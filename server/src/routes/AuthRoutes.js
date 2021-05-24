@@ -43,25 +43,27 @@ router.post("/api/checkauth-guest", authGuest(), async (req, res) => {
 });
 
 router.post("/api/login", auth(), async (req, res) => {
-      const { email, password } = req.body;
-      try {
-        const user = await new UserService().findUserByUsername(req, email);
-        const passwordHash = await crypto
-          .createHash("sha256")
-          .update(password)
-          .digest("hex");
-  
-        if (!user || passwordHash !== user.password) {
-          return;
-        }
-  
-        const sessionId = await new SessionService().createSession(req, user._id);
-        res.cookie("sessionId", sessionId, { httpOnly: true }).send(user);
-      } catch (err) {
-        console.error(err);
-      }
+  console.log(req.body)
+  const { email, password } = req.body;
+  try {
+    const user = await new UserService().findUserByUsername(req, email);
+    console.log(user)
+    const passwordHash = await crypto
+      .createHash("sha256")
+      .update(password)
+      .digest("hex");
+
+    if (!user || passwordHash !== user.password) {
+      res.status(200).send(false)
+      return;
     }
-);
+
+    const sessionId = await new SessionService().createSession(req, user._id);
+    res.cookie("sessionId", sessionId, { httpOnly: true }).send(user);
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 router.post('/api/registration', auth(), async (req, res) => {
   if (!req.user) {
@@ -161,6 +163,39 @@ router.delete('/api/delete-socket-id/:id', auth(), async (req, res) => {
     res.send(true)
   } catch (error) {
     console.error(error)
+  }
+})
+
+router.post("/api/check-key", async (req, res) => {
+  const user =  await req.db.collection("users").findOne({ restoreCode: +req.body.data.token })
+  if (user) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(304)
+  }
+})
+
+router.post("/api/update-password", async (req, res) => {
+  const user =  await req.db.collection("users").findOne({ restoreCode: +req.body.data.token })
+  if (user) {
+    const passwordHash = await crypto
+        .createHash('sha256')
+        .update(req.body.data.newPassword)
+        .digest('hex')
+
+    const setNewPassword = await req.db.collection("users").updateOne(
+      { restoreCode: +req.body.data.token, email: req.body.data.email },
+      { $set: { password: passwordHash } }
+    )
+
+    if (setNewPassword) {
+      res.send(true)
+    } else {
+      res.send(false)
+    }
+
+  } else {
+    res.send(false)
   }
 })
 

@@ -18,7 +18,7 @@
                                 v-model="newDop.price"
                                 type="number"
                                 label="Стоимость"
-                                prefix="₽")
+                                :prefix="$store.state.auth.user.currencySymbol")
                             transition(name="slide-fade" mode="out-in")
                                 .cats__item-controls-btn(@click="create" v-if="newDop.name.length")
                                     v-icon(light) mdi-checkbox-marked-circle-outline

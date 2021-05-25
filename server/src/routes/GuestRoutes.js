@@ -78,7 +78,6 @@ router.get('/api/get-user-data/:id', async (req, res) => {
     const user = await req.db.collection('users').findOne(
         { 'places.link': req.params.id }
     )
-
     if (user) {
         const place = user.places.find(e => e.link == req.params.id)
         const publicUser = {
@@ -89,7 +88,8 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             background: user.background,
             categories: user.categories,
             places: user.places,
-            actions: user.actions
+            actions: user.actions,
+            currencySymbol: user.currencySymbol
         }
         res.status(200).send(publicUser)
     } else {

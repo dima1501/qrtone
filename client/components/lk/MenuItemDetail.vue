@@ -14,13 +14,13 @@
                     .menu-item__name {{ item.description }}
                     .menu-item__price(v-for="(price, i) in item.prices" :key="i")
                         input.menu-item__price-radio(type="radio" :id="`detail_${item._id}${i}`" :name="`detail_${item._id}`" :value="i"  v-model="$store.state.view.detail.checkedPrice")
-                        label.menu-item__price-label(:for="`detail_${item._id}${i}`") {{ item.prices[i] }}₽ {{ item.weights[i] }}г.
+                        label.menu-item__price-label(:for="`detail_${item._id}${i}`") {{ item.prices[i] }}{{$store.state.guest.companyData.currencySymbol}} {{ item.weights[i] }}г.
 
                 .menu-item__bottom(v-if="$store.state.guest.user.cart")
                     .menu-item__button(
                         @click="plusMulti"
                         v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id).cartPrices.filter(e => e == $store.state.view.detail.checkedPrice).length"
-                        ) {{ item.prices[$store.state.view.detail.checkedPrice] }} ₽
+                        ) {{ item.prices[$store.state.view.detail.checkedPrice] }} {{$store.state.guest.companyData.currencySymbol}}
 
                     .menu-item__counter(v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id).cartPrices.filter(e => e == $store.state.view.detail.checkedPrice).length")
                         .menu-item__counter-control.minus(@click="minusMulti(item)") -

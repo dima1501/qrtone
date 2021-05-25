@@ -23,6 +23,7 @@
     "nodemailer-pug-engine": "^2.0.1",
     "nuxt": "^2.15.3",
     "nuxt-dropzone": "^1.0.4",
+    "nuxt-i18n": "^6.27.0",
     "qrcode": "^1.4.4",
     "socket.io": "^4.0.0",
     "socket.io-client": "^4.0.0",

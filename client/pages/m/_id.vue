@@ -41,7 +41,7 @@ div
                     v-btn.commands__item(depressed @click="closeCommands") Спасибо
 
         transition(name="slide-fade")
-            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openCart") Корзина <span> {{ getTotalPrice }} ₽ </span>
+            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openCart") Корзина <span> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
 
         div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
             transition(name="slide-fade")
@@ -71,7 +71,7 @@ div
                                     .menu__counter-control.plus(@click="plusMulti(item, price)") +
 
                 .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length")
-                    .cart__bottom-price {{getTotalPrice}} ₽
+                    .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
                     .cart__bottom-control
                         v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.table") Заказать
                         v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
@@ -96,7 +96,7 @@ div
                                     div {{ good.name }}
                                     .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
                                         div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
-                            .sorder__price Итого: {{ getOrderPrice(item) }} ₽
+                            .sorder__price Итого: {{ getOrderPrice(item) }} {{$store.state.guest.companyData.currencySymbol}}
         transition(name="slide-fade")
             InfoPopup(v-show="$store.state.view.popup.infoPopup")
 

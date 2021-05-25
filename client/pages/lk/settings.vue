@@ -2,7 +2,7 @@
     .settings(v-if="$store.state.auth.user")
         h1.settings__title Настройки
         .settings__section
-            h2.settings__section-title Общие
+            h2.settings__section-title Отображение
             .settings__line
                 .settings__line-label Название компании
                 h3.settings__line-title(v-if="!editCompanyName") {{ $store.state.auth.user.name }}
@@ -34,14 +34,20 @@
 
         .settings__section
             .settings__section-top
-                h2 Уведомления
-            
-            .ntfcs
-                .ntfcs__item(v-if="notificationsEnabled == 'denied'")
-                    h4 Уведомления отключены в браузере <a href="https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop" target="_blank">как включить</a>
-                .ntfcs__item(v-else)
-                    input(type="checkbox" @input="notificationToggler($event)" id="ordersNotifications" :checked="notificationsEnabledLocal == 'true'")
-                    label(for="ordersNotifications") Уведомления в браузере
+                h2 Общие настройки
+
+            .settings__section-block
+                h3 Уведомления
+                .ntfcs
+                    .ntfcs__item(v-if="notificationsEnabled == 'denied'")
+                        h4 Уведомления отключены в браузере <a href="https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop" target="_blank">как включить</a>
+                    .ntfcs__item(v-else)
+                        input(type="checkbox" @input="notificationToggler($event)" id="ordersNotifications" :checked="notificationsEnabledLocal == 'true'")
+                        label(for="ordersNotifications") Уведомления в браузере
+
+            .settings__section-block
+                h3 Символ валюты
+                v-select(v-if="currency.length" :items="currency" @input="setCurrency" label="Выберите символ" :item-text="curSelectText" item-value="symbol_native" :value="currency.find(e => e.symbol_native == $store.state.auth.user.currencySymbol).symbol_native")
 
         .settings__section
             .settings__section-top
@@ -151,6 +157,8 @@
 import { transliterate as tr } from 'transliteration';
 import moment from 'moment';
 
+import currencies from 'assets/json/currency.json'
+
 export default {
     layout: 'lk',
     data() {
@@ -167,14 +175,24 @@ export default {
             editableTablesPlace: null,
             updatedLinks: [],
             notificationsEnabled: false,
-            notificationsEnabledLocal: false
+            notificationsEnabledLocal: false,
+            currency: [],
+            checkedCurrency: null
         }
     },
     async mounted() {
         this.notificationsEnabled = Notification.permission
         this.notificationsEnabledLocal = localStorage.getItem('notifications')
+        const cur = this.currency
+        Object.keys(currencies).forEach(function(key) {
+            cur.push(currencies[key])
+        })
     },
     methods: {
+        setCurrency(value) {
+            this.$store.dispatch('lk/setCurrency', value)
+        },
+        curSelectText: item => `${item.name_plural} ${item.symbol_native}`,
         logOut() {
             this.$store.dispatch("auth/logout")
         },

@@ -31,7 +31,7 @@
                 v-card-actions
                     v-btn(
                     text
-                    to="/auth/login"
+                    :to="localePath('/auth/login')"
                     ) {{ 'form_login' }}
                     v-spacer
                     v-btn(

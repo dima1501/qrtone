@@ -23,11 +23,11 @@
                 v-card-actions
                     v-btn(
                     text
-                    to="/auth/registration"
+                    :to="localePath('/auth/registration')"
                     ) Регистрация
                     v-btn(
                     text
-                    to="/auth/login"
+                    :to="localePath('/auth/login')"
                     ) Вход
                     v-spacer
                     v-btn(
@@ -52,11 +52,11 @@
                 v-card-actions
                     v-btn(
                     text
-                    to="/auth/registration"
+                    :to="localePath('/auth/registration')"
                     ) Регистрация
                     v-btn(
                     text
-                    to="/auth/login"
+                    :to="localePath('/auth/login')"
                     ) Вход
                     v-spacer
                     v-btn(
@@ -81,11 +81,11 @@
                 v-card-actions
                     v-btn(
                     text
-                    to="/auth/registration"
+                    :to="localePath('/auth/registration')"
                     ) Регистрация
                     v-btn(
                     text
-                    to="/auth/login"
+                    :to="localePath('/auth/login')"
                     ) Вход
                     v-spacer
                     v-btn(
@@ -94,8 +94,6 @@
                     text
                     type="submit"
                     ) Далее
-        
-        div {{$store.state.auth.restore}}
 
 </template>
 

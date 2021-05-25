@@ -31,7 +31,7 @@
 
     div(v-else)
         h2 Заказы доступны с подпиской Premium 
-        nuxt-link(to="/lk/settings") Настройки
+        nuxt-link(:to="localePath('/lk/settings')") Настройки
 
 </template>
 

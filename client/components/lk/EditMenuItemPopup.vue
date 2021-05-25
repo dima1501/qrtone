@@ -74,7 +74,7 @@
                                 :rules="nameRules"
                                 v-model="updatedMenuItem.prices[i - 1]"
                                 type="number"
-                                prefix="₽").mr-5
+                                :prefix="$store.state.auth.user.currencySymbol").mr-5
                             .e-card__line-label.short Вес:
                             v-text-field(
                                 ref="price"
@@ -176,7 +176,7 @@ export default {
         },
     },
     methods: {
-        dopSelectText: item => `${item.name} ${item.price} ₽`,
+        dopSelectText: item => `${item.name} ${item.price} ${this.$store.state.auth.user.currencySymbol}`,
         removePic(file, index) {
             if (file.upload) {
                 this.$refs.dropzone2.removeFile(file)

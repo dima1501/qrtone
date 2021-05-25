@@ -29,7 +29,8 @@ router.post("/api/checkauth", auth(), async (req, res) => {
       messages: [],
       notifications: req.user.notifications,
       sockets: [],
-      subscription: req.user.subscription
+      subscription: req.user.subscription,
+      currencySymbol: req.user.currencySymbol
     }
     res.send(preloadUser);
   } else {

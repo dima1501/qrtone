@@ -9,30 +9,30 @@
 }
 
 input {
-    &[type=text],
-    &[type=password],
-    &[type=email],
-    &[type=number] {
-        background-color: $color-white;
-        display: block;
-        width: 100%;
-        font-size: 14px;
-        line-height: 20px;
-        padding: 14px 16px;
-        color: $color-black;
-        border: 1px solid $color-grey-light;
-        border-radius: 4px;
-        transition: background-color .3s, border-color .3s;
+    // &[type=text],
+    // &[type=password],
+    // &[type=email],
+    // &[type=number] {
+    //     background-color: $color-white;
+    //     display: block;
+    //     width: 100%;
+    //     font-size: 14px;
+    //     line-height: 20px;
+    //     padding: 14px 16px;
+    //     color: $color-black;
+    //     border: 1px solid $color-grey-light;
+    //     border-radius: 4px;
+    //     transition: background-color .3s, border-color .3s;
 
-        &.validation-failed {
-            background: $color-light-red;
-            border-color: $color-primary-red
-        }
+    //     &.validation-failed {
+    //         background: $color-light-red;
+    //         border-color: $color-primary-red
+    //     }
 
-        &:focus {
-            outline-width: 0;
-        }
-    }
+    //     &:focus {
+    //         outline-width: 0;
+    //     }
+    // }
 }
 
 ::placeholder {

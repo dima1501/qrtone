@@ -574,6 +574,21 @@ const simplify = async (store, data) => {
   }
 }
 
+const setCurrency = async (store, data) => {
+  try {
+    const set = await axios({
+      method: 'post',
+      url: `/api/set-currency/`,
+      data: { data }
+    })
+    if (set) {
+      store.rootState.auth.user.currencySymbol = data
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 
 export default {
     updateUserName,
@@ -605,5 +620,6 @@ export default {
     updateLink,
     subscribe,
     improve,
-    simplify
+    simplify,
+    setCurrency
 }

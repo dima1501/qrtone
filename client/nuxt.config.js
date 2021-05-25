@@ -64,7 +64,27 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa', 
+    [
+      'nuxt-i18n',
+      {
+        locales: [
+          {
+            code: 'ru',
+            file: 'ru-RU.js'
+          }
+        ],
+        detectBrowserLanguage: true,
+        detectBrowserLanguage: {
+          useCookie: true,
+          cookieDomain: null,
+          cookieKey: 'lang',
+          alwaysRedirect: true,
+        },
+        lazy: true,
+        langDir: 'lang/',
+      }
+    ]
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

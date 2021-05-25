@@ -36,9 +36,7 @@ const registrationAction = async (store, data) => {
       store.dispatch("auth/regEmail")
       store.state.user = registration.data
       // eslint-disable-next-line no-undef
-        // $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
-      $nuxt.$router.push('/lk/settings')
-
+      $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
       // store.dispatch("auth/setSocketId", $nuxt.$socket.id, { root: true });
 
       for (let item of store.state.user.goods) {
@@ -69,8 +67,7 @@ const loginAction = async (store, data) => {
     if (login.data) {
       store.state.user = login.data
       // eslint-disable-next-line no-undef
-      // $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
-      $nuxt.$router.push('/lk/settings')
+      $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
       // eslint-disable-next-line no-undef
 
       // store.dispatch('auth/setSocketId', $nuxt.$socket.id, { root: true })
@@ -141,7 +138,7 @@ const logout = async (store, data) => {
       url: '/api/logout'
     })
     if (logout) {
-      $nuxt.$router.push('/')
+      $nuxt.$router.push($nuxt.localePath({ path: '/' }))
       store.state.user = null
       store.state.parsedMenu = {},
       store.state.parsedOrders = []
@@ -210,8 +207,7 @@ const updatePassword = async (store, data) => {
       data: { data }
     })
     if (update.data) {
-      $nuxt.$router.push('/auth/login')
-      console.log('updated')
+      $nuxt.$router.push($nuxt.localePath({ path: '/auth/login' }))
       store.state.restore = {
         isKeyValid: false,
         isEmailSent: false,

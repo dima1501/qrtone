@@ -23,7 +23,7 @@
               .tables__item(v-for="(table, idx) in place.tables" v-bind:key="idx" @click="selectTable(table, item, place)" :class="{ active: item.tables.indexOf(table) > -1 }") {{ formatTable(table) }}
   div(v-else)
     h2 Доступно с подпиской Premium 
-    nuxt-link(to="/lk/settings") Настройки
+    nuxt-link(:to="localePath('/lk/settings')") Настройки
 
 </template>
 

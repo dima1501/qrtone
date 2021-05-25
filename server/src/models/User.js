@@ -78,7 +78,8 @@ const User = class User {
         started: moment()._d,
         expires: moment().add(14, 'days')._d
       }
-    ]
+    ],
+    this.currencySymbol = '₽'
   }
 }
 

@@ -25,7 +25,7 @@
                 v-card-actions
                     v-btn(
                     text
-                    to="/auth/registration"
+                    :to="localePath('/auth/registration')"
                     ) {{ 'form_reg' }}
                     v-spacer
                     v-btn(

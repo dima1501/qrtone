@@ -4,11 +4,11 @@
 
 <script>
 export default {
-    created() {
+    mounted() {
         if (!this.$route.query.place) {
-            this.$router.push({path: '/'})
+            this.$router.push($nuxt.localePath({ path: '/' }))
         } else {
-            this.$router.push({path: '/m/'})
+            $nuxt.$router.push($nuxt.localePath({ path: `/m/` }))
             this.$store.dispatch('guest/redirect', {
                 placeId: this.$route.query.place,
                 table: this.$route.query.table

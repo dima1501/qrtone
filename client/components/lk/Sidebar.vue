@@ -1,22 +1,22 @@
 <template lang="pug">
   .sidebar(v-if="$store.state.auth.user")
     .sidebar__name QRTone
-    nuxt-link(to='/lk/settings').sidebar__settings
+    nuxt-link(:to="localePath('/lk/settings')").sidebar__settings
     .sidebar__company
       // .sidebar__company-logo(v-bind:style="{ backgroundImage: 'url(' + ($store.state.auth.user.photo ? '../../uploads/' + $store.state.auth.user.photo : '' ) + ')' }")
       .sidebar__company-logo(v-if="$store.state.auth.user.photo" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.auth.user.photo +')' }")
       .sidebar__company-name(@click="sendMail") {{ $store.state.auth.user.name }}
     nav.sidebar__nav
-      nuxt-link(to='/lk/orders').sidebar__nav-item
+      nuxt-link(:to="localePath('/lk/orders')").sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name Дэшборд
-      nuxt-link(to='/lk/menu').sidebar__nav-item
+      nuxt-link(:to="localePath('/lk/menu')").sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name Меню
-      nuxt-link(to='/lk/qr').sidebar__nav-item
+      nuxt-link(:to="localePath('/lk/qr')").sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name QR-коды
-      nuxt-link(to='/lk/telegram').sidebar__nav-item
+      nuxt-link(:to="localePath('/lk/telegram')").sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name Телеграм бот
 </template>

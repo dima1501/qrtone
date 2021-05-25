@@ -605,4 +605,21 @@ router.post('/api/simplify', auth(), async (req, res) => {
 })
 
 
+router.post('/api/set-currency', auth(), async (req, res) => {
+    try {
+        const set = req.db.collection("users").updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $set: { 'currencySymbol': req.body.data } }
+        )
+        if (set) {
+            res.status(200).send(true)
+        } else {
+            res.status(200).send(false)
+        }
+        
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 module.exports = router

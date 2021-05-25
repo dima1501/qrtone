@@ -241,6 +241,20 @@ const redirect = async (store, data) => {
     }
 }
 
+const openDetail = async (store, data) => {
+    store.rootState.view.detail.visible = true
+    store.rootState.view.detail.item = data.item
+    store.rootState.view.detail.checkedPrice = data.checkedPrice
+}
+
+const closeDetail = async (store, data) => {
+    store.rootState.view.detail.visible = false
+    store.rootState.view.detail.item = null
+    store.rootState.view.detail.checkedPrice = null
+}
+
+
+
 export default {
     checkAuth,
     login,
@@ -256,6 +270,8 @@ export default {
     fastAction,
     minusCartItemMulti,
     addToCartSimple,
-    redirect
+    redirect,
+    openDetail,
+    closeDetail
   }
   

@@ -60,6 +60,7 @@ export default {
             this.$store.dispatch('lk/updateCats')
         },
         create() {
+            console.log(this.newCat)
             this.$store.dispatch('lk/createCat', this.newCat)
             this.newCat = ''
         }

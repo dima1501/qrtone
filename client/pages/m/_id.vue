@@ -27,7 +27,7 @@ div
                             ) {{item.name}}
                 .menu
                     .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id")
-                        .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key") 123
+                        .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key")
                             MenuItem(:item="item" :placeId="$nuxt.$route.params.id")
 
         transition(name="slide-fade" mode="out-in")
@@ -99,6 +99,9 @@ div
                             .sorder__price Итого: {{ getOrderPrice(item) }} ₽
         transition(name="slide-fade")
             InfoPopup(v-show="$store.state.view.popup.infoPopup")
+
+        transition(name="slide-fade")
+            MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
 
 </template>
 
@@ -641,6 +644,8 @@ export default {
         &-img {
             margin-right: 20px;
             max-height: 50px;
+            width: 80px;
+            height: auto;
         }
     }
 }

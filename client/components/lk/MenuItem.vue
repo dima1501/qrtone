@@ -9,7 +9,8 @@
             .menu-item__content-inner
                 .menu-item__name {{ item.name }}
                 .menu-item__name {{ item.translation }}
-                .menu-item__name {{ item.description }}
+                //- .menu-item__name {{ item.description }}
+                .menu-item__more(@click="openDetail(item)") Подробнее
                 .menu-item__price(v-for="(price, i) in item.prices" :key="i")
                     input.menu-item__price-radio(type="radio" :id="`${item._id}${i}`" :name="item._id" :value="i" v-model="checkedPrice")
                     label.menu-item__price-label(:for="`${item._id}${i}`") {{ item.prices[i] }}₽ {{ item.weights[i] }}г.
@@ -17,7 +18,7 @@
             .menu-item__bottom(v-if="$store.state.guest.user.cart")
                 .menu-item__button(
                     @click="plusMulti"
-                    v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id)"
+                    v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length"
                     ) {{ item.prices[checkedPrice] }} ₽
 
                 .menu-item__counter(v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length")
@@ -45,7 +46,12 @@ export default {
         }
     },
     methods: {
-        getPlaceId(place) {
+        openDetail(item) {
+            this.$store.dispatch('guest/openDetail', {
+                item, checkedPrice: this.checkedPrice
+            })
+        },
+        getPlaceId() {
             return this.$store.state.guest.companyData.places.find(e => e.link == this.placeId)._id
         },
         addToCartSimple() {
@@ -133,6 +139,10 @@ export default {
     }
     &__bottom {
         width: 100%;
+    }
+    &__more {
+        color: $color-blue;
+        cursor: pointer;
     }
 }
 </style>

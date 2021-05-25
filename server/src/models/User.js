@@ -14,43 +14,43 @@ const User = class User {
     this.background = null,
     this.categories = [
       {
-        _id: nanoid(),
+        _id: 'salads',
         name: 'Салаты'
       },
       {
-        _id: nanoid(),
+        _id: 'snacks',
         name: 'Закуски'
       },
       {
-        _id: nanoid(),
+        _id: 'soups',
         name: 'Супы'
       },
       {
-        _id: nanoid(),
+        _id: 'pizza',
         name: 'Пицца'
       },
       {
-        _id: nanoid(),
+        _id: 'hot',
         name: 'Горячие блюда'
       },
       {
-        _id: nanoid(),
+        _id: 'side-dishes',
         name: 'Гарниры'
       },
       {
-        _id: nanoid(),
+        _id: 'child',
         name: 'Детское меню'
       },
       {
-        _id: nanoid(),
+        _id: 'desert',
         name: 'Десерты'
       },
       {
-        _id: nanoid(),
+        _id: 'non-alco',
         name: 'Безалкогольные напитки'
       },
       {
-        _id: nanoid(),
+        _id: 'alco',
         name: 'Алкогольные напитки'
       }
     ],

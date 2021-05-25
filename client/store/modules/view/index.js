@@ -41,7 +41,12 @@ const state = {
     }
   },
   isOrdersOpened: false,
-  isCartOpened: false
+  isCartOpened: false,
+  detail: {
+    visible: false,
+    item: null,
+    checkedPrice: null
+  }
 }
 
 export default {

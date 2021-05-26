@@ -129,9 +129,11 @@ export default {
         }
     }
     &__line {
-        display: flex;
-        align-items: center;
         // margin-bottom: 10px;
+        &-inner {
+            display: flex;
+            align-items: center;
+        }
         &:last-child {
             margin-bottom: 0;
         }

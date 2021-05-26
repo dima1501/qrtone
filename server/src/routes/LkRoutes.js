@@ -422,7 +422,7 @@ router.post('/api/accept-fast-action', auth(), async (req, res) => {
     }
 })
 
-router.post('/api/accept-fasst-action-tg', auth(), async (req, res) => {
+router.post('/api/accept-fast-action-tg', auth(), async (req, res) => {
     const accept = await req.db.collection('users').updateOne(
         { "notifications._id": req.body._id },
         { $set: { "notifications.$.status" : 'accepted' } }
@@ -432,7 +432,7 @@ router.post('/api/accept-fasst-action-tg', auth(), async (req, res) => {
 
 router.post('/api/set-place-socket-id', auth(), async (req, res) => {
     try {
-        req.db.collection('users').updateOne(
+        await req.db.collection('users').updateOne(
             { 'sockets.socketId': req.body.data.socketId },
             {'$pull': { "sockets": { "socketId": req.body.data.socketId } } }
         )

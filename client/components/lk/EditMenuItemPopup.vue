@@ -68,26 +68,34 @@
                         .e-card__add-link(@click="addCategoryPopup") Управление категориями
                                 
                         .e-card__line(v-for="(i, key) in prices" v-bind:key="key")
-                            .e-card__line-label.short Цена:
                             v-text-field(
-                                ref="price"
-                                :rules="nameRules"
-                                v-model="updatedMenuItem.prices[i - 1]"
-                                type="number"
-                                :prefix="$store.state.auth.user.currencySymbol").mr-5
-                            .e-card__line-label.short Вес:
-                            v-text-field(
-                                ref="price"
-                                :rules="prices > 1 ? nameRules : [true]"
-                                v-model="updatedMenuItem.weights[i - 1]"
-                                type="number"
-                                prefix="г.")
-                            .e-card__remove(
-                                @click="removePriceItem(i)"
-                                v-if="i > 1")
-                                v-icon(light) mdi-trash-can-outline
+                                ref="name"
+                                :rules="!updatedMenuItem.weights[i - 1] ? nameRules : [true]"
+                                v-model="updatedMenuItem.modifications[i - 1]"
+                                v-if="i > 1"
+                                label="Описание"
+                                type="text")  
+                            .e-card__line-inner
+                                .e-card__line-label.short Цена:
+                                v-text-field(
+                                    ref="price"
+                                    :rules="nameRules"
+                                    v-model="updatedMenuItem.prices[i - 1]"
+                                    type="number"
+                                    :prefix="$store.state.auth.user.currencySymbol").mr-5
+                                .e-card__line-label.short Вес:
+                                v-text-field(
+                                    ref="price"
+                                     :rules="i > 1 && !updatedMenuItem.modifications[i - 1] ? nameRules : [true]"
+                                    v-model="updatedMenuItem.weights[i - 1]"
+                                    type="number"
+                                    prefix="г.")
+                                .e-card__remove(
+                                    @click="removePriceItem(i)"
+                                    v-if="i > 1")
+                                    v-icon(light) mdi-trash-can-outline
                         
-                        .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !updatedMenuItem.weights[prices - 1] || !updatedMenuItem.prices[prices - 1] }") Добавить цену и вес
+                        .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !updatedMenuItem.prices[prices - 1] || !updatedMenuItem.weights[prices - 1] && !updatedMenuItem.modifications[prices - 1] && prices != 1 }") Добавить модификацию
 
                         .e-card__section
                             h4(v-if="!$store.state.auth.user.dops.length") Дополнения к блюду
@@ -426,8 +434,10 @@ export default {
         }
     }
     &__line {
-        display: flex;
-        align-items: center;
+        &-inner {
+            display: flex;
+            align-items: center;
+        }
         // margin-bottom: 10px;
         &:last-child {
             margin-bottom: 0;

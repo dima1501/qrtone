@@ -13,6 +13,7 @@
                 .menu-item__price(v-for="(price, i) in item.prices" :key="i")
                     input.menu-item__price-radio(type="radio" :id="`${item._id}${i}`" :name="item._id" :value="i" v-model="checkedPrice")
                     label.menu-item__price-label(:for="`${item._id}${i}`") {{ item.prices[i] }}{{$store.state.guest.companyData.currencySymbol}} {{ item.weights[i] }}г.
+                        span(v-if="item.modifications")  {{ item.modifications[i] }}
 
             .menu-item__bottom(v-if="$store.state.guest.user.cart")
                 .menu-item__button(

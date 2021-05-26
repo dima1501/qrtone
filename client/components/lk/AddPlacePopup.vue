@@ -145,8 +145,10 @@ export default {
         }
     }
     &__line {
-        display: flex;
-        align-items: center;
+        &-inner {
+            display: flex;
+            align-items: center;
+        }
         // margin-bottom: 10px;
         &:last-child {
             margin-bottom: 0;

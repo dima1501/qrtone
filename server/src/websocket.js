@@ -73,7 +73,7 @@ module.exports = {
     try {
       await axios({
         method: 'post',
-        url: `${config.SERVER}/api/accept-fasst-action-tg`,
+        url: `${config.API_SERVER}/api/accept-fast-action-tg`,
         data: {
           _id: data.data._id
         }

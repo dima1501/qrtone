@@ -29,9 +29,9 @@
                                         v-icon(dark) mdi-drag
 
                                 .m-item__img(v-if="good.images.length")
-                                    img(v-for="(image, key) in good.images" :key="key" :src="`../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
+                                    img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
                                     VueSlickCarousel(:arrows="false" :dots="true" v-if="good.images.length > 1")
-                                        img(v-for="(image, key) in good.images" :key="key" :src="`../uploads/${image}`")
+                                        img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`")
 
                                 .m-item__name {{ good.name }}
                                 .m-item__name {{ good.translation }}
@@ -39,6 +39,7 @@
 
                                 .m-item__line(v-for="(item, key) in good.prices" :key="key")
                                     .m-item__price Цена: {{ good.prices[key] }}
+                                    .m-item__price(v-if="good.modifications") Модификация: {{ good.modifications[key] }}
                                     .m-item__weight Вес: {{ good.weights[key] }}
 
                                 .m-item__category Категория: {{ $store.state.auth.user.categories.find(e => e._id == good.category).name }}

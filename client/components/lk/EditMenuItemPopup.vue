@@ -186,10 +186,15 @@ export default {
     methods: {
         dopSelectText: item => `${item.name} ${item.price} ${this.$store.state.auth.user.currencySymbol}`,
         removePic(file, index) {
+            console.log(file)
+            console.log(index)
             if (file.upload) {
                 this.$refs.dropzone2.removeFile(file)
+            } else {
+                this.$store.dispatch("lk/deletePic", file)
             }
             this.updatedMenuItem.images.splice(index, 1)
+            
         },
         fetchEditItem() {
             this.$store.dispatch('lk/editMenuItem', {

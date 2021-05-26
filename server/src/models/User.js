@@ -79,7 +79,8 @@ const User = class User {
         expires: moment().add(14, 'days')._d
       }
     ],
-    this.currencySymbol = '₽'
+    this.currencySymbol = '₽',
+    this.publicSockets = []
   }
 }
 

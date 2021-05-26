@@ -98,8 +98,8 @@ export default {
         isAvailable() {
             const isStandart = this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].type == 'standart'
             const isNotExpired = !moment(this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].expires).isBefore()
-            // const isTrial = !moment(this.$store.state.auth.user.subscription[0].expires).isBefore()
-            return !isStandart && isNotExpired
+            const isTrial = !moment(this.$store.state.auth.user.subscription[0].expires).isBefore()
+            return !isStandart && isNotExpired || isTrial
         }
     },
     methods: {

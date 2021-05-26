@@ -54,9 +54,11 @@ router.post("/api/delete-pic", auth(), (req, res) => {
     if (err) {
       throw err
     } else {
-      res.status(200).send(true)
+      // deleted
     }
   })
+
+  res.status(200).send(true)
   
 })
 

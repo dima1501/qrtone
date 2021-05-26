@@ -605,6 +605,21 @@ const deletePic = async (store, data) => {
   }
 }
 
+const updateTGUsers = async (store, data) => {
+  try {
+    const fetch = await axios({
+      method: 'post',
+      url: '/api/load-tg-users',
+      data: { data }
+    })
+    if (fetch.data) {
+      store.rootState.auth.user.telegram = fetch.data
+      console.log(123)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 
 export default {
@@ -639,5 +654,6 @@ export default {
     improve,
     simplify,
     setCurrency,
-    deletePic
+    deletePic,
+    updateTGUsers
 }

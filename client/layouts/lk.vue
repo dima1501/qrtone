@@ -38,6 +38,9 @@ export default {
     },
     async acceptFastAction(data) {
       this.$store.state.auth.user.notifications.find(e => e._id == data._id).status = 'accepted'
+    },
+    async newTGUser() {
+      this.$store.dispatch("lk/updateTGUsers")
     }
   },
   mounted() {

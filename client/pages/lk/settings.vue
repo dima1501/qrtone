@@ -85,6 +85,10 @@
                     .place__link
                         h4.place__link-title Ссылка на меню заведения
 
+                        .place__link-text https://qrtone.com/m/{{ place.link }}
+                            v-icon(light @click="copyLink(place.link)") mdi-content-copy
+                            v-icon(light v-if="navigator && navigator.share" @click="shareLink(place.link)") mdi-share-variant
+
                         .place__link-input
                             .place__link-input-placeholder https://qrtone.com/m/
                             input(type="text" :value="place.link" @input="functionToChangeValue($event, key)")
@@ -177,7 +181,8 @@ export default {
             notificationsEnabled: false,
             notificationsEnabledLocal: false,
             currency: [],
-            checkedCurrency: null
+            checkedCurrency: null,
+            navigator: null
         }
     },
     async mounted() {
@@ -187,8 +192,20 @@ export default {
         Object.keys(currencies).forEach(function(key) {
             cur.push(currencies[key])
         })
+        this.navigator = navigator
     },
     methods: {
+        copyLink(text) {
+            const link = `https://qrtone.com/m/${text}`
+            navigator.clipboard.writeText(link)
+        },
+        shareLink(text) {
+            const link = `https://qrtone.com/m/${text}`
+            navigator.share({
+                title: 'QRTone.com',
+                url: link
+            })
+        },
         setCurrency(value) {
             this.$store.dispatch('lk/setCurrency', value)
         },

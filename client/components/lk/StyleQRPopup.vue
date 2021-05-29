@@ -5,9 +5,10 @@
                 v-icon(dark) mdi-close
             .popup__content
                 h2.popup__title(v-if="!$store.state.view.popup.tablesPopup.tables") QR-код меню
-                h2.popup__title(v-else) QR-коды столиков # {{ $store.state.view.popup.tablesPopup.tables }}
+                h2.popup__title(v-else) QR-коды столиков # {{ $store.state.view.popup.tablesPopup.tables }} {{$store.state.view.pdf.title}}
                 .sqr
                     .sqr__pic(v-html="qr")
+                    .sqr__pdf(@click="openPDFPopup") Шаблоны для печати
                     .sqr__name {{ $store.state.view.popup.styleQRPopup.place.name }}
                     .sqr__line
                         .sqr__line-label Лого
@@ -40,13 +41,20 @@
                         .sqr__bottom-item
                             .sqr__disable Отмена
                         .sqr__bottom-item
-                            a.sqr__save(@click="download") Скачать
+                            a.sqr__save(@click="download()") Скачать
+
+            // Для печати
+            .pdf__print
+                .pdf__list(ref="pdf_1")
+                    pdfComponent
 </template>
 
 <script>
-import Vue from 'vue'
 import vkQr from '@vkontakte/vk-qr';
 import fileDownload from 'js-file-download'
+
+import jsPDF from 'jspdf' 
+import html2canvas from "html2canvas"
 
 export default {
     data() {
@@ -63,6 +71,9 @@ export default {
         this.updateQR()
     },
     methods: {
+        openPDFPopup() {
+            this.$store.state.view.popup.PDFPopup.visible = true
+        },
         updateQR() {
             const id = this.$store.state.auth.user._id
             const place = this.$store.state.view.popup.styleQRPopup.place._id
@@ -75,16 +86,20 @@ export default {
                 backgroundColor: this.settings.bgColor,
                 foregroundColor: this.settings.mainColor
             })
+            this.$store.state.view.pdf.qr = qrSvg
             this.qr = qrSvg
+            console.log('update')
         },
         closePopup() {
             this.$store.state.view.popup.styleQRPopup.visible = false
         },
-        download() {
+        async download() {
             const id = this.$store.state.auth.user._id
             const place = this.$store.state.view.popup.styleQRPopup.place
             const tables = this.$store.state.view.popup.tablesPopup.tables
             let tablesArr = []
+            let doc = new jsPDF("p", "px")
+
             if (tables) {
                 if (tables.split('-').length == 2) {
                     for (let i = tables.split('-')[0]; i <= tables.split('-')[1]; i++ ) {
@@ -97,7 +112,8 @@ export default {
                 }
 
                 for (let i = 0; i < tablesArr.length; i++) {
-                    const qrSvg = vkQr.createQR(`${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`, {
+                    console.log(1)
+                    const qrSvgs = vkQr.createQR(`${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`, {
                         qrSize: 256,
                         isShowLogo: this.settings.logo,
                         logoData: this.settings.logo ? `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.$store.state.auth.user.photo}` : '',
@@ -105,11 +121,53 @@ export default {
                         backgroundColor: this.settings.bgColor,
                         foregroundColor: this.settings.mainColor
                     })
-                    fileDownload(qrSvg, `${place.name}-${tablesArr[i]}.svg`)
+
+                    if (this.$store.state.view.pdf.ref) {
+                        this.$store.state.view.pdf.qr = qrSvgs
+
+                        const el = this.$refs[this.$store.state.view.pdf.ref];
+                        const canvas = await this.$html2canvas(el, { type: 'dataURL' })
+
+                        doc.addImage(canvas, 'JPEG', 0, 0)
+                        if (i < (tablesArr.length - 1)) {
+                            doc.addPage();
+                        }
+                        
+                    } else {
+                        fileDownload(qrSvgs, `${place.name}-${tablesArr[i]}.svg`)
+                    }
                 }
+                if (this.$store.state.view.pdf.ref) {
+                    doc.save("sample.pdf")
+                }
+                
             } else {
-                fileDownload(this.qr, `${place.name}_menu_qr.svg`)
+                if (this.$store.state.view.pdf.ref) {
+                    const el = this.$refs[this.$store.state.view.pdf.ref];
+                    const canvas = await this.$html2canvas(el, { type: 'dataURL' })
+                    doc.addImage(canvas, 'JPEG', 0, 0)
+                    doc.save("sample.pdf")
+                } else {
+                    fileDownload(this.qr, `${place.link}_menu_qr.svg`)
+                }
             }
+        },
+
+        async generateAllPdf() {
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const length = 2;
+            for (let i = 0; i < length; i++) {
+                const chart = this.$refs[this.$store.state.view.pdf.ref]
+                // excute this function then exit loop
+                await html2canvas(chart, { scale: 1 }).then(function (canvas) { 
+                    doc.addImage(canvas.toDataURL('image/png'), 'JPEG', 10, 50, 200, 150);
+                    if (i < (length - 1)) {
+                        doc.addPage();
+                    }
+                });
+            }
+            // download the pdf with all charts
+            doc.save('All_charts_' + Date.now() + '.pdf');
         }
     }
 }
@@ -201,6 +259,15 @@ export default {
         &-item {
             margin: 0 10px;
         }
+    }
+}
+
+.pdf {
+    &__print {
+        position: absolute;
+        top: 0;
+        left: 200%;
+        z-index: 100;
     }
 }
 </style>

@@ -12,7 +12,7 @@
                     color="primary"
                     text
                     :disabled="!tables"
-                    @click="openStyleQRPopup"
+                    @click="openStyleQRPopup()"
                 ) Управление столиками            
 </template>
 

@@ -4,6 +4,10 @@ import mutations from './mutations'
 
 const state = {
   popup: {
+    PDFPopup: {
+      visible: false,
+      data: null
+    },
     addPlacePopup: {
         visible: false
     },
@@ -46,6 +50,12 @@ const state = {
     visible: false,
     item: null,
     checkedPrice: null
+  },
+  pdf: {
+    qr: null,
+    title: '',
+    text: '',
+    ref: null
   }
 }
 

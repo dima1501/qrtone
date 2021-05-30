@@ -5,8 +5,6 @@ const { ObjectId } = require('mongodb')
 const Telegraf = require('telegraf')
 const {Extra,  Markup, Stage, session } = Telegraf
 
-const api = require("../server/src/websocket")
-
 class SceneGenerator {
 
     logoutScene () {
@@ -40,14 +38,9 @@ class SceneGenerator {
                 company = await db.collection('users').findOne({_id: ObjectId(user.companyId) })
             }
 
-            for (let i in company.places) {
-                await db.collection('users').updateOne(
-                    { _id: ObjectId(company._id) },
-                    { $pull: {
-                        ["telegram." + company.places[i]._id]: { 'chatId': '' + +ctx.update.message.chat.id }
-                    }}
-                )
-            }
+            await db.collection('users').updateOne(
+                { _id: ObjectId(user.companyId) },
+                { $pull: {['telegram.' + user.place]: { 'chatId' : ctx.update.message.chat.id } } } )
             
             await db.collection('tgUsers').updateOne(
                 { _id: +ctx.update.message.chat.id },
@@ -56,9 +49,7 @@ class SceneGenerator {
                 }}, 
                 { upsert: true }
             )
-            if (company.publicSockets) {
-                api.newTGUser({ sockets: company.publicSockets })
-            }
+                
             await ctx.reply('Вы вышли из аккаунта. Для подключения пользуйтесь командой /login')
             await ctx.scene.leave()
         })
@@ -73,7 +64,6 @@ class SceneGenerator {
             const placeId = ctx.match[0].split(',-')[1]
             const userId = ctx.match[0].split(',-')[2]
             const chatId = ctx.match[0].split(',-')[3]
-            const user = await ctx.scene.session.state.db.collection('users').findOne({ _id: ObjectId(userId) })
 
             await ctx.scene.session.state.db.collection('users').updateOne(
                 { _id: ObjectId(userId) },
@@ -88,9 +78,6 @@ class SceneGenerator {
                 }}, 
                 { upsert: true }
             )
-            if (user.publicSockets) {
-                api.newTGUser({ sockets: user.publicSockets })
-            }
             await ctx.reply("Заведение успешно изменено!) Для смены заведения используйте команду /change")
             await ctx.scene.leave()
         })
@@ -111,10 +98,10 @@ class SceneGenerator {
                     await ctx.scene.leave()
                 } else if (company) {
                     for (let i in company.places) {
-                        const remove = await db.collection('users').updateOne(
+                        await db.collection('users').updateOne(
                             { _id: ObjectId(company._id) },
                             { $pull: {
-                                ["telegram." + company.places[i]._id]: { 'chatId': '' + +ctx.update.message.chat.id }
+                                ["telegram." + company.places[i]._id]: { 'chatId': '' + ctx.update.message.chat.id }
                             }}
                         )
                     }
@@ -152,7 +139,6 @@ class SceneGenerator {
             const placeId = ctx.match[0].split(',-')[1]
             const userId = ctx.match[0].split(',-')[2]
             const chatId = ctx.match[0].split(',-')[3]
-            const user = await ctx.scene.session.state.db.collection('users').findOne({ _id: ObjectId(userId) })
 
             await ctx.scene.session.state.db.collection('users').updateOne(
                 { _id: ObjectId(userId) },
@@ -175,9 +161,7 @@ class SceneGenerator {
                 }}, 
                 { upsert: true }
             )
-            if (user.publicSockets) {
-                api.newTGUser({ sockets: user.publicSockets })
-            }
+
             await ctx.reply("Вход успешно выполнен, теперь вы будете получать уведомления от гостей!) Для смены заведения используйте команду /change")
             await ctx.scene.leave()
         })
@@ -205,9 +189,7 @@ class SceneGenerator {
                     }}, 
                     { upsert: true }
                 )
-                if (user.publicSockets) {
-                    api.newTGUser({ sockets: user.publicSockets })
-                }
+
                 await ctx.reply('Вход успешно выполнен')
                 await ctx.scene.leave()
             }
@@ -237,10 +219,8 @@ class SceneGenerator {
                         }}, 
                         { upsert: true }
                     )
-                    if (user.publicSockets) {
-                        api.newTGUser({ sockets: user.publicSockets })
-                    }
                     await ctx.reply("Вход успешно выполнен, теперь вы будете получать уведомления от гостей!)")
+
                     await ctx.scene.leave()
                 }
             } else if (!user) {

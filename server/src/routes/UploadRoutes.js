@@ -3,7 +3,6 @@ const router = express.Router();
 
 const path = require("path");
 const multer = require("multer");
-const fs = require("fs")
 
 const auth = require('../middlewares/AuthMiddleware')
 
@@ -46,20 +45,5 @@ router.post("/api/upload-menu-item-image", auth(), upload.single("image"), (req,
     console.error(error);
   }
 });
-
-router.post("/api/delete-pic", auth(), (req, res) => {
-  const pathToFile = `../client/static/uploads/${req.body.data}`
-
-  fs.unlink(pathToFile, function(err) {
-    if (err) {
-      throw err
-    } else {
-      // deleted
-    }
-  })
-
-  res.status(200).send(true)
-  
-})
 
 module.exports = router;

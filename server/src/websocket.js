@@ -85,11 +85,5 @@ module.exports = {
     } catch (error) {
       console.error(error)
     }
-  },
-  newTGUser: async (data) => {
-    console.log(data)
-    data.sockets.forEach(e => {
-      ioCopy.to(e).emit('newTGUser');
-    });
   }
 }

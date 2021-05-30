@@ -54,7 +54,6 @@ import vkQr from '@vkontakte/vk-qr';
 import fileDownload from 'js-file-download'
 
 import jsPDF from 'jspdf' 
-import html2canvas from "html2canvas"
 
 export default {
     data() {
@@ -151,23 +150,6 @@ export default {
                     fileDownload(this.qr, `${place.link}_menu_qr.svg`)
                 }
             }
-        },
-
-        async generateAllPdf() {
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const length = 2;
-            for (let i = 0; i < length; i++) {
-                const chart = this.$refs[this.$store.state.view.pdf.ref]
-                // excute this function then exit loop
-                await html2canvas(chart, { scale: 1 }).then(function (canvas) { 
-                    doc.addImage(canvas.toDataURL('image/png'), 'JPEG', 10, 50, 200, 150);
-                    if (i < (length - 1)) {
-                        doc.addPage();
-                    }
-                });
-            }
-            // download the pdf with all charts
-            doc.save('All_charts_' + Date.now() + '.pdf');
         }
     }
 }

@@ -37,10 +37,7 @@ const registrationAction = async (store, data) => {
       store.state.user = registration.data
       // eslint-disable-next-line no-undef
       $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
-      store.dispatch("auth/setSocketId", {
-        socketId: $nuxt.$socket.id,
-        place: localStorage.getItem('place')
-      }, { root: true });
+      // store.dispatch("auth/setSocketId", $nuxt.$socket.id, { root: true });
 
       for (let item of store.state.user.goods) {
         if (store.state.parsedMenu[item.category]) {
@@ -73,10 +70,7 @@ const loginAction = async (store, data) => {
       $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
       // eslint-disable-next-line no-undef
 
-      store.dispatch("auth/setSocketId", {
-        socketId: $nuxt.$socket.id,
-        place: localStorage.getItem('place')
-      }, { root: true });
+      // store.dispatch('auth/setSocketId', $nuxt.$socket.id, { root: true })
 
       for (let item of store.state.user.goods) {
         if (store.state.parsedMenu[item.category]) {

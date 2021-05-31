@@ -432,15 +432,27 @@ router.post('/api/accept-fast-action-tg', auth(), async (req, res) => {
 
 router.post('/api/set-place-socket-id', auth(), async (req, res) => {
     try {
-        await req.db.collection('users').updateOne(
-            { 'sockets.socketId': req.body.data.socketId },
-            {'$pull': { "sockets": { "socketId": req.body.data.socketId } } }
-        )
-        
+        // await req.db.collection('users').updateOne(
+        //     { 'sockets.socketId': req.body.data.socketId },
+        //     {'$pull': { "sockets": { "socketId": req.body.data.socketId } } }
+        // )
+        // console.log(req.body.data.socketId)
+        // const lal = await req.db.collection('users').updateOne(
+        //     { 'publicSockets': { $in: [req.body.data.socketId] } },
+        //     {'$pull': { "publicSockets": req.body.data.socketId } }
+        // )
+        // console.log(lal)
         if (req.user) {
-            const set = await req.db.collection('users').updateOne(
+            if (req.body.data.place) {
+                const set = await req.db.collection('users').updateOne(
+                    { _id: ObjectId(req.user._id) },
+                    { $push: { 'sockets': {place: req.body.data.place, socketId: req.body.data.socketId } } }
+                )
+            }
+
+            await req.db.collection('users').updateOne(
                 { _id: ObjectId(req.user._id) },
-                { $push: { 'sockets': {place: req.body.data.place, socketId: req.body.data.socketId } } }
+                { $push: { 'publicSockets': req.body.data.socketId } }
             )
         }
         res.status(200).send(true)
@@ -621,5 +633,23 @@ router.post('/api/set-currency', auth(), async (req, res) => {
         console.error(error)
     }
 })
+
+
+router.post('/api/load-tg-users', auth(), async (req, res) => {
+    try {
+        const user = await req.db.collection("users").findOne({ _id: ObjectId(req.user._id) })
+        if (user) {
+            res.status(200).json(user.telegram)
+        } else {
+            res.status(200).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+
+
+
 
 module.exports = router

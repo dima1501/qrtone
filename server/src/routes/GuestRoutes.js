@@ -98,6 +98,7 @@ router.get('/api/get-user-data/:id', async (req, res) => {
 })
 
 router.post('/api/update-cart', authGuest(), async (req, res) => {
+    console.log(req.body.data)
     const update = await req.db.collection('guests').updateOne(
         { _id: ObjectId(req.user._id) },
         { $set: { 'cart': req.body.data } }
@@ -121,8 +122,9 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
     const clearCart = await req.db.collection('guests').updateOne(
         { _id: ObjectId(req.user._id) },
-        { $set: { 'cart': [] } }
+        { $set: { ['cart.' + place._id]: [] } }
     )
+    console.log(clearCart)
 
     if (user.sockets.length) {
         websocket.makeOrder({
@@ -156,12 +158,30 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
     for (let i = 0; i < order.goods.length; i++) {
         str.push(`${i + 1}) ${order.goods[i].name}\n`)
         for (let n = 0; n < getCustomArr(order.goods[i].cartPrices).length; n++) {
-            str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}р ${order.goods[i].weights[order.goods[i].cartPrices[n]]}г x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length } \n`)
-            str.push(`-----\n`)
+            // Если есть модификация
+            str.push('    ')
+            if (order.goods[i].modifications && order.goods[i].modifications[order.goods[i].cartPrices[n]]) {
+                str.push(`${order.goods[i].modifications[order.goods[i].cartPrices[n]]}, `)
+            }
+
+            str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}${user.currencySymbol}, `)
+
+            // Если указан вес
+            if (order.goods[i].weights[order.goods[i].cartPrices[n]]) {
+                str.push(`${order.goods[i].weights[order.goods[i].cartPrices[n]]}`)
+            }
+
+            str.push(`| x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length} \n`)
+
+            // str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}${user.currencySymbol} ${order.goods[i].weights[order.goods[i].cartPrices[n]]}г x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length } \n`)
+            if (n !== getCustomArr(order.goods[i].cartPrices).length - 1) {
+                str.push(`    -----\n`)
+            }
         }
+        str.push(`----------------\n`)
     }
 
-    str.push(`\n ${getOrderPrice(order)}p `)
+    str.push(`\n Итого: ${getOrderPrice(order)}${user.currencySymbol} `)
 
     let data = {
         messages: [],

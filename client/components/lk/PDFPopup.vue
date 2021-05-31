@@ -4,61 +4,41 @@
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
-                h2.popup__title(@click="downloadWithCSS") Выберите шаблон
+                h2.popup__title Выберите шаблон
                 p Текст можно изменить
                 .pdf
                     // Превьюшки
                     .pdf__list
-                        .pdf__list-preview.-empty(@click="setTemplate()") Без шаблона
-                        .pdf__list-preview(@click="setTemplate('pdf_1')")
-                            img(src="/PDF_1.png")
-                        //-     include ../../assets/pdf/pdf_1/pdf_1.pug
-                        //- .pdf__list-item
-                        //-     include ../../assets/pdf/pdf_1/pdf_1.pug
-                        //- .pdf__list-item
-                        //-     include ../../assets/pdf/pdf_1/pdf_1.pug
+                        .pdf__list-preview(
+                            v-for="(preview, key) in currencies"
+                            :key="key"
+                            @click="setTemplate(preview)"
+                            :class="{ 'active': $store.state.view.pdf.ref == preview.ref, '-empty': !preview.ref }")
+                            img(:src="preview.pic")
+                            div {{preview.name}}
                     
 </template>
 
 <script>
-
-import jsPDF from 'jspdf' 
-import html2canvas from "html2canvas"
+import currencies from 'assets/pdf/pdf.js'
 
 export default {
+    data() {
+        return {
+            currencies: null
+        }
+    },
+    mounted() {
+        this.currencies = currencies
+    },
     methods: {
         setTemplate(template) {
-            this.$store.state.view.pdf.ref = template
+            this.$store.state.view.pdf.ref = template.ref
+            this.$store.state.view.pdf.data = template
         },
         closePopup() {
             this.$store.state.view.popup.PDFPopup.visible = false
-        },
-        downloadWithCSS() {
-            /** WITH CSS */
-            var canvasElement = document.createElement('canvas')
-            
-            var width = this.$refs.pdf.offsetWidth;
-            var height = this.$refs.pdf.offsetHeight;
-
-            var doc = new jsPDF("p", "px")
-
-            console.log(width, height)
-
-            canvasElement.width = width - 1;
-            canvasElement.height = height;
-
-            html2canvas(this.$refs.pdf, { 
-                canvas: canvasElement
-            }).then(function (canvas) {
-                const img = canvas.toDataURL("image/jpeg", 1);
-                doc.addImage(img, 'JPEG', 0, 0)
-                doc.save("sample.pdf");
-                canvasElement.remove()
-            })
         }
-    },
-    async mounted() {
-        
     }
 }
 </script>
@@ -81,6 +61,9 @@ export default {
             width: 30%;
             margin-right: 3%;
             margin-bottom: 20px;
+            &.active {
+                border: 3px solid #000;
+            }
             img {
                 max-width: 100%;
             }

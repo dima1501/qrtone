@@ -161,6 +161,10 @@ router.delete('/api/delete-socket-id/:id', auth(), async (req, res) => {
       { 'sockets.socketId': req.params.id },
       {'$pull': { "sockets": { "socketId": req.params.id } } }
     )
+    const lal = await req.db.collection('users').updateOne(
+      { 'publicSockets': { $in: [req.params.id] } },
+      { '$pull': { "publicSockets": req.params.id } }
+    )
     res.send(true)
   } catch (error) {
     console.error(error)

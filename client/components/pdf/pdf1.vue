@@ -1,8 +1,8 @@
 <template lang="pug">
     .pdf-list
         .pdf-list__area
-            h1 {{$store.state.view.pdf.title}}
-            p {{$store.state.view.pdf.text}}
+            h1 {{$store.state.view.pdf.data.title}}
+            p {{$store.state.view.pdf.data.subtitle}}
             .pdf-list__qr(v-html="$store.state.view.pdf.qr")
 </template>
 
@@ -12,7 +12,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .pdf-list {
     position: relative;
     top: 0;
@@ -46,6 +46,9 @@ export default {
 
         p {
             margin-bottom: 50px;
+            max-width: 300px;
+            margin: 0 auto 50px;
+            text-align: center;
         }
     }
     &__qr {

@@ -589,6 +589,38 @@ const setCurrency = async (store, data) => {
   }
 }
 
+const deletePic = async (store, data) => {
+  try {
+    const remove = await axios({
+      method: 'post',
+      url: '/api/delete-pic',
+      data: { data }
+    })
+    if (remove.data) {
+      console.log(123)
+    }
+    
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const updateTGUsers = async (store, data) => {
+  try {
+    const fetch = await axios({
+      method: 'post',
+      url: '/api/load-tg-users',
+      data: { data }
+    })
+    if (fetch.data) {
+      store.rootState.auth.user.telegram = fetch.data
+      console.log(123)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 
 export default {
     updateUserName,
@@ -621,5 +653,7 @@ export default {
     subscribe,
     improve,
     simplify,
-    setCurrency
+    setCurrency,
+    deletePic,
+    updateTGUsers
 }

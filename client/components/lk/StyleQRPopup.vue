@@ -20,7 +20,6 @@
                         input(type="text" v-model="$store.state.view.pdf.data.title")
                     .sqr__line(v-if="'subtitle' in $store.state.view.pdf.data") Текст
                         input(type="text" v-model="$store.state.view.pdf.data.subtitle")
-
                     // Настраиваемые поля
 
                     .sqr__line
@@ -54,9 +53,9 @@
 
             // Для печати
             .pdf__print
-                .pdf__list(ref="pdf_1" v-if="$store.state.view.pdf.ref == 'pdf_1'")
+                .pdf__list(ref="pdf1" v-if="$store.state.view.pdf.ref == 'pdf1'")
                     pdf1
-                .pdf__list(ref="pdf_2" v-if="$store.state.view.pdf.ref == 'pdf_2'")
+                .pdf__list(ref="pdf2" v-if="$store.state.view.pdf.ref == 'pdf2'")
                     pdf2
 </template>
 

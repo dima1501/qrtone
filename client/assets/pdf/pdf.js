@@ -9,15 +9,15 @@ const cur = [
         pic: '/PDF_1.png',
         title: '',
         subtitle: '',
-        ref: 'pdf_1'
+        ref: 'pdf1'
     },
     {
         name: 'simple card, 70mm x 87mm',
         width: 70,
-        height: 87,
+        height: 93,
         pic: '/PDF_2.png',
         subtitle: '',
-        ref: 'pdf_2'
+        ref: 'pdf2'
     }
 ]
 

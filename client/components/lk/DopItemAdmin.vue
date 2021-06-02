@@ -2,21 +2,22 @@
     .cats__item
         .cats__item-main
             transition(name="slide-fade" mode="out-in")
-                .cats__item-main-name(v-if="!isEdit" key="5") {{ updatedCat.name }}
-                input.cats__item-main-input(v-if="isEdit" key="6" type="text" v-model="updatedCat.name" v-focus)
+                .cats__item-main-name(v-if="!isEdit" key="5") {{ updatedDop.name }}
+            transition(name="slide-fade" mode="out-in")
+                input.cats__item-main-input(v-if="isEdit" key="6" type="text" v-model="updatedDop.name" v-focus)
+            transition(name="slide-fade" mode="out-in")
+                input.cats__item-main-input(v-if="isEdit" key="7" type="text" v-model="updatedDop.price")
 
         transition(name="slide-fade" mode="out-in")
             .cats__item-controls(v-if="!isEdit" key="3")
-                .cats__item-controls-btn(@click="remove" v-if="!user.goods.find(e => e.category == cat._id)")
-                    v-icon(light) mdi-trash-can-outline
                 .cats__item-controls-btn(@click="edit")
                     v-icon(light) mdi-pencil-outline
-                .cats__item-controls-btn.handleit
-                    v-icon(light) mdi-drag
+                .cats__item-controls-btn(@click="remove")
+                    v-icon(light) mdi-trash-can-outline
 
             .cats__item-controls(v-if="isEdit" key="4")
                 transition(name="slide-fade" mode="out-in")
-                    .cats__item-controls-btn(@click="save" v-if="updatedCat.name.length")
+                    .cats__item-controls-btn(@click="save" v-if="updatedDop.name.length")
                         v-icon(light) mdi-checkbox-marked-circle-outline
                 .cats__item-controls-btn(@click="discard")
                     v-icon(light) mdi-close-circle-outline
@@ -32,35 +33,34 @@ export default {
         }
     },
     props: {
-        cat: Object,
-        user: Object
+        dop: Object
     },
     data() {
         return {
             isEdit: false,
-            updatedCat: {}
+            updatedDop: {}
         }
     },
     mounted() {
-        this.updatedCat = Object.assign({}, this.cat)
+        this.updatedDop = Object.assign({}, this.dop)
     },
     methods: {
         remove() {
-            var confirmation = confirm(`Вы действительно хотите удалить категорию "${this.cat.name}"`);
-            if (confirmation) this.$store.dispatch('lk/removeCat', this.cat)
+            var confirmation = confirm(`Вы действительно хотите удалить дополнение "${this.dop.name}"`);
+            if (confirmation) this.$store.dispatch('admin/removeDopAdmin', { dop: this.dop, _id: this.$store.state.admin.user._id })
         },
         edit() {
             this.isEdit = true
         },
         save() {
             this.isEdit = false
-            const index = this.user.categories.indexOf(this.cat)
-            this.user.categories[index].name = this.updatedCat.name
-            this.$store.dispatch('lk/editCat', this.updatedCat)
+            this.dop.name = this.updatedDop.name
+            this.dop.price = this.updatedDop.price
+            this.$store.dispatch('admin/editDopAdmin', { dop: this.updatedDop, _id: this.$store.state.admin.user._id })
         },
         discard() {
             this.isEdit = false
-            this.updatedCat.name = this.cat.name
+            this.updatedDop.name = this.dop.name
         }
     }
 }

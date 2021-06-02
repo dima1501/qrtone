@@ -7,12 +7,14 @@ const fs = require("fs")
 
 const auth = require('../middlewares/AuthMiddleware')
 
+const { nanoid } = require('nanoid')
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "../client/static/uploads");
   },
   filename: (req, file, cb) => {
-    cb(null, req.user._id + Date.now() + path.extname(file.originalname));
+    cb(null, (req.user ? req.user._id : nanoid()) + Date.now() + path.extname(file.originalname));
   },
 });
 

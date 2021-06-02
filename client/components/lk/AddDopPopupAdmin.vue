@@ -18,12 +18,12 @@
                                 v-model="newDop.price"
                                 type="number"
                                 label="Стоимость"
-                                :prefix="$store.state.auth.user.currencySymbol")
+                                :prefix="$store.state.admin.user.currencySymbol")
                             transition(name="slide-fade" mode="out-in")
                                 .cats__item-controls-btn(@click="create" v-if="newDop.name.length")
                                     v-icon(light) mdi-checkbox-marked-circle-outline
 
-                    DopItem(v-for="(dop, i) in $store.state.auth.user.dops" :key="dop._id" :dop="dop")
+                    DopItemAdmin(v-for="(dop, i) in $store.state.admin.user.dops" :key="dop._id" :dop="dop")
 
 </template>
 
@@ -44,7 +44,7 @@ export default {
             this.$store.state.view.popup.addDopPopup.visible = false
         },
         create() {
-            this.$store.dispatch('lk/createDop', { dop: this.newDop })
+            this.$store.dispatch('admin/createDopAdmin', { _id: this.$store.state.admin.user._id, dop: this.newDop })
             this.newDop.name = ''
             this.newDop.price = null
         }

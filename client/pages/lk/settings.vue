@@ -51,17 +51,20 @@
 
         .settings__section
             .settings__section-top
+                input(type="checkbox" id="fastActionsToggler" v-if="isAvailable" @input="fastActionsToggler($event)" :checked="$store.state.auth.user.fastActionsEnabled")
                 h2.settings__section-title Быстрые действия
-                .settings__section-link(@click="addFastAction") Добавить действие
-            p <code>@table</code> отображает номер столика, с которого поступил запрос
-            .options
-                .option(v-for="(action, key) in $store.state.auth.user.actions" v-bind:key="key")
-                    .option__title Текст кнопки на сайте - {{ action.callText }}
-                    .option__text Текст уведомления - {{ action.notifyText }}
-                    .option__text Текст кнопки подтверждения - {{ action.buttonText }}
-                    .option__actions
-                        .options__action-item(@click="editAction(action)") Изменить
-                        .options__action-item(@click="deleteAction(action)") Удалить
+                .settings__section-link(@click="addFastAction" v-if="isAvailable") Добавить действие
+                h3(v-if="!isAvailable") Доступно с подпиской Premium
+            div(v-if="isAvailable")
+                p <code>@table</code> отображает номер столика, с которого поступил запрос
+                .options
+                    .option(v-for="(action, key) in $store.state.auth.user.actions" v-bind:key="key")
+                        .option__title Текст кнопки на сайте - {{ action.callText }}
+                        .option__text Текст уведомления - {{ action.notifyText }}
+                        .option__text Текст кнопки подтверждения - {{ action.buttonText }}
+                        .option__actions
+                            .options__action-item(@click="editAction(action)") Изменить
+                            .options__action-item(@click="deleteAction(action)") Удалить
     
         .settings__section
             .settings__section-top
@@ -194,7 +197,18 @@ export default {
         })
         this.navigator = navigator
     },
+    computed: {
+        isAvailable() {
+            const isStandart = this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].type == 'standart'
+            const isNotExpired = !moment(this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].expires).isBefore()
+            const isTrial = !moment(this.$store.state.auth.user.subscription[0].expires).isBefore()
+            return !isStandart && isNotExpired || isTrial
+        }
+    },
     methods: {
+        fastActionsToggler(e) {
+            this.$store.dispatch("lk/toggleFastActions", e.target.checked)               
+        },
         copyLink(text) {
             const link = `https://qrtone.com/m/${text}`
             navigator.clipboard.writeText(link)

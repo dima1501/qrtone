@@ -1,108 +1,112 @@
 <template lang="pug">
 div
-    div(v-if="$fetchState.pending") 'pending'
-    div(v-else-if="$fetchState.error") 'error'
-    .public(v-else-if="$store.state.guest.user")
-        header.header
-            .header__inner
-                .header__logo(v-if="$store.state.guest.companyData.photo")
-                    // nuxt-link(to="https://google.com" target="_blank").header__logo-link
-                    img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
-                transition(name="slide-up")
-                    v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
-                .header__controls
-                    v-btn(depressed @click="toggleCommandsMenu" v-if="$nuxt.$route.query.table") Быстрые команды
-        .welcome
-            .welcome__bg(v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
-            .welcome__inner
-                h1.welcome__title {{ $store.state.guest.companyData.name }}
-                    v-icon.ml-5(light @click="toggleInfoPopup") mdi-information-outline
-                .w-cats(ref="cats")
-                    scrollactive.w-cats__inner.my-nav(:class="{ 'sticky': isHeaderSticky }" :offset="145")
-                        nuxt-link.w-cats__item.scrollactive-item(
-                            v-for='(item, key) of $store.state.guest.companyData.categories' 
-                            v-bind:key="key" 
-                            :to="{ path: `${$nuxt.$route.fullPath}`, hash: `#${item._id}` }"
-                            v-if="$store.state.guest.parsedMenu[item._id]"
-                            ) {{item.name}}
-                .menu
-                    .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id")
-                        .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key")
-                            MenuItem(:item="item" :placeId="$nuxt.$route.params.id")
+    .public(v-if="$store.state.guest.user")
+        .avavav(v-if="!isSubscriptionActive")
+            div(v-if="$store.state.guest.companyData.photo")
+                img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
+            span {{$store.state.guest.companyData.name}}
+        div(v-else)
+            header.header
+                .header__inner
+                    .header__logo(v-if="$store.state.guest.companyData.photo")
+                        // nuxt-link(to="https://google.com" target="_blank").header__logo-link
+                        img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
+                    transition(name="slide-up")
+                        v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
+                    .header__controls
+                        v-btn(depressed @click="toggleCommandsMenu" v-if="$nuxt.$route.query.table && isAvailable && $store.state.guest.companyData.fastActionsEnabled") Быстрые команды
+            .welcome
+                .welcome__bg(v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
+                .welcome__inner
+                    h1.welcome__title {{ $store.state.guest.companyData.name }}
+                        v-icon.ml-5(light @click="toggleInfoPopup") mdi-information-outline
+                    .w-cats(ref="cats")
+                        scrollactive.w-cats__inner.my-nav(:class="{ 'sticky': isHeaderSticky }" :offset="145")
+                            nuxt-link.w-cats__item.scrollactive-item(
+                                v-for='(item, key) of $store.state.guest.companyData.categories' 
+                                v-bind:key="key" 
+                                :to="{ path: `${$nuxt.$route.fullPath}`, hash: `#${item._id}` }"
+                                v-if="$store.state.guest.parsedMenu[item._id]"
+                                ) {{item.name}}
+                    .menu
+                        .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id")
+                            .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key")
+                                MenuItem(:item="item" :placeId="$nuxt.$route.params.id")
 
-        transition(name="slide-fade" mode="out-in")
-            .commands(v-if="commands && !isCommandSend" key="commands")
-                .commands__actions
-                    v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
-                    v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
-            .commands(v-if="commands && isCommandSend" key="success")  
-                .commands__success
-                    .commands__success-title 💫<br>Уведомление отправлено
-                    v-btn.commands__item(depressed @click="closeCommands") Спасибо
+            transition(name="slide-fade" mode="out-in")
+                .commands(v-if="commands && !isCommandSend" key="commands")
+                    .commands__actions
+                        v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
+                        v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
+                .commands(v-if="commands && isCommandSend" key="success")  
+                    .commands__success
+                        .commands__success-title 💫<br>Уведомление отправлено
+                        v-btn.commands__item(depressed @click="closeCommands") Спасибо
 
-        transition(name="slide-fade")
-            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openCart") Корзина <span> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
-
-        div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
             transition(name="slide-fade")
-                v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] || $store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
-        
+                v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openCart") Корзина <span> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
+
+            div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
+                transition(name="slide-fade")
+                    v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] || $store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
+            
+            transition(name="slide-fade")
+                .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.view.isCartOpened")
+                    .cart__top
+                        .cart__back(@click="closeCart")
+                            v-icon(light) mdi-arrow-left
+                        h2.cart__title Корзина
+                        a.cart__subtitle(@click="openOrders" v-if="this.$nuxt.$route.query.table") Заказы
+                    .cart__content
+                        h3.cart__empty(v-if="!$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length") Корзина пуста
+
+                        .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]" v-bind:key="key")
+                            .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+                            .cart__item-content
+                                .cart__item-name {{ item.name }}
+
+                                div(v-for="(price, idx) in getCustomArr(item.cartPrices)").cart__item-price
+                                    div {{item.prices[price]}}р - {{item.weights[price]}}г
+                                    div(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
+                                
+                                    .cart__item-counter
+                                        .menu__counter-control.minus(@click="minusMulti(item, price)") -
+                                        .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
+                                        .menu__counter-control.plus(@click="plusMulti(item, price)") +
+
+                    .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length")
+                        .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
+                        .cart__bottom-control
+                            v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.table && isAvailable") Заказать
+                            //- v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
+
+            transition(name="slide-fade")
+                .cart(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
+                    .cart__top
+                        .cart__back(@click="closeCart")
+                            v-icon(light) mdi-arrow-left
+                        h2.cart__title Заказы
+                        a.cart__subtitle(@click="openCart") Корзина
+                    .cart__content
+                        .cart__orders-col
+                            .sorder(v-for="(item, key) in $store.state.guest.user.orders" v-bind:key="key")
+                                h3.sorder__title(v-if="item.status === 'pending'") Ожидает подтверждения
+                                h3.sorder__title(v-if="item.status === 'accepted'") Подтвержден
+                                .sorder__status.sorder__status--wait
+                                    v-icon(dark) mdi-alarm
+                                div {{ getTime(item.timestamp) }}
+                                .sorder__goods
+                                    .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key")
+                                        div {{ good.name }}
+                                        .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
+                                            div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
+                                .sorder__price Итого: {{ getOrderPrice(item) }} {{$store.state.guest.companyData.currencySymbol}}
+
+            transition(name="slide-fade")
+                MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
+
         transition(name="slide-fade")
-            .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.view.isCartOpened")
-                .cart__top
-                    .cart__back(@click="closeCart")
-                        v-icon(light) mdi-arrow-left
-                    h2.cart__title Корзина
-                    a.cart__subtitle(@click="openOrders" v-if="this.$nuxt.$route.query.table") Заказы
-                .cart__content
-                    h3.cart__empty(v-if="!$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length") Корзина пуста
-
-                    .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]" v-bind:key="key")
-                        .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
-                        .cart__item-content
-                            .cart__item-name {{ item.name }}
-
-                            div(v-for="(price, idx) in getCustomArr(item.cartPrices)").cart__item-price
-                                div {{item.prices[price]}}р - {{item.weights[price]}}г
-                                div(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
-                            
-                                .cart__item-counter
-                                    .menu__counter-control.minus(@click="minusMulti(item, price)") -
-                                    .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
-                                    .menu__counter-control.plus(@click="plusMulti(item, price)") +
-
-                .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length")
-                    .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
-                    .cart__bottom-control
-                        v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.table") Заказать
-                        v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
-
-        transition(name="slide-fade")
-            .cart(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
-                .cart__top
-                    .cart__back(@click="closeCart")
-                        v-icon(light) mdi-arrow-left
-                    h2.cart__title Заказы
-                    a.cart__subtitle(@click="openCart") Корзина
-                .cart__content
-                    .cart__orders-col
-                        .sorder(v-for="(item, key) in $store.state.guest.user.orders" v-bind:key="key")
-                            h3.sorder__title(v-if="item.status === 'pending'") Ожидает подтверждения
-                            h3.sorder__title(v-if="item.status === 'accepted'") Подтвержден
-                            .sorder__status.sorder__status--wait
-                                v-icon(dark) mdi-alarm
-                            div {{ getTime(item.timestamp) }}
-                            .sorder__goods
-                                .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key")
-                                    div {{ good.name }}
-                                    .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
-                                        div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
-                            .sorder__price Итого: {{ getOrderPrice(item) }} {{$store.state.guest.companyData.currencySymbol}}
-        transition(name="slide-fade")
-            InfoPopup(v-show="$store.state.view.popup.infoPopup")
-
-        transition(name="slide-fade")
-            MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
+                InfoPopup(v-show="$store.state.view.popup.infoPopup")
 
 </template>
 
@@ -186,6 +190,19 @@ export default {
                 }
             }
             return total
+        },
+        isAvailable() {
+            const isStandart = this.$store.state.guest.companyData.subscription[this.$store.state.guest.companyData.subscription.length - 1].type == 'standart'
+            const isNotExpired = !moment(this.$store.state.guest.companyData.subscription[this.$store.state.guest.companyData.subscription.length - 1].expires).isBefore()
+            const isTrial = !moment(this.$store.state.guest.companyData.subscription[0].expires).isBefore()
+            return !isStandart && isNotExpired || isTrial
+        },
+        isSubscriptionActive() {
+            const isStandart = this.$store.state.guest.companyData.subscription[this.$store.state.guest.companyData.subscription.length - 1].type == 'standart'
+            const isPremium = this.$store.state.guest.companyData.subscription[this.$store.state.guest.companyData.subscription.length - 1].type == 'premium'
+            const isNotExpired = !moment(this.$store.state.guest.companyData.subscription[this.$store.state.guest.companyData.subscription.length - 1].expires).isBefore()
+            const isTrial = !moment(this.$store.state.guest.companyData.subscription[0].expires).isBefore()
+            return isStandart && isNotExpired || isPremium && isNotExpired || isTrial
         }
     },
     methods: {
@@ -684,6 +701,19 @@ export default {
             margin-bottom: 0;
         }
     }
+}
+
+.avavav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>
 

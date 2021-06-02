@@ -80,7 +80,8 @@ const User = class User {
       }
     ],
     this.currencySymbol = '₽',
-    this.publicSockets = []
+    this.publicSockets = [],
+    this.fastActionsEnabled = true
   }
 }
 

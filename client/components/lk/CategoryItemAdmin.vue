@@ -47,7 +47,7 @@ export default {
     methods: {
         remove() {
             var confirmation = confirm(`Вы действительно хотите удалить категорию "${this.cat.name}"`);
-            if (confirmation) this.$store.dispatch('lk/removeCat', this.cat)
+            if (confirmation) this.$store.dispatch('admin/removeCatAdmin', { _id: this.user._id, cat: this.cat })
         },
         edit() {
             this.isEdit = true
@@ -56,7 +56,7 @@ export default {
             this.isEdit = false
             const index = this.user.categories.indexOf(this.cat)
             this.user.categories[index].name = this.updatedCat.name
-            this.$store.dispatch('lk/editCat', this.updatedCat)
+            this.$store.dispatch('admin/editCatAdmin', { _id: this.user._id, cat: this.updatedCat })
         },
         discard() {
             this.isEdit = false

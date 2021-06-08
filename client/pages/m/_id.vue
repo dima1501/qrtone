@@ -43,9 +43,10 @@ div
                         .commands__success-title 💫<br>Уведомление отправлено
                         v-btn.commands__item(depressed @click="closeCommands") Спасибо
             
-            div(v-if="$store.state.guest.user.cart")
+            div(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]")
+                div.lsls {{$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]}}
                 transition(name="slide-fade")
-                    //- v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length" @click="openCart") Корзина <span> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
+                    v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length" @click="openCart") Корзина <span> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
 
             div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
                 transition(name="slide-fade")

@@ -29,7 +29,7 @@
                         @change="change"
                         :forceFallback="true")
                         div(v-for="(cat, i) in $store.state.auth.user.categories" :key="cat._id" )
-                            CategoryItem(:cat="cat")
+                            CategoryItem(:cat="cat" :user="$store.state.auth.user")
 
 </template>
 

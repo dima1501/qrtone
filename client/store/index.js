@@ -5,6 +5,7 @@ import auth from './modules/auth'
 import lk from './modules/lk'
 import view from './modules/view'
 import guest from './modules/guest'
+import admin from './modules/admin'
 
 Vue.use(Vuex)
 
@@ -14,7 +15,8 @@ const store = () =>
       auth,
       lk,
       view,
-      guest
+      guest,
+      admin
     }
   })
 

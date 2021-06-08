@@ -9,7 +9,7 @@ const getRandomString = () => {
 
 const Category = class Category {
   constructor(data) {
-    this._id = getRandomString,
+    this._id = getRandomString(),
     this.name = data
   }
 }

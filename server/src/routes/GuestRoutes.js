@@ -89,7 +89,10 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             categories: user.categories,
             places: user.places,
             actions: user.actions,
-            currencySymbol: user.currencySymbol
+            currencySymbol: user.currencySymbol,
+            subscription: user.subscription,
+            fastActionsEnabled: user.fastActionsEnabled,
+            dops: user.dops
         }
         res.status(200).send(publicUser)
     } else {

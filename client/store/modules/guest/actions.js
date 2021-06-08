@@ -67,57 +67,48 @@ const login = async (store, data) => {
     }
 }
 
-const loadData = async (store, data) => {
-    // try {
-    //     const user = await axios({
-    //         method: 'get',
-    //         url: `/api/get-user-data/${data.id}/${data.place}`
-    //     })
-    //     if (user) {
-    //         store.state.companyData = user.data
-    //         for (let item of store.state.companyData.goods) {
-    //             if (store.state.parsedMenu[item.category]) {
-    //               store.state.parsedMenu[item.category].push(item)
-    //             } else {
-    //               store.state.parsedMenu[item.category] = [item]
-    //             }
-    //             store.state.parsedMenu[item.category] = store.state.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
-    //         }
-    //     }
-    // } catch (error) {
-    //     console.error(error)
-    // }
-}
-
-const addToCart = async (store, data) => {
+const addDopToCart = async (store, data) => {
     try {
-        const place = store.state.companyData.places.find(e => e.link == data.place)
-        const menuItem = store.state.user.cart[place._id] ? store.state.user.cart[place._id].find(e => e._id == data.item._id) : false
-
+        const menuItem = store.state.user.cart[data.place] && store.state.user.cart[data.place].dops ? store.state.user.cart[data.place].dops.find(e => e._id == data.item._id) : false
         if (menuItem) {
             menuItem.count += 1
             menuItem.cartPrices.push(data.price)
         } else {
             data.item.count = 1
             data.item.cartPrices = [data.price]
-            
-            if (store.state.user.cart[place._id]) {
-                store.state.user.cart[place._id].push(data.item)
+
+            if (store.state.user.cart[data.place]) {
+                store.state.user.cart[data.place].dops.push(data.item)
             } else {
-                Vue.set(store.state.user.cart, place._id, [data.item])
+                Vue.set(store.state.user.cart, data.place, { dops: [data.item], goods: [] })
             }
         }
-
+        console.log(store.state.user.cart)
         store.dispatch('updateCart', store.state.user.cart)
     } catch (error) {
         console.error(error)
     }
 }
 
-const addToCartSimple = async (store, item) => {
+
+const addToCart = async (store, data) => {
     try {
-        item.count = 1
-        store.state.user.cart.push(item)
+        const place = store.state.companyData.places.find(e => e.link == data.place)
+        const menuItem = store.state.user.cart[place._id] && store.state.user.cart[place._id].goods ? store.state.user.cart[place._id].goods.find(e => e._id == data.item._id) : false
+        if (menuItem) {
+            menuItem.count += 1
+            menuItem.cartPrices.push(data.price)
+        } else {
+            data.item.count = 1
+            data.item.cartPrices = [data.price]
+
+            if (store.state.user.cart[place._id]) {
+                store.state.user.cart[place._id].goods.push(data.item)
+            } else {
+                Vue.set(store.state.user.cart, place._id, { goods: [data.item], dops: [] })
+            }
+        }
+        console.log(store.state.user.cart)
         store.dispatch('updateCart', store.state.user.cart)
     } catch (error) {
         console.error(error)
@@ -140,11 +131,28 @@ const minusCartItem = async (store, item) => {
 const minusCartItemMulti = async (store, data) => {
     try {
         const place = store.state.companyData.places.find(e => e.link == data.place)
-        const menuItem = store.state.user.cart[place._id].find(e => e._id == data.item._id)
+        const menuItem = store.state.user.cart[place._id].goods.find(e => e._id == data.item._id)
 
         if (menuItem.count == 1) {
-            const index = store.state.user.cart[place._id].indexOf(menuItem)
-            store.state.user.cart[place._id].splice(index, 1);
+            const index = store.state.user.cart[place._id].goods.indexOf(menuItem)
+            store.state.user.cart[place._id].goods.splice(index, 1);
+        }
+        const priceIndex = menuItem.cartPrices.indexOf(data.price)
+        menuItem.cartPrices.splice(priceIndex, 1)
+        menuItem.count--
+        store.dispatch('updateCart', store.state.user.cart)
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const minusDopMulti = async (store, data) => {
+    try {
+        const menuItem = store.state.user.cart[data.place].dops.find(e => e._id == data.item._id)
+
+        if (menuItem.count == 1) {
+            const index = store.state.user.cart[data.place].dops.indexOf(menuItem)
+            store.state.user.cart[data.place].dops.splice(index, 1);
         }
         const priceIndex = menuItem.cartPrices.indexOf(data.price)
         menuItem.cartPrices.splice(priceIndex, 1)
@@ -253,13 +261,32 @@ const closeDetail = async (store, data) => {
     store.rootState.view.detail.checkedPrice = null
 }
 
-
+const loadData = async (store, data) => {
+    // try {
+    //     const user = await axios({
+    //         method: 'get',
+    //         url: `/api/get-user-data/${data.id}/${data.place}`
+    //     })
+    //     if (user) {
+    //         store.state.companyData = user.data
+    //         for (let item of store.state.companyData.goods) {
+    //             if (store.state.parsedMenu[item.category]) {
+    //               store.state.parsedMenu[item.category].push(item)
+    //             } else {
+    //               store.state.parsedMenu[item.category] = [item]
+    //             }
+    //             store.state.parsedMenu[item.category] = store.state.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
+    //         }
+    //     }
+    // } catch (error) {
+    //     console.error(error)
+    // }
+}
 
 export default {
     checkAuth,
     login,
     setSocketId,
-    loadData,
     addToCart,
     minusCartItem,
     plusCartItem,
@@ -269,9 +296,11 @@ export default {
     acceptOrder,
     fastAction,
     minusCartItemMulti,
-    addToCartSimple,
     redirect,
     openDetail,
-    closeDetail
+    closeDetail,
+    addDopToCart,
+    minusDopMulti,
+    loadData
   }
   

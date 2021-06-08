@@ -175,7 +175,9 @@ export default {
         },
     },
     methods: {
-        dopSelectText: item => `${item.name} ${item.price} ${this.$store.state.auth.user.currencySymbol}`,
+        dopSelectText(item) {
+            return `${item.name} ${item.price} ${this.$store.state.auth.user.currencySymbol}`
+        },
         removePic(file) {
             this.$refs.dropzone.removeFile(file)
         },

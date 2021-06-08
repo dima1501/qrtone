@@ -53,9 +53,8 @@ const state = {
   },
   pdf: {
     qr: null,
-    title: '',
-    text: '',
-    ref: null
+    ref: null,
+    data: {}
   }
 }
 

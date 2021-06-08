@@ -114,12 +114,11 @@ router.post("/api/add-menu-item", auth(), async (req, res) => {
     try {
         const menuItem = await new MenuItemModel(req.body.data)
         const add = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id) },
+            { _id: ObjectId(req.user ? req.user._id : req.body._id) },
             { $push: { goods: menuItem } }
         )
        
         if (add) {
-            
             res.send(menuItem)
         }
     } catch (err) {
@@ -142,6 +141,21 @@ router.post("/api/update-menu-item", auth(), async (req, res) => {
     }
 });
 
+router.post("/api/update-menu-item-admin", auth(), async (req, res) => {
+    try {
+        const menuItem = await new MenuItemModel(req.body.data)
+        const add = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.body._id), "goods._id": req.body.data._id },
+            { $set: { "goods.$": menuItem } }
+        )
+        if (add) {
+            res.send(menuItem)
+        }
+    } catch (err) {
+        console.error(err);
+    }
+});
+
 router.post('/api/update-good', auth(), async (req, res) => {
     try {
         const update = await req.db
@@ -153,6 +167,32 @@ router.post('/api/update-good', auth(), async (req, res) => {
             },
             { $set: {
               'goods.$.places': req.body.places
+            } }
+          )
+  
+        if (update) {
+          res.send(true)
+        } else {
+          res.send(false)
+        }
+  
+        } catch (error) {
+            console.error(error)
+        }
+    }
+)
+
+router.post('/api/update-good-admin', auth(), async (req, res) => {
+    try {
+        const update = await req.db
+          .collection('users')
+          .updateOne(
+            {
+              _id: ObjectId(req.body._id),
+              'goods._id': req.body.good._id
+            },
+            { $set: {
+              'goods.$.places': req.body.good.places
             } }
           )
   
@@ -277,6 +317,22 @@ router.post('/api/update-categories-drag', auth(), async (req, res) => {
     }
 })
 
+router.post('/api/update-categories-drag-admin', auth(), async (req, res) => {
+    try {
+        const update = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.body._id) },
+            { $set: { "categories" : req.body.categories } }
+        )
+        if (update) {
+            res.status(200).send(true)
+        } else {
+            res.status(200).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 router.post('/api/remove-category', auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(
@@ -291,11 +347,27 @@ router.post('/api/remove-category', auth(), async (req, res) => {
     }
 })
 
-router.post('/api/remove-dop', auth(), async (req, res) => {
+router.post('/api/remove-category-admin', auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id) },
-            { $pull: { "dops" : req.body.dop } }
+            { _id: ObjectId(req.body.data._id) },
+            { $pull: { "categories" : req.body.data.cat } }
+        )
+        if (update) {
+            res.status(200).send(true)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+
+router.post('/api/remove-dop', auth(), async (req, res) => {
+    console.log(req.body)
+    try {
+        const update = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user ? req.user._id : req.body.data._id) },
+            { $pull: { "dops" : req.body.data.dop } }
         )
         if (update) {
             res.status(200).send(true)
@@ -319,11 +391,26 @@ router.post('/api/edit-category', auth(), async (req, res) => {
     }
 })
 
-router.post('/api/edit-dop', auth(), async (req, res) => {
+router.post('/api/edit-category-admin', auth(), async (req, res) => {
     try {
         const edit = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id), "dops._id": req.body.dop._id },
-            { $set: { "dops.$" : req.body.dop } }
+            { _id: ObjectId(req.body.data._id), "categories._id": req.body.data.cat._id },
+            { $set: { "categories.$" : req.body.data.cat } }
+        )
+        if (edit) {
+            res.status(200).send(true)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/api/edit-dop', auth(), async (req, res) => {
+    console.log(req.body)
+    try {
+        const edit = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user ? req.user._id : req.body.data._id), "dops._id": req.body.data.dop._id },
+            { $set: { "dops.$" : req.body.data.dop } }
         )
         if (edit) {
             res.status(200).send(true)
@@ -353,11 +440,31 @@ router.post('/api/create-category', auth(), async (req, res) => {
     }
 })
 
+router.post('/api/create-category-admin', auth(), async (req, res) => {
+    try {
+        const category = await new CategoryModel(req.body.data.cat)
+        const edit = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.body.data._id) },
+            { $push: {
+                'categories': { 
+                    $each: [category],
+                    $position: 0
+                }
+            } }
+        )
+        if (edit) {
+            res.status(200).send(category)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 router.post('/api/create-dop', auth(), async (req, res) => {
     try {
-        const dop = await new DopModel(req.body.dop)
+        const dop = await new DopModel(req.body.data.dop)
         const edit = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id) },
+            { _id: ObjectId(req.user ? req.user._id : req.body.data._id) },
             { $push: {
                 'dops': { 
                     $each: [dop],
@@ -378,6 +485,21 @@ router.post('/api/update-order', auth(), async (req, res) => {
         for (let i in req.body.data) {
             const update = await req.db.collection('users').updateOne(
                 { _id: ObjectId(req.user._id), "goods._id": req.body.data[i] },
+                { $set: { "goods.$.order" : i } }
+            )
+        }
+       
+        res.status(200).send(true)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/api/update-order-admin', auth(), async (req, res) => {
+    try {
+        for (let i in req.body.data.arr) {
+            const update = await req.db.collection('users').updateOne(
+                { _id: ObjectId(req.body.data._id), "goods._id": req.body.data.arr[i] },
                 { $set: { "goods.$.order" : i } }
             )
         }
@@ -640,6 +762,23 @@ router.post('/api/load-tg-users', auth(), async (req, res) => {
         const user = await req.db.collection("users").findOne({ _id: ObjectId(req.user._id) })
         if (user) {
             res.status(200).json(user.telegram)
+        } else {
+            res.status(200).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/api/toggle-fast-actions', auth(), async (req, res) => {
+    try {
+        console.log(req.body.data)
+        const set = req.db.collection("users").updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $set: { 'fastActionsEnabled': req.body.data } }
+        )
+        if (set) {
+            res.status(200).send(true)
         } else {
             res.status(200).send(false)
         }

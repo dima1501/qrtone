@@ -3,7 +3,10 @@
         .cats__item-main
             transition(name="slide-fade" mode="out-in")
                 .cats__item-main-name(v-if="!isEdit" key="5") {{ updatedDop.name }}
+            transition(name="slide-fade" mode="out-in")
                 input.cats__item-main-input(v-if="isEdit" key="6" type="text" v-model="updatedDop.name" v-focus)
+            transition(name="slide-fade" mode="out-in")
+                input.cats__item-main-input(v-if="isEdit" key="7" type="text" v-model="updatedDop.price")
 
         transition(name="slide-fade" mode="out-in")
             .cats__item-controls(v-if="!isEdit" key="3")
@@ -44,16 +47,16 @@ export default {
     methods: {
         remove() {
             var confirmation = confirm(`Вы действительно хотите удалить дополнение "${this.dop.name}"`);
-            if (confirmation) this.$store.dispatch('lk/removeDop', this.dop)
+            if (confirmation) this.$store.dispatch('admin/removeDopAdmin', { dop: this.dop })
         },
         edit() {
             this.isEdit = true
         },
         save() {
             this.isEdit = false
-            const index = this.$store.state.auth.user.dops.indexOf(this.dop)
-            this.$store.state.auth.user.dops[index].name = this.updatedDop.name
-            this.$store.dispatch('lk/editDop', this.updatedDop)
+            this.dop.name = this.updatedDop.name
+            this.dop.price = this.updatedDop.price
+            this.$store.dispatch('lk/editDop', { dop: this.updatedDop })
         },
         discard() {
             this.isEdit = false

@@ -13,7 +13,15 @@
                     .sqr__line
                         .sqr__line-label Лого
                         .sqr__line-value
-                            input(type="checkbox" v-model="settings.logo" @change="updateQR()") 
+                            input(type="checkbox" v-model="settings.logo" @change="updateQR()")
+
+                    // Настраиваемые поля
+                    .sqr__line(v-if="'title' in $store.state.view.pdf.data") Заголовок
+                        input(type="text" v-model="$store.state.view.pdf.data.title")
+                    .sqr__line(v-if="'subtitle' in $store.state.view.pdf.data") Текст
+                        input(type="text" v-model="$store.state.view.pdf.data.subtitle")
+                    // Настраиваемые поля
+
                     .sqr__line
                         .sqr__line-label Основной цвет
                         .sqr__line-value
@@ -45,8 +53,10 @@
 
             // Для печати
             .pdf__print
-                .pdf__list(ref="pdf_1")
-                    pdfComponent
+                .pdf__list(ref="pdf1" v-if="$store.state.view.pdf.ref == 'pdf1'")
+                    pdf1
+                .pdf__list(ref="pdf2" v-if="$store.state.view.pdf.ref == 'pdf2'")
+                    pdf2
 </template>
 
 <script>
@@ -54,7 +64,6 @@ import vkQr from '@vkontakte/vk-qr';
 import fileDownload from 'js-file-download'
 
 import jsPDF from 'jspdf' 
-import html2canvas from "html2canvas"
 
 export default {
     data() {
@@ -79,7 +88,7 @@ export default {
             const place = this.$store.state.view.popup.styleQRPopup.place._id
 
             const qrSvg = vkQr.createQR(`${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`, {
-                qrSize: 190,
+                qrSize: 252,
                 isShowLogo: this.settings.logo,
                 logoData: this.settings.logo ? `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.$store.state.auth.user.photo}` : '',
                 isShowBackground: true,
@@ -98,7 +107,7 @@ export default {
             const place = this.$store.state.view.popup.styleQRPopup.place
             const tables = this.$store.state.view.popup.tablesPopup.tables
             let tablesArr = []
-            let doc = new jsPDF("p", "px")
+            let doc = new jsPDF("p", "mm", [this.$store.state.view.pdf.data.height, this.$store.state.view.pdf.data.width])
 
             if (tables) {
                 if (tables.split('-').length == 2) {
@@ -151,23 +160,6 @@ export default {
                     fileDownload(this.qr, `${place.link}_menu_qr.svg`)
                 }
             }
-        },
-
-        async generateAllPdf() {
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const length = 2;
-            for (let i = 0; i < length; i++) {
-                const chart = this.$refs[this.$store.state.view.pdf.ref]
-                // excute this function then exit loop
-                await html2canvas(chart, { scale: 1 }).then(function (canvas) { 
-                    doc.addImage(canvas.toDataURL('image/png'), 'JPEG', 10, 50, 200, 150);
-                    if (i < (length - 1)) {
-                        doc.addPage();
-                    }
-                });
-            }
-            // download the pdf with all charts
-            doc.save('All_charts_' + Date.now() + '.pdf');
         }
     }
 }

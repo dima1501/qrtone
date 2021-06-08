@@ -1,5 +1,5 @@
 <template lang="pug">
-    .popup(v-if="updatedMenuItem")
+    .popup
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -7,11 +7,11 @@
                 h2.popup__title Добавление товара
                 .e-card
                     v-form(
-                        @submit.prevent="fetchEditItem"
+                        @submit.prevent="fetchAddItem"
                         v-model="isAddItemValid")
                         dropzone(
-                            ref="dropzone2"
-                            id="#foo2" 
+                            ref="dropzone"
+                            id="#foo" 
                             @vdropzone-file-added="afterComplete" 
                             :options="dropOptions"
                             @vdropzone-drag-over="dragOver"
@@ -25,15 +25,15 @@
 
                         draggable(
                             class="previews"
-                            v-model="updatedMenuItem.images"
+                            v-model="uploadImages"
                             v-bind="dragOptions"
                             @start="drag = true"
                             @end="drag = false")
                             transition-group(type="transition" :name="!drag ? 'flip-list' : null")
-                                .preview(v-for="(element, i) in updatedMenuItem.images" :key="element.src ? element.src : element")
-                                    .preview__img(v-bind:style="{ backgroundImage: `url( ${ element.src ? element.src : '../../uploads/' + element } )` }")
+                                .preview(v-for="(element, i) in uploadImages" :key="element.file.upload.uuid")
+                                    .preview__img(v-bind:style="{ backgroundImage: 'url(' + element.src + ')' }")
                                     .preview__bottom
-                                        .preview__bottom-item(@click="removePic(element.file ? element.file : element, i)")
+                                        .preview__bottom-item(@click="removePic(element.file)")
                                             v-icon(light) mdi-trash-can-outline
                                         .preview__bottom-item
                                             v-icon(light) mdi-drag-horizontal
@@ -41,20 +41,20 @@
                             v-text-field(
                                 ref="name"
                                 :rules="nameRules"
-                                v-model="updatedMenuItem.name"
+                                v-model="newItem.name"
                                 label="Название"
                                 type="text")
-
+                        
                         .e-card__line
                             v-text-field(
                                 ref="translation"
-                                v-model="updatedMenuItem.translation"
+                                v-model="newItem.translation"
                                 label="Перевод"
                                 type="text")
 
                         .e-card__line
                             v-textarea(
-                                v-model="updatedMenuItem.description"
+                                v-model="newItem.description"
                                 auto-grow
                                 label="Описание"
                                 rows="2"
@@ -62,32 +62,31 @@
                             )
 
                         .e-card__line
-                            // .e-card__line-label Категория:
-                            v-select(:items="$store.state.auth.user.categories" v-model="updatedMenuItem.category" :rules="nameRules" label="Категория" item-text="name" item-value="_id")
-
+                            v-select(:items="$store.state.admin.user.categories" v-model="newItem.category" :rules="nameRules" label="Категория" item-text="name" item-value="_id")
+                        
                         .e-card__add-link(@click="addCategoryPopup") Управление категориями
-                                
+
                         .e-card__line(v-for="(i, key) in prices" v-bind:key="key")
                             v-text-field(
                                 ref="name"
-                                :rules="!updatedMenuItem.weights[i - 1] ? nameRules : [true]"
-                                v-model="updatedMenuItem.modifications[i - 1]"
+                                :rules="!newItem.weights[i - 1] ? nameRules : [true]"
+                                v-model="newItem.modifications[i - 1]"
                                 v-if="i > 1"
                                 label="Описание"
-                                type="text")  
+                                type="text")    
                             .e-card__line-inner
                                 .e-card__line-label.short Цена:
                                 v-text-field(
                                     ref="price"
                                     :rules="nameRules"
-                                    v-model="updatedMenuItem.prices[i - 1]"
+                                    v-model="newItem.prices[i - 1]"
                                     type="number"
-                                    :prefix="$store.state.auth.user.currencySymbol").mr-5
+                                    :prefix="$store.state.admin.user.currencySymbol").mr-5
                                 .e-card__line-label.short Вес:
                                 v-text-field(
                                     ref="price"
-                                     :rules="i > 1 && !updatedMenuItem.modifications[i - 1] ? nameRules : [true]"
-                                    v-model="updatedMenuItem.weights[i - 1]"
+                                    :rules="i > 1 && !newItem.modifications[i - 1] ? nameRules : [true]"
+                                    v-model="newItem.weights[i - 1]"
                                     type="number"
                                     prefix="г.")
                                 .e-card__remove(
@@ -95,58 +94,57 @@
                                     v-if="i > 1")
                                     v-icon(light) mdi-trash-can-outline
                         
-                        .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !updatedMenuItem.prices[prices - 1] || !updatedMenuItem.weights[prices - 1] && !updatedMenuItem.modifications[prices - 1] && prices != 1 }") Добавить модификацию
+                        .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !newItem.prices[prices - 1] || !newItem.weights[prices - 1] && !newItem.modifications[prices - 1] && prices != 1 }") Добавить модификацию
 
                         .e-card__section
-                            h4(v-if="!$store.state.auth.user.dops.length") Дополнения к блюду
-                            v-select(v-if="$store.state.auth.user.dops.length" :items="$store.state.auth.user.dops" v-model="updatedMenuItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
+                            h4(v-if="!$store.state.admin.user.dops.length") Дополнения к блюду
+                            v-select(v-if="$store.state.admin.user.dops.length" :items="$store.state.admin.user.dops" v-model="newItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
                             .e-card__add-link(@click="addDopPopup") Управление дополнениями
 
-                        // .e-card__section
+                        .e-card__section
                             h4 Активировать в:
-                            div(v-for="place in $store.state.auth.user.places")
+                            div(v-for="place in $store.state.admin.user.places")
                                 label {{ place.name }}
                                 input(type='checkbox' @change="togglePlace(place)" :id="place.id")
 
                         .e-card__bottom
                             v-btn(color="red" @click="closePopup").e-card__bottom-item Отмена
                             v-btn(
-                                color="blue"
+                                color="blue" 
                                 :disabled="!isAddItemValid"
                                 type="submit"
-                            ).e-card__bottom-item Сохранить
+                            ).e-card__bottom-item Создать
 </template>
 
 <script>
 import Dropzone from 'nuxt-dropzone'
 import draggable from 'vuedraggable'
 export default {
-    props: {
-        editableMenuItem: Object
-    },
     components: {
       Dropzone,
       draggable
     },
     data() {
         return {
-            updatedMenuItem: null,
             drag: false,
             isDragOver: false,
             isAddItemValid: false,
             newItemImageFile: null,
             newItemImageSrc: null,
-            // uploadImages: [],
+            uploadImages: [],
             prices: 1,
             newItem: {
                 images: [],
                 name: '',
                 prices: [],
                 weights: [],
+                modifications: [],
                 category: null,
                 weight: null,
                 places: [],
-                dops: []
+                dops: [],
+                description: '',
+                translation: ''
             },
             nameRules: [
                 (v) => !!v || 'error_company_name',
@@ -163,24 +161,14 @@ export default {
                 acceptedFiles: 'image/*',
                 dictRemoveFile: '',
                 dictRemoveFileConfirmation: null
-            },
-            deleteImages: []
+            }
         }
-    },
-    mounted() {
-        this.updatedMenuItem = Object.assign({}, this.editableMenuItem)
-        this.updatedMenuItem.images = [...this.editableMenuItem.images]
-        this.updatedMenuItem.prices = [...this.editableMenuItem.prices]
-        this.updatedMenuItem.weights = [...this.editableMenuItem.weights]
-        this.updatedMenuItem.modifications = [...this.editableMenuItem.modifications]
-        this.updatedMenuItem.dops = [...this.editableMenuItem.dops]
-        this.prices = this.updatedMenuItem.prices.length
     },
     computed: {
         dragOptions() {
             return {
                 animation: 200,
-                group: "description3",
+                group: "description",
                 disabled: false,
                 ghostClass: "ghost"
             };
@@ -188,27 +176,20 @@ export default {
     },
     methods: {
         dopSelectText(item) {
-            return `${item.name} ${item.price} ${this.$store.state.auth.user.currencySymbol}`
+            return `${item.name} ${item.price} ${this.$store.state.admin.user.currencySymbol}`
         },
-        removePic(file, index) {
-            if (file.upload) {
-                this.$refs.dropzone2.removeFile(file)
-            } else {
-                this.deleteImages.push(file)
-            }
-            this.updatedMenuItem.images.splice(index, 1)
-            
+        removePic(file) {
+            this.$refs.dropzone.removeFile(file)
         },
-        fetchEditItem() {
-            this.$store.dispatch('lk/editMenuItem', {
-                item: this.updatedMenuItem
+        fetchAddItem() {
+            this.$store.dispatch('lk/addNewMenuItem', {
+                images: this.uploadImages,
+                item: this.newItem,
+                _id: this.$store.state.admin.user._id
             })
-            this.deleteImages.forEach(element => {
-                this.$store.dispatch("lk/deletePic", element)
-            });
         },
         togglePlace(place) {
-            const arr = this.updatedMenuItem.places
+            const arr = this.newItem.places
             if (arr.indexOf(place) > -1) {
                 arr.splice(arr.indexOf(place), 1)
             } else {
@@ -216,12 +197,11 @@ export default {
             }
         },
         closePopup() {
-            this.$store.state.view.popup.editMenuItemPopup.visible = false
+            this.$store.state.view.popup.addMenuItemPopup.visible = false
         },
         afterComplete(file) {
             this.isDragOver = false
-
-            this.updatedMenuItem.images.unshift({
+            this.uploadImages.push({
                 file: file,
                 src: URL.createObjectURL(file)
             })
@@ -232,15 +212,20 @@ export default {
         dragLeave() {
             this.isDragOver = false
         },
+        vremoved(file) {
+            const fl = this.uploadImages.find(e => e.file == file)
+            const index = this.uploadImages.indexOf(fl)
+            this.uploadImages.splice(index, 1)
+        } ,
         addPrice() {
-            if (this.updatedMenuItem.weights[this.prices - 1] || this.updatedMenuItem.prices[this.prices - 1]) {
+            if (this.newItem.weights[this.prices - 1] || this.newItem.prices[this.prices - 1]) {
                 this.prices += 1
             }
         },
         removePriceItem(i) {
-            this.updatedMenuItem.prices.splice(i - 1, 1)
-            this.updatedMenuItem.weights.splice(i - 1, 1)
-            this.updatedMenuItem.modifications.splice(i - 1, 1)
+            this.newItem.prices.splice(i - 1, 1)
+            this.newItem.weights.splice(i - 1, 1)
+            this.newItem.modifications.splice(i - 1, 1)
             this.prices -= 1
         },
         addCategoryPopup() {
@@ -248,11 +233,6 @@ export default {
         },
         addDopPopup() {
             this.$store.state.view.popup.addDopPopup.visible = true
-        },
-        vremoved(file) {
-            // const fl = this.uploadImages.find(e => e.file == file)
-            // const index = this.uploadImages.indexOf(fl)
-            // this.uploadImages.splice(index, 1)
         }
     }
 }
@@ -446,11 +426,11 @@ export default {
         }
     }
     &__line {
+        // margin-bottom: 10px;
         &-inner {
             display: flex;
             align-items: center;
         }
-        // margin-bottom: 10px;
         &:last-child {
             margin-bottom: 0;
         }

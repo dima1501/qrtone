@@ -63,7 +63,7 @@
 
                         .e-card__line
                             // .e-card__line-label Категория:
-                            v-select(:items="$store.state.auth.user.categories" v-model="updatedMenuItem.category" :rules="nameRules" label="Категория" item-text="name" item-value="_id")
+                            v-select(:items="$store.state.admin.user.categories" v-model="updatedMenuItem.category" :rules="nameRules" label="Категория" item-text="name" item-value="_id")
 
                         .e-card__add-link(@click="addCategoryPopup") Управление категориями
                                 
@@ -82,7 +82,7 @@
                                     :rules="nameRules"
                                     v-model="updatedMenuItem.prices[i - 1]"
                                     type="number"
-                                    :prefix="$store.state.auth.user.currencySymbol").mr-5
+                                    :prefix="$store.state.admin.user.currencySymbol").mr-5
                                 .e-card__line-label.short Вес:
                                 v-text-field(
                                     ref="price"
@@ -94,17 +94,17 @@
                                     @click="removePriceItem(i)"
                                     v-if="i > 1")
                                     v-icon(light) mdi-trash-can-outline
-                        
+
                         .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !updatedMenuItem.prices[prices - 1] || !updatedMenuItem.weights[prices - 1] && !updatedMenuItem.modifications[prices - 1] && prices != 1 }") Добавить модификацию
 
                         .e-card__section
-                            h4(v-if="!$store.state.auth.user.dops.length") Дополнения к блюду
-                            v-select(v-if="$store.state.auth.user.dops.length" :items="$store.state.auth.user.dops" v-model="updatedMenuItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
-                            .e-card__add-link(@click="addDopPopup") Управление дополнениями
+                            h4(v-if="!$store.state.admin.user.dops.length") Дополнения к блюду
+                            v-select(v-if="$store.state.admin.user.dops.length" :items="$store.state.admin.user.dops" v-model="updatedMenuItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
+                            .e-card__add-link(@click="addDopPopup") Управление дополнениями {{$store.state.admin.user.dops}}
 
                         // .e-card__section
                             h4 Активировать в:
-                            div(v-for="place in $store.state.auth.user.places")
+                            div(v-for="place in $store.state.admin.user.places")
                                 label {{ place.name }}
                                 input(type='checkbox' @change="togglePlace(place)" :id="place.id")
 
@@ -134,20 +134,8 @@ export default {
             drag: false,
             isDragOver: false,
             isAddItemValid: false,
-            newItemImageFile: null,
-            newItemImageSrc: null,
             // uploadImages: [],
             prices: 1,
-            newItem: {
-                images: [],
-                name: '',
-                prices: [],
-                weights: [],
-                category: null,
-                weight: null,
-                places: [],
-                dops: []
-            },
             nameRules: [
                 (v) => !!v || 'error_company_name',
             ],
@@ -172,7 +160,7 @@ export default {
         this.updatedMenuItem.images = [...this.editableMenuItem.images]
         this.updatedMenuItem.prices = [...this.editableMenuItem.prices]
         this.updatedMenuItem.weights = [...this.editableMenuItem.weights]
-        this.updatedMenuItem.modifications = [...this.editableMenuItem.modifications]
+        // this.updatedMenuItem.modifications = [...this.editableMenuItem.modifications]
         this.updatedMenuItem.dops = [...this.editableMenuItem.dops]
         this.prices = this.updatedMenuItem.prices.length
     },
@@ -184,11 +172,11 @@ export default {
                 disabled: false,
                 ghostClass: "ghost"
             };
-        },
+        }
     },
     methods: {
         dopSelectText(item) {
-            return `${item.name} ${item.price} ${this.$store.state.auth.user.currencySymbol}`
+            return `${item.name} ${item.price} ${this.$store.state.admin.user.currencySymbol}`
         },
         removePic(file, index) {
             if (file.upload) {
@@ -200,8 +188,9 @@ export default {
             
         },
         fetchEditItem() {
-            this.$store.dispatch('lk/editMenuItem', {
-                item: this.updatedMenuItem
+            this.$store.dispatch('admin/editMenuItemAdmin', {
+                item: this.updatedMenuItem,
+                _id: this.$store.state.admin.user._id
             })
             this.deleteImages.forEach(element => {
                 this.$store.dispatch("lk/deletePic", element)

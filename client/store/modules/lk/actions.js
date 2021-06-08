@@ -134,15 +134,26 @@ const addNewMenuItem = async (store, data) => {
       const add = await axios({
         method: 'post',
         url: '/api/add-menu-item',
-        data: { data: data.item }
+        data: { data: data.item, _id: data._id }
       })
 
       if (add.data) {
-        store.rootState.auth.user.goods.push(add.data)
-        if (store.rootState.auth.parsedMenu[add.data.category]) {
-          store.rootState.auth.parsedMenu[add.data.category].push(add.data)
+        // Боже
+        // Тут просто проверка, если админ загружает
+        if (store.rootState.auth.user) {
+          store.rootState.auth.user.goods.push(add.data)
+          if (store.rootState.auth.parsedMenu[add.data.category]) {
+            store.rootState.auth.parsedMenu[add.data.category].push(add.data)
+          } else {
+            store.rootState.auth.parsedMenu[add.data.category] = [add.data]
+          }
         } else {
-          store.rootState.auth.parsedMenu[add.data.category] = [add.data]
+          store.rootState.admin.user.goods.push(add.data)
+          if (store.rootState.admin.parsedMenu[add.data.category]) {
+            store.rootState.admin.parsedMenu[add.data.category].push(add.data)
+          } else {
+            store.rootState.admin.parsedMenu[add.data.category] = [add.data]
+          }
         }
       }
     }
@@ -192,7 +203,7 @@ const editMenuItem = async (store, data) => {
           const index = store.rootState.auth.user.goods.indexOf(parsedItem)
           Vue.set(store.rootState.auth.user.goods, index, add.data)
           store.rootState.auth.parsedMenu = {}
-
+          
           for (let item of store.rootState.auth.user.goods) {
             if (store.rootState.auth.parsedMenu[item.category]) {
               store.rootState.auth.parsedMenu[item.category].push(item)
@@ -200,6 +211,7 @@ const editMenuItem = async (store, data) => {
               store.rootState.auth.parsedMenu[item.category] = [item]
             }
           }
+
         } else {
           let index = category.indexOf(item)
           Vue.set(category, index, add.data)
@@ -332,15 +344,15 @@ const removeCat = async (store, cat) => {
   }
 }
 
-const removeDop = async (store, dop) => {
+const removeDop = async (store, data) => {
   try {
     const update = await axios({
       method: 'post',
       url: '/api/remove-dop',
-      data: { dop }
+      data: { data }
     })
     if (update.data) {
-      const index = store.rootState.auth.user.dops.indexOf(dop)
+      const index = store.rootState.auth.user.dops.indexOf(data.dop)
       store.rootState.auth.user.dops.splice(index, 1);
     }
   } catch (error) {
@@ -363,12 +375,12 @@ const editCat = async (store, cat) => {
   }
 }
 
-const editDop = async (store, dop) => {
+const editDop = async (store, data) => {
   try {
     const update = await axios({
       method: 'post',
       url: '/api/edit-dop',
-      data: { dop }
+      data: { data }
     })
     if (update.data) {
       
@@ -394,12 +406,12 @@ const createCat = async (store, cat) => {
   }
 }
 
-const createDop = async (store, dop) => {
+const createDop = async (store, data) => {
   try {
     const create = await axios({
       method: 'post',
       url: '/api/create-dop',
-      data: { dop }
+      data: { data }
     })
     if (create.data) {
       store.rootState.auth.user.dops.unshift(create.data)
@@ -614,11 +626,26 @@ const updateTGUsers = async (store, data) => {
     })
     if (fetch.data) {
       store.rootState.auth.user.telegram = fetch.data
-      console.log(123)
     }
   } catch (error) {
     console.error(error)
   }
+}
+
+const toggleFastActions = async (store, data) => {
+  try {
+    const fetch = await axios({
+      method: 'post',
+      url: '/api/toggle-fast-actions',
+      data: { data }
+    })
+    if (fetch.data) {
+      store.rootState.auth.user.fastActionsEnabled = data
+    }
+  } catch (error) {
+    console.error(error)
+  }
+  console.log(data)
 }
 
 
@@ -655,5 +682,6 @@ export default {
     simplify,
     setCurrency,
     deletePic,
-    updateTGUsers
+    updateTGUsers,
+    toggleFastActions,
 }

@@ -21,13 +21,19 @@
                 button(type="submit" :to="localePath('auth/registration')").button.-short.-black Начать бесплатно
             p.m-welcome__note Попробуйте QRTONE бесплатно в течение 14 дней, кредитная карта не требуется.<br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от QRTone.
           .m-welcome__media
-            video(src="video2.mp4" autoplay muted loop)
+            //- video(src="video2.mp4" autoplay muted loop)
+            <client-only>
+              <threejs-component />
+            </client-only>
 
 </template>
 
 <script>
 export default {
   layout: 'public',
+  components: {
+    ThreejsComponent: process.browser ? () => import('~/components/ThreejsComponent.vue') : null
+  },
   data() {
     return {
       emailValidationErrors: [],
@@ -36,6 +42,7 @@ export default {
       isEmailFocused: false
     }
   },
+  
   methods: {
     checkForm: function (e) {
       this.emailValidationErrors = [];

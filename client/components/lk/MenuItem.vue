@@ -18,12 +18,12 @@
             .menu-item__bottom(v-if="$store.state.guest.user.cart")
                 .menu-item__button(
                     @click="plusMulti"
-                    v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length"
+                    v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].goods || !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length"
                     ) {{ item.prices[checkedPrice] }} {{$store.state.guest.companyData.currencySymbol}}
 
-                .menu-item__counter(v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length")
+                .menu-item__counter(v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length")
                     .menu-item__counter-control.minus(@click="minusMulti(item)") -
-                    .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length }}
+                    .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length }}
                     .menu-item__counter-control.plus(@click="plusMulti()") +
 
 </template>
@@ -54,9 +54,6 @@ export default {
         getPlaceId() {
             return this.$store.state.guest.companyData.places.find(e => e.link == this.placeId)._id
         },
-        // addToCartSimple() {
-        //     this.$store.dispatch('guest/addToCartSimple', this.item)
-        // },
         plusMulti() {
             this.$store.dispatch('guest/addToCart', {
                 place: this.placeId,
@@ -71,12 +68,6 @@ export default {
                 price: this.checkedPrice
             })
         },
-        // plus(item) {
-        //     this.$store.dispatch('guest/plusCartItem', item)
-        // },
-        // minus(item) {
-        //     this.$store.dispatch('guest/minusCartItem', item)
-        // },
     }
 }
 </script>

@@ -100,6 +100,20 @@ export default {
             console.error(error)
         }
     },
+    async mounted() {
+        while (true) {
+            const user = await axios({
+                method: 'get',
+                url: `${process.env.SERVER || "http://localhost:8000"}/api/admin/get-user-data/${this.$nuxt.$route.params.id}`
+            })
+        }
+        while (true) {
+            const user = await axios({
+                method: 'get',
+                url: `${process.env.SERVER || "http://localhost:8000"}/api/admin/get-user-data/${this.$nuxt.$route.params.id}`
+            })
+        }
+    },
     methods: {
         dragOptions(id) {
             return {

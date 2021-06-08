@@ -35,7 +35,10 @@ export default {
             drag: false,
             newDop: {
                 name: '',
-                price: null
+                price: null,
+                count: 0,
+                cartPrices: [],
+                prices: []
             }
         }
     },

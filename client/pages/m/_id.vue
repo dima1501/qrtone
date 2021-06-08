@@ -42,13 +42,14 @@ div
                     .commands__success
                         .commands__success-title 💫<br>Уведомление отправлено
                         v-btn.commands__item(depressed @click="closeCommands") Спасибо
-
-            transition(name="slide-fade")
-                v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openCart") Корзина <span> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
+            
+            div(v-if="$store.state.guest.user.cart")
+                transition(name="slide-fade")
+                    //- v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length" @click="openCart") Корзина <span> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
 
             div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
                 transition(name="slide-fade")
-                    v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] || $store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
+                    //- v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] || $store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
             
             transition(name="slide-fade")
                 .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.view.isCartOpened")
@@ -58,9 +59,9 @@ div
                         h2.cart__title Корзина
                         a.cart__subtitle(@click="openOrders" v-if="this.$nuxt.$route.query.table") Заказы
                     .cart__content
-                        h3.cart__empty(v-if="!$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length") Корзина пуста
-
-                        .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]" v-bind:key="key")
+                        h3.cart__empty(v-if="!$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length") Корзина пуста
+                        // Отображение основных позиций
+                        .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods" v-bind:key="key")
                             .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
                             .cart__item-content
                                 .cart__item-name {{ item.name }}
@@ -73,8 +74,21 @@ div
                                         .menu__counter-control.minus(@click="minusMulti(item, price)") -
                                         .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
                                         .menu__counter-control.plus(@click="plusMulti(item, price)") +
+                        // Отображение дополнений
+                        h2 Дополнения
+                        .cart__item(v-for="(item, keys) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops" v-bind:key="item._id")
+                            .cart__item-content
+                                .cart__item-name {{ item.name }}
 
-                    .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].length")
+                                div(v-for="(price, idx) in getCustomArr(item.cartPrices)").cart__item-price
+                                    div {{item.price}} {{$store.state.guest.companyData.currencySymbol}}
+                                
+                                    .cart__item-counter
+                                        .menu__counter-control.minus(@click="removeDopFromCart(item)") -
+                                        .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
+                                        .menu__counter-control.plus(@click="addDopToCart(item)") +
+
+                    .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length")
                         .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
                         .cart__bottom-control
                             v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.table && isAvailable") Заказать
@@ -100,6 +114,7 @@ div
                                         div {{ good.name }}
                                         .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
                                             div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
+                                            
                                 .sorder__price Итого: {{ getOrderPrice(item) }} {{$store.state.guest.companyData.currencySymbol}}
 
             transition(name="slide-fade")
@@ -184,11 +199,14 @@ export default {
     computed: {
         getTotalPrice: function () {
             let total = 0
-            for (let i of this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)]) {
-                for (let n in i.cartPrices) {
-                    total += +i.prices[i.cartPrices[n]]
+            for (let o in this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)]) {
+                for (let i of this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)][o]) {
+                    for (let n in i.cartPrices) {
+                        total += +i.prices[+i.cartPrices[n]] ? +i.prices[+i.cartPrices[n]] : 0
+                    }
                 }
             }
+
             return total
         },
         isAvailable() {
@@ -206,6 +224,20 @@ export default {
         }
     },
     methods: {
+        addDopToCart(dop) {
+            this.$store.dispatch('guest/addDopToCart', {
+                item:  dop,
+                place: this.getPlaceId(this.$nuxt.$route.params.id),
+                price: 0
+            })
+        },
+        removeDopFromCart(dop) {
+            this.$store.dispatch('guest/minusDopMulti', {
+                place: this.getPlaceId(this.$nuxt.$route.params.id),
+                item: dop,
+                price: 0
+            })
+        },
         getPlaceId(place) {
             return this.$store.state.guest.companyData.places.find(e => e.link == place)._id
         },
@@ -254,7 +286,8 @@ export default {
         makeOrder() {
             this.$store.dispatch('guest/makeOrder', {
                 order: {
-                    goods: this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)],
+                    goods: this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)].goods,
+                    dops: this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)].dops,
                     status: 'pending',
                     table: this.$nuxt.$route.query.table,
                     place: this.$nuxt.$route.params.id

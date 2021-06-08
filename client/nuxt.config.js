@@ -46,10 +46,11 @@ export default {
     { src: './plugins/socket.client.js' },
     { src: './plugins/vue2-dropzone.client.js' },
     { src: './plugins/dragdrop.client.js' },
+    { src: './plugins/vue-html2canvas.client.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: ['~/components/lk/', '~/components/auth/'],
+  components: ['~/components/lk/', '~/components/auth/', '~/components/pdf/'],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [

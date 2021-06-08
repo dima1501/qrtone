@@ -163,7 +163,8 @@ export default {
                 acceptedFiles: 'image/*',
                 dictRemoveFile: '',
                 dictRemoveFileConfirmation: null
-            }
+            },
+            deleteImages: []
         }
     },
     mounted() {
@@ -186,12 +187,10 @@ export default {
     methods: {
         dopSelectText: item => `${item.name} ${item.price} ${this.$store.state.auth.user.currencySymbol}`,
         removePic(file, index) {
-            console.log(file)
-            console.log(index)
             if (file.upload) {
                 this.$refs.dropzone2.removeFile(file)
             } else {
-                this.$store.dispatch("lk/deletePic", file)
+                this.deleteImages.push(file)
             }
             this.updatedMenuItem.images.splice(index, 1)
             
@@ -200,6 +199,9 @@ export default {
             this.$store.dispatch('lk/editMenuItem', {
                 item: this.updatedMenuItem
             })
+            this.deleteImages.forEach(element => {
+                this.$store.dispatch("lk/deletePic", element)
+            });
         },
         togglePlace(place) {
             const arr = this.updatedMenuItem.places

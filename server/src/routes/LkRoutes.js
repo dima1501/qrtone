@@ -443,10 +443,12 @@ router.post('/api/set-place-socket-id', auth(), async (req, res) => {
         // )
         // console.log(lal)
         if (req.user) {
-            const set = await req.db.collection('users').updateOne(
-                { _id: ObjectId(req.user._id) },
-                { $push: { 'sockets': {place: req.body.data.place, socketId: req.body.data.socketId } } }
-            )
+            if (req.body.data.place) {
+                const set = await req.db.collection('users').updateOne(
+                    { _id: ObjectId(req.user._id) },
+                    { $push: { 'sockets': {place: req.body.data.place, socketId: req.body.data.socketId } } }
+                )
+            }
 
             await req.db.collection('users').updateOne(
                 { _id: ObjectId(req.user._id) },

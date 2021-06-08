@@ -64,6 +64,7 @@ div
 
                             div(v-for="(price, idx) in getCustomArr(item.cartPrices)").cart__item-price
                                 div {{item.prices[price]}}р - {{item.weights[price]}}г
+                                div(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
                             
                                 .cart__item-counter
                                     .menu__counter-control.minus(@click="minusMulti(item, price)") -

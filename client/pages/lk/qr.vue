@@ -1,12 +1,11 @@
 <template lang="pug">
     .qr(v-if="$store.state.auth.user")
         h1.qr__title QR-коды
+
         .qr__field
             .qr__field-content
                 h2.qr__field-title QR-код меню
-                // Текст если заведений несколько
                 .qr__field-text(v-if="$store.state.auth.user.places.length > 1") Код открывает меню выбранного заведения, без привязки к столику 
-                // Else
                 .qr__field-text(v-else) Код открывает меню заведения, без привязки к столику
 
                 div(v-if="$store.state.auth.user.places.length > 1")
@@ -22,7 +21,7 @@
                         color="primary"
                         text
                         :disabled="!$store.state.view.popup.styleQRPopup.place"
-                        @click="openStyleQRPopup"
+                        @click="openStyleQRPopup()"
                     ) Стилизовать и скачать
                 div(v-else-if="$store.state.auth.user.places.length == 1")
                     div для {{$store.state.auth.user.places[0].name}}
@@ -54,7 +53,7 @@
                             color="primary"
                             text
                             :disabled="!$store.state.view.popup.tablesPopup.place"
-                            @click="openTablesPopup"
+                            @click="openTablesPopup()"
                         ) Управление столиками
                     div(v-else-if="$store.state.auth.user.places.length == 1")
                         .qr__field-text Для {{$store.state.auth.user.places[0].name}}
@@ -80,6 +79,9 @@
         )
         TablesPopup(
             v-if="$store.state.view.popup.tablesPopup.visible"
+        )
+        PDFPopup(
+            v-if="$store.state.view.popup.PDFPopup.visible"
         )
 
 </template>

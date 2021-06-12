@@ -96,10 +96,10 @@
                         
                         .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !newItem.prices[prices - 1] || !newItem.weights[prices - 1] && !newItem.modifications[prices - 1] && prices != 1 }") Добавить модификацию
 
-                        //- .e-card__section
-                        //-     h4(v-if="!$store.state.auth.user.dops.length") Дополнения к блюду
-                        //-     v-select(v-if="$store.state.auth.user.dops.length" :items="$store.state.auth.user.dops" v-model="newItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
-                        //-     .e-card__add-link(@click="addDopPopup") Управление дополнениями
+                        .e-card__section
+                            h4(v-if="!$store.state.auth.user.dops.length") Дополнения к блюду
+                            v-select(v-if="$store.state.auth.user.dops.length" :items="$store.state.auth.user.dops" v-model="newItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
+                            .e-card__add-link(@click="addDopPopup") Управление дополнениями
 
                         .e-card__section
                             h4 Активировать в:

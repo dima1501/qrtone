@@ -29,9 +29,16 @@
 
                 .menu-item__dops(v-if="item.dops.length && $store.state.guest.companyData.dops")
                     h4 Дополнения:
+                    //- .menu-item__dops-item(v-for="(dop, key) in item.dops" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop)")
+                    //-     div {{ $store.state.guest.companyData.dops.find(e => e._id == dop).name }} {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}
+                    //-     div x {{ $store.state.guest.companyData.dops.find(e => e._id == dop).count }}
+                    //-     div(@click="addDopToCart(dop)") add
+                    //-     div(@click="removeDopFromCart(dop)") remove
+                    //-     div ____
+
                     .menu-item__dops-item(v-for="(dop, key) in item.dops" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop)")
                         div {{ $store.state.guest.companyData.dops.find(e => e._id == dop).name }} {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}
-                        div x {{ $store.state.guest.companyData.dops.find(e => e._id == dop).count }}
+                        div(v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop)") x {{ $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop).count }}
                         div(@click="addDopToCart(dop)") add
                         div(@click="removeDopFromCart(dop)") remove
                         div ____

@@ -119,15 +119,14 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
     const order = new OrderModel(req.user._id, req.body.data.order, place._id)
 
     const makeOrder = await req.db.collection('users').updateOne(
-        { 'places.link': req.body.data.order.place },
+        { _id: ObjectId(user._id) },
         { $push: { 'orders': order } }
     )
 
     const clearCart = await req.db.collection('guests').updateOne(
         { _id: ObjectId(req.user._id) },
-        { $set: { ['cart.' + place._id]: [] } }
+        { $set: { ['cart.' + place._id]: { goods: [], dops: [] } } }
     )
-    console.log(clearCart)
 
     if (user.sockets.length) {
         websocket.makeOrder({
@@ -139,13 +138,19 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
     const getOrderPrice = (order) => {
         let total = 0
-        for (let i of order.goods) {
-            for (let n in i.cartPrices) {
-                total += +i.prices[i.cartPrices[n]]
+        for (let o of ['goods', 'dops']) {
+            for (let i of order[o]) {
+                for (let n in i.cartPrices) {
+                    total += +i.prices[i.cartPrices[n]]
+                }
             }
         }
         return total
     }
+
+    getOrderPrice(order)
+
+    
 
     const getCustomArr = (arr) => {
         const newArr = []
@@ -178,6 +183,28 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
             // str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}${user.currencySymbol} ${order.goods[i].weights[order.goods[i].cartPrices[n]]}г x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length } \n`)
             if (n !== getCustomArr(order.goods[i].cartPrices).length - 1) {
+                str.push(`    -----\n`)
+            }
+        }
+        str.push(`----------------\n`)
+    }
+
+    // Дополнения
+    if (order.dops.length) {
+        str.push(`Дополнения\n`)
+    }
+    for (let i = 0; i < order.dops.length; i++) {
+        str.push(`${i + 1}) ${order.dops[i].name}\n`)
+        for (let n = 0; n < getCustomArr(order.dops[i].cartPrices).length; n++) {
+            // Если есть модификация
+            str.push('    ')
+
+            str.push(`${order.dops[i].prices[0]}${user.currencySymbol}, `)
+
+            str.push(`| x ${order.dops[i].count} \n`)
+
+            // str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}${user.currencySymbol} ${order.goods[i].weights[order.goods[i].cartPrices[n]]}г x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length } \n`)
+            if (n !== getCustomArr(order.dops[i].cartPrices).length - 1) {
                 str.push(`    -----\n`)
             }
         }

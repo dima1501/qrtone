@@ -44,7 +44,6 @@ div
                         v-btn.commands__item(depressed @click="closeCommands") Спасибо
             
             div(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]")
-                div.lsls {{$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]}}
                 transition(name="slide-fade")
                     v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length" @click="openCart") Корзина <span> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
 
@@ -115,6 +114,12 @@ div
                                         div {{ good.name }}
                                         .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
                                             div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
+                                .sorder__goods
+                                    h3 Дополнения
+                                    .sorder__line(v-for="(dop, key) in item.dops" v-bind:key="key")
+                                        div {{ dop.name }}
+                                        .sorder__line-item(v-for="(price, idx) in getCustomArr(dop.cartPrices)")
+                                            div {{dop.prices[0]}} {{$store.state.guest.companyData.currencySymbol}} x {{ dop.count }}
                                             
                                 .sorder__price Итого: {{ getOrderPrice(item) }} {{$store.state.guest.companyData.currencySymbol}}
 
@@ -310,9 +315,11 @@ export default {
         },
         getOrderPrice(item) {
             let total = 0
-            for (let i of item.goods) {
-                for (let n in i.cartPrices) {
-                    total += +i.prices[i.cartPrices[n]]
+            for (let o of ['goods', 'dops']) {
+                for (let i of item[o]) {
+                    for (let n in i.cartPrices) {
+                        total += +i.prices[i.cartPrices[n]]
+                    }
                 }
             }
             return total

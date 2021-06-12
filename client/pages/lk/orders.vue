@@ -22,6 +22,11 @@
                                 div {{ good.name }}
                                 .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
                                     div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
+                            .sorder__line(v-for="(dop, key) in order.dops" v-bind:key="key")
+                                div {{ dop.name }}
+                                .sorder__line-item(v-for="(price, idx) in getCustomArr(dop.cartPrices)")
+                                    div {{dop.prices[price]}}р  x {{ dop.count }}
+
                             div Итого: {{ getOrderPrice(order) }}р
                                 
                         .sorder__btn(@click='acceptOrder(order)' v-if="order.status == 'pending'") Подтвердить
@@ -89,9 +94,11 @@ export default {
         },
         getOrderPrice(item) {
             let total = 0
-            for (let i of item.goods) {
-                for (let n in i.cartPrices) {
-                    total += +i.prices[i.cartPrices[n]]
+            for (let o of ['goods', 'dops']) {
+                for (let i of item[o]) {
+                    for (let n in i.cartPrices) {
+                        total += +i.prices[i.cartPrices[n]]
+                    }
                 }
             }
             return total

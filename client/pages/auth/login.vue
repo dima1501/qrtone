@@ -26,7 +26,7 @@
                     v-btn(
                     text
                     :to="localePath('/auth/registration')"
-                    ) {{ 'form_reg' }}
+                    ) {{ 'form_resg' }}
                     v-spacer
                     v-btn(
                     color="primary"

@@ -42,6 +42,10 @@ const state = {
     },
     editTablesPopup: {
       visible: false
+    },
+    wifiPopup: {
+      visible: false,
+      svg: null
     }
   },
   isOrdersOpened: false,

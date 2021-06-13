@@ -66,6 +66,9 @@ import fileDownload from 'js-file-download'
 import jsPDF from 'jspdf' 
 
 export default {
+    props: {
+        qrs: String
+    },
     data() {
         return {
             qr: '',
@@ -86,8 +89,9 @@ export default {
         updateQR() {
             const id = this.$store.state.auth.user._id
             const place = this.$store.state.view.popup.styleQRPopup.place._id
+            const str = this.qrs ? this.qrs : `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`
 
-            const qrSvg = vkQr.createQR(`${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`, {
+            const qrSvg = vkQr.createQR(`${str}`, {
                 qrSize: 252,
                 isShowLogo: this.settings.logo,
                 logoData: this.settings.logo ? `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.$store.state.auth.user.photo}` : '',
@@ -97,7 +101,6 @@ export default {
             })
             this.$store.state.view.pdf.qr = qrSvg
             this.qr = qrSvg
-            console.log('update')
         },
         closePopup() {
             this.$store.state.view.popup.styleQRPopup.visible = false
@@ -121,8 +124,8 @@ export default {
                 }
 
                 for (let i = 0; i < tablesArr.length; i++) {
-                    console.log(1)
-                    const qrSvgs = vkQr.createQR(`${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`, {
+                    const str = this.qrs ? this.qrs : `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`
+                    const qrSvgs = vkQr.createQR(`${str}`, {
                         qrSize: 256,
                         isShowLogo: this.settings.logo,
                         logoData: this.settings.logo ? `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.$store.state.auth.user.photo}` : '',

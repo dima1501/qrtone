@@ -22,7 +22,7 @@
                                 div {{ good.name }}
                                 .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
                                     div {{good.prices[price]}}р {{good.weights[price]}}г x {{ good.cartPrices.filter(e => e == price).length }}
-                            .sorder__line(v-for="(dop, key) in order.dops" v-bind:key="key")
+                            .sorder__line(v-for="(dop, x) in order.dops" v-bind:key="x + dop")
                                 div {{ dop.name }}
                                 .sorder__line-item(v-for="(price, idx) in getCustomArr(dop.cartPrices)")
                                     div {{dop.prices[price]}}р  x {{ dop.count }}

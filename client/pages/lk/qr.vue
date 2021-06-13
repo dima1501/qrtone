@@ -74,6 +74,16 @@
                     ) Доступно с Premium
             .qr__field-pic
 
+        .qr__field
+            .qr__field-content
+                h2.qr__field-title QR-код wi-fi
+                .qr__field-text Можно отсканировать и сразу подключиться к wi-if, пароль вводить не нужно
+                v-btn(
+                    color="primary"
+                    text
+                    @click="openWifiPopup()"
+                ) Стилизовать и скачать
+
         StyleQRPopup(
             v-if="$store.state.view.popup.styleQRPopup.visible"
         )
@@ -83,11 +93,14 @@
         PDFPopup(
             v-if="$store.state.view.popup.PDFPopup.visible"
         )
+        WifiPopup(
+            v-if="$store.state.view.popup.wifiPopup.visible"
+        )
 
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
     layout: 'lk',
@@ -126,6 +139,9 @@ export default {
                 this.$store.state.view.popup.tablesPopup.place = place
             }
             this.$store.state.view.popup.tablesPopup.visible = true
+        },
+        openWifiPopup() {
+            this.$store.state.view.popup.wifiPopup.visible = true
         }
     },
     beforeDestroy() {

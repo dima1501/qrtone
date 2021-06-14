@@ -49,7 +49,7 @@ div
 
             div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
                 transition(name="slide-fade")
-                    //- v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] || $store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
+                    v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] || $store.state.guest.user.orders.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length" @click="openOrders") Мои заказы {{ $store.state.guest.user.orders.length }}
             
             transition(name="slide-fade")
                 .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.view.isCartOpened")

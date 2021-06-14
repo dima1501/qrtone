@@ -20,24 +20,15 @@
 
                 v-btn(@click="printWifiCode()") Стилизовать и скачать
 
-        StyleQRPopup(
-            v-if="$store.state.view.popup.styleQRPopup.visible"
-            :qrs="qr"
-        )
-
-
 </template>
 
 <script>
-import vkQr from '@vkontakte/vk-qr';
-
 export default {
     data() {
         return {
             wifiName: '',
             wifiPass: '',
             wifiType: 'T:WPA;',
-            qr: ''
         }
     },
     mounted() {
@@ -50,12 +41,11 @@ export default {
         printWifiCode() {
             if (this.wifiName !== '' || this.wifiPassp !== '') {
                 const url = `WIFI:${this.wifiType}S:${this.wifiName};P:${this.wifiPass};;`
-                this.qr = url
+                this.$store.state.view.popup.wifiPopup.string = url
                 
                 this.$store.state.view.popup.styleQRPopup.place = this.$store.state.auth.user.places[0]
                 this.$store.state.view.popup.tablesPopup.tables = null
                 this.$store.state.view.popup.styleQRPopup.visible = true
-
             }
         }
     }

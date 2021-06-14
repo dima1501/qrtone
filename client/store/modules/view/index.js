@@ -45,7 +45,7 @@ const state = {
     },
     wifiPopup: {
       visible: false,
-      svg: null
+      string: null
     }
   },
   isOrdersOpened: false,

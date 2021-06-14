@@ -67,7 +67,7 @@ import jsPDF from 'jspdf'
 
 export default {
     props: {
-        qrs: String
+        // qrs: String
     },
     data() {
         return {
@@ -89,8 +89,7 @@ export default {
         updateQR() {
             const id = this.$store.state.auth.user._id
             const place = this.$store.state.view.popup.styleQRPopup.place._id
-            const str = this.qrs ? this.qrs : `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`
-
+            const str = this.$store.state.view.popup.wifiPopup.string ? this.$store.state.view.popup.wifiPopup.string : `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`
             const qrSvg = vkQr.createQR(`${str}`, {
                 qrSize: 252,
                 isShowLogo: this.settings.logo,

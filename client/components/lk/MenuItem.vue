@@ -1,30 +1,42 @@
 <template lang="pug">
-    .menu-item
+    .menu-item(v-bind:class="{ flash: flash }")
+        .menu-item__more(@click="openDetail(item)")
         .menu-item__img
             .menu-item__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
             VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
                 .menu-item__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
-
         .menu-item__content
             .menu-item__content-inner
                 .menu-item__name {{ item.name }}
-                .menu-item__name {{ item.translation }}
-                .menu-item__more(@click="openDetail(item)") Подробнее
-                .menu-item__price(v-for="(price, i) in item.prices" :key="i")
-                    input.menu-item__price-radio(type="radio" :id="`${item._id}${i}`" :name="item._id" :value="i" v-model="checkedPrice")
-                    label.menu-item__price-label(:for="`${item._id}${i}`") {{ item.prices[i] }}{{$store.state.guest.companyData.currencySymbol}} {{ item.weights[i] }}г.
-                        span(v-if="item.modifications && item.modifications[i]")  {{ item.modifications[i] }}
+                .menu-item__translation(v-if="item.translation") {{ item.translation }} (en)
+
+                .menu-item__price
+                    input.menu-item__price-radio(type="radio" :id="`${item._id}${0}`" :name="item._id" :value="0" v-model="checkedPrice")
+                    label.menu-item__price-label(:for="`${item._id}${0}`")
+                        span(v-if="item.modifications && item.modifications[0]")  {{ item.modifications[0] }}
+                        span  {{ item.prices[0] }} {{$store.state.guest.companyData.currencySymbol}} 
+                        span(v-if="item.weights[0]") &bull; {{ item.weights[0] }} г
+                div(v-if="item.prices.length > 1")
+                    span.menu-item__price-label Еще {{ item.prices.length - 1 }} 
+                    span.menu-item__price-label(v-if="item.prices.length - 1 == 1") вариант
+                    span.menu-item__price-label(v-if="item.prices.length - 1 > 1 && item.prices.length - 1 < 5") варианта
+                    span.menu-item__price-label(v-if="item.prices.length - 1 > 4 && item.prices.length - 1 < 21") вариантов
 
             .menu-item__bottom(v-if="$store.state.guest.user.cart")
                 .menu-item__button(
                     @click="plusMulti"
-                    v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].goods || !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length"
+                    v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].goods || !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count"
                     ) {{ item.prices[checkedPrice] }} {{$store.state.guest.companyData.currencySymbol}}
 
-                .menu-item__counter(v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length")
-                    .menu-item__counter-control.minus(@click="minusMulti(item)") -
-                    .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == checkedPrice).length }}
-                    .menu-item__counter-control.plus(@click="plusMulti()") +
+                .menu-item__counter(v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count")
+                    .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : minusMulti()")
+                        v-icon mdi-minus
+                    .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count }}
+                    .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : plusMulti()")
+                        v-icon mdi-plus
+
+                    
+                    
 
 </template>
 
@@ -42,11 +54,13 @@ export default {
     },
     data() {
         return {
-            checkedPrice: 0
+            checkedPrice: 0,
+            flash: false
         }
     },
     methods: {
         openDetail(item) {
+            this.flashCard()
             this.$store.dispatch('guest/openDetail', {
                 item, checkedPrice: this.checkedPrice
             })
@@ -55,48 +69,113 @@ export default {
             return this.$store.state.guest.companyData.places.find(e => e.link == this.placeId)._id
         },
         plusMulti() {
-            this.$store.dispatch('guest/addToCart', {
-                place: this.placeId,
-                item: this.item,
-                price: this.checkedPrice
-            })
+            if (this.item.prices.length > 1) {
+                this.openDetail(this.item)
+            } else {
+                this.flashCard()
+                this.$store.dispatch('guest/addToCart', {
+                    place: this.placeId,
+                    item: this.item,
+                    price: this.checkedPrice
+                })
+            }
         },
         minusMulti() {
-            this.$store.dispatch('guest/minusCartItemMulti', {
-                place: this.placeId,
-                item: this.item,
-                price: this.checkedPrice
-            })
+            if (this.item.prices.length > 1) {
+                this.openDetail(this.item)
+            } else {
+                this.flashCard()
+                this.$store.dispatch('guest/minusCartItemMulti', {
+                    place: this.placeId,
+                    item: this.item,
+                    price: this.checkedPrice
+                })
+            }
         },
+        flashCard() {
+            if (!this.flash) {
+                this.flash = true
+                const timer = setInterval(() => {
+                    this.flash = false
+                    clearInterval(timer)
+                }, 50);
+            }
+        }
     }
 }
 </script>
 
 <style lang="scss">
 .menu-item {
+    position: relative;
+    transition: transform .1s;
+    background-color: #fff;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    &.flash {
+        transform: scale(0.95);
+    }
     &__img {
         &-pic {
-            height: 32vw;
             background-position: center;
             background-size: cover;
+            &:after {
+                content: "";
+                display: block;
+                padding-bottom: 90%;
+            }
             @media screen and (min-width: 768px) {
-                height: 20vw;
+                // height: 20vw;
             }
         }
     }
     &__content {
-        padding: 10px;
+        padding: 8px;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        flex-grow: 1;
+        flex-grow: 2;
         &-inner {
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
+    }
+    &__button {
+        width: 100%;
+        padding: 7px 10px;
+        background-color: rgb(224, 223, 223);
+        border-radius: 14px;
+        margin-top: 10px;
+        font-size: 16px;
+        text-transform: none;
+        cursor: pointer;
+        position: relative;
+        z-index: 4;
+        text-align: center;
+        &:after {
+            content: '';
+            position: absolute;
+            left: -5px;
+            right: -5px;
+            top: -5px;
+            bottom: -5px;
+        }
+    }
+    &__bottom {
+        width: 100%;
+    }
+    &__more {
+        position: absolute;
+        z-index: 3;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        cursor: pointer;
     }
     &__counter {
         display: flex;
@@ -105,35 +184,41 @@ export default {
         width: 100%;
         border-radius: 14px;
         margin-top: 10px;
+        position: relative;
+        z-index: 4;
 
         &-control {
             border-radius: 5px;
             background-color: rgb(224, 223, 223);
-            width: 44px;
-            height: 44px;
+            width: 38px;
+            height: 38px;
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 14px;
             cursor: pointer;
+            .v-icon {
+                pointer-events: none;
+            }
         }
     }
-    &__button {
-        width: 100%;
-        padding: 10px;
-        background-color: rgb(224, 223, 223);
-        border-radius: 14px;
-        margin-top: 10px;
-        font-size: 16px;
-        text-transform: none;
-        cursor: pointer;
+    &__price {
+        line-height: 14px;
+        &-radio {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+        }
+        &-label {
+            color: rgb(163, 163, 163);
+            font-size: 14px;
+        }
     }
-    &__bottom {
-        width: 100%;
+    &__name {
+        margin-bottom: 4px;
     }
-    &__more {
-        color: $color-blue;
-        cursor: pointer;
+    &__translation {
+        font-size: 14px;
     }
 }
 </style>

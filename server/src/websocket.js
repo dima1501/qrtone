@@ -55,7 +55,6 @@ module.exports = {
     }
   },
   fastAction: async (data) => {
-    console.log('fast-action')
     try {
       data.sockets.forEach(e => {
         ioCopy.to(e.socketId).emit('newFastAction', data.data);
@@ -87,7 +86,6 @@ module.exports = {
     }
   },
   newTGUser: async (data) => {
-    console.log(data)
     data.sockets.forEach(e => {
       ioCopy.to(e).emit('newTGUser');
     });

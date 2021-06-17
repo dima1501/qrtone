@@ -101,7 +101,6 @@ router.get('/api/get-user-data/:id', async (req, res) => {
 })
 
 router.post('/api/update-cart', authGuest(), async (req, res) => {
-    console.log(req.body.data)
     const update = await req.db.collection('guests').updateOne(
         { _id: ObjectId(req.user._id) },
         { $set: { 'cart': req.body.data } }

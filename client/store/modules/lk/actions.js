@@ -398,7 +398,7 @@ const createCat = async (store, cat) => {
       data: { cat }
     })
     if (create.data) {
-      store.rootState.auth.user.categories.push(create.data)
+      store.rootState.auth.user.categories.unshift(create.data)
       store.rootState.auth.parsedMenu[create.data._id] = []
     }
   } catch (error) {

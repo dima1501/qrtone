@@ -83,7 +83,6 @@ const addDopToCart = async (store, data) => {
                 Vue.set(store.state.user.cart, data.place, { dops: [data.item], goods: [] })
             }
         }
-        console.log(store.state.user.cart)
         store.dispatch('updateCart', store.state.user.cart)
     } catch (error) {
         console.error(error)
@@ -108,7 +107,6 @@ const addToCart = async (store, data) => {
                 Vue.set(store.state.user.cart, place._id, { goods: [data.item], dops: [] })
             }
         }
-        console.log(store.state.user.cart)
         store.dispatch('updateCart', store.state.user.cart)
     } catch (error) {
         console.error(error)

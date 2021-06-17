@@ -82,7 +82,7 @@
                     color="primary"
                     text
                     @click="openWifiPopup()"
-                ) Стилизовать и скачать
+                ) Создать
 
         StyleQRPopup(
             v-if="$store.state.view.popup.styleQRPopup.visible"

@@ -51,12 +51,11 @@ router.post("/api/send-reg-email", auth(), async (req, res) => {
 router.post("/api/send-restore-email", async (req, res) => {
     const user = await req.db.collection("users").findOne({ email: req.body.data.email })
     if (user) {
-        console.log('fff')
         const code = Math.floor(100000 + Math.random() * 900000)
         const mailOptions = {
             from: "info@qrtone.com",
             to: req.body.data.email,
-            subject: "Восстановление на QRTONE.COM",
+            subject: "Восстановление пароля на QRTONE.COM",
             template: "restore-email",
             ctx: {
                 name: user.name,
@@ -73,7 +72,6 @@ router.post("/api/send-restore-email", async (req, res) => {
             if (error) {
                 return console.error(error)
             }
-            console.log('send')
         })
 
         res.send(true)

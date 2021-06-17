@@ -7,22 +7,25 @@ div
             span {{$store.state.guest.companyData.name}}
         div(v-else)
             header.header
-                .header__inner
+                .header__inner  
                     .header__logo(v-if="$store.state.guest.companyData.photo")
                         // nuxt-link(to="https://google.com" target="_blank").header__logo-link
                         img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
+                        transition(name="slide-up")
+                            h3.header__logo-text(v-if="isHeaderSticky") {{ $store.state.guest.companyData.name }}
                     transition(name="slide-up")
                         v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
                     .header__controls
-                        v-btn(depressed @click="toggleCommandsMenu" v-if="$nuxt.$route.query.table && isAvailable && $store.state.guest.companyData.fastActionsEnabled") Быстрые команды
+                        v-icon.ml-5(light @click="toggleCommandsMenu" v-if="$nuxt.$route.query.table && isAvailable && $store.state.guest.companyData.fastActionsEnabled") mdi-menu 
             .welcome
                 .welcome__bg(v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
                 .welcome__inner
                     h1.welcome__title {{ $store.state.guest.companyData.name }}
                         v-icon.ml-5(light @click="toggleInfoPopup") mdi-information-outline
                     .w-cats(ref="cats")
-                        scrollactive.w-cats__inner.my-nav(:class="{ 'sticky': isHeaderSticky }" :offset="145")
+                        scrollactive.w-cats__inner.my-nav(:class="{ 'sticky': isHeaderSticky }" :offset="136" :duration="800" v-on:itemchanged="onItemChanged")
                             nuxt-link.w-cats__item.scrollactive-item(
+                                event=""
                                 v-for='(item, key) of $store.state.guest.companyData.categories' 
                                 v-bind:key="key" 
                                 :to="{ path: `${$nuxt.$route.fullPath}`, hash: `#${item._id}` }"
@@ -195,7 +198,7 @@ export default {
     },
     watch: {
         headerTop(newValue) {
-            if (this.headerTop < 80) {
+            if (this.headerTop < 70) {
                 this.isHeaderSticky = true;
             } else {
                 this.isHeaderSticky = false;
@@ -230,6 +233,15 @@ export default {
         }
     },
     methods: {
+        onItemChanged(event, currentItem, lastActiveItem) {
+            if (currentItem) {
+                currentItem.parentElement.scrollTo({
+                    top: 0,
+                    left: currentItem.offsetLeft - 35,
+                    behavior: 'smooth'
+                });
+            }
+        },
         addDopToCart(dop) {
             this.$store.dispatch('guest/addDopToCart', {
                 item:  dop,
@@ -397,11 +409,15 @@ export default {
 
 .cart-btn {
     position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    border-radius: 0;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    width: calc(100% - 30px);
+    border-radius: 10px;
+    z-index: 6;
+    background-color: #5181b8;
+    color: #fff;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     span {
         margin-left: 40px;
     }
@@ -493,14 +509,10 @@ export default {
         flex-wrap: wrap;
     }
     &__item {
-        width: calc(50% - 8px);
-        margin-right: 16px;
-        background-color: #fff;
-        border-radius: 14px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.15);
-        overflow: hidden;
+        width: calc(50% - 4px);
+        margin-right: 8px;
+        
         margin-bottom: 15px;
-        text-align: center;
         display: flex;
         flex-direction: column;
         &:nth-child(even) {
@@ -522,7 +534,6 @@ export default {
             flex-shrink: 0;
             margin-bottom: 30px;
             &-pic {
-                height: 32vw;
                 background-position: center;
                 background-size: cover;
                 @media screen and (min-width: 768px) {
@@ -536,20 +547,6 @@ export default {
         &-weight {
             font-size: 14px;
             opacity: 0.9;
-        }
-        &-content {
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex-grow: 1;
-            &-inner {
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
         }
         &-button {
             width: 100%;
@@ -600,7 +597,7 @@ export default {
         &.sticky {
             box-shadow: 0 0 20px rgba(0,0,0,0.15);
             position: fixed;
-            top: 80px;
+            top: 70px;
             left: 0;
             right: 0;
             z-index: 18;
@@ -625,12 +622,12 @@ export default {
 }
 
 .welcome {
-    margin-top: 80px;
+    margin-top: 71px;
     position: relative;
     &__bg {
         position: fixed;
         left: 0;
-        top: 80px;
+        top: 71px;
         right: 0;
         height: 200px;
         background-position: center;
@@ -681,10 +678,9 @@ export default {
     background-color: #fff;
 
     &__inner {
-        padding: 15px;
+        padding: 10px 15px;
         box-shadow: 0 0 20px rgba(0,0,0,0.1);
         display: flex;
-        justify-content: space-between;
         align-items: center;
     }
 
@@ -692,6 +688,7 @@ export default {
         position: relative;
         display: flex;
         align-items: center;
+        margin-right: auto;
         &-link {
             position: absolute;
             z-index: 1;
@@ -703,8 +700,11 @@ export default {
         &-img {
             margin-right: 20px;
             max-height: 50px;
-            width: 80px;
+            width: auto;
             height: auto;
+        }
+        &-text {
+            line-height: 1.2;
         }
     }
 }
@@ -713,12 +713,13 @@ export default {
     position: fixed;
     left: 50%;
     margin-left: -150px;
-    bottom: 50px;
+    bottom: 15px;
     background-color: #fff;
     border-radius: 14px;
     box-shadow: 0 0 30px rgba(0,0,0,0.15);
     width: 300px;
     padding: 20px;
+    z-index: 7;
     &__actions {
         display: flex;
         flex-direction: column;

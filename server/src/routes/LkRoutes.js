@@ -363,7 +363,6 @@ router.post('/api/remove-category-admin', auth(), async (req, res) => {
 
 
 router.post('/api/remove-dop', auth(), async (req, res) => {
-    console.log(req.body)
     try {
         const update = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user ? req.user._id : req.body.data._id) },
@@ -406,7 +405,6 @@ router.post('/api/edit-category-admin', auth(), async (req, res) => {
 })
 
 router.post('/api/edit-dop', auth(), async (req, res) => {
-    console.log(req.body)
     try {
         const edit = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user ? req.user._id : req.body.data._id), "dops._id": req.body.data.dop._id },
@@ -772,7 +770,6 @@ router.post('/api/load-tg-users', auth(), async (req, res) => {
 
 router.post('/api/toggle-fast-actions', auth(), async (req, res) => {
     try {
-        console.log(req.body.data)
         const set = req.db.collection("users").updateOne(
             { _id: ObjectId(req.user._id) },
             { $set: { 'fastActionsEnabled': req.body.data } }

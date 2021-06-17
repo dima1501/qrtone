@@ -7,21 +7,6 @@
 
 export default {
   sockets: {
-    // updateOrdersUser(msg) {
-    //   this.$store.dispatch('menu/updateOrders', this.$store.state.menu.orders)
-    // },
-    // async updateOrdersAdmin(msg) {
-    //   this.$store.state.auth.user.orders.length = 0
-
-    //   const orders = await axios({
-    //     method: "get",
-    //     url: "/get-orders"
-    //   });
-
-    //   if (orders) {
-    //     this.$store.state.auth.user.orders = orders.data
-    //   }
-    // },
     async updateSocketId(msg) {
         this.$store.dispatch("guest/setSocketId", msg, { root: true });
     },
@@ -41,19 +26,6 @@ export default {
 </script>
 
 <style lang="scss">
-.page {
-  display: flex;
-
-  &__sidebar {
-    width: 300px;
-    flex-shrink: 0;
-  }
-
-  &__content {
-    flex-grow: 1;
-    padding: 30px 50px;
-  }
-}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -66,7 +38,7 @@ input[type=number] {
 }
 
 .v-application {
-    font-family: $body-font-family;
+  font-family: $body-font-family;
 }
 
 </style>

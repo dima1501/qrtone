@@ -45,11 +45,9 @@ router.post("/api/checkauth-guest", authGuest(), async (req, res) => {
 });
 
 router.post("/api/login", auth(), async (req, res) => {
-  console.log(req.body)
   const { email, password } = req.body;
   try {
     const user = await new UserService().findUserByUsername(req, email);
-    console.log(user)
     const passwordHash = await crypto
       .createHash("sha256")
       .update(password)

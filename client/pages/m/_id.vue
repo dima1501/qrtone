@@ -48,7 +48,7 @@ div
             
             div(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]")
                 transition(name="slide-fade")
-                    v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length" @click="openCart") Корзина <span> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
+                    v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length" @click="openCart") Корзина <span v-if="getTotalPrice > 0"> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
 
             div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
                 transition(name="slide-fade")
@@ -64,32 +64,35 @@ div
                     .cart__content
                         h3.cart__empty(v-if="!$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length") Корзина пуста
                         // Отображение основных позиций
-                        .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods" v-bind:key="key")
-                            .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
-                            .cart__item-content
-                                .cart__item-name {{ item.name }}
-
-                                div(v-for="(price, idx) in getCustomArr(item.cartPrices)").cart__item-price
-                                    div {{item.prices[price]}}р - {{item.weights[price]}}г
-                                    div(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
-                                
+                        .cart__content-items
+                            .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods" v-bind:key="key")
+                                .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+                                .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
+                                    .cart__item-content
+                                        .cart__item-name {{ item.name }}
+                                        span.note {{item.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}  {{item.weights[price]}}г
+                                        .cart__item-descr(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
                                     .cart__item-counter
-                                        .menu__counter-control.minus(@click="minusMulti(item, price)") -
+                                        .menu__counter-control(@click="minusMulti(item, price)")
+                                            v-icon mdi-minus
                                         .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
-                                        .menu__counter-control.plus(@click="plusMulti(item, price)") +
+                                        .menu__counter-control(@click="plusMulti(item, price)")
+                                            v-icon mdi-plus
+
                         // Отображение дополнений
-                        h2 Дополнения
+                        h3.cart__item-title(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length") Дополнения:
                         .cart__item(v-for="(item, keys) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops" v-bind:key="item._id")
-                            .cart__item-content
-                                .cart__item-name {{ item.name }}
-
-                                div(v-for="(price, idx) in getCustomArr(item.cartPrices)").cart__item-price
-                                    div {{item.price}} {{$store.state.guest.companyData.currencySymbol}}
-                                
-                                    .cart__item-counter
-                                        .menu__counter-control.minus(@click="removeDopFromCart(item)") -
-                                        .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
-                                        .menu__counter-control.plus(@click="addDopToCart(item)") +
+                            .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
+                                .cart__item-content
+                                    .cart__item-name {{ item.name }}
+                                    span.note(v-if="item.price || item.price > 0") {{item.price}} {{$store.state.guest.companyData.currencySymbol}}
+                                    span.note(v-else) Бесплатно
+                                .cart__item-counter
+                                    .menu__counter-control(@click="removeDopFromCart(item)")
+                                        v-icon mdi-minus
+                                    .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
+                                    .menu__counter-control(@click="addDopToCart(item)")
+                                        v-icon mdi-plus
 
                     .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length")
                         .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
@@ -126,7 +129,7 @@ div
                                             
                                 .sorder__price Итого: {{ getOrderPrice(item) }} {{$store.state.guest.companyData.currencySymbol}}
 
-            transition(name="slide-fade")
+            transition(name="slide-fade-detail")
                 MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
 
         transition(name="slide-fade")
@@ -195,6 +198,14 @@ export default {
         window.addEventListener('scroll', (e) => {
             this.headerTop = this.$refs.cats.getBoundingClientRect().top;
         });
+
+        // let vh = window.innerHeight * 0.01;
+        // document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+        // window.addEventListener('resize', () => {
+        //     let vh = window.innerHeight * 0.01;
+        //     document.documentElement.style.setProperty('--vh', `${vh}px`);
+        // })
     },
     watch: {
         headerTop(newValue) {
@@ -385,10 +396,6 @@ export default {
         }
     }
 
-    &__title {
-        margin-bottom: 10px;
-    }
-
     &__goods {
         margin-bottom: 15px;
     }
@@ -414,8 +421,8 @@ export default {
     bottom: 15px;
     width: calc(100% - 30px);
     border-radius: 10px;
-    z-index: 6;
-    background-color: #5181b8;
+    z-index: 22;
+    background-color: #5181b8 !important;
     color: #fff;
     box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     span {
@@ -430,7 +437,7 @@ export default {
     right: 0;
     bottom: 0;
     background-color: #fff;
-    z-index: 21;
+    z-index: 23;
     display: flex;
     flex-direction: column;
     &__top {
@@ -438,6 +445,7 @@ export default {
         display: flex;
         align-items: center;
         box-shadow: 0 0 20px rgba(0,0,0,0.15);
+        border-bottom: 1px solid rgb(226, 226, 226);
     }
     &__subtitle {
         margin-left: auto;
@@ -446,47 +454,90 @@ export default {
         cursor: pointer;
         margin-right: 20px;
     }
+    
     &__content {
         flex-grow: 2;
         overflow-y: scroll;
+        background-color: rgb(243, 243, 243);
     }
     &__item {
         display: flex;
+        flex-direction: column;
+        align-items: center;
         padding: 15px;
-        border-bottom: 1px solid rgb(231, 231, 231);
+        margin-bottom: 10px;
+        background-color: #fff;
+        &:last-child {
+            margin-bottom: 0;
+        }
+        &-title {
+            padding: 10px;
+        }
         &-img {
-            width: 80px;
-            height: 80px;
+            width: 110px;
+            height: 110px;
             background-position: center;
             background-size: cover;
             flex-shrink: 0;
-            margin-right: 15px;
             border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        &-inner {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgb(226, 226, 226);
+            padding-bottom: 10px;
+            padding-top: 10px;
+            &:last-child {
+                border: none;
+                padding-bottom: 0;
+            }
         }
         &-content {
             flex-grow: 1;
-            padding-right: 15px;
+            padding-right: 10px;
+            span.note {
+                color: #a3a3a3;
+                font-size: 14px;
+            }
         }
         &-counter {
-            margin-top: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: 150px;
+            width: 120px;
+            flex-shrink: 0;
+        }
+        &-name {
+            font-weight: bold;
+            font-size: 18px;
+            line-height: 1.25;
         }
         &-price {
             padding-bottom: 10px;
             margin-bottom: 10px;
             border-bottom: 1px solid #000;
+            display: flex;
+            align-items: center;
+        }
+        &-descr {
+            font-size: 15px;
+            line-height: 1.2;
         }
     }
     &__bottom {
         display: flex;
         align-items: center;
         padding: 15px;
+        border-top: 1px solid rgb(226, 226, 226);
         box-shadow: 0 0 20px rgba(0,0,0,0.15);
         &-price {
+            width: 70px;
+            flex-shrink: 0;
             margin-right: 15px;
+            font-weight: bold;
+            font-size: 18px;
         }
         &-control {
             flex-grow: 1;
@@ -647,6 +698,14 @@ export default {
 }
 .slide-fade-enter, .slide-fade-leave-to {
   transform: translateY(30px);
+  opacity: 0;
+}
+
+.slide-fade-detail-enter-active, .slide-fade-detail-leave-active {
+  transition: all .25s ease;
+}
+.slide-fade-detail-enter, 
+.slide-fade-detail-leave-to {
   opacity: 0;
 }
 

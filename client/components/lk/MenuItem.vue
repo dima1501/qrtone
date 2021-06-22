@@ -23,17 +23,19 @@
                     span.menu-item__price-label(v-if="item.prices.length - 1 > 4 && item.prices.length - 1 < 21") вариантов
 
             .menu-item__bottom(v-if="$store.state.guest.user.cart")
-                .menu-item__button(
-                    @click="plusMulti"
-                    v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].goods || !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count"
-                    ) {{ item.prices[checkedPrice] }} {{$store.state.guest.companyData.currencySymbol}}
-
-                .menu-item__counter(v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count")
-                    .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : minusMulti()")
-                        v-icon mdi-minus
-                    .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count }}
-                    .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : plusMulti()")
-                        v-icon mdi-plus
+                transition(name="slide-fade" mode="out-in")
+                    .menu-item__button(
+                        key="10"
+                        @click="plusMulti"
+                        v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].goods || !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count")
+                        span(v-if="item.prices.length > 1") от 
+                        span {{ item.prices[checkedPrice] }} {{$store.state.guest.companyData.currencySymbol}}
+                    .menu-item__counter(key="11" v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count")
+                        .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : minusMulti()")
+                            v-icon mdi-minus
+                        .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count }}
+                        .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : plusMulti()")
+                            v-icon mdi-plus
 
                     
                     
@@ -216,6 +218,7 @@ export default {
     }
     &__name {
         margin-bottom: 4px;
+        line-height: 1.3;
     }
     &__translation {
         font-size: 14px;

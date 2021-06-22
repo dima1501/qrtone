@@ -41,5 +41,11 @@ input[type=number] {
   font-family: $body-font-family;
 }
 
+body {
+  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
+  width: 100%;
+}
+
 </style>
 

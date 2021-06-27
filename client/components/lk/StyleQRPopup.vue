@@ -90,6 +90,7 @@ export default {
             const id = this.$store.state.auth.user._id
             const place = this.$store.state.view.popup.styleQRPopup.place._id
             const str = this.$store.state.view.popup.wifiPopup.string ? this.$store.state.view.popup.wifiPopup.string : `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`
+            
             const qrSvg = vkQr.createQR(`${str}`, {
                 qrSize: 252,
                 isShowLogo: this.settings.logo,
@@ -98,6 +99,7 @@ export default {
                 backgroundColor: this.settings.bgColor,
                 foregroundColor: this.settings.mainColor
             })
+
             this.$store.state.view.pdf.qr = qrSvg
             this.qr = qrSvg
         },
@@ -126,7 +128,7 @@ export default {
                     const str = this.qrs ? this.qrs : `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`
                     const qrSvgs = vkQr.createQR(`${str}`, {
                         qrSize: 256,
-                        isShowLogo: this.settings.logo,
+                        isShowLogo: false,
                         logoData: this.settings.logo ? `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.$store.state.auth.user.photo}` : '',
                         isShowBackground: true,
                         backgroundColor: this.settings.bgColor,
@@ -155,9 +157,10 @@ export default {
             } else {
                 if (this.$store.state.view.pdf.ref) {
                     const el = this.$refs[this.$store.state.view.pdf.ref];
-                    const canvas = await this.$html2canvas(el, { type: 'dataURL' })
+                    const canvas = await this.$html2canvas(el, { letterRendering: 1, allowTaint : true })
                     doc.addImage(canvas, 'JPEG', 0, 0)
                     doc.save("sample.pdf")
+                    
                 } else {
                     fileDownload(this.qr, `${place.link}_menu_qr.svg`)
                 }

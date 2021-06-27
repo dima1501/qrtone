@@ -1,7 +1,8 @@
 <template lang="pug">
     .detail
+        .detail__bg
         .detail__closer(@click="closeDetail")
-        .detail__area#detail_area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }" v-touch:end="endHandler")
+        .detail__area#detail_area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
             .detail__img
                 .detail__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
                 VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
@@ -19,7 +20,7 @@
                                 .detail__line-button(
                                     key="12"
                                     @click="plusMulti(i)"
-                                    v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length"
+                                    v-if="!$store.state.guest.user.cart[getPlaceId()] || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length"
                                 ) {{ item.prices[i] }} {{$store.state.guest.companyData.currencySymbol}}
                                 .detail__line-counter(key="13" v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length")
                                     .menu-item__counter-control(@click="minusMulti(i)")
@@ -37,7 +38,7 @@
                                 h4.detail__line-name {{ $store.state.guest.companyData.dops.find(e => e._id == dop).name }}
                                 transition(name="slide-fade" mode="out-in")
                                     span.note(key="15" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop).price && $store.state.guest.companyData.dops.find(e => e._id == dop).count > 0")  {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}{{$store.state.guest.companyData.currencySymbol}}
-                                    span.note(key="16" v-else-if="$store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop) && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop).count > 0") Бесплатно
+                                    span.note(key="16" v-else-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop) && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop).count > 0") Бесплатно
                             .detail__line-counter
                                 transition(name="slide-fade" mode="out-in")
                                     .detail__line-button(
@@ -52,7 +53,7 @@
                                         .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop).count }}
                                         .menu-item__counter-control(@click="addDopToCart(dop)")
                                             v-icon mdi-plus
-            .detail__area-bottom
+            .detail__area-bottom(v-bind:class="{ visible: $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.length || $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.length || $store.state.guest.user.orders.length }")
     </template>
 
 <script>
@@ -86,16 +87,32 @@ export default {
         }, 0);
     },
     methods: {
+        // swipeHandler(direction) {
+        //     if (direction.screenY) {
+        //         this.startScrollPoint = direction.screenY
+        //         if (direction.screenY - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
+        //             this.move = false
+        //             this.transitionAreaHeight = direction.screenY - this.startScrollPoint
+        //             if (this.transitionAreaHeight > 80) {
+        //                 this.closeDetail()
+        //             }
+        //         }
+        //     }
+        // },
         movedHandler(direction) {
-            this.startScrollPoint = direction.changedTouches[0].screenY
-            this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
+            if (direction.type == 'touchmove') {
+                this.startScrollPoint = direction.screenY ? direction.screenY : direction.changedTouches[0].screenY
+                this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
+            }
         },
         movingHandler(direction) {
-            if (direction.changedTouches[0].screenY - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
-                this.move = false
-                this.transitionAreaHeight = direction.changedTouches[0].screenY - this.startScrollPoint
-                if (this.transitionAreaHeight > 80) {
-                    this.closeDetail()
+            if (direction.type == 'touchmove') {
+                if ((direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
+                    this.move = false
+                    this.transitionAreaHeight = (direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint
+                    if (this.transitionAreaHeight > 80) {
+                        this.closeDetail()
+                    }
                 }
             }
         },
@@ -157,31 +174,49 @@ export default {
     bottom: 0;
     z-index: 21;
     display: flex;
-    overflow: hidden;
+    overflow-y: scroll;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
+    padding: 40px 0 0;
+    @media screen and (min-height: 750px) {
+        padding: 40px 0 80px;
+    }
+    &__bg {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        background-color: rgba(0,0,0,0.6);
+    }
     &__closer {
         position: absolute;
         z-index: 1;
         left: 0;
         top: 0;
         right: 0;
-        bottom: 0;
+        height: 100%;
         cursor: pointer;
-        background-color: rgba(0,0,0,0.6);
     }
     &__area {
         position: relative;
         z-index: 2;
-        margin-top: auto;
         width: 100%;
         transform: translateY(100%);
-        margin-top: auto;
-        max-height: calc(100vh - 47px);
-        overflow-y: scroll;
+        margin: auto auto 0;
+        /* max-height: calc(100vh - 47px); */
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
         background-color: #fff;
+        max-width: 480px;
+        @media screen and (min-height: 750px) {
+            max-height: unset;
+            margin: auto;
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+            overflow: hidden;
+        }
         &:after {
             content: '';
             position: absolute;
@@ -211,13 +246,21 @@ export default {
             transition: all .3s;
         }
         &-bottom {
-            height: 60px;
+            height: 0;
             background-color: #fff;
+            transition: height .3s;
+            @media screen and (min-height: 750px) {
+                display: none;
+            }
+            &.visible {
+                height: 60px;
+            }
         }
     }
     &__img {
         position: relative;
         height: 70vw;
+        max-height: 336px;
         overflow: hidden;
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
@@ -280,6 +323,8 @@ export default {
             text-align: center;
         }
         &-counter {
+            position: relative;
+            z-index: 3;
             display: flex;
             width: 110px;
             align-items: center;

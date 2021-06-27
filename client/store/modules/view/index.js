@@ -59,6 +59,9 @@ const state = {
     qr: null,
     ref: null,
     data: {}
+  },
+  loading: {
+    sendOrder: false
   }
 }
 

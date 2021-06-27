@@ -22,7 +22,7 @@ export default {
     async newOrder(data) {
       const notificationsEnabled = localStorage.getItem('notifications')
       if (notificationsEnabled == 'true') {
-        const  notification = new Notification('Новый заказ', { body: '123' })
+        const  notification = new Notification('Новый заказ', { body: 'Столик ' + data.order.table })
       }
       this.$store.state.auth.user.orders.push(data.order)
     },
@@ -32,7 +32,7 @@ export default {
     async newFastAction(data) {
       const notificationsEnabled = localStorage.getItem('notifications')
       if (notificationsEnabled == 'true') {
-        const  notification = new Notification('sad', { body: '123' })
+        const notification = new Notification(data.notify.replace('@table', data.table) )
       }
       this.$store.state.auth.user.notifications.push(data)
     },

@@ -132,6 +132,9 @@ const minusCartItemMulti = async (store, data) => {
         const menuItem = store.state.user.cart[place._id].goods.find(e => e._id == data.item._id)
 
         if (menuItem.count == 1) {
+            var confirmation = confirm(`Убрать из заказа "${data.item.name}"?`);
+            if (!confirmation) return
+
             const index = store.state.user.cart[place._id].goods.indexOf(menuItem)
             store.state.user.cart[place._id].goods.splice(index, 1);
         }
@@ -149,6 +152,9 @@ const minusDopMulti = async (store, data) => {
         const menuItem = store.state.user.cart[data.place].dops.find(e => e._id == data.item._id)
 
         if (menuItem.count == 1) {
+            var confirmation = confirm(`Убрать из заказа "${data.item.name}"?`);
+            if (!confirmation) return
+
             const index = store.state.user.cart[data.place].dops.indexOf(menuItem)
             store.state.user.cart[data.place].dops.splice(index, 1);
         }
@@ -195,7 +201,7 @@ const makeOrder = async (store, data) => {
                 goods: [],
                 dops: []
             }
-
+            store.rootState.view.loading.sendOrder = false
             store.rootState.view.isCartOpened = false
             store.rootState.view.isOrdersOpened = true
         }

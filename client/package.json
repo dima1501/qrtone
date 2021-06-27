@@ -39,6 +39,7 @@
     "vue2-dropzone": "^3.6.0",
     "vue2-touch-events": "^3.2.2",
     "vuedraggable": "^2.24.3",
+    "vuescroll": "^4.17.3",
     "ws": "^7.4.6"
   },
   "devDependencies": {

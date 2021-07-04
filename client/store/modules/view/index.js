@@ -31,9 +31,6 @@ const state = {
     },
     infoPopup: false,
     addActionPopup: false,
-    editActionPopup: {
-      visible: false
-    },
     addCategoryPopup: {
       visible: false
     },
@@ -61,7 +58,14 @@ const state = {
     data: {}
   },
   loading: {
-    sendOrder: false
+    sendOrder: false,
+    uploadLogo: false,
+    uploadBg: false
+  },
+  places: {
+    isLinkExists: false,
+    edit: false,
+    newLink: ''
   }
 }
 

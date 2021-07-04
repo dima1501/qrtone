@@ -16,6 +16,7 @@ router.post("/api/checkauth", auth(), async (req, res) => {
     const preloadUser = {
       _id: ObjectId(req.user._id),
       name: req.user.name,
+      description: req.user.description,
       bot_token: req.user.bot_token,
       photo: req.user.photo,
       background: req.user.background,
@@ -25,9 +26,9 @@ router.post("/api/checkauth", auth(), async (req, res) => {
       actions: req.user.actions,
       goods: req.user.goods,
       dops: req.user.dops,
-      orders: req.user.orders,
+      orders: [],
       messages: [],
-      notifications: req.user.notifications,
+      notifications: [],
       sockets: [],
       subscription: req.user.subscription,
       currencySymbol: req.user.currencySymbol,
@@ -156,15 +157,19 @@ router.post('/api/set-socket-id-guest', authGuest(), async (req, res) => {
 
 router.delete('/api/delete-socket-id/:id', auth(), async (req, res) => {
   try {
-    await req.db.collection('users').updateOne(
+    const deleteSocketPlace = await req.db.collection('users').updateOne(
       { 'sockets.socketId': req.params.id },
       {'$pull': { "sockets": { "socketId": req.params.id } } }
     )
-    const lal = await req.db.collection('users').updateOne(
+    const deleteSocketPublic = await req.db.collection('users').updateOne(
       { 'publicSockets': { $in: [req.params.id] } },
       { '$pull': { "publicSockets": req.params.id } }
     )
-    res.send(true)
+    if (deleteSocketPlace && deleteSocketPublic) {
+      res.send(true)
+    } else {
+      throw err()
+    }
   } catch (error) {
     console.error(error)
   }

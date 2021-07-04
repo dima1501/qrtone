@@ -9,6 +9,14 @@ const checkAuth = async (store, data) => {
     })
     if (user.data) {
       store.state.user = user.data
+
+      // const place = localStorage.getItem("place")
+      // if (place) {
+      //   console.log('reload')
+      //   store.dispatch('lk/loadOrders', place, {root: true})
+      //   store.dispatch('lk/loadActions', place, {root: true})
+      // }
+
       // todo 7 строчек ниже - хлам
       for (let item of store.state.user.goods) {
         if (store.state.parsedMenu[item.category]) {

@@ -1,16 +1,53 @@
 const axios = require('axios').default
 import Vue from 'vue'
 
-const updateUserName = async (store, data) => {
+const updateUserData = async (store, data) => {
   try {
     const update = await axios({
         method: 'post',
         url: '/api/update-user-name',
-        data: { name: data }
+        data: { data }
     })
     if (update) {
-        store.rootState.auth.user.name = data
         return true
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const deleteCompanyLogo = async (store, data) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/update-company-logo',
+      data: {
+        url: ''
+      },
+    })
+
+    if (update.data) {
+      store.rootState.auth.user.photo = null
+      store.rootState.auth.user.photo = ''
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const deleteCompanyBg = async (store, data) => {
+  try {
+    const update = await axios({
+      method: 'post',
+      url: '/api/update-company-background',
+      data: {
+        url: ''
+      },
+    })
+
+    if (update.data) {
+      store.rootState.auth.user.background = null
+      store.rootState.auth.user.background = ''
     }
   } catch (error) {
     console.error(error)
@@ -41,6 +78,7 @@ const updateCompanyLogo = async (store, data) => {
         if (update.data) {
           store.rootState.auth.user.photo = null
           store.rootState.auth.user.photo = uploadPhoto.data.path
+          store.rootState.view.loading.uploadLogo = false
         }
       }
     } catch (error) {
@@ -72,6 +110,7 @@ const updateCompanyBackground = async (store, data) => {
         if (update.data) {
           store.rootState.auth.user.background = null
           store.rootState.auth.user.background = uploadPhoto.data.path
+          store.rootState.view.loading.uploadBg = false
         }
       }
     } catch (error) {
@@ -93,6 +132,21 @@ const addNewPlace = async (store, data) => {
     } catch (error) {
       console.error(error)
     }
+}
+
+const removePlace = async (store, data) => {
+  try {
+      const remove = await axios({
+        method: 'post',
+        url: '/api/remove-place',
+        data: { data }
+      })
+      if (remove) {
+        store.dispatch('updatePlaces')
+      }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 const editPlace = async (store, data) => {
@@ -284,7 +338,6 @@ const editAction = async (store, data) => {
     })
     if (update.data) {
       const action = store.rootState.auth.user.actions.find(e => e._id == update.data._id)
-      store.rootState.view.popup.editActionPopup.visible = false
 
       Object.assign(action, update.data)
     }
@@ -534,9 +587,10 @@ const updateLink = async (store, data) => {
       data: { data }
     })
     if (add.data.success) {
-      console.log('success')
-    } else {
-      console.log('not')
+      store.rootState.view.places.edit = false
+      store.rootState.auth.user.places.find(e => e._id == data.place._id).link = data.link
+    } else if (add.data.exists) {
+      alert("Такая ссылка занята, введите уникальное значение")
     }
   } catch (error) {
     console.error(error)
@@ -645,43 +699,45 @@ const toggleFastActions = async (store, data) => {
   } catch (error) {
     console.error(error)
   }
-  console.log(data)
 }
 
 
 export default {
-    updateUserName,
-    updateCompanyLogo,
-    updateCompanyBackground,
-    addNewPlace,
-    editPlace,
-    updatePlaces,
-    addNewMenuItem,
-    updateGood,
-    addNewAction,
-    editAction,
-    deleteAction,
-    updateCats,
-    removeCat,
-    editCat,
-    createCat,
-    createDop,
-    editDop,
-    removeDop,
-    editMenuItem,
-    updateOrder,
-    acceptFastAction,
-    setPlaceSocketId,
-    loadOrders,
-    loadActions,
-    updateTables,
-    updateTGTables,
-    updateLink,
-    subscribe,
-    improve,
-    simplify,
-    setCurrency,
-    deletePic,
-    updateTGUsers,
-    toggleFastActions,
+  updateUserData,
+  deleteCompanyLogo,
+  updateCompanyLogo,
+  updateCompanyBackground,
+  deleteCompanyBg,
+  addNewPlace,
+  editPlace,
+  updatePlaces,
+  removePlace,
+  addNewMenuItem,
+  updateGood,
+  addNewAction,
+  editAction,
+  deleteAction,
+  updateCats,
+  removeCat,
+  editCat,
+  createCat,
+  createDop,
+  editDop,
+  removeDop,
+  editMenuItem,
+  updateOrder,
+  acceptFastAction,
+  setPlaceSocketId,
+  loadOrders,
+  loadActions,
+  updateTables,
+  updateTGTables,
+  updateLink,
+  subscribe,
+  improve,
+  simplify,
+  setCurrency,
+  deletePic,
+  updateTGUsers,
+  toggleFastActions,
 }

@@ -4,6 +4,7 @@ const moment = require('moment')
 const User = class User {
   constructor(name, password, email) {
     this.name = name,
+    this.description = '',
     this.password = password,
     this.email = email,
     this.goods = [],

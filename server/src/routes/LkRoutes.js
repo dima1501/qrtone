@@ -24,7 +24,7 @@ router.post("/api/update-user-name", auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
-            { $set: { name: req.body.name } }
+            { $set: { name: req.body.data.name, description: req.body.data.description } }
         )
         if (update) {
             res.status(200).send(true)
@@ -90,6 +90,20 @@ router.post("/api/edit-place", auth(), async (req, res) => {
             { $set: { "places.$" : req.body.data } }
         )
         if (edit) {
+            res.status(200).send(true)
+        }
+    } catch (err) {
+        console.error(err);
+    }
+});
+
+router.post("/api/remove-place", auth(), async (req, res) => {
+    try {
+        const remove = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id), "places._id": req.body.data._id },
+            { $pull: { places: { _id: req.body.data._id } } }
+        )
+        if (remove) {
             res.status(200).send(true)
         }
     } catch (err) {
@@ -552,16 +566,10 @@ router.post('/api/accept-fast-action-tg', auth(), async (req, res) => {
 
 router.post('/api/set-place-socket-id', auth(), async (req, res) => {
     try {
-        // await req.db.collection('users').updateOne(
-        //     { 'sockets.socketId': req.body.data.socketId },
-        //     {'$pull': { "sockets": { "socketId": req.body.data.socketId } } }
-        // )
-        // console.log(req.body.data.socketId)
-        // const lal = await req.db.collection('users').updateOne(
-        //     { 'publicSockets': { $in: [req.body.data.socketId] } },
-        //     {'$pull': { "publicSockets": req.body.data.socketId } }
-        // )
-        // console.log(lal)
+        await req.db.collection('users').updateOne(
+            { 'sockets.socketId': req.body.data.socketId },
+            {'$pull': { "sockets": { "socketId": req.body.data.socketId } } }
+        )
         if (req.user) {
             if (req.body.data.place) {
                 const set = await req.db.collection('users').updateOne(
@@ -587,8 +595,10 @@ router.get('/api/load-orders-place/:id', auth(), async (req, res) => {
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$orders'},
             { $match: {'orders.place': req.params.id } },
-            { $group: {_id: '$_id', list: {$push: '$orders'}}}
+            { $sort: { 'orders.timestamp': 1 } },
+            { $group: { _id: '$_id', list: {$push: '$orders' } } }
         ]).toArray()
+        console.log
         if (orders) {
             res.status(200).send(orders)
         }
@@ -603,6 +613,7 @@ router.get('/api/load-actions-place/:id', auth(), async (req, res) => {
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$notifications'},
             { $match: {'notifications.place': req.params.id } },
+            { $sort: { 'notifications.timestamp': -1 } },
             { $group: {_id: '$_id', list: {$push: '$notifications'}}}
         ]).toArray()
         if (notifications) {
@@ -650,17 +661,17 @@ router.post('/api/update-menu-link', auth(), async (req, res) => {
         const check = await req.db.collection('users').findOne(
             { 'places.link': req.body.data.link }
         )
-
+        
         if (!check) {
             const add = await req.db.collection('users').updateOne(
-                { _id: ObjectId(req.user._id), 'places._id': req.body.data.place },
+                { _id: ObjectId(req.user._id), 'places._id': req.body.data.place._id },
                 { $set: { 'places.$.link': req.body.data.link } }
             )
             if (add) {
                 res.status(200).send({success: true})
             }
         } else {
-            res.status(200).send({success: false})
+            res.status(200).send({success: false, exists: true})
         }
         
     } catch (error) {

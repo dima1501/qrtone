@@ -339,7 +339,7 @@ export default {
     &__inner {
         height: 130px;
         border-radius: 14px;
-        border: 1px dashed #00293B;
+        border: 1px dashed #003b55;
         display: flex;
         align-items: center;
         flex-direction: column;

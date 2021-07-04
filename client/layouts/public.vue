@@ -21,7 +21,7 @@ export default {
 
   &__content {
     flex-grow: 1;
-    padding: 30px 50px;
+    padding: 30px;
   }
 }
 </style>

@@ -18,6 +18,11 @@ export default {
         socketId: msg,
         place: localStorage.getItem('place')
       }, { root: true });
+      const place = localStorage.getItem("place")
+      if (place) {
+        this.$store.dispatch('lk/loadOrders', place, {root: true})
+        this.$store.dispatch('lk/loadActions', place, {root: true})
+      }
     },
     async newOrder(data) {
       const notificationsEnabled = localStorage.getItem('notifications')
@@ -62,7 +67,7 @@ export default {
 
   &__content {
     flex-grow: 1;
-    padding: 30px 50px;
+    padding: 30px;
   }
 }
 input::-webkit-outer-spin-button,

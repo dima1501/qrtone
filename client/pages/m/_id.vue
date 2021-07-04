@@ -67,44 +67,44 @@ div
             
             transition(name="slide-fade")
                 .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.view.isCartOpened")
-                    .cart__top
-                        .cart__back(@click="closeCart")
-                            v-icon(light) mdi-arrow-left
-                        h2.cart__title Корзина
-                        a.cart__subtitle(@click="openOrders" v-if="this.$nuxt.$route.query.table") Заказы
-                    .cart__content
-                        h3.cart__empty(v-if="!$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length") Корзина пуста
-                        // Отображение основных позиций
-                        .cart__content-items
-                            .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods" v-bind:key="key")
-                                .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+                    .cart__area
+                        .cart__top
+                            h2.cart__title Корзина
+                            .cart__back(@click="closeCart")
+                                v-icon(light) mdi-close
+                        .cart__content
+                            h3.cart__empty(v-if="!$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length") Корзина пуста
+                            // Отображение основных позиций
+                            .cart__content-items
+                                .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods" v-bind:key="key")
+                                    .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+                                    .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
+                                        .cart__item-content
+                                            .cart__item-link(@click="openDetail(item, price)")
+                                            .cart__item-name {{ item.name }}
+                                            .cart__item-descr(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
+                                            span.note {{item.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}  {{item.weights[price]}}г
+                                        .cart__item-counter
+                                            .menu__counter-control(@click="minusMulti(item, price)")
+                                                v-icon mdi-minus
+                                            .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
+                                            .menu__counter-control(@click="plusMulti(item, price)")
+                                                v-icon mdi-plus
+
+                            // Отображение дополнений
+                            h3.cart__item-title(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length") Дополнения:
+                            .cart__item(v-for="(item, keys) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops" v-bind:key="item._id")
                                 .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
                                     .cart__item-content
-                                        .cart__item-link(@click="openDetail(item, price)")
                                         .cart__item-name {{ item.name }}
-                                        .cart__item-descr(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
-                                        span.note {{item.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}  {{item.weights[price]}}г
+                                        span.note(v-if="item.price || item.price > 0") {{item.price}} {{$store.state.guest.companyData.currencySymbol}}
+                                        span.note(v-else) Бесплатно
                                     .cart__item-counter
-                                        .menu__counter-control(@click="minusMulti(item, price)")
+                                        .menu__counter-control(@click="removeDopFromCart(item)")
                                             v-icon mdi-minus
                                         .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
-                                        .menu__counter-control(@click="plusMulti(item, price)")
+                                        .menu__counter-control(@click="addDopToCart(item)")
                                             v-icon mdi-plus
-
-                        // Отображение дополнений
-                        h3.cart__item-title(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length") Дополнения:
-                        .cart__item(v-for="(item, keys) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops" v-bind:key="item._id")
-                            .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
-                                .cart__item-content
-                                    .cart__item-name {{ item.name }}
-                                    span.note(v-if="item.price || item.price > 0") {{item.price}} {{$store.state.guest.companyData.currencySymbol}}
-                                    span.note(v-else) Бесплатно
-                                .cart__item-counter
-                                    .menu__counter-control(@click="removeDopFromCart(item)")
-                                        v-icon mdi-minus
-                                    .menu__counter-value {{ item.cartPrices.filter(e => e == price).length }}
-                                    .menu__counter-control(@click="addDopToCart(item)")
-                                        v-icon mdi-plus
 
                     .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length")
                         .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
@@ -113,55 +113,52 @@ div
                             //- v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
 
             transition(name="slide-fade")
-                .cart-wrapper(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
-                    .cart
-                        .cart__top
-                            .cart__back(@click="closeCart")
-                                v-icon(light) mdi-arrow-left
-                            h2.cart__title Заказы
-                            a.cart__subtitle(@click="openCart") Корзина
-                        .cart__content
-                            h3.cart__empty(v-if="!$store.state.guest.user.orders.length") Заказов пока нет
-                            .cart__orders-col
-                                .sorder(v-for="(item, key) in $store.state.guest.user.orders" v-bind:key="key")
-                                    .sorder__top
-                                        .sorder__status.wait(v-if="item.status === 'pending'") Отправлен
-                                        .sorder__status.accepted(v-else) Подтвержден
-                                        .sorder__time {{ getTime(item.timestamp) }}
+                .orders(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
+                    .orders__area
+                        .orders__top
+                            h2.orders__title Заказы
+                            .orders__close(@click="closeCart")
+                                v-icon(light) mdi-close
+                        .orders__content
+                            h3.orders__empty(v-if="!$store.state.guest.user.orders.length") Заказов пока нет
+                            .sorder(v-for="(item, key) in $store.state.guest.user.orders" v-bind:key="key")
+                                .sorder__top
+                                    .sorder__status.wait(v-if="item.status === 'pending'") Ожидание
+                                    .sorder__status.accepted(v-else) Подтвержден
+                                    .sorder__time {{ getTime(item.timestamp) }}
+                                .sorder__goods
+                                    .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key")
+                                        .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
+                                            .sorder__line-content
+                                                .sorder__line-link(v-if="$store.state.guest.parsedMenu[good.category] && $store.state.guest.parsedMenu[good.category].find(e => e._id == good._id)" @click="openDetail(good, price)")
+                                                h4.sorder__line-name {{ good.name }}
+                                                .sorder__line-descr(v-if="good.modifications[price]") {{ good.modifications[price] }}
+                                                .sorder__line-data {{ good.prices[price] }}{{ $store.state.guest.companyData.currencySymbol }} {{ good.weights[price] }}г
+                                            .sorder__line-count 
+                                                span.note x
+                                                span.value {{ good.cartPrices.filter(e => e == price).length }}
 
+                                div(v-if="item.dops.length")
+                                    h4.sorder__subtitle Дополнения:
                                     .sorder__goods
-                                        .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key")
-                                            .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
+                                        .sorder__line(v-for="(dop, key) in item.dops" v-bind:key="key")
+                                            .sorder__line-item(v-for="(price, idx) in getCustomArr(dop.cartPrices)")
                                                 .sorder__line-content
-                                                    .sorder__line-link(v-if="$store.state.guest.parsedMenu[good.category] && $store.state.guest.parsedMenu[good.category].find(e => e._id == good._id)" @click="openDetail(good, price)")
-                                                    h4.sorder__line-name {{ good.name }}
-                                                    .sorder__line-descr(v-if="good.modifications[price]") {{ good.modifications[price] }}
-                                                    .sorder__line-data {{ good.prices[price] }}{{ $store.state.guest.companyData.currencySymbol }} {{ good.weights[price] }}г
+                                                    h4.sorder__line-name {{ dop.name }}
+                                                    .sorder__line-data(v-if="dop.prices[price] || dop.prices[price] > 0") {{dop.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}
+                                                    .sorder__line-data(v-else) Бесплатно
                                                 .sorder__line-count 
                                                     span.note x
-                                                    span.value {{ good.cartPrices.filter(e => e == price).length }}
-
-                                    div(v-if="item.dops.length")
-                                        h4.sorder__subtitle Дополнения:
-                                        .sorder__goods
-                                            .sorder__line(v-for="(dop, key) in item.dops" v-bind:key="key")
-                                                .sorder__line-item(v-for="(price, idx) in getCustomArr(dop.cartPrices)")
-                                                    .sorder__line-content
-                                                        h4.sorder__line-name {{ dop.name }}
-                                                        .sorder__line-data(v-if="dop.prices[price] || dop.prices[price] > 0") {{dop.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}
-                                                        .sorder__line-data(v-else) Бесплатно
-                                                    .sorder__line-count 
-                                                        span.note x
-                                                        span.value {{ dop.cartPrices.filter(e => e == price).length }}
-                                    .sorder__price 
-                                        span.note Итого 
-                                        span.value {{ getOrderPrice(item) }}{{$store.state.guest.companyData.currencySymbol}}
+                                                    span.value {{ dop.cartPrices.filter(e => e == price).length }}
+                                .sorder__price 
+                                    span.note Итого 
+                                    span.value {{ getOrderPrice(item) }}{{$store.state.guest.companyData.currencySymbol}}
 
             transition(name="slide-fade-detail")
                 MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
 
         transition(name="slide-fade")
-                InfoPopup(v-show="$store.state.view.popup.infoPopup")
+                InfoPopup(v-show="$store.state.view.popup.infoPopup" :place="$store.state.guest.companyData.places.find(e => e.link == $nuxt.$route.params.id)")
 
 </template>
 
@@ -266,15 +263,7 @@ export default {
     mounted() {
         window.addEventListener('scroll', (e) => {
             this.headerTop = this.$refs.cats.getBoundingClientRect().top;
-        });
-
-        // let vh = window.innerHeight * 0.01;
-        // document.documentElement.style.setProperty('--vh', `${vh}px`);
-
-        // window.addEventListener('resize', () => {
-        //     let vh = window.innerHeight * 0.01;
-        //     document.documentElement.style.setProperty('--vh', `${vh}px`);
-        // })
+        })
     },
     watch: {
         headerTop(newValue) {
@@ -427,7 +416,7 @@ export default {
             //     this.commands = false
             //     this.isCommandSend = false
             //     clearTimeout(timer)
-            // }, 3000);
+            // }, 3000)
         },
         closeCommands() {
             this.isCommandSend = false
@@ -444,12 +433,60 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.orders {
+    position: fixed;
+    z-index: 23;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @media screen and (min-width: 450px) {
+        padding: 40px 0;
+    }
+    &__area {
+        width: 100%;
+        max-width: 450px;
+        margin: auto;
+        position: relative;
+        z-index: 2;
+        background-color: rgb(240, 240, 240);
+        overflow: hidden;
+        @media screen and (min-width: 450px) {
+            border-radius: 14px;
+        }
+    }
+    &__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+    }
+    &__close {
+        cursor: pointer;
+    }
+    &__empty {
+        text-align: center;
+        margin: 100px 0;
+    }
+}
+
 .sorder {
     position: relative;
     background: #fff;
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
+    &:last-child {
+        margin-bottom: 0;
+    }
 
     &__top {
         display: flex;
@@ -588,31 +625,33 @@ export default {
     }
 }
 
-.cart-wrapper {
-    max-width: 1080px;
-    margin: 0 auto;
-}
-
 .cart {
-    
+    position: fixed;
+    z-index: 23;
+    left: 0;
     top: 0;
+    right: 0;
     bottom: 0;
-    background-color: #fff;
-    
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+    background-color: rgba(0,0,0,0.6);
     display: flex;
-    flex-direction: column;
-    width: 100%;    
-    max-width: 1080px;
-    margin: 0 auto;
-    &-wrapper {
-        position: fixed;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 23;
-        background-color: rgba(0,0,0,0.6);
-        overflow-y: scroll;
+    justify-content: center;
+    align-items: center;
+    padding: 0 0 67px;
+    @media screen and (min-width: 450px) {
+        padding: 40px 0 75px;
+    }
+    &__area {
+        background-color: #fff;
+        max-width: 450px;
+        width: 100%;  
+        margin: auto;
+        overflow: hidden;
+        @media screen and (min-width: 450px) {
+            border-radius: 14px;
+        }
     }
     &__empty {
         text-align: center;
@@ -621,6 +660,7 @@ export default {
     &__top {
         padding: 15px;
         display: flex;
+        justify-content: space-between;
         align-items: center;
         box-shadow: 0 0 20px rgba(0,0,0,0.15);
         border-bottom: 1px solid rgb(226, 226, 226);
@@ -630,12 +670,9 @@ export default {
     }
     &__back {
         cursor: pointer;
-        margin-right: 20px;
     }
     
     &__content {
-        flex-grow: 2;
-        overflow-y: scroll;
         background-color: rgb(243, 243, 243);
     }
     &__item {
@@ -715,13 +752,21 @@ export default {
         }
     }
     &__bottom {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        max-width: 450px;
         display: flex;
         align-items: center;
         padding: 15px;
         border-top: 1px solid rgb(226, 226, 226);
         box-shadow: 0 0 20px rgba(0,0,0,0.15);
+        background-color: #fff;
+        @media screen and (min-width: 450px) {
+            border-radius: 14px;
+        }
         &-price {
-            width: 90px;
+            min-width: 90px;
             flex-shrink: 0;
             margin-right: 15px;
             font-weight: bold;

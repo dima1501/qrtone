@@ -196,7 +196,7 @@ const makeOrder = async (store, data) => {
             data: { data }
         })
         if (order) {
-            store.state.user.orders.push(order.data)
+            store.state.user.orders.unshift(order.data)
             store.state.user.cart[store.state.companyData.places.find(e => e.link == data.order.place)._id] = {
                 goods: [],
                 dops: []

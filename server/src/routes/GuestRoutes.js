@@ -83,6 +83,7 @@ router.get('/api/get-user-data/:id', async (req, res) => {
         const publicUser = {
             _id: ObjectId(user._id),
             name: user.name,
+            description: user.description,
             goods: user.goods.filter(e => e.places.find(e => e._id == place._id)),
             photo: user.photo,
             background: user.background,
@@ -119,7 +120,12 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
     const makeOrder = await req.db.collection('users').updateOne(
         { _id: ObjectId(user._id) },
-        { $push: { 'orders': order } }
+        { $push: {
+            'orders': { 
+                $each: [order],
+                $position: 0
+            }
+        } }
     )
 
     const clearCart = await req.db.collection('guests').updateOne(
@@ -148,8 +154,6 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
     }
 
     getOrderPrice(order)
-
-    
 
     const getCustomArr = (arr) => {
         const newArr = []
@@ -223,7 +227,7 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
     if (user.telegram[order.place]) {
         for (let i = 0; i < user.telegram[order.place].length; i++) {
             const table = typeof order.table == 'number' ? order.table : order.table.replace(' ', '%20')
-            if (user.telegram[order.place][i].notifications == 'all' || user.telegram[order.place][i].tables.indexOf(table) > -1) {
+            if (user.telegram[order.place][i].notifications == 'all' || user.telegram[order.place][i].tables && user.telegram[order.place][i].tables.indexOf(table) > -1) {
                 data.messages.push(await bot.sendMessage(user.telegram[order.place][i].chatId, `⏳ Новый заказ, ${order.table} столик \n\n${str.join('')}`, acceptOrderBtn));
                 data.chatId.push( data.messages[i].chat.id )
                 data.messageId.push( data.messages[i].message_id )
@@ -246,7 +250,7 @@ router.post('/api/load-orders', authGuest(), async (req, res) => {
         { $match: { 'places.link': req.body.data } },
         { $unwind: '$orders' },
         { $match: {'orders.guestId': ObjectId(req.user._id) } },
-        { $sort: { 'orders.timestamp': 1 } },
+        { $sort: { 'orders.timestamp': -1 } },
         { $group: {_id: '$_id', list: {$push: '$orders'} } }
     ]).toArray()
 

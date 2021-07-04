@@ -81,7 +81,12 @@ export default {
     }
 
     &__title {
-        margin-bottom: 15px;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        span {
+            font-size: 16px;
+            white-space: nowrap;
+        }
     }
 }
 </style>

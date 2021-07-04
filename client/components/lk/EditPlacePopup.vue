@@ -10,40 +10,66 @@
                         @submit.prevent="fetchEditPlace"
                         v-model="isEditPlaceValid")
                         .e-card__line
-                            .e-card__line-label Название:
                             v-text-field(
                                 ref="name"
+                                label="Название"
                                 :rules="nameRules"
                                 v-model="editablePlace.name"
                                 type="text")
                         .e-card__line
-                            .e-card__line-label Телефон:
                             v-text-field(
                                 ref="phone"
+                                label="Телефон"
+                                :rules="editablePlace.phone.length ? phoneRules : [true]"
                                 v-model="editablePlace.phone"
                                 type="text")
                         .e-card__line
-                            .e-card__line-label Инстаграм:
+                            v-text-field(
+                                v-model="editablePlace.website"
+                                type="text"
+                                hint="Полная ссылка на сайт, например https://example.com"
+                                placeholder="https://example.com"
+                                label="Сайт")
+                        .e-card__line
+                            v-text-field(
+                                v-model="editablePlace.times"
+                                type="text"
+                                hint="Например, ежедневно с 10:00 до 23:00"
+                                label="Часы работы")
+                        .e-card__line
                             v-text-field(
                                 ref="inst"
-                                v-model="editablePlace.inst"
-                                type="text")
+                                label="Инстаграм"
+                                v-model="editablePlace.instagram"
+                                type="text"
+                                hint="Имя пользователя в Instagram"
+                                prefix="instagram.com/")
                         .e-card__line
-                            .e-card__line-label ВК:
                             v-text-field(
-                                ref="vk"
                                 v-model="editablePlace.vk"
-                                type="text")
+                                type="text"
+                                prefix="vk.com/"
+                                hint="ID аккаунта в VK"
+                                label="Вконтакте")
                         .e-card__line
-                            .e-card__line-label WhatsApp:
                             v-text-field(
-                                ref="wa"
-                                v-model="editablePlace.wa"
-                                type="text")
+                                v-model="editablePlace.whatsapp"
+                                type="text"
+                                hint="Номер телефона в WhatsApp"
+                                label="WhatsApp"
+                                :rules="editablePlace.whatsapp.length ? phoneRules : [true]")
+                        .e-card__line
+                            v-text-field(
+                                v-model="editablePlace.telegram"
+                                type="text"
+                                hint="Имя пользователя в Telegram"
+                                label="Telegram"
+                                :rules="editablePlace.telegram.length ? phoneRules : [true]")
                         .e-card__bottom
-                            v-btn(color="red" @click="closePopup").e-card__bottom-item Отмена
+                            v-btn(depressed color="error" @click="closePopup").e-card__bottom-item Отмена
                             v-btn(
-                                color="blue" 
+                                depressed
+                                color="primary"
                                 :disabled="!isEditPlaceValid"
                                 type="submit"
                             ).e-card__bottom-item Сохранить
@@ -63,6 +89,7 @@ export default {
             nameRules: [
                 (v) => !!v || 'error_company_name',
             ],
+            phoneRules: [v => !!v || 'Required', v => /\d{6}/.test(v) || 'Invalid format']
         }
     },
     methods: {

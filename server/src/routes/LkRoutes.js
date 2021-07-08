@@ -595,10 +595,9 @@ router.get('/api/load-orders-place/:id', auth(), async (req, res) => {
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$orders'},
             { $match: {'orders.place': req.params.id } },
-            { $sort: { 'orders.timestamp': 1 } },
+            { $sort: { 'orders.timestamp': -1 } },
             { $group: { _id: '$_id', list: {$push: '$orders' } } }
         ]).toArray()
-        console.log
         if (orders) {
             res.status(200).send(orders)
         }
@@ -656,6 +655,20 @@ router.post('/api/update-tg-tables', auth(), async (req, res) => {
     }
 })
 
+
+router.get('/api/check-place-link/:id', auth(), async (req, res) => {
+    console.log(req.params.id)
+    const check = await req.db.collection('users').findOne(
+        { 'places.link': req.params.id }
+    )
+    if (check) {
+        res.send(true)
+    } else {
+        res.send(false)
+    }
+})
+
+
 router.post('/api/update-menu-link', auth(), async (req, res) => {
     try {
         const check = await req.db.collection('users').findOne(
@@ -685,7 +698,9 @@ router.post('/api/subscribe', auth(), async (req, res) => {
         const sub = {
             type: req.body.data.type,
             started: currentPlan,
-            expires: moment(currentPlan).add(req.body.data.month, 'month')._d
+            expires: moment(currentPlan).add(req.body.data.month, 'month')._d,
+            month: req.body.data.month,
+            price: req.body.data.price
         }
 
         if (req.user.subscription[req.user.subscription.length - 1].type == req.body.data.type) {
@@ -731,10 +746,10 @@ router.post('/api/simplify', auth(), async (req, res) => {
         const started = req.user.subscription[req.user.subscription.length - 1].started
         const expires = req.user.subscription[req.user.subscription.length - 1].expires
 
-        const diff = moment(expires).diff(started, 'hours', true) * 2
+        const diff = moment(expires).diff(started, 'days', true) * 2
 
         req.user.subscription[req.user.subscription.length - 1].type = 'standart'
-        req.user.subscription[req.user.subscription.length - 1].expires = moment(started).add(diff, 'hours')._d
+        req.user.subscription[req.user.subscription.length - 1].expires = moment(started).add(diff, 'days')._d
 
         req.db.collection("users").updateOne(
             { _id: ObjectId(req.user._id) },

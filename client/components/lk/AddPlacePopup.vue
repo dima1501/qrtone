@@ -36,23 +36,28 @@
                                 hide-details="auto")
 
                         .e-card__line
-                            v-text-field(
+                            v-textarea(
                                 v-model="addPlace.address.full"
                                 type="text"
-                                hint=""
                                 label="Адрес"
                                 hide-details="auto"
                                 @input="inputAddr"
-                                v-lazy-input:debounce="1000")
+                                v-lazy-input:debounce="1500"
+                                v-on:keydown.enter.prevent='inputAddr'
+                                auto-grow
+                                rows="2"
+                                row-height="20")
 
-                            .hints(v-for="(hint, key) in hints" :key="key")
-                                .hints__item(@click="checkPlace(hint.GeoObject)")
+                            .hints
+                                .hints__item(v-for="(hint, key) in hints" :key="key" @click="checkPlace(hint.GeoObject)")
                                     .hints__item-title {{ hint.GeoObject.name }}
                                     .hints__item-descr {{ hint.GeoObject.description }}
 
                             .e-card__line-link(v-if="!isMapVisible" @click="showMap") Указать на карте
-                            yandex-map(v-if="isMapVisible" :coords="addPlace.address.coords.length ? addPlace.address.coords : [59.982509, 30.385740]" zoom="16" @click="mapClick")
+                            yandex-map(v-if="isMapVisible" :coords="addPlace.address.coords.length ? addPlace.address.coords : [59.982509, 30.385740]" zoom="16" @click="mapClick" :controls="['geolocationControl', 'zoomControl']" :options="{yandexMapDisablePoiInteractivity: true}")
                                 ymap-marker(
+                                    :icon="$store.state.auth.user.photo ? markerIcon : false"
+                                    v-if="addPlace.address.full"
                                     marker-id="123"
                                     :coords="addPlace.address.coords")
 
@@ -151,7 +156,16 @@ export default {
             ],
             phoneRules: [v => !!v || 'Required', v => /\d{6}/.test(v) || 'Invalid format'],
             hints: [],
-            isMapVisible: false
+            isMapVisible: false,
+            mapCenter: [],
+            markerIcon: {
+                layout: 'default#imageWithContent',
+                imageHref: ``,
+                imageSize: [42, 42],
+                imageOffset: [-21, -65],
+                contentOffset: [-3, -3],
+                contentLayout: `<div style="width: 52px; height: 52px; background: #fff; padding: 5px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.2); border-radius: 5px;"><div style="background: url(../../uploads/${this.$store.state.auth.user.photo}); background-size: cover; background-position: center; position: relative; z-index: 4; width: 42px; height: 42px; border-radius: 5px;"></div><div style="position: absolute; top: 47px; left: 8px; width: 0;height: 0;border-style: solid;border-width: 14px 18px 0 18px;border-color: #fff transparent transparent transparent;"></div></div>`
+            }
         }
     },
     methods: {
@@ -178,6 +192,8 @@ export default {
                     url: `https://geocode-maps.yandex.ru/1.x/?apikey=55293edc-f6c8-402e-b061-049856f9a0dd&format=json&geocode=${e}`
                 })
                 this.hints = res.data.response.GeoObjectCollection.featureMember.slice(0, 4)
+                this.addPlace.address.value = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.name
+                this.addPlace.address.description = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.description
                 if (res.data.response.GeoObjectCollection.featureMember[0]) {
                     this.addPlace.address.coords = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(' ').reverse()
                 }

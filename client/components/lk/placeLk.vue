@@ -9,46 +9,62 @@
         hr
         h4 Ссылка на меню заведения
         p Можно поделиться в социальных сетях или добавить как ссылку на меню в Google Maps
-        a(:href="`https://qrtone.com/m/${ place.link }`" target="_blank" v-if="!edit").place__link qrtone.com/m/{{ place.link }}
-            v-icon(light @click="copyLink(place.link)") mdi-open-in-new
-        v-form(
-            @submit.prevent="fetchEditLink"
-            v-model="isEditLinkValid"
-            v-if="edit")
-            v-text-field(
-                type="text"
-                label="Введите название заведения"
-                prefix="qrtone.com/m/"
-                v-model="newLink"
-                :rules="linkRules"
-                hide-details="auto")
-            .place__bottom
-                .place__bottom-item.-red(@click="disable()") Отмена
-                button.place__bottom-item(type="submit" :disabled="!isEditLinkValid") Сохранить
-
-        .place__bottom(v-if="!edit")
-            .place__bottom-item(@click="copyLink(place.link)") Копировать
-            .place__bottom-item(v-if="navigator && navigator.share" @click="shareLink(place.link)") Поделиться
-            .place__bottom-item(@click="editLink()") Изменить
+        
+        transition(name="slide-fade" mode="out-in")
+            v-form(
+                @submit.prevent="fetchEditLink"
+                v-model="isEditLinkValid"
+                v-if="edit"
+                key="edit_link_form")
+                v-text-field(
+                    type="text"
+                    label="Введите текст ссылки"
+                    prefix="qrtone.com/m/"
+                    v-model="newLink"
+                    :rules="linkRules"
+                    hide-details="auto"
+                    @input="inputLink"
+                    v-lazy-input:debounce="250"
+                    v-on:keydown.enter.prevent='fetchEditLink')
+                transition(name="slide-fade")
+                    .place__error(v-if="isLinkExists" key="palce_link_error") Такая ссылка занята, введите уникальное значение
+                .place__bottom
+                    .place__bottom-item.-red(@click="disable()") Отмена
+                    button.place__bottom-item(type="submit" :disabled="!isEditLinkValid || isLinkExists || checkedLink !== newLink") Сохранить
+            div(key="edit_link_bottom" v-if="!edit")
+                a(:href="`https://qrtone.com/m/${ place.link }`" target="_blank").place__link qrtone.com/m/{{ place.link }}
+                    v-icon(light @click="copyLink(place.link)") mdi-open-in-new
+                .place__bottom
+                    .place__bottom-item(@click="copyLink(place.link)") Копировать
+                    .place__bottom-item(v-if="navigator && navigator.share" @click="shareLink(place.link)") Поделиться
+                    .place__bottom-item(@click="editLink()") Изменить
         .place__bottom-item.-red.-remove(@click="remove()") Удалить заведение
 </template>
 
 <script>
-import { transliterate as tr } from 'transliteration';
+import { transliterate as tr } from 'transliteration'
+import {lazyInput} from 'vue-lazy-input'
+
+const axios = require('axios').default
 
 export default {
     props: {
         place: Object
     },
+    directives:{
+        lazyInput
+    },
     data() {
         return {
             navigator: {},
             isEditLinkValid: true,
+            isLinkExists: false,
             newLink: '',
             edit: false,
             linkRules: [
                 (v) => !!v && !v.includes('?') && !v.includes('#') && !v.includes('&') && !v.includes('/') || 'Введите корректное значение'
-            ]
+            ],
+            checkedLink: ''
         }
     },
     mounted() {
@@ -56,6 +72,20 @@ export default {
         this.newLink = this.place.link
     },
     methods: {
+        async inputLink(e) {
+            if (!!e) {
+                const isLinkExists = await axios({
+                    method: 'get',
+                    url: `/api/check-place-link/${e}`
+                })
+                if (!isLinkExists.data) {
+                    this.isLinkExists = false
+                } else {
+                    this.isLinkExists = true
+                }
+                this.checkedLink = e
+            }
+        },
         remove() {
             let confirmation = confirm(`Вы действительно хотите удалить заведение ${this.place.name}?`)
             if (confirmation) {
@@ -66,17 +96,32 @@ export default {
             this.newLink = this.place.link
             this.$store.state.view.places.edit = false
             this.edit = false
+            this.isLinkExists = false
         },
-        fetchEditLink() {
-            if (this.newLink == this.place.link) {
-                this.$store.state.view.places.edit = false
-                this.edit = false
-            } else {
-                this.$store.dispatch('lk/updateLink', {
-                    link: tr(this.newLink.split(' ').join('_')),
-                    place: this.place
-                })
-                 this.edit = false
+        async fetchEditLink() {
+            if (!!this.newLink) {
+                if (this.newLink == this.place.link) {
+                    this.$store.state.view.places.edit = false
+                    this.edit = false
+                } else {
+                    const isLinkExists = await axios({
+                        method: 'get',
+                        url: `/api/check-place-link/${this.newLink}`
+                    })
+                    if (!isLinkExists.data) {
+                        this.isLinkExists = false
+                        this.$store.dispatch('lk/updateLink', {
+                            link: tr(this.newLink.split(' ').join('_')),
+                            place: this.place
+                        })
+                        setTimeout(() => {
+                            this.edit = false
+                        }, 200);
+                        
+                    } else {
+                        this.isLinkExists = true
+                    }
+                }
             }
         },
         editLink() {
@@ -125,6 +170,13 @@ hr {
         line-height: 1.25;
     }
 
+    &__error {
+        line-height: 12px;
+        font-size: 12px;
+        color: #ff5252;
+        margin-top: 5px;
+    }
+
     &__form {
         display: flex;
         align-items: center;
@@ -138,17 +190,15 @@ hr {
     }
 
     &__tables {
-        &-inner {
-            display: flex;
-            flex-wrap: wrap;
-        }
         &-item {
+            display: flex;
+            align-items: center;
             padding: 5px 15px;
-            border: 1px solid $color-grey-light;
+            background-color: rgb(243, 243, 243);
             border-radius: 5px;
-            margin-right: 10px;
             margin-bottom: 10px;
             &-remove {
+                margin-left: auto;
                 cursor: pointer;
                 color: $color-red;
                 font-size: 14px;

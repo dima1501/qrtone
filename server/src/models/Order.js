@@ -9,7 +9,8 @@ const Order = class Order {
     this.status = data.status,
     this.table = data.table,
     this.place = place,
-    this.timestamp = Date.now()
+    this.timestamp = Date.now(),
+    this.price = data.price
   }
 }
 

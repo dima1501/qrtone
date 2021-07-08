@@ -41,7 +41,8 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
                 table: req.body.data.table,
                 status: 'pending',
                 buttonText: req.body.data.buttonText,
-                place: place._id
+                place: place._id,
+                timestamp: Date.now()
             }
 
             if (user.telegram[place._id]) {

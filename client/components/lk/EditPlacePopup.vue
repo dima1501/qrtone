@@ -31,6 +31,32 @@
                                 placeholder="https://example.com"
                                 label="Сайт")
                         .e-card__line
+                            v-textarea(
+                                v-model="editablePlace.address.full"
+                                type="text"
+                                label="Адрес"
+                                hide-details="auto"
+                                @input="inputAddr"
+                                v-lazy-input:debounce="1500"
+                                v-on:keydown.enter.prevent='inputAddr'
+                                auto-grow
+                                rows="2"
+                                row-height="20")
+
+                            .hints
+                                .hints__item(v-for="(hint, key) in hints" :key="key" @click="checkPlace(hint.GeoObject)")
+                                    .hints__item-title {{ hint.GeoObject.name }}
+                                    .hints__item-descr {{ hint.GeoObject.description }}
+
+                            .e-card__line-link(v-if="!isMapVisible" @click="showMap") Указать на карте
+                            yandex-map(v-if="isMapVisible" :coords="editablePlace.address.coords.length ? editablePlace.address.coords : [59.982509, 30.385740]" zoom="16" @click="mapClick" :controls="['geolocationControl', 'zoomControl']" :options="{yandexMapDisablePoiInteractivity: true}")
+                                ymap-marker(
+                                    :icon="$store.state.auth.user.photo ? markerIcon : false"
+                                    v-if="editablePlace.address.full"
+                                    marker-id="123"
+                                    :coords="editablePlace.address.coords")
+
+                        .e-card__line
                             v-text-field(
                                 v-model="editablePlace.times"
                                 type="text"
@@ -76,9 +102,16 @@
 </template>
 
 <script>
+const axios = require('axios').default
+
+import {lazyInput} from 'vue-lazy-input'
+
 export default {
     props: {
         editablePlace: Object
+    },
+    directives:{
+        lazyInput
     },
     data() {
         return {
@@ -89,7 +122,17 @@ export default {
             nameRules: [
                 (v) => !!v || 'error_company_name',
             ],
-            phoneRules: [v => !!v || 'Required', v => /\d{6}/.test(v) || 'Invalid format']
+            phoneRules: [v => !!v || 'Required', v => /\d{6}/.test(v) || 'Invalid format'],
+            isMapVisible: false,
+            hints: [],
+            markerIcon: {
+                layout: 'default#imageWithContent',
+                imageHref: ``,
+                imageSize: [42, 42],
+                imageOffset: [-21, -65],
+                contentOffset: [-3, -3],
+                contentLayout: `<div style="width: 52px; height: 52px; background: #fff; padding: 5px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.2); border-radius: 5px;"><div style="background: url(../../uploads/${this.$store.state.auth.user.photo}); background-size: cover; background-position: center; position: relative; z-index: 4; width: 42px; height: 42px; border-radius: 5px;"></div><div style="position: absolute; top: 47px; left: 8px; width: 0;height: 0;border-style: solid;border-width: 14px 18px 0 18px;border-color: #fff transparent transparent transparent;"></div></div>`
+            }
         }
     },
     methods: {
@@ -98,7 +141,51 @@ export default {
         },
         fetchEditPlace() {
             this.$store.dispatch('lk/editPlace', this.editablePlace)
-        }
+        },
+        async showMap() {
+            if (!this.editablePlace.address.full) {
+                await navigator.geolocation.getCurrentPosition((e) => {
+                    this.editablePlace.address.coords = [e.coords.latitude, e.coords.longitude]
+                })
+            }
+            
+            this.isMapVisible = true
+        },
+        checkPlace(place) {
+            this.editablePlace.address.full = place.name + ', ' + place.description
+            this.editablePlace.address.value = place.name 
+            this.editablePlace.address.description = place.description
+            this.editablePlace.address.coords = place.Point.pos.split(' ').reverse()
+            this.hints = []
+        },
+        async inputAddr(e) {
+            if (!!e) {
+                const res = await axios({
+                    method: 'get',
+                    url: `https://geocode-maps.yandex.ru/1.x/?apikey=55293edc-f6c8-402e-b061-049856f9a0dd&format=json&geocode=${e}`
+                })
+                this.hints = res.data.response.GeoObjectCollection.featureMember.slice(0, 4)
+                this.editablePlace.address.value = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.name
+                this.editablePlace.address.description = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.description
+                if (res.data.response.GeoObjectCollection.featureMember[0]) {
+                    this.editablePlace.address.coords = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(' ').reverse()
+                }
+            } else {
+                this.editablePlace.address.coords = []
+                this.hints = []
+            }
+        },
+        async mapClick(e) {
+            const addr = await axios({
+                method: 'get',
+                url: `https://geocode-maps.yandex.ru/1.x/?apikey=55293edc-f6c8-402e-b061-049856f9a0dd&format=json&geocode=${e.get('coords')[1]}, ${e.get('coords')[0]}`
+            })
+            this.editablePlace.address.value = addr.data.response.GeoObjectCollection.featureMember[0].GeoObject.name
+            this.editablePlace.address.description = addr.data.response.GeoObjectCollection.featureMember[0].GeoObject.description
+            this.editablePlace.address.full = addr.data.response.GeoObjectCollection.featureMember[0].GeoObject.name + ', ' + addr.data.response.GeoObjectCollection.featureMember[0].GeoObject.description
+            this.editablePlace.address.coords = e.get('coords')
+            this.hints = []
+        },
     }
 }
 </script>

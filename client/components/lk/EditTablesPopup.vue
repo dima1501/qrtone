@@ -25,7 +25,8 @@
                     .place__tables-inner(v-if="place.tables && place.tables.length")
                         .place__tables-item(v-for="(table, key) in place.tables" :key="key")
                             .place__tables-item-name {{ formatTable(table) }}
-                            .place__tables-item-remove(light @click="removeTable(table, key)") Удалить
+                            .place__tables-item-remove(light @click="removeTable(table, key)")
+                                v-icon(light) mdi-trash-can-outline
 
                         // Добавление диапазона столиков
                         //- div

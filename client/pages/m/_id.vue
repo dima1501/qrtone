@@ -150,9 +150,10 @@ div
                                                 .sorder__line-count 
                                                     span.note x
                                                     span.value {{ dop.cartPrices.filter(e => e == price).length }}
-                                .sorder__price 
-                                    span.note Итого 
-                                    span.value {{ getOrderPrice(item) }}{{$store.state.guest.companyData.currencySymbol}}
+                                .sorder__bottom
+                                    .sorder__price 
+                                        span.note Итого 
+                                        span.value {{ getOrderPrice(item) }}{{$store.state.guest.companyData.currencySymbol}}
 
             transition(name="slide-fade-detail")
                 MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
@@ -167,7 +168,6 @@ div
 import Vue from 'vue';
 import VueScrollactive from 'vue-scrollactive';
 import vuescroll from 'vuescroll';
-
 
 import VueSlickCarousel from 'vue-slick-carousel'
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
@@ -376,7 +376,8 @@ export default {
                     dops: this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)].dops,
                     status: 'pending',
                     table: this.$nuxt.$route.query.table,
-                    place: this.$nuxt.$route.params.id
+                    place: this.$nuxt.$route.params.id,
+                    price: this.getTotalPrice
                 },
                 id: this.$nuxt.$route.params.id
             })
@@ -434,6 +435,8 @@ export default {
 
 <style lang="scss" scoped>
 
+@import '../../assets/sorder.scss';
+
 .orders {
     position: fixed;
     z-index: 23;
@@ -475,121 +478,6 @@ export default {
     &__empty {
         text-align: center;
         margin: 100px 0;
-    }
-}
-
-.sorder {
-    position: relative;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-    &:last-child {
-        margin-bottom: 0;
-    }
-
-    &__top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 15px 15px 0;
-    }
-
-    &__status {
-        font-size: 12px;
-        margin-right: 10px;
-        text-transform: uppercase;
-        font-weight: bold;
-        padding: 0 5px;
-        border-radius: 4px;
-        letter-spacing: 0.01em;
-        &.wait {
-            border: 2px solid #f0f358;
-            background-color: #f0f358;
-        }
-        &.accepted {
-            border: 2px solid rgb(25, 184, 65);
-            background-color: rgb(25, 184, 65);
-            color: #fff;
-        }
-    }
-
-    &__time {
-        color: #838383;
-        font-size: 14px;
-    }
-
-    &__btn {
-        margin-top: auto;
-        text-align: center;
-    }
-
-    &__line {
-        &-content {
-            position: relative;
-        }
-        &-item {
-            padding: 10px 0;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #e7e7e7;
-            
-        }
-        &-data {
-            color: #838383;
-            font-size: 14px;
-        }
-        &-descr {
-            font-size: 14px;
-            line-height: 1.25;
-        }
-        &-name {
-            line-height: 1.2;
-        }
-        &-count {
-            margin-left: auto;
-            padding-left: 10px;
-            display: flex;
-            align-items: center;
-            .note {
-                color: #838383;
-                font-size: 12px;
-                margin-right: 5px;
-            }
-            .value {
-                font-weight: bold;
-                font-size: 18px;
-            }
-        }
-        &-link {
-            position: absolute;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 2;
-        }
-    }
-
-    &__goods {
-        padding: 10px 15px;
-    }
-
-    &__price {
-        text-align: right;
-        padding: 0 15px 15px;
-        .value {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .note {
-            color: #838383;
-            font-size: 14px;
-        }
-    }
-
-    &__subtitle {
-        padding: 0 15px;
     }
 }
 

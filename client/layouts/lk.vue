@@ -29,7 +29,7 @@ export default {
       if (notificationsEnabled == 'true') {
         const  notification = new Notification('Новый заказ', { body: 'Столик ' + data.order.table })
       }
-      this.$store.state.auth.user.orders.push(data.order)
+      this.$store.state.auth.user.orders.unshift(data.order)
     },
     async acceptOrderAdmin(data) {
       this.$store.state.auth.user.orders.find(e => e.orderId === data.orderId).status = 'accepted'
@@ -39,7 +39,7 @@ export default {
       if (notificationsEnabled == 'true') {
         const notification = new Notification(data.notify.replace('@table', data.table) )
       }
-      this.$store.state.auth.user.notifications.push(data)
+      this.$store.state.auth.user.notifications.unshift(data)
     },
     async acceptFastAction(data) {
       this.$store.state.auth.user.notifications.find(e => e._id == data._id).status = 'accepted'
@@ -59,6 +59,7 @@ export default {
 <style lang="scss">
 .page {
   display: flex;
+  min-height: 100%;
 
   &__sidebar {
     width: 300px;
@@ -68,6 +69,7 @@ export default {
   &__content {
     flex-grow: 1;
     padding: 30px;
+    height: 100%;
   }
 }
 input::-webkit-outer-spin-button,

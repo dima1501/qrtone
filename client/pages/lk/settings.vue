@@ -3,49 +3,7 @@
         h1.settings__title Настройки
 
         .settings__section.-short
-            .settings__section-item
-                v-form(
-                    @submit.prevent="updateUserName"
-                    v-model="isCompanyDataValid")
-                    .settings__section-input(v-if="!editCompany")
-                        v-text-field(
-                            type="text"
-                            label="Название компании"
-                            :value="$store.state.auth.user.name"
-                            disabled)
-                    .settings__section-input(v-if="editCompany")
-                        v-text-field(
-                            @input="inputCompanyName"
-                            type="text"
-                            label="Название компании"
-                            v-model="newCompanyName"
-                            :rules="nameRules"
-                            required)
-
-            .settings__section-item
-                .settings__section-input(v-if="!editCompany")
-                    v-textarea(
-                        type="text"
-                        label="Описание компании"
-                        :value="$store.state.auth.user.description"
-                        disabled
-                        auto-grow
-                        rows="2"
-                        row-height="20")
-                .settings__section-input(v-if="editCompany")
-                    v-textarea(
-                        @input="inputCompanyDescription"
-                        type="text"
-                        label="Описание компании"
-                        v-model="newCompanyDescription"
-                        auto-grow
-                        rows="2"
-                        row-height="20")
-
-            .settings__section-bottom
-                .settings__section-link.-blue(v-if="!editCompany" @click="enableEditData") Редактировать
-                .settings__section-link.-red(@click="disableChangeUserName" v-if="editCompany") Отмена
-                button.settings__section-link.-blue(v-if="editCompany" @click="updateUserName" :disabled="!isCompanyDataValid" type="submit") Сохранить
+            mainSettings(:name="$store.state.auth.user.name" :description="$store.state.auth.user.description")
 
         .settings__section
             .settings__section-row
@@ -80,33 +38,9 @@
                     v-tooltip(top)
                         template(v-slot:activator="{ on, attrs }")
                             v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
-                        <span>Новое звеедение</span>
+                        <span>Новое зведение</span>
             .places(v-if="$store.state.auth.user.places.length")
                 placeLk(v-for="(place, key) in $store.state.auth.user.places" :key="key" :place="place" v-on:openEditPlacePopup="openEditPlacePopup" v-on:editTables="editTables")
-                //- .place(v-for="(place, key) in $store.state.auth.user.places" v-bind:key="key")
-                //-     .place__edit(@click="openEditPlacePopup(place)")
-                //-         v-icon(dark) mdi-pencil-outline
-                //-     .place__title {{ place.name }}
-                //-     .place__phone {{ place.phone }}
-                //-     .place__inst {{ place.inst }}
-
-                //-     .place__tables
-                //-         .place__tables-inner(v-if="place.tables && place.tables.length")
-                //-             .place__tables-item(v-for="(table, key) in place.tables" :key="key")
-                //-                 .place__tables-item-name {{ formatTable(table) }}
-                //-         .place__tables-control(@click="editTables(place)") Управление столиками
-
-                //-     .place__link
-                //-         h4.place__link-title Ссылка на меню заведения
-
-                //-         .place__link-text qrtone.com/m/{{ place.link }}
-                //-             v-icon(light @click="copyLink(place.link)") mdi-content-copy
-                //-             v-icon(light v-if="navigator && navigator.share" @click="shareLink(place.link)") mdi-share-variant
-
-                //-         .place__link-input
-                //-             .place__link-input-placeholder qrtone.com/m/
-                //-             input(type="text" :value="place.link" @input="functionToChangeValue($event, key)")
-                //-         .button.-black(@click="updateLink(key, place._id)") Сохранить
 
             h4(v-if="!$store.state.auth.user.places.length") Для начала работы добавьте заведение
             
@@ -125,63 +59,148 @@
                             v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
                         <span>Добавить быстрое действие</span>
 
-                h3(v-if="!isAvailable") Доступно с подпиской Premium
-            div(v-if="isAvailable")
+                h3.settings__section-unavailable(v-if="!isAvailable") Доступно с подпиской Premium
+            div
                 p <code>@table</code> отображает номер столика, с которого поступил запрос
                 .options
                     fastAction(v-for="(action, key) in $store.state.auth.user.actions" :key="key" :action="action")
 
         .settings__section
-            .settings__section-top
-                h2.settings__section-title Подписка
+            div(v-if="!isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
+                .settings__section-top
+                    h2.settings__section-title Подписка
 
-                div(v-for="(subs, key) in $store.state.auth.user.subscription" :key="key" v-if="!isDateBefore(subs.expires)")
-                    div ||  {{ subs.type }} c  {{ formatDate(subs.started) }} до {{ formatDate(subs.expires) }} {{ !isDateBefore(subs.expires) ? 'Действующая' : 'Истекла' }} ||
-
-                //- div(v-if="$store.state.auth.user.subscription.type == 'free'")
-                //-     p(v-if="!isDateBefore($store.state.auth.user.subscription.expires)") Бесплатная подписка до {{ formatDate($store.state.auth.user.subscription.expires) }}
-                //-     p(v-else) Бесплатная подписка истекла {{ formatDate($store.state.auth.user.subscription.expires) }}
+                .subscription(v-for="(subs, key) in $store.state.auth.user.subscription" :key="key" v-if="!isDateBefore(subs.expires)")
+                    .subscription__content
+                        .subscription__top
+                            .subscription__status
+                                span.main {{ subs.type }}
+                                span.note Подписка
+                            .subscription__info(v-if="!isDateBefore(subs.expires)")
+                                .subscription__info-period.small с {{formatDate(subs.started)}}
+                                .subscription__info-period до {{formatDate(subs.expires)}}
+                        .subscription__bottom
+                            .subscription__progress(v-if="!isDateBefore(subs.expires)")
+                                .subscription__progress-value Осталось {{ calcDays(subs.started, subs.expires) }} дней
+                                .subscription__progress-line
+                                    .subscription__progress-line-bg(v-bind:style="{ width: calcPercents(subs.started, subs.expires) }")
+                            .subscription__ended(v-else) Истекла {{formatDate(subs.expires)}}
+                    .subscription__bubbles
+                        .subscription__bubbles-item._1
+                        .subscription__bubbles-item._2
+                        .subscription__bubbles-item._3
+                        .subscription__bubbles-item._4
 
             .subs
+                h2.subs__title Выберите подписку
+                .subs__subtitle Подходящую под ваши требования
                 .subs__inner
                     .subs__item
                         h3.subs__item-title Standart
                         .subs__item-content
                             .subs__list
-                                .subs__list-item Цифровое меню с неограниченным количеством блюд и категорий
-                                .subs__list-item Активация/отключение позиций меню
-                                .subs__list-item Поддержка 12-ти языков
-                                .subs__list-item Несколько заведений
-                                .subs__list-item Стилизация QR-кода под ваш стиль
-                                .subs__list-item Быстрый запуск без ожидания менеджеров
+                                .subs__list-item 
+                                    .subs__list-item-icon
+                                        v-icon(light) mdi-checkbox-marked-circle 
+                                    .subs__list-item-text Цифровое меню с неограниченным количеством блюд и категорий
+                                .subs__list-item 
+                                    .subs__list-item-icon
+                                        v-icon(light) mdi-checkbox-marked-circle 
+                                    .subs__list-item-text Активация/отключение позиций меню
+                                .subs__list-item 
+                                    .subs__list-item-icon
+                                        v-icon(light) mdi-checkbox-marked-circle 
+                                    .subs__list-item-text Интерфейс на Русском и Английском языках
+                                .subs__list-item 
+                                    .subs__list-item-icon
+                                        v-icon(light) mdi-checkbox-marked-circle 
+                                    .subs__list-item-text Несколько заведений
+                                .subs__list-item 
+                                    .subs__list-item-icon
+                                        v-icon(light) mdi-checkbox-marked-circle 
+                                    .subs__list-item-text Стилизация QR-кода под ваш стиль
+                                .subs__list-item 
+                                    .subs__list-item-icon
+                                        v-icon(light) mdi-checkbox-marked-circle 
+                                    .subs__list-item-text Готовые PDF шаблоны для печати
+                                .subs__list-item 
+                                    .subs__list-item-icon
+                                        v-icon(light) mdi-checkbox-marked-circle 
+                                    .subs__list-item-text Быстрый запуск без ожидания менеджера
 
-                        //- div(v-if="!$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'standart' || $store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'free'")
-                        
-                        div(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'premium' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
-                            .button.-black(@click="simplify()") Изменить на Standart
+                        .subs__plan.-transp(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'premium' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)" @click="simplify()")
+                            .subs__plan-period Перейти на Standart <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
+
                         div(v-else)
-                            .button.-black(@click="subscribe('standart', 1)") 1 месяц - 1000₽
-                            .button.-black(@click="subscribe('standart', 6)") Пол года - 5000₽
-                            .button.-black(@click="subscribe('standart', 12)") Год - 10000₽
+                            .subs__plan.-blue(@click="subscribe('standart', 1, 1000)")
+                                .subs__plan-period 1 месяц
+                                .subs__plan-price
+                                    .subs__plan-price-value 1000{{$store.state.auth.user.currencySymbol}}
+
+                            .subs__plan.-orange(@click="subscribe('standart', 6, 5000)")
+                                .subs__plan-period 6 месяцев
+                                .subs__plan-price
+                                    .subs__plan-price-value 5000{{$store.state.auth.user.currencySymbol}}
+                                    .subs__plan-price-sale 6000{{$store.state.auth.user.currencySymbol}}
+
+                            .subs__plan.-voilet(@click="subscribe('standart', 12, 10000)")
+                                .subs__plan-period 12 месяцев
+                                .subs__plan-price
+                                    .subs__plan-price-value 10000{{$store.state.auth.user.currencySymbol}}
+                                    .subs__plan-price-sale 12000{{$store.state.auth.user.currencySymbol}}
+
                                 
                     .subs__item
                         h3.subs__item-title Premium
                         .subs__item-content
-                            .subs__list-item Все пункты подписки Standart
-                            .subs__list-item Telegram бот для получения уведомлений от посетителей
-                            .subs__list-item Бронирование столика
-                            .subs__list-item Заказ к столику
-                            .subs__list-item Настраиваемые быстрые команды (Позвать официанта / Попросить счет и тд)
-                            .subs__list-item Заполним ваше меню, нужно только фото или документ
+                            .subs__list
+                                .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Все пункты подписки Standart
+                                .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Telegram бот для получения уведомлений от посетителей
+                                .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Бронирование столика
+                                .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Заказ к столику
+                                .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Настраиваемые быстрые команды (Позвать официанта / Попросить счет и тд)
+                                .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Заполним ваше меню, нужно только фото или документ
 
-                        div(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'standart' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
-                            .button.-black(@click="improve()") Улучшить до Premium
+                        .subs__plan.-transp(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'standart' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)" @click="improve()")
+                            .subs__plan-period Улучшить до Premium <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
+
                         div(v-else)
-                            .button.-black(@click="subscribe('premium', 1)") 1 месяц - 2000₽
-                            .button.-black(@click="subscribe('premium', 6)") Пол года - 10000₽
-                            .button.-black(@click="subscribe('premium', 12)") Год - 20000₽
+                            .subs__plan.-blue(@click="subscribe('premium', 1, 2000)")
+                                .subs__plan-period 1 месяц
+                                .subs__plan-price
+                                    .subs__plan-price-value 2000{{$store.state.auth.user.currencySymbol}}
 
-                .subs__note По вопросам изменения подписки пишите на <a href="mailto:info@qrtone.com">info@qrtone.com</a>
+                            .subs__plan.-orange(@click="subscribe('premium', 6, 10000)")
+                                .subs__plan-period 6 месяцев
+                                .subs__plan-price
+                                    .subs__plan-price-value 10000{{$store.state.auth.user.currencySymbol}}
+                                    .subs__plan-price-sale 12000{{$store.state.auth.user.currencySymbol}}
+
+                            .subs__plan.-voilet(@click="subscribe('premium', 12, 20000)")
+                                .subs__plan-period 12 месяцев
+                                .subs__plan-price
+                                    .subs__plan-price-value 20000{{$store.state.auth.user.currencySymbol}}
+                                    .subs__plan-price-sale 24000{{$store.state.auth.user.currencySymbol}}
+
+                .subs__note Полный возврат средств в первые 7 дней после покупки.<br> По вопросам изменения подписки пишите на <a href="mailto:info@qrtone.com">info@qrtone.com</a>
 
         .settings__section
             .settings__section-top
@@ -245,22 +264,6 @@ export default {
         getAddressData: function (addressData, placeResultData, id) {
             console.log(addressData)
         },
-        enableEditData() {
-            this.editCompany = true
-            this.newCompanyName = this.$store.state.auth.user.name
-            this.newCompanyDescription = this.$store.state.auth.user.description
-        },
-        disableChangeUserName(e) {
-            this.editCompany = false
-            this.newCompanyName = ''
-            this.newCompanyDescription = ''
-        },
-        inputCompanyName(e) {
-            this.newCompanyName = e
-        },
-        inputCompanyDescription(e) {
-            this.newCompanyDescription = e
-        },
         fastActionsToggler(e) {
             this.$store.dispatch("lk/toggleFastActions", e)               
         },
@@ -290,12 +293,20 @@ export default {
             var confirmation = confirm(`Вы действительно хотите улучшить текущий план до Premium? Перерасчет будет произведен автоматически`);
             if (confirmation) this.$store.dispatch("lk/improve")
         },
-        subscribe(type, month) {
+        subscribe(type, month, price) {
             var confirmation = confirm(`Вы действительно хотите оформить подписку ${type} на ${month} ${month == 1 ? "месяц" : "месяцев"}`);
-            if (confirmation) this.$store.dispatch("lk/subscribe", {type, month})
+            if (confirmation) this.$store.dispatch("lk/subscribe", {type, month, price})
         },
         formatDate(date) {
-            return moment(date).local().locale('ru').calendar()
+            return moment(date).local().locale('ru').format("L")
+        },
+        calcDays(started, expires) {
+            return moment(expires).diff(moment(), 'days')
+        },
+        calcPercents(started, expires) {
+            const totalDiff = moment(expires).diff(moment(started), 'days')
+            const startDiff = moment().diff(moment(started), 'days')
+            return (startDiff / totalDiff) * 100 + '%'
         },
         isDateBefore(date) {
             return moment(date).isBefore()
@@ -335,15 +346,6 @@ export default {
         editTables(place) {
             this.editableTablesPlace = Object.assign({}, place)
             this.$store.state.view.popup.editTablesPopup.visible = true
-        },
-        updateUserName() {
-            this.$store.dispatch('lk/updateUserData', {
-                name: this.newCompanyName,
-                description: this.newCompanyDescription
-            })
-            this.$store.state.auth.user.name = this.newCompanyName
-            this.$store.state.auth.user.description = this.newCompanyDescription
-            this.editCompany = false
         },
         loadLogo(e) {
             if (e) {
@@ -404,7 +406,6 @@ export default {
     }
     &__section {
         padding: 20px 15px;
-        border-bottom: 2px solid #d6dbe0;
         &.-short {
             max-width: 420px;
         }
@@ -442,6 +443,10 @@ export default {
                 color: $color-blue;
             }
         }
+        &-unavailable {
+            color: $color-red;
+            font-size: 14px;
+        }
     }
     &__logo {
         padding: 20px 0;
@@ -472,26 +477,247 @@ export default {
 }
 
 .subs {
+    margin: 30px 0;
+    &__title {
+        text-align: center;
+        font-size: 28px;
+        color: $color-black;
+    }
+    &__subtitle {
+        text-align: center;
+        margin-bottom: 30px;
+        color: $color-black;
+    }
     &__inner {
         display: flex;
+        justify-content: center;
+        align-items: center;
     }
     &__item {
-        background: #F5F7FB;
+        border: 3px solid #F5F7FB;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
         border-radius: 16px;
-        width: calc(50% - 10px);
-        margin-right: 20px;
+        max-width: 350px;
+        margin: 0 20px;
         padding: 20px;
-        &:last-child {
-            margin-right: 0;
+        &-title {
+            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: bold;
         }
     }
     &__list {
         margin-bottom: 20px;
+        &-item {
+            margin-bottom: 12px;
+            display: flex;
+            &:last-child {
+                margin-bottom: 0;
+            }
+            
+            &-icon {
+                margin-right: 10px;
+                .v-icon {
+                    color: #61a7fd;
+                }
+            }
+            &-text {
+                line-height: 1.3;
+            }
+        }
     }
     &__note {
         margin: 20px 0;
         text-align: center;
+        font-size: 14px;
+        a {
+            text-decoration: none;
+            color: $color-blue;
+        }
+    }
+    &__plan {
+        margin-bottom: 15px;
+        border-radius: 10px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.12);
+        min-height: 70px;
+        cursor: pointer;
+        &.-blue {
+            background-color: #61a7fd;
+        }
+        &.-orange {
+            background-color: #fda076;
+        }
+        &.-voilet {
+            background-color: #7476da;
+        }
+        &.-transp {
+            color: $color-black;
+            border: 2px solid rgb(236, 236, 236);
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+        &-period {
+            font-size: 18px;
+            font-weight: bold;
+            span {
+                display: block;
+                font-size: 14px;
+                line-height: 1.3;
+                font-weight: normal;
+            }
+        }
+        &-price {
+            text-align: right;
+            &-value {
+                font-size: 24px;
+                font-weight: bold;
+            }
+            &-sale {
+                font-size: 14px;
+                opacity: 0.9;
+                margin-top: -7px;
+                text-decoration: line-through;
+            }
+        }
     }
 }
+
+.subscription {
+    position: relative;
+    overflow: hidden;
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 400px;
+    // border: 2px solid rgb(228, 228, 228);
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    &__content {
+        position: relative;
+        z-index: 2;
+    }
+    &__top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    &__status {
+        .main {
+            background-color: $color-black;
+            margin-right: 5px;
+            padding: 3px 5px;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 0.001em;
+            border-radius: 4px;
+        }
+        .note {
+            font-size: 14px;
+            color: $color-black;
+            opacity: 0.9;
+        }
+    }
+    &__info {
+        &-period {
+            font-weight: bold;
+            font-size: 18px;
+            color: $color-black;
+            &.small {
+                font-size: 14px;
+                opacity: 0.9;
+                text-align: right;
+            }
+        }
+    }
+    &__progress {
+        &-value {
+            font-weight: bold;
+            font-size: 18px;
+            color: $color-black;
+        }
+        &-line {
+            margin-top: 5px;
+            position: relative;
+            background-color: lighten($color-blue, 45%);
+            height: 15px;
+            border-radius: 4px;
+            overflow: hidden;
+            &-bg {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                transition: width .3s;
+                border-radius: 4px;
+                background-color: lighten($color-blue, 5%);
+            }
+        }
+    }
+    &__ended {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    &__bubbles {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        filter: blur(25px);
+        opacity: 0.8;
+        // background: conic-gradient(#61a7fd 30%, #fda076 0 70%, lighten($color-red, 25%) 10%);
+        // background: conic-gradient(red 16.6%, orange 0 33.2%, yellow 0 49.8%, green 0 66.4%, blue 0 83%, rgb(204, 67, 204) 0 );
+        // background: conic-gradient(red 16.6%, orange 16.6%, yellow 16.6%, green, #00BFFF, blue, violet);
+        // background: conic-gradient(red 16%, orange 16%, yellow 16%, green 16%, blue 16%, violet 16%);
+
+        &-item {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            border-radius: 50%;
+            background-color: $color-blue;
+            &._1 {
+                left: -50%;
+                top: -80%;
+                width: 200%;
+                height: 300%;
+                background-color: #61a7fd;
+            }
+            &._2 {
+                right: 0;
+                top: -20px;
+                width: 70%;
+                right: -10%;
+                height: 100%;
+                background-color: #fda076;
+            }
+            &._3 {
+                left: -20%;
+                bottom: -20%;
+                width: 90%;
+                height: 70%;
+                background-color: #7476da;
+            }
+            &._4 {
+                right: -20%;
+                bottom: -20%;  
+                width: 70%;
+                height: 70%;
+                background-color: $color-red;
+                opacity: 0.9;
+            }
+        }
+    }
+}
+
 </style>
 

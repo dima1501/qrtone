@@ -11,10 +11,13 @@
                     a(:href="`tel:${place.phone}`").info-popup__link
                         span.link {{ place.phone }}
                 div(v-if="place.address.full")
+
                     .info-popup__subtitle Адрес:
-                    a(:href="`http://maps.google.com/?q=${$store.state.guest.companyData.name}, ${place.address.full}`" target="_blank").info-popup__address
+                    a(:href="`http://maps.google.com/?q=${$store.state.guest.companyData.name}, ${place.address.value}, ${place.address.description}`" target="_blank").info-popup__address
+                        span.info-popup__address-title.link(v-if="!place.address.value") {{ place.address.full }}
                         span.info-popup__address-title.link {{ place.address.value }}<br>
                         span.info-popup__address-descr.link {{ place.address.description }}
+
                 div(v-if="place.website") 
                     .info-popup__subtitle Сайт:
                     a(:href="`${place.website.includes('http') ? '' : 'https://'}${place.website}`" target="_blank").info-popup__link

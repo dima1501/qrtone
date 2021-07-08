@@ -4,37 +4,38 @@
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
-                h2.popup__title Добавление действие
+                h2.popup__title Добавление действия
                 v-form(
                     @submit.prevent="fetchAddAction"
                     v-model="isAddActionValid")
                     .e-card
                         .e-card__line
-                            .e-card__line-label Текст кнопки:
                             v-text-field(
+                                label="Текст кнопки"
                                 ref="name"
                                 v-model="addAction.callText"
                                 :rules="requiredRule"
                                 type="text"
                                 required)
                         .e-card__line
-                            .e-card__line-label Текст уведомления:
                             v-text-field(
+                                label="Текст уведомления"
                                 ref="notify"
                                 v-model="addAction.notifyText"
                                 :rules="requiredRule"
                                 type="text")
                         .e-card__line
-                            .e-card__line-label Текст кнопки подтверждения:
                             v-text-field(
+                                label="Текст кнопки подтверждения"
                                 ref="apply"
                                 v-model="addAction.buttonText"
                                 :rules="requiredRule"
                                 type="text")
                         .e-card__bottom
-                            v-btn(color="red" @click="closePopup").e-card__bottom-item Отмена
+                            v-btn(@click="closePopup" depressed color="error").e-card__bottom-item Отмена
                             v-btn(
-                                color="blue" 
+                                depressed 
+                                color="primary"
                                 :disabled="!isAddActionValid"
                                 type="submit"
                             ).e-card__bottom-item Создать

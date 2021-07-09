@@ -9,7 +9,7 @@
     nav.sidebar__nav
       nuxt-link(:to="localePath('/lk/orders')").sidebar__nav-item
         .sidebar__nav-icon
-        .sidebar__nav-name Дэшборд (<span v-if="getPending">{{ getPending }}</span>)
+        .sidebar__nav-name Дэшборд
       nuxt-link(:to="localePath('/lk/menu')").sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name Меню
@@ -25,11 +25,6 @@
 
 export default {
   name: 'Sidebar',
-  computed: {
-    getPending() {
-      return this.$store.state.auth.user.orders.filter(e => e.status == 'pending').length + this.$store.state.auth.user.notifications.filter(e => e.status == 'pending').length
-    }
-  },
   methods: {
     sendMail() {
       this.$store.dispatch("auth/regEmail")

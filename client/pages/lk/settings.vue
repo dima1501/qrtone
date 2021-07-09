@@ -283,6 +283,7 @@ export default {
         },
         curSelectText: item => `${item.name_plural} ${item.symbol_native}`,
         logOut() {
+            localStorage.removeItem('place') 
             this.$store.dispatch("auth/logout")
         },
         simplify() {

@@ -10,7 +10,7 @@
                     // Превьюшки
                     .pdf__list
                         .pdf__list-preview(
-                            v-for="(preview, key) in currencies"
+                            v-for="(preview, key) in pdfs"
                             :key="key"
                             @click="setTemplate(preview)"
                             :class="{ 'active': $store.state.view.pdf.ref == preview.ref, '-empty': !preview.ref }")
@@ -20,16 +20,16 @@
 </template>
 
 <script>
-import currencies from 'assets/pdf/pdf.js'
+import pdfs from 'assets/pdf/pdf.js'
 
 export default {
     data() {
         return {
-            currencies: null
+            pdfs: null
         }
     },
     mounted() {
-        this.currencies = currencies
+        this.pdfs = pdfs
     },
     methods: {
         setTemplate(template) {

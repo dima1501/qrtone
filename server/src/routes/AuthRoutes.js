@@ -42,27 +42,27 @@ router.post("/api/checkauth", auth(), async (req, res) => {
 });
 
 router.post("/api/checkauth-guest", authGuest(), async (req, res) => {
-  res.send(req.user);
+  res.send(req.user)
 });
 
 router.post("/api/login", auth(), async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body
   try {
     const user = await new UserService().findUserByUsername(req, email);
     const passwordHash = await crypto
       .createHash("sha256")
       .update(password)
-      .digest("hex");
+      .digest("hex")
 
     if (!user || passwordHash !== user.password) {
       res.status(200).send(false)
-      return;
+      return
     }
 
-    const sessionId = await new SessionService().createSession(req, user._id);
-    res.cookie("sessionId", sessionId, { httpOnly: true }).send(user);
+    const sessionId = await new SessionService().createSession(req, user._id)
+    res.cookie("sessionId", sessionId, { httpOnly: true }).send(user)
   } catch (err) {
-    console.error(err);
+    console.error(err)
   }
 });
 

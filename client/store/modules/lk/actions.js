@@ -245,6 +245,8 @@ const editMenuItem = async (store, data) => {
       })
 
       if (add.data) {
+        let parsedItem = store.rootState.auth.user.goods.find(e => e._id == add.data._id)
+        const parsedIndex = store.rootState.auth.user.goods.indexOf(parsedItem)
         let category = store.rootState.auth.parsedMenu[add.data.category]
         let item
 
@@ -253,11 +255,8 @@ const editMenuItem = async (store, data) => {
         }
 
         if (!item) {
-          const parsedItem = store.rootState.auth.user.goods.find(e => e._id == add.data._id)
-          const index = store.rootState.auth.user.goods.indexOf(parsedItem)
-          Vue.set(store.rootState.auth.user.goods, index, add.data)
+          Vue.set(store.rootState.auth.user.goods, parsedIndex, add.data)
           store.rootState.auth.parsedMenu = {}
-          
           for (let item of store.rootState.auth.user.goods) {
             if (store.rootState.auth.parsedMenu[item.category]) {
               store.rootState.auth.parsedMenu[item.category].push(item)
@@ -265,10 +264,11 @@ const editMenuItem = async (store, data) => {
               store.rootState.auth.parsedMenu[item.category] = [item]
             }
           }
-
+          store.rootState.auth.parsedMenu[add.data.category] = store.rootState.auth.parsedMenu[add.data.category].sort(function(a, b) { return a.order - b.order })
         } else {
-          let index = category.indexOf(item)
-          Vue.set(category, index, add.data)
+          let indexCat = category.indexOf(item)
+          Vue.set(category, indexCat, add.data)
+          Vue.set(store.rootState.auth.user.goods, parsedIndex, add.data)
         }
         store.rootState.view.popup.editMenuItemPopup.visible = false
       }
@@ -293,7 +293,7 @@ const editMenuItem = async (store, data) => {
       }
       upload(data)
     } else {
-    upload(data)
+      upload(data)
     }
 
   } catch (error) {
@@ -354,10 +354,31 @@ const deleteAction = async (store, id) => {
     })
     if (remove.data) {
       const action = store.rootState.auth.user.actions.find(e => e._id == id)
-      const index = store.rootState.auth.user.actions.indexOf(action);
+      const index = store.rootState.auth.user.actions.indexOf(action)
       if (index > -1) {
-        store.rootState.auth.user.actions.splice(index, 1);
+        store.rootState.auth.user.actions.splice(index, 1)
       }
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const deleteMenuItem = async (store, item) => {
+  try {
+    const remove = await axios({
+      method: 'delete',
+      url: `/api/delete-menu-item/${item._id}`
+    })
+    if (remove.data) {
+      let parsedItem = store.rootState.auth.user.goods.find(e => e._id == item._id)
+      let parsedIndex = store.rootState.auth.user.goods.indexOf(parsedItem)
+
+      let catItem = store.rootState.auth.parsedMenu[item.category].find(e => e._id == item._id)
+      let catIndex = store.rootState.auth.parsedMenu[item.category].indexOf(catItem)
+
+      store.rootState.auth.user.goods.splice(parsedIndex, 1)
+      store.rootState.auth.parsedMenu[item.category].splice(catIndex, 1)
     }
   } catch (error) {
     console.error(error)
@@ -740,4 +761,5 @@ export default {
   deletePic,
   updateTGUsers,
   toggleFastActions,
+  deleteMenuItem
 }

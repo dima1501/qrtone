@@ -9,7 +9,7 @@
 
             div(v-for="(item, key) in $store.state.auth.user.categories" v-bind:key="key" v-if="$store.state.auth.user.goods && $store.state.auth.parsedMenu[item._id] && $store.state.auth.parsedMenu[item._id].length").menu__section
                 .menu__title
-                    h1.menu__title-text {{ item.name }}
+                    h2.menu__title-text {{ item.name }}
 
                 .menu__list
                     draggable(
@@ -22,35 +22,36 @@
                         @change="change")
                         transition-group(type="transition" :name="!drag ? null : null")
                             .m-item(v-for="(good, key) in $store.state.auth.parsedMenu[item._id]" :key="good._id")
-                                .m-item__controls
-                                    .m-item__controls-item(@click="openEditPopup(good)")
-                                        v-icon(dark) mdi-pencil-outline
-                                    .m-item__controls-item.handles
-                                        v-icon(dark) mdi-drag
+                                MenuItemAdmin(:item="good" v-on:openEditPopup="openEditPopup")
+                                //- .m-item__controls
+                                //-     .m-item__controls-item(@click="openEditPopup(good)")
+                                //-         v-icon(dark) mdi-pencil-outline
+                                //-     .m-item__controls-item.handles
+                                //-         v-icon(dark) mdi-drag
 
-                                .m-item__img(v-if="good.images.length")
-                                    img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
-                                    VueSlickCarousel(:arrows="false" :dots="true" v-if="good.images.length > 1")
-                                        img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`")
+                                //- .m-item__img(v-if="good.images.length")
+                                //-     img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
+                                //-     VueSlickCarousel(:arrows="false" :dots="true" v-if="good.images.length > 1")
+                                //-         img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`")
 
-                                .m-item__name {{ good.name }}
-                                .m-item__name {{ good.translation }}
-                                .m-item__name {{ good.description }}
+                                //- .m-item__name {{ good.name }}
+                                //- .m-item__name {{ good.translation }}
+                                //- .m-item__name {{ good.description }}
 
-                                .m-item__line(v-for="(item, key) in good.prices" :key="key")
-                                    .m-item__price Цена: {{ good.prices[key] }}
-                                    .m-item__price(v-if="good.modifications") Модификация: {{ good.modifications[key] }}
-                                    .m-item__weight Вес: {{ good.weights[key] }}
+                                //- .m-item__line(v-for="(item, key) in good.prices" :key="key")
+                                //-     .m-item__price Цена: {{ good.prices[key] }}
+                                //-     .m-item__price(v-if="good.modifications") Модификация: {{ good.modifications[key] }}
+                                //-     .m-item__weight Вес: {{ good.weights[key] }}
 
-                                .m-item__category Категория: {{ $store.state.auth.user.categories.find(e => e._id == good.category).name }}
-                                .m-item__dops
-                                    .m-item__dops-item(v-for="(dop, idx) in good.dops" :key="idx" v-if="$store.state.auth.user.dops.find(e => e._id === dop)") {{ $store.state.auth.user.dops.find(e => e._id === dop).name }} {{ $store.state.auth.user.dops.find(e => e._id === dop).price }}
+                                //- .m-item__category Категория: {{ $store.state.auth.user.categories.find(e => e._id == good.category).name }}
+                                //- .m-item__dops
+                                //-     .m-item__dops-item(v-for="(dop, idx) in good.dops" :key="idx" v-if="$store.state.auth.user.dops.find(e => e._id === dop)") {{ $store.state.auth.user.dops.find(e => e._id === dop).name }} {{ $store.state.auth.user.dops.find(e => e._id === dop).price }}
 
-                                .m-item__available
-                                    .m-item__available-title Доступно в:
-                                    div(v-for="(place, key) in $store.state.auth.user.places" :key="key")
-                                        label(:for="`${good._id}${place._id}`") {{ place.name }}
-                                        input(type='checkbox' :id="`${good._id}${place._id}`" @change="toggleActivePlace(good, place)" :checked="good.places.find(p => p._id === place._id)")
+                                //- .m-item__available
+                                //-     .m-item__available-title Доступно в:
+                                //-     div(v-for="(place, key) in $store.state.auth.user.places" :key="key")
+                                //-         label(:for="`${good._id}${place._id}`") {{ place.name }}
+                                //-         input(type='checkbox' :id="`${good._id}${place._id}`" @change="toggleActivePlace(good, place)" :checked="good.places.find(p => p._id === place._id)")
         
         EditMenuItemPopup(v-if='$store.state.view.popup.editMenuItemPopup.visible' v-bind:editableMenuItem="editableMenuItem")
         AddMenuItemPopup(v-if='$store.state.view.popup.addMenuItemPopup.visible')
@@ -171,6 +172,7 @@ export default {
 
     &__title {
         position: relative;
+        margin-bottom: 10px;
         &-buttons {
             height: 50px;
             display: flex;
@@ -212,12 +214,11 @@ export default {
 
 .m-item {
     position: relative;
-    padding: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    margin-right: 15px;
+    margin-bottom: 15px;
     background: #F5F7FB;
     border-radius: 16px;
-    width: calc(25% - 20px);
+    width: calc(20% - 15px);
     display: flex;
     align-items: center;
     flex-direction: column;

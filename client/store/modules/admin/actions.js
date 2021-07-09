@@ -103,6 +103,8 @@ const editMenuItemAdmin = async (store, data) => {
         })
   
         if (add.data) {
+          let parsedItem = store.rootState.auth.user.goods.find(e => e._id == add.data._id)
+          const parsedIndex = store.rootState.auth.user.goods.indexOf(parsedItem)
           let category = store.rootState.admin.parsedMenu[add.data.category]
           let item
   
@@ -111,11 +113,8 @@ const editMenuItemAdmin = async (store, data) => {
           }
   
           if (!item) {
-            const parsedItem = store.rootState.admin.user.goods.find(e => e._id == add.data._id)
-            const index = store.rootState.admin.user.goods.indexOf(parsedItem)
-            Vue.set(store.rootState.admin.user.goods, index, add.data)
+            Vue.set(store.rootState.admin.user.goods, parsedIndex, add.data)
             store.rootState.admin.parsedMenu = {}
-            
             for (let item of store.rootState.admin.user.goods) {
               if (store.rootState.admin.parsedMenu[item.category]) {
                 store.rootState.admin.parsedMenu[item.category].push(item)
@@ -123,10 +122,10 @@ const editMenuItemAdmin = async (store, data) => {
                 store.rootState.admin.parsedMenu[item.category] = [item]
               }
             }
-  
           } else {
-            let index = category.indexOf(item)
-            Vue.set(category, index, add.data)
+            let indexCat = category.indexOf(item)
+            Vue.set(category, indexCat, add.data)
+            Vue.set(store.rootState.admin.user.goods, parsedIndex, add.data)
           }
           store.rootState.view.popup.editMenuItemPopup.visible = false
         }

@@ -253,6 +253,7 @@ export default {
                 font-size: 14px;
                 color: rgb(182, 182, 182);
                 line-height: 1.3;
+                margin-bottom: 15px;
             }
             &-btn {
                 margin-top: auto;

@@ -7,8 +7,8 @@ const cur = [
         width: 210,
         height: 297,
         pic: '/PDF_1.png',
-        title: '',
-        subtitle: '',
+        title: 'Scan to view menu',
+        subtitle: 'Easy way to call somebody or make an order!',
         ref: 'pdf1'
     },
     {

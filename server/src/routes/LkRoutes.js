@@ -317,6 +317,22 @@ router.delete('/api/delete-action/:id', auth(), async (req, res) => {
     }
 })
 
+router.delete('/api/delete-menu-item/:id', auth(), async (req, res) => {
+    try {
+        const remove = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $pull: { goods: { _id: req.params.id } } }
+        )
+        if (remove) {
+            res.status(200).send(true)
+        } else {
+            res.status(300).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 router.post('/api/update-categories-drag', auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(

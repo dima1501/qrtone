@@ -194,7 +194,7 @@ export default {
             })
             this.deleteImages.forEach(element => {
                 this.$store.dispatch("lk/deletePic", element)
-            });
+            })
         },
         togglePlace(place) {
             const arr = this.updatedMenuItem.places

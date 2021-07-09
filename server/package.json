@@ -27,10 +27,13 @@
     "nodemailer-pug-engine": "^1.0.2",
     "nodemailer-sendmail-transport": "^1.0.2",
     "nodemailer-smtp-transport": "^2.7.4",
+    "pug": "^3.0.1",
     "socket.io": "^4.0.0",
     "socket.io-redis": "^6.1.1",
     "telegraf": "^3.38.0",
     "telegraf-inline-menu": "^5.3.0",
-    "telegram-keyboard": "^2.2.2"
+    "telegram-keyboard": "^2.2.2",
+    "underscore": "^1.12.1",
+    "ws": "^7.4.6"
   }
 }

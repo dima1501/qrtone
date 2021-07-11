@@ -4,6 +4,9 @@ import mutations from './mutations'
 
 const state = {
   popup: {
+    reservePopup: {
+      visible: false
+    },
     PDFPopup: {
       visible: false,
       data: null

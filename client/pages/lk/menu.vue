@@ -2,8 +2,8 @@
     .menu(v-if="$store.state.auth.user")
         .menu__top
             h1.menu__top-title Меню
-            .menu__top-add(@click="openAddPopup") Добавить товар
-            .menu__top-add(@click="openCatPopup") Управление категориями
+            .menu__top-add(@click="openAddPopup") Создать позицию
+            .menu__top-add(@click="openCatPopup") Категории
         .menu__content
             .menu__empty(v-if="!$store.state.auth.user.goods.length") В меню пока что нет товаров
 
@@ -156,9 +156,9 @@ export default {
         }
 
         &-add {
-            color: rgb(15, 36, 230);
+            color: $color-blue;
+            text-decoration: none;
             cursor: pointer;
-            text-decoration: underline;
             position: relative;
             top: 5px;
             margin-right: 30px;

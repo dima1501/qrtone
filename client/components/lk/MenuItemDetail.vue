@@ -1,8 +1,8 @@
 <template lang="pug">
-    .detail
+    .detail#detail_area
         .detail__bg
         .detail__closer(@click="closeDetail")
-        .detail__area#detail_area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
+        .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
             .detail__img
                 .detail__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
                 VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
@@ -15,6 +15,10 @@
                             h4.detail__line-name {{ item.name }}<br>
                             span.modifications(v-if="item.modifications[i]") {{ item.modifications[i] }}
                             span.note(v-if="item.weights[i]") {{ item.weights[i] }}г. {{ price }}{{$store.state.guest.companyData.currencySymbol}}
+                            span.note(v-if="item.calories[i]") {{ item.calories[i] }} Ккал
+                            span.note(v-if="item.proteins[i]") {{ item.proteins[i] }} Белки
+                            span.note(v-if="item.fats[i]") {{ item.fats[i] }} Жиры
+                            span.note(v-if="item.carbo[i]") {{ item.carbo[i] }} Углеводы
                         .detail__line-counter
                             transition(name="slide-fade" mode="out-in")
                                 .detail__line-button(
@@ -101,6 +105,7 @@ export default {
         // },
         movedHandler(direction) {
             if (direction.type == 'touchmove') {
+                console.log(this.detailArea.scrollTop)
                 this.startScrollPoint = direction.screenY ? direction.screenY : direction.changedTouches[0].screenY
                 this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
             }

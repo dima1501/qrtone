@@ -283,8 +283,11 @@ export default {
         },
         curSelectText: item => `${item.name_plural} ${item.symbol_native}`,
         logOut() {
-            localStorage.removeItem('place') 
-            this.$store.dispatch("auth/logout")
+            var confirmation = confirm(`Вы действительно хотите выйти из аккаунта?`);
+            if (confirmation) {
+                localStorage.removeItem('place') 
+                this.$store.dispatch("auth/logout")
+            }
         },
         simplify() {
             var confirmation = confirm(`Вы действительно хотите изменить подписку на Standart? Перерасчет будет произведен автоматически`);

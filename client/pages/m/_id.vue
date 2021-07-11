@@ -84,6 +84,7 @@ div
                                             .cart__item-name {{ item.name }}
                                             .cart__item-descr(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
                                             span.note {{item.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}  {{item.weights[price]}}г
+                                            span.note(v-if="item.calories[price]")  {{item.calories[price]}} Ккал
                                         .cart__item-counter
                                             .menu__counter-control(@click="minusMulti(item, price)")
                                                 v-icon mdi-minus
@@ -134,6 +135,7 @@ div
                                                 h4.sorder__line-name {{ good.name }}
                                                 .sorder__line-descr(v-if="good.modifications[price]") {{ good.modifications[price] }}
                                                 .sorder__line-data {{ good.prices[price] }}{{ $store.state.guest.companyData.currencySymbol }} {{ good.weights[price] }}г
+                                                .sorder__line-data(v-if="good.calories && good.calories[price]") {{ good.calories[price] }} Ккал
                                             .sorder__line-count 
                                                 span.note x
                                                 span.value {{ good.cartPrices.filter(e => e == price).length }}
@@ -159,7 +161,10 @@ div
                 MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
 
         transition(name="slide-fade")
-                InfoPopup(v-show="$store.state.view.popup.infoPopup" :place="$store.state.guest.companyData.places.find(e => e.link == $nuxt.$route.params.id)")
+            InfoPopup(v-show="$store.state.view.popup.infoPopup" :place="$store.state.guest.companyData.places.find(e => e.link == $nuxt.$route.params.id)")
+
+        transition(name="slide-fade")
+            ReservePopup(v-if="$store.state.view.popup.reservePopup.visible")
 
 </template>
 

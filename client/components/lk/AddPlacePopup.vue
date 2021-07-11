@@ -102,8 +102,7 @@
                                 type="text"
                                 hint="Имя пользователя в Telegram"
                                 label="Telegram"
-                                hide-details="auto"
-                                :rules="addPlace.telegram.length ? phoneRules : [true]")
+                                hide-details="auto")
 
                         .e-card__bottom
                             v-btn(depressed color="error" @click="closePopup").e-card__bottom-item Отмена
@@ -191,12 +190,15 @@ export default {
                     method: 'get',
                     url: `https://geocode-maps.yandex.ru/1.x/?apikey=55293edc-f6c8-402e-b061-049856f9a0dd&format=json&geocode=${e}`
                 })
-                this.hints = res.data.response.GeoObjectCollection.featureMember.slice(0, 4)
-                this.addPlace.address.value = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.name
-                this.addPlace.address.description = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.description
-                if (res.data.response.GeoObjectCollection.featureMember[0]) {
-                    this.addPlace.address.coords = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(' ').reverse()
+                if (res.data.response.GeoObjectCollection.featureMember.length) {
+                    this.hints = res.data.response.GeoObjectCollection.featureMember.slice(0, 4)
+                    this.addPlace.address.value = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.name
+                    this.addPlace.address.description = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.description
+                    if (res.data.response.GeoObjectCollection.featureMember[0]) {
+                        this.addPlace.address.coords = res.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(' ').reverse()
+                    }
                 }
+                
             } else {
                 this.addPlace.address.coords = []
                 this.hints = []

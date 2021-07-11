@@ -16,6 +16,8 @@
                         span(v-if="item.modifications && item.modifications[0]")  {{ item.modifications[0] }}
                         span  {{ item.prices[0] }} {{$store.state.guest.companyData.currencySymbol}} 
                         span(v-if="item.weights[0]") &bull; {{ item.weights[0] }} г
+                        span(v-if="item.calories[0]") &bull; {{ item.calories[0] }} Ккал
+
                 div(v-if="item.prices.length > 1")
                     span.menu-item__price-label Еще {{ item.prices.length - 1 }} 
                     span.menu-item__price-label(v-if="item.prices.length - 1 == 1") вариант

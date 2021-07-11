@@ -5,7 +5,7 @@
             VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
                 .menu-item__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
         .menu-item__content
-            .menu-item__content-inner {{item.order}}
+            .menu-item__content-inner
                 .menu-item__name {{ item.name }}
                 .menu-item__translation(v-if="item.translation") {{ item.translation }} (en)
 
@@ -14,9 +14,9 @@
                         div
                             span {{ item.prices[key] }}{{$store.state.auth.user.currencySymbol}} 
                             span(v-if="item.weights[key]") &bull; {{ item.weights[key] }}г
+                            span(v-if="item.calories[key]")  &bull; {{ item.calories[key] }} Ккал
                         div
                             span(v-if="item.modifications[key]") {{ item.modifications[key] }}
-                        
 
             .menu-item__bottom
                 .menu-item__bottom-item
@@ -33,19 +33,6 @@
                     ).e-card__bottom-item Удалить
                 .menu-item__bottom-item.handles
                     v-icon(light) mdi-drag
-                //- transition(name="slide-fade" mode="out-in")
-                //-     .menu-item__button(
-                //-         key="10"
-                //-         @click="plusMulti"
-                //-         v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].goods || !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count")
-                //-         span(v-if="item.prices.length > 1") от 
-                //-         span {{ item.prices[checkedPrice] }} {{$store.state.guest.companyData.currencySymbol}}
-                //-     .menu-item__counter(key="11" v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count")
-                //-         .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : minusMulti()")
-                //-             v-icon mdi-minus
-                //-         .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count }}
-                //-         .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : plusMulti()")
-                //-             v-icon mdi-plus
 
 </template>
 

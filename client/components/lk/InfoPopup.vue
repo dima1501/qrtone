@@ -40,7 +40,11 @@
                     a(:href="`https://wa.me/${place.whatsapp}`" target="_blank"  v-if="place.whatsapp").info-popup__soc-item
                         v-icon.whatsapp mdi-whatsapp
                 // Будет когда будет todo
-                //- .info-popup__reserve Забронировать
+                .info-popup__reserve 
+                    v-btn(
+                        depressed
+                        @click="openReservePopup"
+                    ).blue--text.e-card__bottom-item Забронировать столик
 </template>
 
 <script>
@@ -56,6 +60,10 @@ export default {
     methods: {
         closePopup() {
             this.$store.state.view.popup.infoPopup = false
+        },
+        openReservePopup() {
+            this.$store.state.view.popup.infoPopup = false
+            this.$store.state.view.popup.reservePopup.visible = true
         }
     }
 }
@@ -134,9 +142,6 @@ export default {
     }
     &__reserve {
         text-align: center;
-        padding: 10px;
-        color: $color-black;
-        text-decoration: underline;
     }
 
     &__closer {

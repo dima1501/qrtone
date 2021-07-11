@@ -15,7 +15,11 @@ const MenuItem = class MenuItem {
         this.order = 0,
         this.cartPrices = [],
         this.translation = data.translation,
-        this.description = data.description
+        this.description = data.description,
+        this.calories = data.calories,
+        this.fats = data.fats,
+        this.proteins = data.proteins,
+        this.carbo = data.carbo
     }
   }
   

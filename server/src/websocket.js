@@ -63,6 +63,15 @@ module.exports = {
       console.error(error)
     }
   },
+  newReservation: async (data) => {
+    try {
+      data.sockets.forEach(e => {
+        ioCopy.to(e.socketId).emit('newReservation', data.data);
+      });
+    } catch (error) {
+      console.error(error)
+    }
+  },
   acceptFastAction: async (data) => {
     data.sockets.forEach(e => {
       ioCopy.to(e.socketId).emit('acceptFastAction', data.data);

@@ -32,7 +32,8 @@ router.post("/api/checkauth", auth(), async (req, res) => {
       sockets: [],
       subscription: req.user.subscription,
       currencySymbol: req.user.currencySymbol,
-      fastActionsEnabled: req.user.fastActionsEnabled
+      fastActionsEnabled: req.user.fastActionsEnabled,
+      isOnboardCompleted: req.user.isOnboardCompleted
     }
     res.send(preloadUser);
   } else {

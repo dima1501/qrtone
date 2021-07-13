@@ -337,9 +337,11 @@ const editAction = async (store, data) => {
       data
     })
     if (update.data) {
-      const action = store.rootState.auth.user.actions.find(e => e._id == update.data._id)
+      let action = store.rootState.auth.user.actions.find(e => e._id == update.data._id)
 
-      Object.assign(action, update.data)
+      action = update.data
+
+      // Object.assign(action, update.data)
     }
   } catch (error) {
     console.error(error)

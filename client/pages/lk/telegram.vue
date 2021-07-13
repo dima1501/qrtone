@@ -29,7 +29,7 @@
 
 <script>
 import QRCode from 'qrcode'
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   layout: 'lk',

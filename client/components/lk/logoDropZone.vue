@@ -44,6 +44,9 @@
 import Dropzone from 'nuxt-dropzone'
 
 export default {
+    props: {
+        isOnboard: Boolean
+    },
     components: {
       Dropzone
     },
@@ -98,6 +101,10 @@ export default {
             this.uploadImage = {
                 file: file,
                 src: URL.createObjectURL(file)
+            }
+
+            if (this.isOnboard) {
+                this.apply()
             }
         },
         dragOver() {

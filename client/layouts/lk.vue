@@ -5,12 +5,15 @@
         Sidebar
       .page__content
         Nuxt
-      AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
-      AddActionPopup(v-if="$store.state.view.popup.addActionPopup")
+    AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
+    AddActionPopup(v-if="$store.state.view.popup.addActionPopup")
+    Onboard(v-if="$store.state.auth.user && !$store.state.auth.user.isOnboardCompleted || $store.state.auth.user && $store.state.view.popup.onboardPopup.visible")
       
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   sockets: {
     async updateSocketId(msg) {
@@ -27,7 +30,7 @@ export default {
     async newOrder(data) {
       const notificationsEnabled = localStorage.getItem('notifications')
       if (notificationsEnabled == 'true') {
-        const  notification = new Notification('Новый заказ', { body: 'Столик ' + data.order.table })
+        new Notification('Новый заказ', { body: 'Столик ' + data.order.table })
       }
       this.$store.state.auth.user.orders.unshift(data.order)
     },
@@ -37,7 +40,15 @@ export default {
     async newFastAction(data) {
       const notificationsEnabled = localStorage.getItem('notifications')
       if (notificationsEnabled == 'true') {
-        const notification = new Notification(data.notify.replace('@table', data.table) )
+        new Notification(data.notify.replace('@table', data.table) )
+      }
+      this.$store.state.auth.user.notifications.unshift(data)
+    },
+    async newReservation(data) {
+      console.log(data)
+      const notificationsEnabled = localStorage.getItem('notifications')
+      if (notificationsEnabled == 'true') {
+        new Notification('Бронь', { body: 'На ' + moment(data.reservation.date).format('DD.MM.YYYY') + ', в ' + data.reservation.time + '\nКоличество гостей: ' + data.reservation.guests })
       }
       this.$store.state.auth.user.notifications.unshift(data)
     },

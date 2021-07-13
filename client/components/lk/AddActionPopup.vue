@@ -1,5 +1,5 @@
 <template lang="pug">
-    .popup
+    .popup.z-21
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -49,7 +49,8 @@ export default {
             addAction: {
                 callText: '',
                 notifyText: '',
-                buttonText: ''
+                buttonText: '',
+                isActive: true
             },
             requiredRule: [
                 (v) => !!v || 'error_company_name',

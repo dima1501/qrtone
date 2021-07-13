@@ -59,20 +59,48 @@
                     .board__main-content-section-content
                         vuescroll(:ops="ops" ref="vsss")
                             transition-group(type="transition" name="flip-list")
+
                                 .sorder(v-for="(notify, key) in $store.state.auth.user.notifications" :key="notify._id")
-                                    .sorder__top
-                                        .sorder__table Столик <span>{{ notify.table }}</span>
-                                        .sorder__time {{ getTime(notify.timestamp) }}
-                                        .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
-                                        .sorder__status.accepted(v-else) Подтвержден
-                                    .sorder__goods
-                                        .sorder__line
-                                            .sorder__line-item
-                                                .sorder__line-content
-                                                    h4.sorder__line-name {{ notify.notify.replace('@table', notify.table) }}
-                                    .sorder__bottom
-                                        .sorder__btn
-                                            v-btn(depressed color="primary" @click='accept(notify)' v-if="notify.status == 'pending'") Принято
+
+                                    //- div {{notify.reservation}}
+                                    //- div {{notify.status}}
+
+                                    div(v-if="notify.reservation")
+                                        .sorder__top
+                                            .sorder__table Бронь
+                                            .sorder__time {{ getTime(notify.timestamp) }}
+                                            .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
+                                            .sorder__status.accepted(v-else) Принято
+
+                                        .sorder__goods
+                                            .sorder__line
+                                                .sorder__line-item
+                                                    .sorder__line-content
+                                                        h4.sorder__line-name На {{ formatDate(notify.reservation.date) }}, в {{ notify.reservation.time }}
+                                                        .sorder__line-data Количество гостей: {{ notify.reservation.guests }} 
+                                                        .sorder__line-data 
+                                                            a(:href="`tel: ${notify.reservation.phone}`").phone {{ notify.reservation.phone }}
+                                                            span , {{ notify.reservation.name }}
+                                                        .sorder__line-data {{ notify.reservation.comment }}
+                                        .sorder__bottom(v-if="notify.status == 'pending'")
+                                            .sorder__btn
+                                                v-btn(depressed color="primary" @click='accept(notify)') Принято
+
+                                    div(v-else)
+                                        .sorder__top
+                                            .sorder__table Столик <span>{{ notify.table }}</span>
+                                            .sorder__time {{ getTime(notify.timestamp) }}
+                                            .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
+                                            .sorder__status.accepted(v-else) Принято
+
+                                        .sorder__goods
+                                            .sorder__line
+                                                .sorder__line-item
+                                                    .sorder__line-content
+                                                        h4.sorder__line-name {{ notify.notify.replace('@table', notify.table) }}
+                                        .sorder__bottom(v-if="notify.status == 'pending'")
+                                            .sorder__btn
+                                                v-btn(depressed color="primary" @click='accept(notify)') Принято
 
 </template>
 
@@ -204,8 +232,11 @@ export default {
             return newArr.sort(function(a, b) { return a - b; })
         },
         getTime(time) {
-            return moment(time).local().locale('ru').calendar()
+            return moment(time).format('DD.MM.YYYY HH:MM')
         },
+        formatDate(date) {
+            return moment(date).format('DD.MM.YYYY')
+        }
     },
 }
 </script>

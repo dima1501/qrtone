@@ -61,13 +61,15 @@ const User = class User {
         _id: nanoid(),
         callText: 'Позвать официанта',
         notifyText: '🙋🏼‍♂️ Столику №@table нужна ваша помощь!',
-        buttonText: '🏃 Уже бегу'
+        buttonText: '🏃 Уже бегу',
+        isActive: false
       },
       {
         _id: nanoid(),
         callText: 'Попросить счет',
         notifyText: '🙋🏼‍♂️ Столику №@table нужен счет!',
-        buttonText: '🏃 Хорошо'
+        buttonText: '🏃 Хорошо',
+        isActive: false
       }
     ],
     this.dops = [],
@@ -82,7 +84,8 @@ const User = class User {
     ],
     this.currencySymbol = '₽',
     this.publicSockets = [],
-    this.fastActionsEnabled = true
+    this.fastActionsEnabled = true,
+    this.isOnboardCompleted = false
   }
 }
 

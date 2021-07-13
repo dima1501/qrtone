@@ -1,5 +1,5 @@
 <template lang="pug">
-    .popup
+    .popup.z-21
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -250,6 +250,10 @@ export default {
     justify-content: center;
     align-items: center;
     overflow-y: scroll;
+
+    &.z-21 {
+        z-index: 21;
+    }
 
     &__closer {
         position: absolute;

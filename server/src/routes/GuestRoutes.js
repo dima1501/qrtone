@@ -26,7 +26,7 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
 
         if (user) {
             const button = Markup.inlineKeyboard([
-                Markup.callbackButton(req.body.data.buttonText, 'like')
+                Markup.callbackButton('Принято', 'like')
             ]).extra()
 
             const notify = req.body.data.notifyText
@@ -270,6 +270,79 @@ router.get('/api/get-place-id/:id', async (req, res) => {
         const place = user.places.find(e => e._id == req.params.id)
 
         res.status(200).send(place.link)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+// router.post('/api/reserve', async (req, res) => {
+//     try {
+//         console.log(req.body)
+
+//         res.send(true)
+//     } catch (error) {
+//         console.error(error)
+//     }
+// })
+
+router.post('/api/reserve', authGuest(), async (req, res) => {
+    try {
+        console.log(req.body)
+        const user = await req.db.collection('users').findOne({ 'places.link': req.body.place })
+        const place = user.places.find(e => e.link == req.body.place)
+
+        if (user) {
+            const button = Markup.inlineKeyboard([
+                Markup.callbackButton('Принято', 'like')
+            ]).extra()
+
+        //     const notify = req.body.data.notifyText
+
+            let data = {
+                _id: nanoid(),
+                messages: [],
+                chatId: [],
+                messageId: [],
+                guestId: req.user._id,
+                status: 'pending',
+                place: place._id,
+                timestamp: Date.now(),
+                reservation: req.body
+            }
+
+            let str = []
+            str.push(`${ req.body.date }\n`)
+            str.push(`${ req.body.time }\n`)
+            str.push(`${ req.body.comment }\n`)
+            str.push(`${ req.body.name }\n`)
+            str.push(`${ req.body.phone }\n`)
+
+            str.push(`----------------\n`)
+
+            if (user.telegram[place._id]) {
+                for (let i = 0; i < user.telegram[place._id].length; i++) {
+                    if (user.telegram[place._id][i].notifications == 'all') {
+                        data.messages.push(await bot.sendMessage(user.telegram[place._id][i].chatId, `⏳ Заявка на бронирование \n\n${str.join('')}`, button));
+                        data.chatId.push( data.messages[i].chat.id )
+                        data.messageId.push( data.messages[i].message_id )
+                    }
+                }
+            }
+
+            if (user.sockets.length) {
+                websocket.newReservation({
+                    sockets: user.sockets.filter(e => e.place == place._id),
+                    data
+                })
+            }
+
+            await req.db.collection('users').updateOne(
+                { 'places.link': req.body.place },
+                { $push: { notifications: data } },
+            )
+
+            res.status(200).send(true)
+        }
     } catch (error) {
         console.error(error)
     }

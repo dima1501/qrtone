@@ -66,6 +66,10 @@
                                 row-height="20"
                                 hide-details="auto")
 
+                        .e-card__line
+                            input#veganInput(type="checkbox" v-model="newItem.isVegan")
+                            label(for="veganInput") Вегетарианское блюдо
+
                         .e-card__line(v-for="(i, key) in prices" v-bind:key="key")
                             v-text-field(
                                 :rules="!newItem.weights[i - 1] ? nameRules : [true]"
@@ -91,26 +95,26 @@
                                     @click="removePriceItem(i)"
                                     v-if="i > 1")
                                     v-icon(light) mdi-trash-can-outline
+
                             // Калории
                             .e-card__line-inner
                                 v-text-field(
                                     v-model="newItem.calories[i - 1]"
                                     type="number"
-                                    prefix="Ккал").mr-5
+                                    label="Ккал").mr-5
                                 v-text-field(
                                     v-model="newItem.proteins[i - 1]"
                                     type="number"
-                                    prefix="Белки").mr-5
+                                    label="Белки").mr-5
                             .e-card__line-inner
                                 v-text-field(
                                     v-model="newItem.fats[i - 1]"
                                     type="number"
-                                    prefix="Жиры").mr-5
+                                    label="Жиры").mr-5
                                 v-text-field(
                                     v-model="newItem.carbo[i - 1]"
                                     type="number"
-                                    prefix="Углеводы").mr-5
-
+                                    label="Углеводы").mr-5
                         
                         .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !newItem.prices[prices - 1] || !newItem.weights[prices - 1] && !newItem.modifications[prices - 1] && prices != 1 }") Добавить модификацию
 
@@ -166,7 +170,8 @@ export default {
                 calories: [],
                 fats: [],
                 proteins: [],
-                carbo: []
+                carbo: [],
+                isVegan: false
             },
             nameRules: [
                 (v) => !!v || 'error_company_name',

@@ -7,6 +7,8 @@
                 .menu-item__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
         .menu-item__content
             .menu-item__content-inner
+                .menu-item__vegan(v-if="item.isVegan") Вегетарианское
+
                 .menu-item__name {{ item.name }}
                 .menu-item__translation(v-if="item.translation") {{ item.translation }} (en)
 
@@ -127,7 +129,7 @@ export default {
             &:after {
                 content: "";
                 display: block;
-                padding-bottom: 90%;
+                padding-bottom: 100%;
             }
             @media screen and (min-width: 768px) {
                 // height: 20vw;
@@ -221,6 +223,28 @@ export default {
     }
     &__translation {
         font-size: 14px;
+    }
+    &__vegan {
+        position: absolute;
+        left: 0;
+        top: 15px;
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 2px 5px;
+        font-size: 12px;
+        padding-left: 25px;
+        &:before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background-size: cover;
+            background-image: url('../../static/icons8-vegetarian-mark-48.png');
+            
+        }
     }
 }
 </style>

@@ -39,30 +39,31 @@
 
                         .reserve__bottom
                             .reserve__bottom-item
-                                v-btn(depressed color="blue" @click="nextStep(2)").white--text Далее
+                                v-btn(depressed color="blue" @click="nextStep(2)" :disabled=" reservation.time && reservation.date ? false : true ").white--text Далее
 
                     .reserve__step(v-if="step == 2")
                         .reserve__section
-                            .reserve__title Заказ
+                            .reserve__title Инфо о бронировании
                             .reserve__info
                                 span {{ formatDate(reservation.date) }}
                                 span {{ reservation.time }}
                                 span {{ reservation.guests }} персон(ы)
                                 span {{ reservation.comment }}
-                            
-                        .reserve__section
-                            .reserve__title Имя
-                            v-text-field(v-model="reservation.name")
+                        
+                        v-form(v-model="contactForm" @submit.prevent="fetchReserve")
+                            .reserve__section
+                                .reserve__title Имя
+                                v-text-field(v-model="reservation.name" :rules="nameRules")
 
-                        .reserve__section
-                            .reserve__title Телефон
-                            v-text-field(v-model="reservation.phone")
+                            .reserve__section
+                                .reserve__title Телефон
+                                v-text-field(v-model="reservation.phone" :rules="phoneRules")
 
-                        .reserve__bottom
-                            .reserve__bottom-item
-                                v-btn(depressed color="normal" @click="nextStep(1)").blue--text Назад
-                            .reserve__bottom-item
-                                v-btn(depressed color="blue" @click="nextStep(3)").white--text Забронировать
+                            .reserve__bottom
+                                .reserve__bottom-item
+                                    v-btn(depressed color="normal" @click="nextStep(1)").blue--text Назад
+                                .reserve__bottom-item
+                                    v-btn(depressed color="blue" type="submit" :disabled="!contactForm").white--text Забронировать
 
                     .reserve__step(v-if="step == 3")
                         .reserve__section
@@ -71,13 +72,33 @@
                                 .reserve__success-title Заявка отправлена
                                 .reserve__success-note Для подтверждения бронирования с вами свяжутся
 
-                            .reserve__icon icon success
-                            .reserve__
+                        .reserve__section
+                            .reserve__title Инфо о бронировании
+                            .reserve__info
+                                span {{ formatDate(reservation.date) }}
+                                span {{ reservation.time }}
+                                span {{ reservation.guests }} персон(ы)
+                                span {{ reservation.comment }}
+                        
+                        .reserve__section
+                            .reserve__title Имя
+                            .reserve__data {{ reservation.name }}
+
+                        .reserve__section
+                            .reserve__title Телефон
+                            .reserve__data {{ reservation.phone }}
+
+                        .reserve__bottom
+                            .reserve__bottom-item
+                                v-btn(depressed color="normal" @click="closePopup()").blue--text Спасибо
+
 
 </template>
 
 
 <script>
+const axios = require('axios').default
+
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 
@@ -93,12 +114,30 @@ export default {
                 guests: 2,
                 comment: '',
                 phone: '',
-                name: ''
+                name: '',
+                place: $nuxt.$route.params.id
             },
-            step: 1
+            step: 1,
+            contactForm: true,
+            nameRules: [
+                (v) => !!v || 'error_name',
+            ],
+            phoneRules: [v => !!v || 'Required', v => /\d{6}/.test(v) || 'Invalid format'],
         }
     },
     methods: {
+        async fetchReserve() {
+            try {
+                const res = await axios({
+                    method: 'post',
+                    url: '/api/reserve',
+                    data: this.reservation
+                })
+                console.log(res)
+            } catch (error) {
+                console.error(error)
+            }
+        },
         closePopup() {
             this.$store.state.view.popup.reservePopup.visible = false
         },
@@ -120,7 +159,6 @@ export default {
             this.step = n
         },
         formatDate(date) {
-            // const prefix = moment(date).isSame(moment(), 'd') ? 
             var prefix
             if (moment(date).isSame(moment(), 'd')) {
                 prefix = 'Сегодня, '
@@ -134,5 +172,7 @@ export default {
 </script>
 
 <style lang="scss">
-
+.theme--light.v-btn.v-btn--disabled.v-btn--has-bg {
+    background-color: #f5f5f5 !important;
+}
 </style>

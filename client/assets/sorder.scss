@@ -72,6 +72,10 @@
         &-data {
             color: #838383;
             font-size: 14px;
+            .phone {
+                text-decoration: none;
+                color: $color-blue;
+            }
         }
         &-descr {
             font-size: 14px;

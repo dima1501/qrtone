@@ -1,6 +1,8 @@
 <template lang="pug">
     .settings(v-if="$store.state.auth.user")
-        h1.settings__title Настройки
+        h1.settings__title 
+            span Настройки
+            v-icon(light @click="openOnboardPopup()") mdi-information-outline 
 
         .settings__section.-short
             mainSettings(:name="$store.state.auth.user.name" :description="$store.state.auth.user.description")
@@ -384,6 +386,9 @@ export default {
             } else {
                 return table.replace('%20', ' ')
             }
+        },
+        openOnboardPopup() {
+            this.$store.state.view.popup.onboardPopup.visible = true
         }
     }
 }
@@ -407,6 +412,11 @@ export default {
 .settings {
     &__title {
         margin-bottom: 20px;
+        .v-icon {
+            color: $color-blue;
+            margin-left: 15px;
+            cursor: pointer;
+        }
     }
     &__section {
         padding: 20px 15px;

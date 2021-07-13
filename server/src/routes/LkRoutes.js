@@ -827,6 +827,23 @@ router.post('/api/toggle-fast-actions', auth(), async (req, res) => {
 })
 
 
+router.post('/api/complete-onboard', auth(), async (req, res) => {
+    try {
+        const set = req.db.collection("users").updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $set: { 'isOnboardCompleted': true } }
+        )
+        if (set) {
+            res.status(200).send(true)
+        } else {
+            res.status(200).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+
 
 
 

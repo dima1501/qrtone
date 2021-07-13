@@ -6,6 +6,7 @@ const ActionItem = class ActionItem {
         this.callText = data.callText,
         this.notifyText = data.notifyText,
         this.buttonText = data.buttonText
+        this.isActive = data.isActive
     }
   }
   

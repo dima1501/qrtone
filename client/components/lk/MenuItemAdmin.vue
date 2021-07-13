@@ -135,7 +135,7 @@ export default {
             &:after {
                 content: "";
                 display: block;
-                padding-bottom: 90%;
+                padding-bottom: 100%;
             }
             @media screen and (min-width: 768px) {
                 // height: 20vw;

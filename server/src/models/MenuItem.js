@@ -19,7 +19,8 @@ const MenuItem = class MenuItem {
         this.calories = data.calories,
         this.fats = data.fats,
         this.proteins = data.proteins,
-        this.carbo = data.carbo
+        this.carbo = data.carbo,
+        this.isVegan = data.isVegan
     }
   }
   

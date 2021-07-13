@@ -4,6 +4,9 @@ import mutations from './mutations'
 
 const state = {
   popup: {
+    onboardPopup: {
+      visible: false
+    },
     reservePopup: {
       visible: false
     },

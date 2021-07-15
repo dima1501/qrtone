@@ -56,8 +56,8 @@ export default {
 
     &__closer {
         position: absolute;
-        right: 20px;
-        top: 25px;
+        right: 15px;
+        top: 15px;
         cursor: pointer;
 
         .v-icon {
@@ -75,13 +75,13 @@ export default {
         margin-bottom: auto;
         background-color: #fff;
         border-radius: 20px;
-        padding: 20px;
+        padding: 15px;
         width: 100%;
         max-width: 400px;
     }
 
     &__title {
-        margin-bottom: 8px;
+        margin-bottom: 15px;
         line-height: 1.3;
         span {
             font-size: 16px;

@@ -5,7 +5,6 @@ const ActionItem = class ActionItem {
         this._id = data._id || nanoid(),
         this.callText = data.callText,
         this.notifyText = data.notifyText,
-        this.buttonText = data.buttonText
         this.isActive = data.isActive
     }
   }

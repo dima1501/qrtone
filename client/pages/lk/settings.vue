@@ -1,215 +1,218 @@
 <template lang="pug">
-    .settings(v-if="$store.state.auth.user")
-        h1.settings__title 
-            span Настройки
-            v-icon(light @click="openOnboardPopup()") mdi-information-outline 
 
-        .settings__section.-short
-            mainSettings(:name="$store.state.auth.user.name" :description="$store.state.auth.user.description")
+.settings(v-if="$store.state.auth.user" )
+    transition(name="slide-fade" mode="out-in")
+        div(v-if="1" key="settings")
+            h1.settings__title 
+                span Настройки
+                v-icon(light @click="openOnboardPopup()") mdi-information-outline 
 
-        .settings__section
-            .settings__section-row
-                .settings__section-row-item
-                    logoDropZone
-                .settings__section-row-item
-                    bgDropZone
+            .settings__section.-short
+                mainSettings(:name="$store.state.auth.user.name" :description="$store.state.auth.user.description")
 
-        .settings__section
-            .settings__section-block
-                h3 Уведомления
-                .ntfcs
-                    .ntfcs__item(v-if="notificationsEnabled == 'denied'")
-                        h4 Уведомления отключены в браузере <a href="https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop" target="_blank">как включить</a>
-                    .ntfcs__item(v-else)
-                    v-switch(
-                        inset
-                        @change="notificationToggler($event)"
-                        :label="`${notificationsEnabledLocal ? 'Уведомления в браузере включены' : 'Уведомления в браузере отключены'}`"
-                        v-model="notificationsEnabledLocal"
-                        hide-details="auto")
+            .settings__section
+                .settings__section-row
+                    .settings__section-row-item
+                        logoDropZone
+                    .settings__section-row-item
+                        bgDropZone
 
-            // Это когда до международной версии дойду todo
-            //- .settings__section-block
-            //-     h3 Символ валюты
-            //-     v-select(v-if="currency.length" :items="currency" @input="setCurrency" label="Выберите символ" :item-text="curSelectText" item-value="symbol_native" :value="currency.find(e => e.symbol_native == $store.state.auth.user.currencySymbol).symbol_native")
+            .settings__section
+                .settings__section-block
+                    h3 Уведомления
+                    .ntfcs
+                        .ntfcs__item(v-if="notificationsEnabled == 'denied'")
+                            h4 Уведомления отключены в браузере <a href="https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop" target="_blank">как включить</a>
+                        .ntfcs__item(v-else)
+                        v-switch(
+                            inset
+                            @change="notificationToggler($event)"
+                            :label="`${notificationsEnabledLocal ? 'Уведомления в браузере включены' : 'Уведомления в браузере отключены'}`"
+                            v-model="notificationsEnabledLocal"
+                            hide-details="auto")
 
-        .settings__section
-            .settings__section-top
-                h2.settings__section-title Заведения
-                .settings__section-link(@click="openAddPlacePopup")
-                    v-tooltip(top)
-                        template(v-slot:activator="{ on, attrs }")
-                            v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
-                        <span>Новое зведение</span>
-            .places(v-if="$store.state.auth.user.places.length")
-                placeLk(v-for="(place, key) in $store.state.auth.user.places" :key="key" :place="place" v-on:openEditPlacePopup="openEditPlacePopup" v-on:editTables="editTables")
+                // Это когда до международной версии дойду todo
+                //- .settings__section-block
+                //-     h3 Символ валюты
+                //-     v-select(v-if="currency.length" :items="currency" @input="setCurrency" label="Выберите символ" :item-text="curSelectText" item-value="symbol_native" :value="currency.find(e => e.symbol_native == $store.state.auth.user.currencySymbol).symbol_native")
 
-            h4(v-if="!$store.state.auth.user.places.length") Для начала работы добавьте заведение
-            
-        .settings__section
-            .settings__section-top
-                v-switch(
-                    v-if="isAvailable"
-                    inset
-                    @change="fastActionsToggler($event)"
-                    v-model="$store.state.auth.user.fastActionsEnabled")
-
-                h2.settings__section-title Быстрые действия
-                .settings__section-link(@click="addFastAction" v-if="isAvailable")
-                    v-tooltip(top)
-                        template(v-slot:activator="{ on, attrs }")
-                            v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
-                        <span>Добавить быстрое действие</span>
-
-                h3.settings__section-unavailable(v-if="!isAvailable") Доступно с подпиской Premium
-            div
-                p <code>@table</code> отображает номер столика, с которого поступил запрос
-                .options
-                    fastAction(v-for="(action, key) in $store.state.auth.user.actions" :key="key" :action="action")
-
-        .settings__section
-            div(v-if="!isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
+            .settings__section
                 .settings__section-top
-                    h2.settings__section-title Подписка
+                    h2.settings__section-title Заведения
+                    .settings__section-link(@click="openAddPlacePopup")
+                        v-tooltip(top)
+                            template(v-slot:activator="{ on, attrs }")
+                                v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
+                            <span>Новое зведение</span>
+                .places(v-if="$store.state.auth.user.places.length")
+                    placeLk(v-for="(place, key) in $store.state.auth.user.places" :key="key" :place="place" v-on:openEditPlacePopup="openEditPlacePopup" v-on:editTables="editTables")
 
-                .subscription(v-for="(subs, key) in $store.state.auth.user.subscription" :key="key" v-if="!isDateBefore(subs.expires)")
-                    .subscription__content
-                        .subscription__top
-                            .subscription__status
-                                span.main {{ subs.type }}
-                                span.note Подписка
-                            .subscription__info(v-if="!isDateBefore(subs.expires)")
-                                .subscription__info-period.small с {{formatDate(subs.started)}}
-                                .subscription__info-period до {{formatDate(subs.expires)}}
-                        .subscription__bottom
-                            .subscription__progress(v-if="!isDateBefore(subs.expires)")
-                                .subscription__progress-value Осталось {{ calcDays(subs.started, subs.expires) }} дней
-                                .subscription__progress-line
-                                    .subscription__progress-line-bg(v-bind:style="{ width: calcPercents(subs.started, subs.expires) }")
-                            .subscription__ended(v-else) Истекла {{formatDate(subs.expires)}}
-                    .subscription__bubbles
-                        .subscription__bubbles-item._1
-                        .subscription__bubbles-item._2
-                        .subscription__bubbles-item._3
-                        .subscription__bubbles-item._4
+                h4(v-if="!$store.state.auth.user.places.length") Для начала работы добавьте заведение
+                
+            .settings__section
+                .settings__section-top
+                    v-switch(
+                        v-if="isAvailable"
+                        inset
+                        @change="fastActionsToggler($event)"
+                        v-model="$store.state.auth.user.fastActionsEnabled")
 
-            .subs
-                h2.subs__title Выберите подписку
-                .subs__subtitle Подходящую под ваши требования
-                .subs__inner
-                    .subs__item
-                        h3.subs__item-title Standart
-                        .subs__item-content
-                            .subs__list
-                                .subs__list-item 
-                                    .subs__list-item-icon
-                                        v-icon(light) mdi-checkbox-marked-circle 
-                                    .subs__list-item-text Цифровое меню с неограниченным количеством блюд и категорий
-                                .subs__list-item 
-                                    .subs__list-item-icon
-                                        v-icon(light) mdi-checkbox-marked-circle 
-                                    .subs__list-item-text Активация/отключение позиций меню
-                                .subs__list-item 
-                                    .subs__list-item-icon
-                                        v-icon(light) mdi-checkbox-marked-circle 
-                                    .subs__list-item-text Интерфейс на Русском и Английском языках
-                                .subs__list-item 
-                                    .subs__list-item-icon
-                                        v-icon(light) mdi-checkbox-marked-circle 
-                                    .subs__list-item-text Несколько заведений
-                                .subs__list-item 
-                                    .subs__list-item-icon
-                                        v-icon(light) mdi-checkbox-marked-circle 
-                                    .subs__list-item-text Стилизация QR-кода под ваш стиль
-                                .subs__list-item 
-                                    .subs__list-item-icon
-                                        v-icon(light) mdi-checkbox-marked-circle 
-                                    .subs__list-item-text Готовые PDF шаблоны для печати
-                                .subs__list-item 
-                                    .subs__list-item-icon
-                                        v-icon(light) mdi-checkbox-marked-circle 
-                                    .subs__list-item-text Быстрый запуск без ожидания менеджера
+                    h2.settings__section-title Быстрые действия
+                    .settings__section-link(@click="addFastAction" v-if="isAvailable")
+                        v-tooltip(top)
+                            template(v-slot:activator="{ on, attrs }")
+                                v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
+                            <span>Добавить быстрое действие</span>
 
-                        .subs__plan.-transp(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'premium' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)" @click="simplify()")
-                            .subs__plan-period Перейти на Standart <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
+                    h3.settings__section-unavailable(v-if="!isAvailable") Доступно с подпиской Premium
+                div
+                    p <code>@table</code> отображает номер столика, с которого поступил запрос
+                    .options
+                        fastAction(v-for="(action, key) in $store.state.auth.user.actions" :key="key" :action="action")
 
-                        div(v-else)
-                            .subs__plan.-blue(@click="subscribe('standart', 1, 1000)")
-                                .subs__plan-period 1 месяц
-                                .subs__plan-price
-                                    .subs__plan-price-value 1000{{$store.state.auth.user.currencySymbol}}
+            .settings__section
+                div(v-if="!isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
+                    .settings__section-top
+                        h2.settings__section-title Подписка
 
-                            .subs__plan.-orange(@click="subscribe('standart', 6, 5000)")
-                                .subs__plan-period 6 месяцев
-                                .subs__plan-price
-                                    .subs__plan-price-value 5000{{$store.state.auth.user.currencySymbol}}
-                                    .subs__plan-price-sale 6000{{$store.state.auth.user.currencySymbol}}
+                    .subscription(v-for="(subs, key) in $store.state.auth.user.subscription" :key="key" v-if="!isDateBefore(subs.expires)")
+                        .subscription__content
+                            .subscription__top
+                                .subscription__status
+                                    span.main {{ subs.type }}
+                                    span.note Подписка
+                                .subscription__info(v-if="!isDateBefore(subs.expires)")
+                                    .subscription__info-period.small с {{formatDate(subs.started)}}
+                                    .subscription__info-period до {{formatDate(subs.expires)}}
+                            .subscription__bottom
+                                .subscription__progress(v-if="!isDateBefore(subs.expires)")
+                                    .subscription__progress-value Осталось {{ calcDays(subs.started, subs.expires) }} дней
+                                    .subscription__progress-line
+                                        .subscription__progress-line-bg(v-bind:style="{ width: calcPercents(subs.started, subs.expires) }")
+                                .subscription__ended(v-else) Истекла {{formatDate(subs.expires)}}
+                        .subscription__bubbles
+                            .subscription__bubbles-item._1
+                            .subscription__bubbles-item._2
+                            .subscription__bubbles-item._3
+                            .subscription__bubbles-item._4
 
-                            .subs__plan.-voilet(@click="subscribe('standart', 12, 10000)")
-                                .subs__plan-period 12 месяцев
-                                .subs__plan-price
-                                    .subs__plan-price-value 10000{{$store.state.auth.user.currencySymbol}}
-                                    .subs__plan-price-sale 12000{{$store.state.auth.user.currencySymbol}}
-
-                                
-                    .subs__item
-                        h3.subs__item-title Premium
-                        .subs__item-content
-                            .subs__list
-                                .subs__list-item 
+                .subs
+                    h2.subs__title Выберите подписку
+                    .subs__subtitle Подходящую под ваши требования
+                    .subs__inner
+                        .subs__item
+                            h3.subs__item-title Standart
+                            .subs__item-content
+                                .subs__list
+                                    .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Все пункты подписки Standart
-                                .subs__list-item 
+                                        .subs__list-item-text Цифровое меню с неограниченным количеством блюд и категорий
+                                    .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Telegram бот для получения уведомлений от посетителей
-                                .subs__list-item 
+                                        .subs__list-item-text Активация/отключение позиций меню
+                                    .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Бронирование столика
-                                .subs__list-item 
+                                        .subs__list-item-text Интерфейс на Русском и Английском языках
+                                    .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Заказ к столику
-                                .subs__list-item 
+                                        .subs__list-item-text Несколько заведений
+                                    .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Настраиваемые быстрые команды (Позвать официанта / Попросить счет и тд)
-                                .subs__list-item 
+                                        .subs__list-item-text Стилизация QR-кода под ваш стиль
+                                    .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Заполним ваше меню, нужно только фото или документ
+                                        .subs__list-item-text Готовые PDF шаблоны для печати
+                                    .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Быстрый запуск без ожидания менеджера
 
-                        .subs__plan.-transp(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'standart' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)" @click="improve()")
-                            .subs__plan-period Улучшить до Premium <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
+                            .subs__plan.-transp(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'premium' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)" @click="simplify()")
+                                .subs__plan-period Перейти на Standart <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
 
-                        div(v-else)
-                            .subs__plan.-blue(@click="subscribe('premium', 1, 2000)")
-                                .subs__plan-period 1 месяц
-                                .subs__plan-price
-                                    .subs__plan-price-value 2000{{$store.state.auth.user.currencySymbol}}
+                            div(v-else)
+                                .subs__plan.-blue(@click="subscribe('standart', 1, 1000)")
+                                    .subs__plan-period 1 месяц
+                                    .subs__plan-price
+                                        .subs__plan-price-value 1000{{$store.state.auth.user.currencySymbol}}
 
-                            .subs__plan.-orange(@click="subscribe('premium', 6, 10000)")
-                                .subs__plan-period 6 месяцев
-                                .subs__plan-price
-                                    .subs__plan-price-value 10000{{$store.state.auth.user.currencySymbol}}
-                                    .subs__plan-price-sale 12000{{$store.state.auth.user.currencySymbol}}
+                                .subs__plan.-orange(@click="subscribe('standart', 6, 5000)")
+                                    .subs__plan-period 6 месяцев
+                                    .subs__plan-price
+                                        .subs__plan-price-value 5000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-sale 6000{{$store.state.auth.user.currencySymbol}}
 
-                            .subs__plan.-voilet(@click="subscribe('premium', 12, 20000)")
-                                .subs__plan-period 12 месяцев
-                                .subs__plan-price
-                                    .subs__plan-price-value 20000{{$store.state.auth.user.currencySymbol}}
-                                    .subs__plan-price-sale 24000{{$store.state.auth.user.currencySymbol}}
+                                .subs__plan.-voilet(@click="subscribe('standart', 12, 10000)")
+                                    .subs__plan-period 12 месяцев
+                                    .subs__plan-price
+                                        .subs__plan-price-value 10000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-sale 12000{{$store.state.auth.user.currencySymbol}}
 
-                .subs__note Полный возврат средств в первые 7 дней после покупки.<br> По вопросам изменения подписки пишите на <a href="mailto:info@qrtone.com">info@qrtone.com</a>
+                                    
+                        .subs__item
+                            h3.subs__item-title Premium
+                            .subs__item-content
+                                .subs__list
+                                    .subs__list-item 
+                                            .subs__list-item-icon
+                                                v-icon(light) mdi-checkbox-marked-circle 
+                                            .subs__list-item-text Все пункты подписки Standart
+                                    .subs__list-item 
+                                            .subs__list-item-icon
+                                                v-icon(light) mdi-checkbox-marked-circle 
+                                            .subs__list-item-text Telegram бот для получения уведомлений от посетителей
+                                    .subs__list-item 
+                                            .subs__list-item-icon
+                                                v-icon(light) mdi-checkbox-marked-circle 
+                                            .subs__list-item-text Бронирование столика
+                                    .subs__list-item 
+                                            .subs__list-item-icon
+                                                v-icon(light) mdi-checkbox-marked-circle 
+                                            .subs__list-item-text Заказ к столику
+                                    .subs__list-item 
+                                            .subs__list-item-icon
+                                                v-icon(light) mdi-checkbox-marked-circle 
+                                            .subs__list-item-text Настраиваемые быстрые команды (Позвать официанта / Попросить счет и тд)
+                                    .subs__list-item 
+                                            .subs__list-item-icon
+                                                v-icon(light) mdi-checkbox-marked-circle 
+                                            .subs__list-item-text Заполним ваше меню, нужно только фото или документ
 
-        .settings__section
-            .settings__section-top
-                .settings__section-link.-red(@click="logOut()") Выйти из аккаунта
-        
-        EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
-        EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
+                            .subs__plan.-transp(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'standart' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)" @click="improve()")
+                                .subs__plan-period Улучшить до Premium <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
+
+                            div(v-else)
+                                .subs__plan.-blue(@click="subscribe('premium', 1, 2000)")
+                                    .subs__plan-period 1 месяц
+                                    .subs__plan-price
+                                        .subs__plan-price-value 2000{{$store.state.auth.user.currencySymbol}}
+
+                                .subs__plan.-orange(@click="subscribe('premium', 6, 10000)")
+                                    .subs__plan-period 6 месяцев
+                                    .subs__plan-price
+                                        .subs__plan-price-value 10000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-sale 12000{{$store.state.auth.user.currencySymbol}}
+
+                                .subs__plan.-voilet(@click="subscribe('premium', 12, 20000)")
+                                    .subs__plan-period 12 месяцев
+                                    .subs__plan-price
+                                        .subs__plan-price-value 20000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-sale 24000{{$store.state.auth.user.currencySymbol}}
+
+                    .subs__note Полный возврат средств в первые 7 дней после покупки.<br> По всем вопросам пишите на <a href="mailto:info@qrtone.com">info@qrtone.com</a>
+
+            .settings__section
+                .settings__section-top
+                    .settings__section-link.-red(@click="logOut()") Выйти из аккаунта
+            
+            EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
+            EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
 </template>
 
 <script>
@@ -396,13 +399,6 @@ export default {
 
 <style lang="scss">
 
-.option {
-    margin-bottom: 15px;
-    padding: 10px;
-    background: #F5F7FB;
-    border-radius: 16px;
-    padding: 20px;
-}
 
 .theme--light.v-label--is-disabled,
 .theme--light.v-input--is-disabled input, .theme--light.v-input--is-disabled textarea {
@@ -518,6 +514,7 @@ export default {
             margin-bottom: 10px;
             font-size: 24px;
             font-weight: bold;
+            color: $color-black;
         }
     }
     &__list {

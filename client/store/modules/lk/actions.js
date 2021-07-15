@@ -548,6 +548,7 @@ const setPlaceSocketId = async (store, data) => {
 
 const loadOrders = async (store, data) => {
   try {
+    store.rootState.view.loading.orders = true
     const load = await axios({
       method: 'get',
       url: `/api/load-orders-place/${data}`
@@ -557,6 +558,7 @@ const loadOrders = async (store, data) => {
     } else {
       store.rootState.auth.user.orders = []
     }
+    store.rootState.view.loading.orders = false
   } catch (error) {
     console.error(error)
   }
@@ -564,6 +566,7 @@ const loadOrders = async (store, data) => {
 
 const loadActions = async (store, data) => {
   try {
+    store.rootState.view.loading.notifications = true
     const load = await axios({
       method: 'get',
       url: `/api/load-actions-place/${data}`
@@ -573,6 +576,7 @@ const loadActions = async (store, data) => {
     } else {
       store.rootState.auth.user.notifications = []
     }
+    store.rootState.view.loading.notifications = false
   } catch (error) {
     console.error(error)
   }

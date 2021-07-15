@@ -17,11 +17,19 @@
                             @vdropzone-drag-over="dragOver"
                             @vdropzone-drag-leave="dragLeave"
                             @vdropzone-removed-file="vremoved")
+
                             .dz-message__inner
-                                v-icon(light) mdi-camera
-                                transition(name="slide-fade" mode="out-in")
-                                    .dz-message__title(v-if="!isDragOver" key='1') Перетащите файлы сюда <br> или кликните, чтобы загрузить фото
-                                    .dz-message__title(v-if="isDragOver" key='2') Можно отпускать
+                                .st-dropzone
+                                    .st-dropzone__inner
+                                        .st-dropzone__content
+                                            transition(name="slide-fade" mode="out-in")
+                                                .st-dropzone__image(
+                                                    key='logo_dropzone_placeholder'
+                                                    v-bind:style="{ backgroundImage: 'url(../../icons8-folder-240.png)' }")
+                                            h4.st-dropzone__title Фото 
+                                            transition(name="slide-fade" mode="out-in")
+                                                p.st-dropzone__note(v-if="!isDragOver" key='logo_dropzone_def') Перетащите файлы сюда <br> или кликните, чтобы загрузить фото
+                                                p.st-dropzone__note(v-if="isDragOver" key='logo_dropzone_catch') Можно отпускать
 
                         draggable(
                             class="previews"
@@ -31,12 +39,12 @@
                             @end="drag = false")
                             transition-group(type="transition" :name="!drag ? 'flip-list' : null")
                                 .preview(v-for="(element, i) in uploadImages" :key="element.file.upload.uuid")
-                                    .preview__img(v-bind:style="{ backgroundImage: 'url(' + element.src + ')' }")
+                                    .preview__img(:style="{ backgroundImage: 'url(' + element.src + ')' }")
                                     .preview__bottom
                                         .preview__bottom-item(@click="removePic(element.file)")
-                                            v-icon(light) mdi-trash-can-outline
+                                            v-icon(light).trash mdi-trash-can-outline
                                         .preview__bottom-item
-                                            v-icon(light) mdi-drag-horizontal
+                                            v-icon(light) mdi-drag-vertical
                         .e-card__line
                             v-text-field(
                                 :rules="nameRules"
@@ -67,55 +75,63 @@
                                 hide-details="auto")
 
                         .e-card__line
-                            input#veganInput(type="checkbox" v-model="newItem.isVegan")
-                            label(for="veganInput") Вегетарианское блюдо
+                            v-checkbox(v-model="newItem.isVegan" :label="`Вегетарианское блюдо`" hide-details="auto")
 
-                        .e-card__line(v-for="(i, key) in prices" v-bind:key="key")
-                            v-text-field(
-                                :rules="!newItem.weights[i - 1] ? nameRules : [true]"
-                                v-model="newItem.modifications[i - 1]"
+                        .e-card__line.highlight(v-for="(i, key) in prices" :key="key")
+
+                            v-textarea(
                                 v-if="i > 1"
+                                :rules="!newItem.weights[i - 1] ? modDescrRules : [true]"
+                                v-model="newItem.modifications[i - 1]"
+                                auto-grow
                                 label="Описание"
-                                type="text"
-                                hide-details="auto")    
+                                rows="1"
+                                row-height="20"
+                                hide-details="auto")
+
+
                             .e-card__line-inner
-                                .e-card__line-label.short Цена:
                                 v-text-field(
                                     :rules="nameRules"
                                     v-model="newItem.prices[i - 1]"
+                                    label="Цена*"
                                     type="number"
-                                    :prefix="$store.state.auth.user.currencySymbol").mr-5
-                                .e-card__line-label.short Вес:
+                                    hide-details="auto").mr-5
                                 v-text-field(
-                                    :rules="i > 1 && !newItem.modifications[i - 1] ? nameRules : [true]"
+                                    :rules="i > 1 && !newItem.modifications[i - 1] ? modDescrRules : [true]"
                                     v-model="newItem.weights[i - 1]"
+                                    label="Вес (г)"
                                     type="number"
-                                    prefix="г.")
-                                .e-card__remove(
-                                    @click="removePriceItem(i)"
-                                    v-if="i > 1")
-                                    v-icon(light) mdi-trash-can-outline
+                                    hide-details="auto")
 
                             // Калории
                             .e-card__line-inner
                                 v-text-field(
                                     v-model="newItem.calories[i - 1]"
                                     type="number"
-                                    label="Ккал").mr-5
+                                    label="Ккал"
+                                    hide-details="auto").mr-5
                                 v-text-field(
                                     v-model="newItem.proteins[i - 1]"
                                     type="number"
-                                    label="Белки").mr-5
+                                    label="Белки"
+                                    hide-details="auto")
                             .e-card__line-inner
                                 v-text-field(
                                     v-model="newItem.fats[i - 1]"
                                     type="number"
-                                    label="Жиры").mr-5
+                                    label="Жиры"
+                                    hide-details="auto").mr-5
                                 v-text-field(
                                     v-model="newItem.carbo[i - 1]"
                                     type="number"
-                                    label="Углеводы").mr-5
-                        
+                                    label="Углеводы"
+                                    hide-details="auto")
+
+                            .e-card__remove(
+                                @click="removePriceItem(i)"
+                                v-if="i > 1") Удалить
+                            
                         .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !newItem.prices[prices - 1] || !newItem.weights[prices - 1] && !newItem.modifications[prices - 1] && prices != 1 }") Добавить модификацию
 
                         .e-card__section
@@ -125,17 +141,18 @@
 
                         .e-card__section
                             h4 Активировать в:
-                            div(v-for="place in $store.state.auth.user.places")
-                                label {{ place.name }}
-                                input(type='checkbox' @change="togglePlace(place)" :id="place.id")
+                            .e-card__line-inner.wrap
+                                div(v-for="place in $store.state.auth.user.places").e-card__place
+                                    v-checkbox(@change="togglePlace(place)" :label="place.name" hide-details="auto" :id="place.id").mt-1
 
                         .e-card__bottom
-                            v-btn(color="red" @click="closePopup").e-card__bottom-item Отмена
+                            v-btn(@click="closePopup" depressed).red--text.e-card__bottom-item Отмена
                             v-btn(
-                                color="blue" 
+                                color="primary" 
                                 :disabled="!isAddItemValid"
                                 type="submit"
-                            ).e-card__bottom-item Создать
+                                depressed
+                            ).e-card__bottom-item.white--text Создать
 </template>
 
 <script>
@@ -174,7 +191,10 @@ export default {
                 isVegan: false
             },
             nameRules: [
-                (v) => !!v || 'error_company_name',
+                (v) => !!v || 'Обязатльное поле',
+            ],
+            modDescrRules: [
+                (v) => !!v || 'Заполните вес или описание',
             ],
             dropOptions: {
                 url: "https://httpbin.org/post",
@@ -203,7 +223,7 @@ export default {
     },
     methods: {
         dopSelectText(item) {
-            return `${item.name} ${item.price} ${this.$store.state.auth.user.currencySymbol}`
+            return `${item.name}, ${item.price ? item.price : 'Бесплатно'}${item.price ? this.$store.state.auth.user.currencySymbol : ''}`
         },
         removePic(file) {
             this.$refs.dropzone.removeFile(file)
@@ -276,39 +296,12 @@ export default {
   transition: transform 0.5s;
 }
 
-.previews {
-    span {
-        display: flex;
-        flex-wrap: wrap;
-    }
-}
 .sortable-ghost {
     opacity: 0.5;
 }
-.preview {
-    width: 23.5%;
-    margin: 0 2% 2% 0;
-    &:nth-child(4n) {
-        margin-right: 0;
-    }
 
-    &__img {
-        width: 100%;
-        height: 84px;
-        background-size: cover;
-        background-position: center;
-        border: 1px solid #00364d;
-        border-radius: 10px;
-    }
-    &__bottom {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        &-item {
-            cursor: pointer;
-        }
-    }
-}
+@import '../../assets/preview.scss';
+@import '../../assets/e-card.scss';
 
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all .12s ease;
@@ -432,7 +425,7 @@ export default {
         margin-bottom: auto;
         background-color: #fff;
         border-radius: 20px;
-        padding: 20px;
+        padding: 15px;
         width: 100%;
         max-width: 400px;
     }
@@ -442,69 +435,5 @@ export default {
     }
 }
 
-.e-card {
-    &__img {
-        margin-bottom: 20px;
-        background: #F5F7FB;
-        border-radius: 16px;
-        padding: 15px;
-        display: flex;
-        align-items: center;
-        &-pic {
-            width: 100px;
-            height: 100px;
-            background-position: center;
-            background-size: cover;
-        }
-    }
-    &__line {
-        // margin-bottom: 10px;
-        &-inner {
-            display: flex;
-            align-items: center;
-        }
-        &:last-child {
-            margin-bottom: 0;
-        }
-        &-label {
-            width: 100px;
-            margin-right: 20px;
-            flex-shrink: 0;
-            &.short {
-                width: auto;
-            }
-        }
-        &-input {
-            flex-grow: 1;
-            padding: 5px 10px;
-            background: #F5F7FB;
-            border-radius: 10px;
-        }
-    }
-    &__bottom {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px 0;
-        &-item {
-            margin: 0 10px;
-            cursor: pointer;
-        }
-    }
-    &__add-link {
-        text-align: center;
-        margin: 10px 0;
-        color: $color-blue;
-        cursor: pointer;
-        font-size: 14px;
-        transition: color .3s;
-        &.disabled {
-            pointer-events: none;
-            color: rgba(0, 0, 0, 0.4);
-        }
-    }
-    &__section {
-        margin: 10px 0;
-    }
-}
+
 </style>

@@ -114,6 +114,17 @@ export default {
 </script>
 
 <style lang="scss">
+
+.slick-dots {
+    bottom: 12px;
+    padding-left: 0 !important;
+}
+
+.slick-dots li button, .slick-dots li {
+    width: 15px;
+    height: 15px;
+}
+
 .menu-item {
     width: 100%;
     position: relative;

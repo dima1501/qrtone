@@ -36,7 +36,7 @@
                                         .preview__bottom-item(@click="removePic(element.file)")
                                             v-icon(light) mdi-trash-can-outline
                                         .preview__bottom-item
-                                            v-icon(light) mdi-drag-horizontal
+                                            v-icon(light) mdi-drag-verticals
                         .e-card__line
                             v-text-field(
                                 ref="name"
@@ -244,39 +244,11 @@ export default {
   transition: transform 0.5s;
 }
 
-.previews {
-    span {
-        display: flex;
-        flex-wrap: wrap;
-    }
-}
 .sortable-ghost {
     opacity: 0.5;
 }
-.preview {
-    width: 23.5%;
-    margin: 0 2% 2% 0;
-    &:nth-child(4n) {
-        margin-right: 0;
-    }
 
-    &__img {
-        width: 100%;
-        height: 84px;
-        background-size: cover;
-        background-position: center;
-        border: 1px solid #00364d;
-        border-radius: 10px;
-    }
-    &__bottom {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        &-item {
-            cursor: pointer;
-        }
-    }
-}
+@import '../../assets/preview.scss';
 
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all .12s ease;

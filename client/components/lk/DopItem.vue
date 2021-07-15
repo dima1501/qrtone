@@ -47,7 +47,7 @@ export default {
     methods: {
         remove() {
             var confirmation = confirm(`Вы действительно хотите удалить дополнение "${this.dop.name}"`);
-            if (confirmation) this.$store.dispatch('admin/removeDopAdmin', { dop: this.dop })
+            if (confirmation) this.$store.dispatch('lk/removeDop', { dop: this.dop })
         },
         edit() {
             this.isEdit = true
@@ -93,6 +93,18 @@ export default {
             &-btn {
                 cursor: pointer;
                 margin-left: 10px;
+            }
+        }
+        &-main {
+            &-input {
+                border: 2px solid $color-black;
+                padding: 3px 5px;
+                background-color: #fff;
+                border-radius: 4px;
+            }
+            &-name {
+                padding: 3px 5px;
+                border: 2px solid transparent;
             }
         }
     }

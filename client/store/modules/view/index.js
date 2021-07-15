@@ -66,7 +66,9 @@ const state = {
   loading: {
     sendOrder: false,
     uploadLogo: false,
-    uploadBg: false
+    uploadBg: false,
+    orders: false,
+    notifications: false
   },
   places: {
     isLinkExists: false,

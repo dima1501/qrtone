@@ -1,8 +1,5 @@
 <template lang="pug">
     .option
-        //- .option__title Кнопки на сайте - {{ action.callText }}
-        //- .option__text Уведомление - {{ action.notifyText }}
-        //- .option__text Кнопка подтверждения - {{ action.buttonText }}
         v-form(
             @submit.prevent="save()"
             v-model="isFormValid")
@@ -16,12 +13,6 @@
                 type="text"
                 label="Уведомление"
                 v-model="updatedAction.notifyText"
-                :disabled="edit ? false : true"
-                :rules="requiredRules")
-            v-text-field(
-                type="text"
-                label="Кнопка подтверждения"
-                v-model="updatedAction.buttonText"
                 :disabled="edit ? false : true"
                 :rules="requiredRules")
         transition(name="slide-fade" mode="out-in")
@@ -46,8 +37,7 @@ export default {
             editableAction: null,
             updatedAction: {
                 callText: '', 
-                notifyText: '', 
-                buttonText: ''
+                notifyText: ''
             },
             requiredRules: [
                 (v) => !!v || 'Обязательное поле',
@@ -82,6 +72,11 @@ export default {
 <style lang="scss">
 .option {
     max-width: 430px;
+    border: 3px solid #F5F7FB;
+    box-shadow: 0 0 20px rgb(0 0 0 / 20%);
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 15px;
     &__action {
         display: flex;
         align-items: center;

@@ -66,10 +66,17 @@ import Vue2TouchEvents from 'vue2-touch-events'
 
 Vue.use(Vue2TouchEvents)
 
+import VueSlickCarousel from 'vue-slick-carousel'
+import 'vue-slick-carousel/dist/vue-slick-carousel.css'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+
 export default {
     props: {
         item: Object,
         placeId: String
+    },
+    components: {
+        VueSlickCarousel
     },
     data() {
         return {
@@ -214,7 +221,7 @@ export default {
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
         background-color: #fff;
-        max-width: 480px;
+        max-width: 400px;
         @media screen and (min-height: 750px) {
             max-height: unset;
             margin: auto;
@@ -264,17 +271,12 @@ export default {
     }
     &__img {
         position: relative;
-        height: 70vw;
-        max-height: 336px;
         overflow: hidden;
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
         &-pic {
-            position: absolute;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            padding-bottom: 100%;
             background-size: cover;
             background-position: center;
         }

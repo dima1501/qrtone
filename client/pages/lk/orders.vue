@@ -1,106 +1,110 @@
 <template lang="pug">
-    .board(v-if="$store.state.auth.user")
-        .board__choose(v-if="!place")
-            .board__choose-content
-                .board__choose-title Выберите заведение
-                .board__choose-row
-                    .board__choose-item(v-for="(place, key) in $store.state.auth.user.places" :key="key")
-                        .board__choose-item-name {{ place.name }}
-                        .board__choose-item-addr {{ place.address.full }}
-                        v-btn(depressed color="normal" @click="changePlace(place._id)").board__choose-item-btn Выбрать
+    .board(v-if="$store.state.auth.user && !loading")
+        transition(name="slide-fade" mode="out-in")
+            .board__choose(v-if="!place" key="check_place")
+                .board__choose-content
+                    .board__choose-title Выберите заведение
+                    .board__choose-row
+                        .board__choose-item(v-for="(place, key) in $store.state.auth.user.places" :key="key")
+                            .board__choose-item-name {{ place.name }}
+                            .board__choose-item-addr {{ place.address.full }}
+                            v-btn(depressed color="normal" @click="changePlace(place._id)").board__choose-item-btn Выбрать
 
-        .board__main(v-if="place")
-            .board__main-select
-                v-select(:items="$store.state.auth.user.places" v-model="place" label="Выберите заведение" item-text="name" item-value="_id" @change="changePlace")
-            .board__main-content
-                .board__main-content-section.-main
-                    .board__main-content-section-top Заказы <span v-if="getPendingOrders">{{ getPendingOrders }}</span>
-                    .board__main-content-section-content
-                        vuescroll(:ops="ops" ref="vss")
-                            transition-group(type="transition" name="flip-list")
-                                .sorder(v-for="(order, key) in $store.state.auth.user.orders" :key="order.orderId" )
-                                    .sorder__top
-                                        .sorder__table Столик <span>{{ order.table }}</span>
-                                        .sorder__time {{ getTime(order.timestamp) }}
-                                        .sorder__status.wait(v-if="order.status === 'pending'") Ожидание
-                                        .sorder__status.accepted(v-else) Подтвержден
-                                    .sorder__goods
-                                        .sorder__line(v-for="(good, i) in order.goods" v-bind:key="i + 'good'")
-                                            .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
-                                                .sorder__line-content
-                                                    h4.sorder__line-name {{ good.name }}
-                                                    .sorder__line-descr(v-if="good.modifications[price]") {{ good.modifications[price] }}
-                                                    .sorder__line-data {{ good.prices[price] }}{{ $store.state.auth.user.currencySymbol }} {{ good.weights[price] }}г
-                                                .sorder__line-count 
-                                                    span.note x
-                                                    span.value {{ good.cartPrices.filter(e => e == price).length }}
+            .board__main(v-if="place" key="place_checked")
+                .board__main-select
+                    v-select(:items="$store.state.auth.user.places" v-model="place" label="Выберите заведение" item-text="name" item-value="_id" @change="changePlace")
+                .board__main-content
+                    .board__main-content-section.-main
+                        .board__main-content-section-top Заказы <span v-if="getPendingOrders">{{ getPendingOrders }}</span>
 
-                                    div(v-if="order.dops.length")
-                                        h4.sorder__subtitle Дополнения:
-                                        .sorder__goods
-                                            .sorder__line(v-for="(dop, key) in order.dops" v-bind:key="key")
-                                                .sorder__line-item(v-for="(price, idx) in getCustomArr(dop.cartPrices)")
-                                                    .sorder__line-content
-                                                        h4.sorder__line-name {{ dop.name }}
-                                                        .sorder__line-data(v-if="dop.prices[price] || dop.prices[price] > 0") {{dop.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}
-                                                        .sorder__line-data(v-else) Бесплатно
-                                                    .sorder__line-count 
-                                                        span.note x
-                                                        span.value {{ dop.cartPrices.filter(e => e == price).length }}
-                                    .sorder__bottom
-                                        .sorder__btn
-                                            v-btn(depressed color="primary" @click='acceptOrder(order)' v-if="order.status == 'pending'") Подтвердить
-                                        .sorder__price 
-                                            span.note Итого 
-                                            span.value {{ getOrderPrice(order) }}{{$store.state.auth.user.currencySymbol}}
-                        
-                .board__main-content-section.-aside
-                    .board__main-content-section-top Уведомления <span v-if="getPendingNotifications">{{ getPendingNotifications }}</span>
-                    .board__main-content-section-content
-                        vuescroll(:ops="ops" ref="vsss")
-                            transition-group(type="transition" name="flip-list")
+                        transition(name="slide-fade" mode="out-in")
+                            .board__main-content-section-loading(v-if="$store.state.view.loading.orders" key="orders_loader")
+                                v-icon(light) mdi-loading
 
-                                .sorder(v-for="(notify, key) in $store.state.auth.user.notifications" :key="notify._id")
+                            .board__main-content-section-content(v-else key="orders_content")
+                                vuescroll(:ops="ops" ref="vss")
+                                    transition-group(type="transition" name="flip-list")
+                                        .sorder(v-for="(order, key) in $store.state.auth.user.orders" :key="order.orderId" )
+                                            .sorder__top
+                                                .sorder__table Столик <span>{{ order.table }}</span>
+                                                .sorder__time {{ getTime(order.timestamp) }}
+                                                .sorder__status.wait(v-if="order.status === 'pending'") Ожидание
+                                                .sorder__status.accepted(v-else) Подтвержден
+                                            .sorder__goods
+                                                .sorder__line(v-for="(good, i) in order.goods" v-bind:key="i + 'good'")
+                                                    .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
+                                                        .sorder__line-content
+                                                            h4.sorder__line-name {{ good.name }}
+                                                            .sorder__line-descr(v-if="good.modifications[price]") {{ good.modifications[price] }}
+                                                            .sorder__line-data {{ good.prices[price] }}{{ $store.state.auth.user.currencySymbol }} {{ good.weights[price] }}г
+                                                        .sorder__line-count 
+                                                            span.note x
+                                                            span.value {{ good.cartPrices.filter(e => e == price).length }}
 
-                                    //- div {{notify.reservation}}
-                                    //- div {{notify.status}}
+                                            div(v-if="order.dops.length")
+                                                h4.sorder__subtitle Дополнения:
+                                                .sorder__goods
+                                                    .sorder__line(v-for="(dop, key) in order.dops" v-bind:key="key")
+                                                        .sorder__line-item(v-for="(price, idx) in getCustomArr(dop.cartPrices)")
+                                                            .sorder__line-content
+                                                                h4.sorder__line-name {{ dop.name }}
+                                                                .sorder__line-data(v-if="dop.prices[price] || dop.prices[price] > 0") {{dop.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}
+                                                                .sorder__line-data(v-else) Бесплатно
+                                                            .sorder__line-count 
+                                                                span.note x
+                                                                span.value {{ dop.cartPrices.filter(e => e == price).length }}
+                                            .sorder__bottom
+                                                .sorder__btn
+                                                    v-btn(depressed color="primary" @click='acceptOrder(order)' v-if="order.status == 'pending'") Подтвердить
+                                                .sorder__price 
+                                                    span.note Итого 
+                                                    span.value {{ getOrderPrice(order) }}{{$store.state.auth.user.currencySymbol}}
+                            
+                    .board__main-content-section.-aside
+                        .board__main-content-section-top Уведомления <span v-if="getPendingNotifications">{{ getPendingNotifications }}</span>
+                        transition(name="slide-fade" mode="out-in")
+                            .board__main-content-section-loading(v-if="$store.state.view.loading.notifications" key="notify_loader")
+                                v-icon(light) mdi-loading
+                            .board__main-content-section-content(v-else key="notify_content")
+                                vuescroll(:ops="ops" ref="vsss")
+                                    transition-group(type="transition" name="flip-list")
+                                        .sorder(v-for="(notify, key) in $store.state.auth.user.notifications" :key="notify._id")
+                                            div(v-if="notify.reservation")
+                                                .sorder__top
+                                                    .sorder__table Бронь
+                                                    .sorder__time {{ getTime(notify.timestamp) }}
+                                                    .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
+                                                    .sorder__status.accepted(v-else) Принято
 
-                                    div(v-if="notify.reservation")
-                                        .sorder__top
-                                            .sorder__table Бронь
-                                            .sorder__time {{ getTime(notify.timestamp) }}
-                                            .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
-                                            .sorder__status.accepted(v-else) Принято
+                                                .sorder__goods
+                                                    .sorder__line
+                                                        .sorder__line-item
+                                                            .sorder__line-content
+                                                                h4.sorder__line-name На {{ formatDate(notify.reservation.date) }}, в {{ notify.reservation.time }}
+                                                                .sorder__line-data Количество гостей: {{ notify.reservation.guests }} 
+                                                                .sorder__line-data 
+                                                                    a(:href="`tel: ${notify.reservation.phone}`").phone {{ notify.reservation.phone }}
+                                                                    span , {{ notify.reservation.name }}
+                                                                .sorder__line-data {{ notify.reservation.comment }}
+                                                .sorder__bottom(v-if="notify.status == 'pending'")
+                                                    .sorder__btn
+                                                        v-btn(depressed color="primary" @click='accept(notify)') Принято
 
-                                        .sorder__goods
-                                            .sorder__line
-                                                .sorder__line-item
-                                                    .sorder__line-content
-                                                        h4.sorder__line-name На {{ formatDate(notify.reservation.date) }}, в {{ notify.reservation.time }}
-                                                        .sorder__line-data Количество гостей: {{ notify.reservation.guests }} 
-                                                        .sorder__line-data 
-                                                            a(:href="`tel: ${notify.reservation.phone}`").phone {{ notify.reservation.phone }}
-                                                            span , {{ notify.reservation.name }}
-                                                        .sorder__line-data {{ notify.reservation.comment }}
-                                        .sorder__bottom(v-if="notify.status == 'pending'")
-                                            .sorder__btn
-                                                v-btn(depressed color="primary" @click='accept(notify)') Принято
+                                            div(v-else)
+                                                .sorder__top
+                                                    .sorder__table Столик <span>{{ notify.table }}</span>
+                                                    .sorder__time {{ getTime(notify.timestamp) }}
+                                                    .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
+                                                    .sorder__status.accepted(v-else) Принято
 
-                                    div(v-else)
-                                        .sorder__top
-                                            .sorder__table Столик <span>{{ notify.table }}</span>
-                                            .sorder__time {{ getTime(notify.timestamp) }}
-                                            .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
-                                            .sorder__status.accepted(v-else) Принято
-
-                                        .sorder__goods
-                                            .sorder__line
-                                                .sorder__line-item
-                                                    .sorder__line-content
-                                                        h4.sorder__line-name {{ notify.notify.replace('@table', notify.table) }}
-                                        .sorder__bottom(v-if="notify.status == 'pending'")
-                                            .sorder__btn
-                                                v-btn(depressed color="primary" @click='accept(notify)') Принято
+                                                .sorder__goods
+                                                    .sorder__line
+                                                        .sorder__line-item
+                                                            .sorder__line-content
+                                                                h4.sorder__line-name {{ notify.notify.replace('@table', notify.table) }}
+                                                .sorder__bottom(v-if="notify.status == 'pending'")
+                                                    .sorder__btn
+                                                        v-btn(depressed color="primary" @click='accept(notify)') Принято
 
 </template>
 
@@ -119,6 +123,7 @@ export default {
     },
     data() {
         return {
+            loading: true,
             orders: [],
             place: '',
             ops: {
@@ -164,6 +169,7 @@ export default {
         if (place) {
             this.place = place
         }
+        this.loading = false
     },
     computed: {
         getPendingOrders() {
@@ -207,7 +213,7 @@ export default {
             if (place) {
                 this.place = place
             }
-            
+
             localStorage.setItem("place", this.place);
             this.$store.dispatch('lk/setPlaceSocketId', {
                 place: this.place,
@@ -242,6 +248,11 @@ export default {
 </script>
 
 <style lang="scss">
+@keyframes load {
+ 0% { transform: rotate(0deg) }
+ 100% { transform: rotate(360deg) }
+}
+
 .board {
     min-height: 100%;
     display: flex;
@@ -332,6 +343,18 @@ export default {
                     display: flex;
                     flex-direction: column;
                     height: calc(100vh - 189px);
+                }
+                &-loading {
+                    font-size: 24px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 200px;
+                    .v-icon {
+                        font-size: 36px;
+                        color: $color-blue;
+                        animation: load 1s ease-in-out infinite;
+                    }
                 }
             }
         }

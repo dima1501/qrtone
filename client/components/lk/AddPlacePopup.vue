@@ -286,60 +286,7 @@ export default {
     }
 }
 
-.e-card {
-    &__img {
-        margin-bottom: 20px;
-        background: #F5F7FB;
-        border-radius: 16px;
-        padding: 15px;
-        display: flex;
-        align-items: center;
-        &-pic {
-            width: 100px;
-            height: 100px;
-            background-position: center;
-            background-size: cover;
-        }
-    }
-    &__line {
-        margin-bottom: 10px;
-        &-inner {
-            display: flex;
-            align-items: center;
-        }
-        // margin-bottom: 10px;
-        &:last-child {
-            margin-bottom: 0;
-        }
-        &-label {
-            width: 100px;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-        &-input {
-            flex-grow: 1;
-            padding: 5px 10px;
-            background: #F5F7FB;
-            border-radius: 10px;
-        }
-        &-link {
-            text-align: center;
-            padding: 15px;
-            color: $color-blue;
-            cursor: pointer;
-        }
-    }
-    &__bottom {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px 0;
-        &-item {
-            margin: 0 10px;
-            cursor: pointer;
-        }
-    }
-}
+@import '../../assets/e-card.scss';
 
 .hints {
     &__item {

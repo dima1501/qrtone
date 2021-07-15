@@ -8,7 +8,7 @@
             @vdropzone-drag-over="dragOver"
             @vdropzone-drag-leave="dragLeave"
             @vdropzone-removed-file="vremoved")
-            .dz-message__inner
+            .dz-message__inner.mb-4
                 .st-dropzone
                     .st-dropzone__inner
                         .st-dropzone__content
@@ -120,6 +120,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '../../assets/dropzone.scss';
 </style>

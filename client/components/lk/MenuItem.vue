@@ -109,6 +109,17 @@ export default {
 </script>
 
 <style lang="scss">
+
+.slick-dots {
+    bottom: 12px;
+    padding-left: 0 !important;
+}
+
+.slick-dots li button, .slick-dots li {
+    width: 15px;
+    height: 15px;
+}
+
 .menu-item {
     position: relative;
     transition: transform .1s;
@@ -123,6 +134,8 @@ export default {
         transform: scale(0.95);
     }
     &__img {
+        position: relative;
+        z-index: 3;
         &-pic {
             background-position: center;
             background-size: cover;

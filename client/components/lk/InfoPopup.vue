@@ -10,8 +10,8 @@
                     .info-popup__subtitle Телефон:
                     a(:href="`tel:${place.phone}`").info-popup__link
                         span.link {{ place.phone }}
-                div(v-if="place.address.full")
 
+                div(v-if="place.address.full")
                     .info-popup__subtitle Адрес:
                     a(:href="`http://maps.google.com/?q=${$store.state.guest.companyData.name}, ${place.address.value}, ${place.address.description}`" target="_blank").info-popup__address
                         span.info-popup__address-title.link(v-if="!place.address.value") {{ place.address.full }}
@@ -22,6 +22,7 @@
                     .info-popup__subtitle Сайт:
                     a(:href="`${place.website.includes('http') ? '' : 'https://'}${place.website}`" target="_blank").info-popup__link
                         span.link {{ place.website }}
+
                 div(v-if="place.addr") 
                     .info-popup__subtitle Место:
                     a(:href="`https://yandex.ru/maps/?ll=37.62,55.75&z=12`" target="_blank").info-popup__link

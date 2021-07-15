@@ -81,6 +81,7 @@ export default {
     flex-grow: 1;
     padding: 30px;
     height: 100%;
+    max-width: calc(100% - 300px);
   }
 }
 input::-webkit-outer-spin-button,
@@ -92,6 +93,14 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.theme--light.v-label {
+  color: $color-black;
+}
+
+.v-application--is-ltr .v-list-item__action:first-child, .v-application--is-ltr .v-list-item__icon:first-child {
+  margin-right: 15px;
 }
 
 

@@ -5,18 +5,22 @@
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
                 h2.popup__title Управление категориями
-                p Изменения сохранятся автоматически
                 .cats
                     .cats__add
-                        .cats__add-field
-                            v-text-field(
-                                ref="newCat"
-                                v-model="newCat"
-                                type="text"
-                                label="Новая категория")
-                            transition(name="slide-fade" mode="out-in")
-                                .cats__item-controls-btn(@click="create" v-if="newCat.length")
-                                    v-icon(light) mdi-checkbox-marked-circle-outline
+                        transition(name="slide-fade" mode="out-in")
+                            .cats__add-link(@click="addCategory = true" v-if="!addCategory") Новая категория
+                            v-form(v-if="addCategory" @submit.prevent="create" v-model="isFormValid")
+                                .cats__add-field
+                                    v-text-field(
+                                        ref="newCat"
+                                        v-model="newCat"
+                                        type="text"
+                                        label="Новая категория"
+                                        hide-details="auto"
+                                        :rules="nameRules")
+                                    transition(name="slide-fade" mode="out-in")
+                                        button.cats__item-controls-btn(type="submit" v-if="newCat.length")
+                                            v-icon(light) mdi-checkbox-marked-circle-outline
 
                     draggable(
                         ref="asdas"
@@ -44,7 +48,12 @@ export default {
         return {
             drag: false,
             newCat: '',
-            updatedCats: []
+            updatedCats: [],
+            addCategory: false,
+            nameRules: [
+                (v) => !!v || 'Обязательное поле',
+            ],
+            isFormValid: true
         }
     },
     mounted() {
@@ -60,8 +69,11 @@ export default {
             this.$store.dispatch('lk/updateCats')
         },
         create() {
-            this.$store.dispatch('lk/createCat', this.newCat)
-            this.newCat = ''
+            if (this.newCat.length) {
+                this.$store.dispatch('lk/createCat', this.newCat)
+                this.addCategory = false
+                this.newCat = ''
+            }
         }
     },
     computed: {
@@ -85,9 +97,16 @@ export default {
 
 .cats {
     &__add {
+        &-link {
+            text-align: center;
+            margin: 15px 0;
+            cursor: pointer;
+            color: $color-blue;
+        }
         &-field {
             display: flex;
             align-items: center;
+            margin-bottom: 15px;
         }
     }
 }

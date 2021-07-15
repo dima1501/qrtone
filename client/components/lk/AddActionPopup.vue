@@ -4,7 +4,7 @@
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
-                h2.popup__title Добавление действия
+                h2.popup__title Создание действия
                 v-form(
                     @submit.prevent="fetchAddAction"
                     v-model="isAddActionValid")
@@ -22,13 +22,6 @@
                                 label="Текст уведомления"
                                 ref="notify"
                                 v-model="addAction.notifyText"
-                                :rules="requiredRule"
-                                type="text")
-                        .e-card__line
-                            v-text-field(
-                                label="Текст кнопки подтверждения"
-                                ref="apply"
-                                v-model="addAction.buttonText"
                                 :rules="requiredRule"
                                 type="text")
                         .e-card__bottom
@@ -49,7 +42,6 @@ export default {
             addAction: {
                 callText: '',
                 notifyText: '',
-                buttonText: '',
                 isActive: true
             },
             requiredRule: [
@@ -115,51 +107,5 @@ export default {
     }
 }
 
-.e-card {
-    &__img {
-        margin-bottom: 20px;
-        background: #F5F7FB;
-        border-radius: 16px;
-        padding: 15px;
-        display: flex;
-        align-items: center;
-        &-pic {
-            width: 100px;
-            height: 100px;
-            background-position: center;
-            background-size: cover;
-        }
-    }
-    &__line {
-        // margin-bottom: 10px;
-        &-inner {
-            display: flex;
-            align-items: center;
-        }
-        &:last-child {
-            margin-bottom: 0;
-        }
-        &-label {
-            width: 100px;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-        &-input {
-            flex-grow: 1;
-            padding: 5px 10px;
-            background: #F5F7FB;
-            border-radius: 10px;
-        }
-    }
-    &__bottom {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px 0;
-        &-item {
-            margin: 0 10px;
-            cursor: pointer;
-        }
-    }
-}
+@import '../../assets/e-card.scss';
 </style>

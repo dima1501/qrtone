@@ -156,13 +156,15 @@ hr {
     color: $color-grey-dark;
 }
 .place {
-    background: #F5F7FB;
     border-radius: 16px;
     padding: 20px;
     max-width: 400px;
     position: relative;
     margin-bottom: 20px;
     margin-top: 15px;
+    border: 3px solid #F5F7FB;
+    box-shadow: 0 0 20px rgb(0 0 0 / 20%);
+    border-radius: 16px;
 
     p {
         font-size: 14px;

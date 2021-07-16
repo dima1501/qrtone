@@ -23,8 +23,8 @@ export default {
       }, { root: true });
       const place = localStorage.getItem("place")
       if (place) {
-        this.$store.dispatch('lk/loadOrders', place, {root: true})
-        this.$store.dispatch('lk/loadActions', place, {root: true})
+        this.$store.dispatch('lk/loadOrders', { place, page: 1 }, {root: true})
+        this.$store.dispatch('lk/loadActions', { place, page: 1 }, {root: true})
       }
     },
     async newOrder(data) {

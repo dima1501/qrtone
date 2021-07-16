@@ -32,6 +32,7 @@
                         handle=".handleit"
                         @change="change"
                         :forceFallback="true")
+                        //- transition-group(type="transition" name="flip-list")
                         div(v-for="(cat, i) in $store.state.auth.user.categories" :key="cat._id" )
                             CategoryItem(:cat="cat" :user="$store.state.auth.user")
 

@@ -20,7 +20,6 @@ router.post("/api/checkauth", auth(), async (req, res) => {
   } else {
     res.send(false)
   }
-  
 })
 
 router.post("/api/checkauth-guest", authGuest(), async (req, res) => {

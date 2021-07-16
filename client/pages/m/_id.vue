@@ -285,12 +285,13 @@ export default {
             for (let o in this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)]) {
                 for (let i of this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)][o]) {
                     for (let n in i.cartPrices) {
-                        total += +i.prices[+i.cartPrices[n]] ? +i.prices[+i.cartPrices[n]] : 0
+                        let price = +i.prices[+i.cartPrices[n]] ? parseFloat(+i.prices[+i.cartPrices[n]]) : 0
+                        total += +parseFloat(price)
                     }
                 }
             }
 
-            return total
+            return +total.toFixed(2).toString()
         },
         isAvailable() {
             const isStandart = this.$store.state.guest.companyData.subscription[this.$store.state.guest.companyData.subscription.length - 1].type == 'standart'
@@ -404,11 +405,12 @@ export default {
             for (let o of ['goods', 'dops']) {
                 for (let i of item[o]) {
                     for (let n in i.cartPrices) {
-                        total += +i.prices[i.cartPrices[n]]
+                        let price = +i.prices[+i.cartPrices[n]] ? parseFloat(+i.prices[+i.cartPrices[n]]) : 0
+                        total += +parseFloat(price)
                     }
                 }
             }
-            return total
+            return +total.toFixed(2).toString()
         },
         fastAction(action) {
             action.userId = this.$nuxt.$route.params.id

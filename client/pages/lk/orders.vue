@@ -57,8 +57,13 @@
                                                 .sorder__btn
                                                     v-btn(depressed color="primary" @click='acceptOrder(order)' v-if="order.status == 'pending'") Подтвердить
                                                 .sorder__price 
-                                                    span.note Итого 
-                                                    span.value {{ getOrderPrice(order) }}{{$store.state.auth.user.currencySymbol}}
+                                                    span.note Итого:
+                                                    span.value  {{ getOrderPrice(order) }}{{$store.state.auth.user.currencySymbol}}
+
+                                    .board__main-content-link(@click="loadMoreOrders" v-if="$store.state.auth.user.orders.length && ordersPage * 10 == $store.state.auth.user.orders.length && !$store.state.view.loading.moreOrders") Загрузить еще 
+
+                                    .board__main-content-loader(v-if="$store.state.view.loading.moreOrders")
+                                        v-icon(light) mdi-loading              
                             
                     .board__main-content-section.-aside
                         .board__main-content-section-top Уведомления <span v-if="getPendingNotifications">{{ getPendingNotifications }}</span>
@@ -106,6 +111,11 @@
                                                     .sorder__btn
                                                         v-btn(depressed color="primary" @click='accept(notify)') Принято
 
+                                    .board__main-content-link(@click="loadMoreNotifications" v-if="$store.state.auth.user.notifications.length && notificationsPage * 10 == $store.state.auth.user.notifications.length && !$store.state.view.loading.moreNotifications") Загрузить еще 
+
+                                    .board__main-content-loader(v-if="$store.state.view.loading.moreNotifications")
+                                        v-icon(light) mdi-loading     
+
 </template>
 
 <script>
@@ -126,6 +136,8 @@ export default {
             loading: true,
             orders: [],
             place: '',
+            ordersPage: 1,
+            notificationsPage: 1,
             ops: {
                 vuescroll: {
                     mode: 'native',
@@ -186,6 +198,14 @@ export default {
         }
     },
     methods: {
+        loadMoreOrders() {
+            this.$store.dispatch('lk/loadMoreOrders', { place: this.place, page: this.ordersPage + 1 } )
+            this.ordersPage += 1
+        },
+        loadMoreNotifications() {
+            this.$store.dispatch('lk/loadMoreActions', { place: this.place, page: this.notificationsPage + 1 } )
+            this.notifications += 1
+        },
         accept(message) {
             this.$store.dispatch('lk/acceptFastAction', message)
         },
@@ -203,11 +223,12 @@ export default {
             for (let o of ['goods', 'dops']) {
                 for (let i of item[o]) {
                     for (let n in i.cartPrices) {
-                        total += +i.prices[i.cartPrices[n]]
+                        let price = +i.prices[+i.cartPrices[n]] ? parseFloat(+i.prices[+i.cartPrices[n]]) : 0
+                        total += +parseFloat(price)
                     }
                 }
             }
-            return total
+            return +total.toFixed(2).toString()
         },
         changePlace(place) {
             if (place) {
@@ -219,8 +240,8 @@ export default {
                 place: this.place,
                 socketId: this.$nuxt.$socket.id
             })
-            this.$store.dispatch('lk/loadOrders', this.place)
-            this.$store.dispatch('lk/loadActions', this.place)
+            this.$store.dispatch('lk/loadOrders', { place: this.place, page: 1 } )
+            this.$store.dispatch('lk/loadActions', { place: this.place, page: 1 })
         },
         acceptOrder(order) {
             this.$store.dispatch('guest/acceptOrder', order)
@@ -355,6 +376,24 @@ export default {
                         color: $color-blue;
                         animation: load 1s ease-in-out infinite;
                     }
+                }
+            }
+            &-link {
+                text-align: center;
+                margin: 15px 0;
+                color: $color-blue;
+                cursor: pointer;
+            }
+            &-loader {
+                font-size: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 54px;
+                .v-icon {
+                    font-size: 36px;
+                    color: $color-blue;
+                    animation: load 1s ease-in-out infinite;
                 }
             }
         }

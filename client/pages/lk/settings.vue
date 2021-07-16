@@ -111,15 +111,31 @@
                                     .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Активация/отключение позиций меню
+                                        .subs__list-item-text Меню доступно по QR-коду и ссылке
+                                    .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Адаптивный интерфейс для работы с любых устройств
+                                    //- .subs__list-item 
+                                    //-     .subs__list-item-icon
+                                    //-         v-icon(light) mdi-checkbox-marked-circle 
+                                    //-     .subs__list-item-text Каждое заведение индексируется в поиске
+                                    .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Неограниченное количество заведений
+                                    .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Раздельный стоп-лист для каждого заведения
+                                    .subs__list-item 
+                                            .subs__list-item-icon
+                                                v-icon(light) mdi-checkbox-marked-circle 
+                                            .subs__list-item-text Удобная форма бронирования на сайте
                                     .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
                                         .subs__list-item-text Интерфейс на Русском и Английском языках
-                                    .subs__list-item 
-                                        .subs__list-item-icon
-                                            v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Несколько заведений
                                     .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
@@ -160,29 +176,29 @@
                             .subs__item-content
                                 .subs__list
                                     .subs__list-item 
-                                            .subs__list-item-icon
-                                                v-icon(light) mdi-checkbox-marked-circle 
-                                            .subs__list-item-text Все пункты подписки Standart
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Все пункты подписки Standart
                                     .subs__list-item 
-                                            .subs__list-item-icon
-                                                v-icon(light) mdi-checkbox-marked-circle 
-                                            .subs__list-item-text Telegram бот для получения уведомлений от посетителей
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Telegram бот для получения уведомлений от посетителей
                                     .subs__list-item 
-                                            .subs__list-item-icon
-                                                v-icon(light) mdi-checkbox-marked-circle 
-                                            .subs__list-item-text Бронирование столика
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Заказ к столику
                                     .subs__list-item 
-                                            .subs__list-item-icon
-                                                v-icon(light) mdi-checkbox-marked-circle 
-                                            .subs__list-item-text Заказ к столику
-                                    .subs__list-item 
-                                            .subs__list-item-icon
-                                                v-icon(light) mdi-checkbox-marked-circle 
-                                            .subs__list-item-text Настраиваемые быстрые команды (Позвать официанта / Попросить счет и тд)
-                                    .subs__list-item 
-                                            .subs__list-item-icon
-                                                v-icon(light) mdi-checkbox-marked-circle 
-                                            .subs__list-item-text Заполним ваше меню, нужно только фото или документ
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Настраиваемые быстрые команды (Позвать официанта / Попросить счет и тд)
+                                    .subs__list-item
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Заполним ваше меню, просто отправьте нам все необходимые данные
+                                    .subs__list-item
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Зарегистрируйте официантов для быстрого получения чаевых через сервис chachachay.me
 
                             .subs__plan.-transp(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'standart' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)" @click="improve()")
                                 .subs__plan-period Улучшить до Premium <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
@@ -501,7 +517,8 @@ export default {
     &__inner {
         display: flex;
         justify-content: center;
-        align-items: center;
+        // align-items: center;
+        align-items: flex-start;
     }
     &__item {
         border: 3px solid #F5F7FB;
@@ -516,6 +533,9 @@ export default {
             font-weight: bold;
             color: $color-black;
         }
+        &-content {
+            margin-bottom: auto;
+        }
     }
     &__list {
         margin-bottom: 20px;
@@ -528,6 +548,7 @@ export default {
             
             &-icon {
                 margin-right: 10px;
+                margin-top: -2px;
                 .v-icon {
                     color: #61a7fd;
                 }

@@ -551,7 +551,7 @@ const loadOrders = async (store, data) => {
     store.rootState.view.loading.orders = true
     const load = await axios({
       method: 'get',
-      url: `/api/load-orders-place/${data}`
+      url: `/api/load-orders-place/${data.place}/${data.page}`
     })
     if (load.data[0]) {
       store.rootState.auth.user.orders = load.data[0].list
@@ -564,12 +564,28 @@ const loadOrders = async (store, data) => {
   }
 }
 
+const loadMoreOrders = async (store, data) => {
+  try {
+    store.rootState.view.loading.moreOrders = true
+    const load = await axios({
+      method: 'get',
+      url: `/api/load-orders-place/${data.place}/${data.page}`
+    })
+    if (load.data[0]) {
+      store.rootState.auth.user.orders = store.rootState.auth.user.orders.concat(load.data[0].list)
+    }
+    store.rootState.view.loading.moreOrders = false
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const loadActions = async (store, data) => {
   try {
     store.rootState.view.loading.notifications = true
     const load = await axios({
       method: 'get',
-      url: `/api/load-actions-place/${data}`
+      url: `/api/load-actions-place/${data.place}/${data.page}`
     })
     if (load.data[0]) {
       store.rootState.auth.user.notifications = load.data[0].list
@@ -577,6 +593,22 @@ const loadActions = async (store, data) => {
       store.rootState.auth.user.notifications = []
     }
     store.rootState.view.loading.notifications = false
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const loadMoreActions = async (store, data) => {
+  try {
+    store.rootState.view.loading.moreNotifications = true
+    const load = await axios({
+      method: 'get',
+      url: `/api/load-actions-place/${data.place}/${data.page}`
+    })
+    if (load.data[0]) {
+      store.rootState.auth.user.notifications = store.rootState.auth.user.notifications.concat(load.data[0].list)
+    }
+    store.rootState.view.loading.moreNotifications = false
   } catch (error) {
     console.error(error)
   }
@@ -767,5 +799,7 @@ export default {
   deletePic,
   updateTGUsers,
   toggleFastActions,
-  deleteMenuItem
+  deleteMenuItem,
+  loadMoreOrders,
+  loadMoreActions
 }

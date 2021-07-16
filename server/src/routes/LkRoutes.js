@@ -605,13 +605,15 @@ router.post('/api/set-place-socket-id', auth(), async (req, res) => {
     }
 })
 
-router.get('/api/load-orders-place/:id', auth(), async (req, res) => {
+router.get('/api/load-orders-place/:id/:page', auth(), async (req, res) => {
     try {
         const orders = await req.db.collection("users").aggregate([
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$orders'},
             { $match: {'orders.place': req.params.id } },
             { $sort: { 'orders.timestamp': -1 } },
+            { $skip: (req.params.page - 1) * 10 },
+            { $limit: 10 },
             { $group: { _id: '$_id', list: {$push: '$orders' } } }
         ]).toArray()
         if (orders) {
@@ -622,13 +624,15 @@ router.get('/api/load-orders-place/:id', auth(), async (req, res) => {
     }
 })
 
-router.get('/api/load-actions-place/:id', auth(), async (req, res) => {
+router.get('/api/load-actions-place/:id/:page', auth(), async (req, res) => {
     try {
         const notifications = await req.db.collection("users").aggregate([
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$notifications'},
             { $match: {'notifications.place': req.params.id } },
             { $sort: { 'notifications.timestamp': -1 } },
+            { $skip: (req.params.page - 1) * 10 },
+            { $limit: 10 },
             { $group: {_id: '$_id', list: {$push: '$notifications'}}}
         ]).toArray()
         if (notifications) {

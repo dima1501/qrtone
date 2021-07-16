@@ -68,7 +68,9 @@ const state = {
     uploadLogo: false,
     uploadBg: false,
     orders: false,
-    notifications: false
+    moreOrders: false,
+    notifications: false,
+    moreNotifications: false
   },
   places: {
     isLinkExists: false,

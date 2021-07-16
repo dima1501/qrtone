@@ -67,6 +67,14 @@ export default {
 </script>
 
 <style lang="scss">
+
+.sortable-chosen {
+    &.ghost {
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        border-radius: 14px;
+    }
+}
+
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all .12s ease;
 }

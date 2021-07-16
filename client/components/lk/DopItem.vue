@@ -3,10 +3,18 @@
         .cats__item-main
             transition(name="slide-fade" mode="out-in")
                 .cats__item-main-name(v-if="!isEdit" key="5") {{ updatedDop.name }}
-            transition(name="slide-fade" mode="out-in")
-                input.cats__item-main-input(v-if="isEdit" key="6" type="text" v-model="updatedDop.name" v-focus)
-            transition(name="slide-fade" mode="out-in")
-                input.cats__item-main-input(v-if="isEdit" key="7" type="text" v-model="updatedDop.price")
+                .cats__add-field(v-if="isEdit" key="6")
+                    v-text-field(
+                        v-model="updatedDop.name"
+                        type="text"
+                        label="Название"
+                        v-focus
+                        hide-details="auto").mr-5
+                    v-text-field(
+                        v-model="updatedDop.price"
+                        type="text"
+                        label="Цена"
+                        hide-details="auto")
 
         transition(name="slide-fade" mode="out-in")
             .cats__item-controls(v-if="!isEdit" key="3")

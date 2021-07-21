@@ -70,7 +70,8 @@ const state = {
     orders: false,
     moreOrders: false,
     notifications: false,
-    moreNotifications: false
+    moreNotifications: false,
+    pdfUpdating: false
   },
   places: {
     isLinkExists: false,

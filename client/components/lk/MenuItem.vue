@@ -256,7 +256,6 @@ export default {
             height: 16px;
             background-size: cover;
             background-image: url('../../static/icons8-vegetarian-mark-48.png');
-            
         }
     }
 }

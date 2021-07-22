@@ -268,7 +268,7 @@ router.get('/api/get-place-id/:id', async (req, res) => {
             {  'places._id': req.params.id }
         )
         const place = user.places.find(e => e._id == req.params.id)
-
+console.log(place.link)
         res.status(200).send(place.link)
     } catch (error) {
         console.error(error)

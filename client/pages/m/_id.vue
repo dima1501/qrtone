@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    .public(v-if="$store.state.guest.user")
+    .public(v-if="$store.state.guest.user && !isLoading")
         .avavav(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
                 img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
@@ -195,6 +195,7 @@ export default {
     },
     data() {
         return {
+            isLoading: true,
             commands: false,
             isCommandSend: false,
             isCartEmpty: true,
@@ -260,6 +261,8 @@ export default {
                     }
                     this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
                 }
+
+                this.isLoading = false
             }
         } catch (error) {
             console.error(error)

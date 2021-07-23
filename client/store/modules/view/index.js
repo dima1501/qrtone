@@ -28,7 +28,8 @@ const state = {
     },
     styleQRPopup: {
       visible: false,
-      place: null
+      place: null,
+      type: ''
     },
     tablesPopup: {
       visible: false,

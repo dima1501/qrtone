@@ -7,10 +7,9 @@
             .c-qr
                 .c-qr__inner
                     .c-qr__content
-                        h2.popup__title(v-if="$store.state.view.popup.wifiPopup.string") {{$store.state.view.popup.wifiPopup}}
-                        h2.popup__title(v-else-if="!$store.state.view.popup.tablesPopup.tables") QR-код меню для {{ $store.state.view.popup.styleQRPopup.place.name }}
-                        h2.popup__title(v-else-if="!$store.state.view.popup.tablesPopup.tables") QR-код Wi-Fi для {{ $store.state.view.popup.styleQRPopup.place.name }}
-                        h2.popup__title(v-else-if="$store.state.view.popup.tablesPopup.tables") QR-коды столиков {{ '#' + $store.state.view.popup.tablesPopup.tables }} {{$store.state.view.pdf.title}}
+                        h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'simple'") QR-код меню для {{ $store.state.view.popup.styleQRPopup.place.name }}
+                        h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'wifi'") QR-код Wi-Fi для {{ $store.state.view.popup.styleQRPopup.place.name }}
+                        h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'multi'") QR-коды столиков {{ '#' + $store.state.view.popup.tablesPopup.tables }} {{$store.state.view.pdf.title}}
 
                         .c-qr__templates(@click="openPDFPopup")
                             .c-qr__templates-title Шаблоны <span v-if="$store.state.view.pdf.ref">({{ $store.state.view.pdf.data.name }})</span>

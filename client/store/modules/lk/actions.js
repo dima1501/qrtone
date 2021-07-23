@@ -738,6 +738,7 @@ const updateTGUsers = async (store, data) => {
       data: { data }
     })
     if (fetch.data) {
+      console.log(fetch.data)
       store.rootState.auth.user.telegram = fetch.data
     }
   } catch (error) {

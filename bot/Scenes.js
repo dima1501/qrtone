@@ -14,7 +14,7 @@ class SceneGenerator {
 
         sc.enter(async ctx => {
             const db = ctx.scene.session.state.db
-            const user = await db.collection('tgUsers').findOne({_id: ctx.update.message.chat.id})
+            const user = await db.collection('tgUsers').findOne({_id: Number.parseInt(ctx.update.message.chat.id)})
 
             if (!user.login) {
                 await ctx.reply('Вход не выполнен, воспользуйтесь командой /login')
@@ -34,23 +34,24 @@ class SceneGenerator {
 
         sc.hears('/exit', async ctx => {
             const db = ctx.scene.session.state.db
-            const user = await db.collection('tgUsers').findOne({_id: ctx.update.message.chat.id})
+            const user = await db.collection('tgUsers').findOne({_id: Number.parseInt(ctx.update.message.chat.id)})
             let company = null
             if (user) {
                 company = await db.collection('users').findOne({_id: ObjectId(user.companyId) })
             }
+            
 
             for (let i in company.places) {
                 await db.collection('users').updateOne(
                     { _id: ObjectId(company._id) },
                     { $pull: {
-                        ["telegram." + company.places[i]._id]: { 'chatId': '' + +ctx.update.message.chat.id }
+                        ["telegram." + company.places[i]._id]: { 'chatId': Number.parseInt(ctx.update.message.chat.id) }
                     }}
                 )
             }
             
             await db.collection('tgUsers').updateOne(
-                { _id: +ctx.update.message.chat.id },
+                { _id: Number.parseInt(ctx.update.message.chat.id) },
                 { $set: {
                     login: false,
                 }}, 
@@ -72,7 +73,7 @@ class SceneGenerator {
         sc.action(/^[chan,-]+(-[^\>]*)?$/, async ctx => {
             const placeId = ctx.match[0].split(',-')[1]
             const userId = ctx.match[0].split(',-')[2]
-            const chatId = ctx.match[0].split(',-')[3]
+            const chatId = Number.parseInt(ctx.match[0].split(',-')[3])
             const user = await ctx.scene.session.state.db.collection('users').findOne({ _id: ObjectId(userId) })
 
             await ctx.scene.session.state.db.collection('users').updateOne(
@@ -88,7 +89,7 @@ class SceneGenerator {
             )
 
             await ctx.scene.session.state.db.collection('tgUsers').updateOne(
-                { _id: +chatId },
+                { _id: chatId },
                 { $set: {
                     place: placeId,
                 }}, 
@@ -103,7 +104,7 @@ class SceneGenerator {
 
         sc.enter(async (ctx) => {
             const db = ctx.scene.session.state.db
-            const user = await db.collection('tgUsers').findOne({_id: ctx.update.message.chat.id })
+            const user = await db.collection('tgUsers').findOne({_id: Number.parseInt(ctx.update.message.chat.id) })
             let company = null
             if (user) {
                 company = await db.collection('users').findOne({_id: ObjectId(user.companyId) })
@@ -120,7 +121,7 @@ class SceneGenerator {
                         const remove = await db.collection('users').updateOne(
                             { _id: ObjectId(company._id) },
                             { $pull: {
-                                ["telegram." + company.places[i]._id]: { 'chatId': '' + +ctx.update.message.chat.id }
+                                ["telegram." + company.places[i]._id]: { 'chatId': Number.parseInt(ctx.update.message.chat.id) }
                             }}
                         )
                     }
@@ -157,7 +158,7 @@ class SceneGenerator {
         sc.action(/^[check,-]+(-[^\>]*)?$/, async ctx => {
             const placeId = ctx.match[0].split(',-')[1]
             const userId = ctx.match[0].split(',-')[2]
-            const chatId = ctx.match[0].split(',-')[3]
+            const chatId = Number.parseInt(ctx.match[0].split(',-')[3])
             const user = await ctx.scene.session.state.db.collection('users').findOne({ _id: ObjectId(userId) })
 
             await ctx.scene.session.state.db.collection('users').updateOne(
@@ -173,7 +174,7 @@ class SceneGenerator {
             )
 
             await ctx.scene.session.state.db.collection('tgUsers').updateOne(
-                { _id: +chatId },
+                { _id: chatId },
                 { $set: {
                     login: true, 
                     place: placeId,
@@ -196,7 +197,7 @@ class SceneGenerator {
             let find = false
             if (user) {
                 for (let i in user.telegram) {
-                    if (user.telegram[i].find(x => x.chatId == ctx.update.message.chat.id)) {
+                    if (user.telegram[i].find(x => x.chatId == Number.parseInt(ctx.update.message.chat.id))) {
                         ctx.session.currentPlaceId = i
                         find = true
                     }
@@ -204,8 +205,20 @@ class SceneGenerator {
             }
 
             if (find) {
+                await ctx.scene.session.state.db.collection('users').updateOne(
+                    { _id: ObjectId(user._id) },
+                    { $push: {
+                        ["telegram." + user.places[0]._id]: {
+                            chatId: Number.parseInt(ctx.update.message.chat.id), 
+                            user: ctx.update.message.from,
+                            notifications: 'all',
+                            tables: []
+                        } }
+                    }
+                )
+
                 await ctx.scene.session.state.db.collection('tgUsers').updateOne(
-                    { _id: +ctx.update.message.chat.id },
+                    { _id: Number.parseInt(ctx.update.message.chat.id) },
                     { $set: {
                         login: true, 
                     }}, 
@@ -214,7 +227,7 @@ class SceneGenerator {
                 if (user.publicSockets) {
                     api.newTGUser({ sockets: user.publicSockets })
                 }
-                await ctx.reply('Вход успешно выполнен')
+                await ctx.reply('Вход успешно выполнен, заведение: ' + user.places[0].name)
                 await ctx.scene.leave()
             }
 
@@ -227,7 +240,7 @@ class SceneGenerator {
                         { _id: ObjectId(user._id) },
                         { $push: {
                             ["telegram." + user.places[0]._id]: {
-                                chatId: ctx.update.message.chat.id, 
+                                chatId: Number.parseInt(ctx.update.message.chat.id), 
                                 user: ctx.update.message.from,
                                 notifications: 'all',
                                 tables: []
@@ -235,7 +248,7 @@ class SceneGenerator {
                         }
                     )
                     await ctx.scene.session.state.db.collection('tgUsers').updateOne(
-                        { _id: +ctx.update.message.chat.id },
+                        { _id: Number.parseInt(ctx.update.message.chat.id) },
                         { $set: {
                             login: true, 
                             place: user.places[0]._id,

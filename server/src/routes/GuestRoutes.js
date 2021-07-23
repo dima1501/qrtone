@@ -172,22 +172,23 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
         for (let n = 0; n < getCustomArr(order.goods[i].cartPrices).length; n++) {
             // Если есть модификация
             str.push('    ')
-            if (order.goods[i].modifications && order.goods[i].modifications[order.goods[i].cartPrices[n]]) {
-                str.push(`${order.goods[i].modifications[order.goods[i].cartPrices[n]]}, `)
+            if (order.goods[i].modifications && order.goods[i].modifications[n]) {
+                str.push(`${order.goods[i].modifications[n]}, `)
             }
 
-            str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}${user.currencySymbol}, `)
+            str.push(`${order.goods[i].prices[n]}${user.currencySymbol}`)
 
             // Если указан вес
-            if (order.goods[i].weights[order.goods[i].cartPrices[n]]) {
-                str.push(`${order.goods[i].weights[order.goods[i].cartPrices[n]]}`)
+            if (order.goods[i].weights[n]) {
+                str.push(`, `)
+                str.push(`${order.goods[i].weights[n]}г`)
             }
 
-            str.push(`| x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length} \n`)
+            str.push(` | x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length} \n`)
 
             // str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}${user.currencySymbol} ${order.goods[i].weights[order.goods[i].cartPrices[n]]}г x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length } \n`)
             if (n !== getCustomArr(order.goods[i].cartPrices).length - 1) {
-                str.push(`    -----\n`)
+                str.push(`     -----\n`)
             }
         }
         str.push(`----------------\n`)
@@ -195,27 +196,23 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
     // Дополнения
     if (order.dops.length) {
+        
         str.push(`Дополнения\n`)
+        str.push(`\n`)
     }
+
     for (let i = 0; i < order.dops.length; i++) {
-        str.push(`${i + 1}) ${order.dops[i].name}\n`)
-        for (let n = 0; n < getCustomArr(order.dops[i].cartPrices).length; n++) {
-            // Если есть модификация
-            str.push('    ')
-
-            str.push(`${order.dops[i].prices[0]}${user.currencySymbol}, `)
-
-            str.push(`| x ${order.dops[i].count} \n`)
-
-            // str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}${user.currencySymbol} ${order.goods[i].weights[order.goods[i].cartPrices[n]]}г x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length } \n`)
-            if (n !== getCustomArr(order.dops[i].cartPrices).length - 1) {
-                str.push(`    -----\n`)
-            }
+        str.push(`${i + 1}) ${order.dops[i].name} `)
+        if (order.dops[i].prices[0]) {
+            str.push(', ')
+            str.push(`${order.dops[i].prices[0]}${user.currencySymbol}`)
         }
-        str.push(`----------------\n`)
+        str.push(` | x ${order.dops[i].count} \n`)
+
+        str.push(`-----------\n`)
     }
 
-    str.push(`\n Итого: ${getOrderPrice(order)}${user.currencySymbol} `)
+    str.push(`\n Итого: ${order.price}${user.currencySymbol} `)
 
     let data = {
         messages: [],
@@ -229,7 +226,7 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
         for (let i = 0; i < user.telegram[order.place].length; i++) {
             const table = typeof order.table == 'number' ? order.table : order.table.replace(' ', '%20')
             if (user.telegram[order.place][i].notifications == 'all' || user.telegram[order.place][i].tables && user.telegram[order.place][i].tables.indexOf(table) > -1) {
-                data.messages.push(await bot.sendMessage(user.telegram[order.place][i].chatId, `⏳ Новый заказ, ${order.table} столик \n\n${str.join('')}`, acceptOrderBtn));
+                data.messages.push(await bot.sendMessage(user.telegram[order.place][i].chatId, `⏳ Новый заказ, столик #${order.table}  \n\n${str.join('')}`, acceptOrderBtn));
                 data.chatId.push( data.messages[i].chat.id )
                 data.messageId.push( data.messages[i].message_id )
             }
@@ -268,7 +265,7 @@ router.get('/api/get-place-id/:id', async (req, res) => {
             {  'places._id': req.params.id }
         )
         const place = user.places.find(e => e._id == req.params.id)
-console.log(place.link)
+
         res.status(200).send(place.link)
     } catch (error) {
         console.error(error)

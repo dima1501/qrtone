@@ -550,7 +550,7 @@ router.post('/api/accept-fast-action', auth(), async (req, res) => {
                 req.body.data.messages[i].chat.id,
                 req.body.data.messages[i].message_id,
                 req.body.data.messages[i].message_id,
-                `${req.body.data.messages[i].text.replace('⏳', '✅')}`,
+                `${req.body.data.messages[i].text.replace('⏳', '✅').replace('🙋🏼‍♂️', '✅')}`
             );
         }
 

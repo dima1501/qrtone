@@ -74,6 +74,7 @@ export default {
         },
         openStyleQRPopup() {
             this.$store.state.view.popup.styleQRPopup.visible = true
+            this.$store.state.view.popup.styleQRPopup.type = 'multi'
             this.$store.state.view.popup.tablesPopup.visible = false
 
             this.$store.state.view.popup.tablesPopup.tables = this.tables

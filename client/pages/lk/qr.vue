@@ -9,12 +9,12 @@
                 .qr__field-text(v-else) Код открывает меню заведения, без привязки к столику
                 
                 div(v-if="$store.state.auth.user.places.length")
-                    v-select(:items="$store.state.auth.user.places" label="Выберите заведение" item-text="name" item-value="_id" hide-details="auto" v-on:change="checkQRPlace").qr__field-select
+                    v-select(:items="$store.state.auth.user.places" v-model="checkedSimplePlace" label="Выберите заведение" item-text="name" item-value="_id" hide-details="auto" v-on:change="checkQRPlace").qr__field-select
                     v-btn(
                         depressed
                         color="primary"
-                        :disabled="!$store.state.view.popup.styleQRPopup.place"
-                        @click="openStyleQRPopup()").white--text Создать
+                        :disabled="!checkedSimplePlace"
+                        @click="openStyleQRPopup('simple')").white--text Создать
 
                 div(v-else)
                     v-btn(
@@ -29,11 +29,11 @@
                 
                 div(v-if="isAvailable")
                     div(v-if="$store.state.auth.user.places.length")
-                        v-select(:items="$store.state.auth.user.places" label="Выберите заведение" item-text="name" item-value="_id" hide-details="auto" v-on:change="checkMultiQRPlace").qr__field-select
+                        v-select(:items="$store.state.auth.user.places" v-model="checkedMultiPlace" label="Выберите заведение" item-text="name" item-value="_id" hide-details="auto" v-on:change="checkMultiQRPlace").qr__field-select
                         v-btn(
                             depressed
                             color="primary"
-                            :disabled="!$store.state.view.popup.tablesPopup.place"
+                            :disabled="!checkedMultiPlace"
                             @click="openTablesPopup()") Создать
 
                     div(v-else)
@@ -47,7 +47,7 @@
 
         .qr__field
             .qr__field-content
-                h2.qr__field-title QR-код wi-fi
+                h2.qr__field-title QR-код Wi-Fi
                 .qr__field-text Можно отсканировать и сразу подключиться к wi-if, пароль вводить не нужно
                 v-btn(
                     depressed
@@ -76,7 +76,8 @@ export default {
     layout: 'lk',
     data() {
         return {
-            
+            checkedSimplePlace: null,
+            checkedMultiPlace: null
         }
     },
     computed: {
@@ -99,12 +100,10 @@ export default {
             const findPlace = this.$store.state.auth.user.places.find(e => e._id == place)
             this.$store.state.view.popup.tablesPopup.place = findPlace
         },
-        openStyleQRPopup(place) {
-            if (place) {
-                this.$store.state.view.popup.styleQRPopup.place = place
-            }
+        openStyleQRPopup(type) {
             this.$store.state.view.popup.tablesPopup.tables = null
             this.$store.state.view.popup.styleQRPopup.visible = true
+            this.$store.state.view.popup.styleQRPopup.type = type
         },
         openTablesPopup(place) {
             if (place) {

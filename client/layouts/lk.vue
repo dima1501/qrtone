@@ -30,7 +30,7 @@ export default {
     async newOrder(data) {
       const notificationsEnabled = localStorage.getItem('notifications')
       if (notificationsEnabled == 'true') {
-        new Notification('Новый заказ', { body: 'Столик ' + data.order.table })
+        new Notification('Новый заказ', { body: 'Столик #' + data.order.table })
       }
       this.$store.state.auth.user.orders.unshift(data.order)
     },

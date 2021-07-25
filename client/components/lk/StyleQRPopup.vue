@@ -386,14 +386,13 @@ export default {
                         drawer: 'canvas',
                         onRenderingEnd: async (e, x) => {
                             this.$store.state.view.pdf.qr = x
-
                             const canvas = await this.$html2canvas(el, { type: 'dataURL' })
 
                             doc.addImage(canvas, 'JPEG', 0, 0)
                             if (i < (tablesArr.length - 1)) {
                                 doc.addPage()
                             } else {
-                                doc.save("sampqweqwle.pdf")
+                                doc.save(`${place.link}_tables_menu.pdf`)
                             }
                             i++
                             nextStep()
@@ -401,39 +400,12 @@ export default {
                     })
                 }
                 nextStep()
-
-                // for (let i = 0; i < tablesArr.length; i++) {
-                    
-
-                //     this.generatedQr.clear()
-                //     this.generatedQr = await new QRCode(this.$refs.qrcode, {
-                //         text: str,
-                //         colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
-                //         logo:  this.easyqr.logo ? `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.easyqr.logo}` : '',
-                //         drawer: 'canvas',
-                //         onRenderingEnd: async (e, x) => {
-                //             this.$store.state.view.pdf.qr = x
-                //             const canvas = await this.$html2canvas(el, { type: 'dataURL' })
-                //             doc.addImage(canvas, 'JPEG', 0, 0)
-                //             if (i < (tablesArr.length - 1)) {
-                //                 doc.addPage()
-                //             } else {
-                //                 doc.save("sampqweqwle.pdf")
-                //             }
-                            
-                //         }
-                //     })
-                    
-                    
-                // }
                 
             } else {
 
                 if (this.$store.state.view.pdf.ref) {
-
-                    const el = this.$refs[this.$store.state.view.pdf.ref];
                     doc.addImage(this.preview, 'JPEG', 0, 0)
-                    doc.save("sample.pdf")
+                    doc.save(`${place.link}_menu_qr.pdf`)
                     
                 } else {
                     fileDownload(this.preview, `${place.link}_menu_qr.png`)
@@ -611,9 +583,6 @@ export default {
             &-title {
                 font-size: 14px;
                 margin-bottom: 10px;
-            }
-            &-content {
-                
             }
         }
     }

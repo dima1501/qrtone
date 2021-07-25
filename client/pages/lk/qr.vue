@@ -114,10 +114,6 @@ export default {
         openWifiPopup() {
             this.$store.state.view.popup.wifiPopup.visible = true
         }
-    },
-    beforeDestroy() {
-        this.$store.state.view.popup.styleQRPopup.place = null
-        this.$store.state.view.popup.tablesPopup.place = null
     }
 }
 </script>

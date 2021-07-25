@@ -246,6 +246,7 @@ export default {
         padding: 2px 5px;
         font-size: 12px;
         padding-left: 25px;
+        z-index: 5;
         &:before {
             content: '';
             position: absolute;

@@ -17,7 +17,6 @@
                             @vdropzone-drag-over="dragOver"
                             @vdropzone-drag-leave="dragLeave"
                             @vdropzone-removed-file="vremoved")
-
                             .dz-message__inner
                                 .st-dropzone
                                     .st-dropzone__inner
@@ -55,7 +54,6 @@
                         
                         .e-card__line
                             v-text-field(
-                                ref="translation"
                                 v-model="newItem.translation"
                                 label="Перевод"
                                 type="text"
@@ -88,7 +86,6 @@
                                 rows="1"
                                 row-height="20"
                                 hide-details="auto")
-
 
                             .e-card__line-inner
                                 v-text-field(

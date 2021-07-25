@@ -4,7 +4,7 @@
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
-                h2.popup__title Добавление товара
+                h2.popup__title Изменение позиции
                 .e-card
                     v-form(
                         @submit.prevent="fetchEditItem"
@@ -18,10 +18,17 @@
                             @vdropzone-drag-leave="dragLeave"
                             @vdropzone-removed-file="vremoved")
                             .dz-message__inner
-                                v-icon(light) mdi-camera
-                                transition(name="slide-fade" mode="out-in")
-                                    .dz-message__title(v-if="!isDragOver" key='1') Перетащите файлы сюда <br> или кликните, чтобы загрузить фото
-                                    .dz-message__title(v-if="isDragOver" key='2') Можно отпускать
+                                .st-dropzone
+                                    .st-dropzone__inner
+                                        .st-dropzone__content
+                                            transition(name="slide-fade" mode="out-in")
+                                                .st-dropzone__image(
+                                                    key='logo_dropzone_placeholder'
+                                                    v-bind:style="{ backgroundImage: 'url(../../icons8-folder-240.png)' }")
+                                            h4.st-dropzone__title Фото 
+                                            transition(name="slide-fade" mode="out-in")
+                                                p.st-dropzone__note(v-if="!isDragOver" key='logo_dropzone_def') Перетащите файлы сюда <br> или кликните, чтобы загрузить фото
+                                                p.st-dropzone__note(v-if="isDragOver" key='logo_dropzone_catch') Можно отпускать
 
                         draggable(
                             class="previews"
@@ -39,82 +46,113 @@
                                             v-icon(light) mdi-drag-vertical
                         .e-card__line
                             v-text-field(
-                                ref="name"
                                 :rules="nameRules"
                                 v-model="updatedMenuItem.name"
-                                label="Название"
-                                type="text")
+                                label="Название *"
+                                type="text"
+                                hide-details="auto")
 
                         .e-card__line
                             v-text-field(
-                                ref="translation"
                                 v-model="updatedMenuItem.translation"
                                 label="Перевод"
-                                type="text")
+                                type="text"
+                                hide-details="auto")
+                        
+                        .e-card__line
+                            v-select(:items="$store.state.auth.user.categories" v-model="updatedMenuItem.category" :rules="nameRules" label="Категория *" item-text="name" item-value="_id" hide-details="auto")
+                            .e-card__add-link(@click="addCategoryPopup") Управление категориями
 
                         .e-card__line
                             v-textarea(
                                 v-model="updatedMenuItem.description"
                                 auto-grow
                                 label="Описание"
-                                rows="2"
+                                rows="1"
                                 row-height="20"
-                            )
+                                hide-details="auto")
 
                         .e-card__line
-                            // .e-card__line-label Категория:
-                            v-select(:items="$store.state.auth.user.categories" v-model="updatedMenuItem.category" :rules="nameRules" label="Категория" item-text="name" item-value="_id")
+                            v-checkbox(v-model="updatedMenuItem.isVegan" :label="`Вегетарианское блюдо`" hide-details="auto")
 
-                        .e-card__add-link(@click="addCategoryPopup") Управление категориями
-                                
-                        .e-card__line(v-for="(i, key) in prices" v-bind:key="key")
-                            v-text-field(
-                                ref="name"
-                                :rules="!updatedMenuItem.weights[i - 1] ? nameRules : [true]"
-                                v-model="updatedMenuItem.modifications[i - 1]"
+                        .e-card__line.highlight(v-for="(i, key) in prices" v-bind:key="key")
+
+                            v-textarea(
                                 v-if="i > 1"
+                                :rules="!updatedMenuItem.weights[i - 1] ? modDescrRules : [true]"
+                                v-model="updatedMenuItem.modifications[i - 1]"
+                                auto-grow
                                 label="Описание"
-                                type="text")  
+                                rows="1"
+                                row-height="20"
+                                hide-details="auto")
+
+
                             .e-card__line-inner
-                                .e-card__line-label.short Цена:
                                 v-text-field(
-                                    ref="price"
                                     :rules="nameRules"
                                     v-model="updatedMenuItem.prices[i - 1]"
+                                    label="Цена*"
                                     type="number"
-                                    :prefix="$store.state.auth.user.currencySymbol").mr-5
-                                .e-card__line-label.short Вес:
+                                    hide-details="auto").mr-5
                                 v-text-field(
                                     ref="price"
                                      :rules="i > 1 && !updatedMenuItem.modifications[i - 1] ? nameRules : [true]"
                                     v-model="updatedMenuItem.weights[i - 1]"
                                     type="number"
-                                    prefix="г.")
-                                .e-card__remove(
-                                    @click="removePriceItem(i)"
-                                    v-if="i > 1")
-                                    v-icon(light) mdi-trash-can-outline
+                                    prefix="г."
+                                    hide-details="auto")
+
+                            // Калории
+                            .e-card__line-inner
+                                v-text-field(
+                                    v-model="updatedMenuItem.calories[i - 1]"
+                                    type="number"
+                                    label="Ккал"
+                                    hide-details="auto").mr-5
+                                v-text-field(
+                                    v-model="updatedMenuItem.proteins[i - 1]"
+                                    type="number"
+                                    label="Белки"
+                                    hide-details="auto")
+                            .e-card__line-inner
+                                v-text-field(
+                                    v-model="updatedMenuItem.fats[i - 1]"
+                                    type="number"
+                                    label="Жиры"
+                                    hide-details="auto").mr-5
+                                v-text-field(
+                                    v-model="updatedMenuItem.carbo[i - 1]"
+                                    type="number"
+                                    label="Углеводы"
+                                    hide-details="auto")
+
+                            .e-card__remove(
+                                @click="removePriceItem(i)"
+                                v-if="i > 1") Удалить
                         
                         .e-card__add-link(@click="addPrice" v-bind:class="{ disabled: !updatedMenuItem.prices[prices - 1] || !updatedMenuItem.weights[prices - 1] && !updatedMenuItem.modifications[prices - 1] && prices != 1 }") Добавить модификацию
 
                         .e-card__section
                             h4(v-if="!$store.state.auth.user.dops.length") Дополнения к блюду
-                            v-select(v-if="$store.state.auth.user.dops.length" :items="$store.state.auth.user.dops" v-model="updatedMenuItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
+                            v-select(v-if="$store.state.auth.user.dops.length" hide-details="auto" :items="$store.state.auth.user.dops" v-model="updatedMenuItem.dops" :rules="nameRules" label="Дополнения к блюду" :item-text="dopSelectText" item-value="_id" multiple chips)
                             .e-card__add-link(@click="addDopPopup") Управление дополнениями
 
-                        // .e-card__section
+
+                        .e-card__section
                             h4 Активировать в:
-                            div(v-for="place in $store.state.auth.user.places")
-                                label {{ place.name }}
-                                input(type='checkbox' @change="togglePlace(place)" :id="place.id")
+                            .e-card__line-inner.wrap
+                                div(v-for="place in $store.state.auth.user.places").e-card__place
+                                    v-checkbox(@change="togglePlace(place)" :input-value="!!updatedMenuItem.places.find(p => p._id == place._id)" :label="place.name" hide-details="auto" :id="place.id").mt-1
 
                         .e-card__bottom
-                            v-btn(color="red" @click="closePopup").e-card__bottom-item Отмена
+                            v-btn(@click="closePopup" depressed).red--text.e-card__bottom-item Отмена
                             v-btn(
-                                color="blue"
+                                color="primary" 
                                 :disabled="!isAddItemValid"
                                 type="submit"
-                            ).e-card__bottom-item Сохранить
+                                depressed
+                            ).e-card__bottom-item.white--text Сохранить
 </template>
 
 <script>
@@ -136,7 +174,7 @@ export default {
             isAddItemValid: false,
             newItemImageFile: null,
             newItemImageSrc: null,
-            // uploadImages: [],
+            uploadImages: [],
             prices: 1,
             newItem: {
                 images: [],
@@ -150,6 +188,9 @@ export default {
             },
             nameRules: [
                 (v) => !!v || 'error_company_name',
+            ],
+            modDescrRules: [
+                (v) => !!v || 'Заполните вес или описание',
             ],
             dropOptions: {
                 url: "https://httpbin.org/post",
@@ -188,7 +229,7 @@ export default {
     },
     methods: {
         dopSelectText(item) {
-            return `${item.name} ${item.price} ${this.$store.state.auth.user.currencySymbol}`
+            return `${item.name}, ${item.price ? item.price : 'Бесплатно'}${item.price ? this.$store.state.auth.user.currencySymbol : ''}`
         },
         removePic(file, index) {
             if (file.upload) {
@@ -197,7 +238,6 @@ export default {
                 this.deleteImages.push(file)
             }
             this.updatedMenuItem.images.splice(index, 1)
-            
         },
         fetchEditItem() {
             this.$store.dispatch('lk/editMenuItem', {
@@ -214,6 +254,7 @@ export default {
             } else {
                 arr.push(place)
             }
+            console.log(arr)
         },
         closePopup() {
             this.$store.state.view.popup.editMenuItemPopup.visible = false
@@ -239,9 +280,16 @@ export default {
         },
         removePriceItem(i) {
             this.updatedMenuItem.prices.splice(i - 1, 1)
-            this.updatedMenuItem.weights.splice(i - 1, 1)
+            this.updatedMenuItem.weights.splice(i - 1, 1) 
+
+            this.updatedMenuItem.calories.splice(i - 1, 1) 
+            this.updatedMenuItem.fats.splice(i - 1, 1) 
+            this.updatedMenuItem.proteins.splice(i - 1, 1) 
+            this.updatedMenuItem.carbo.splice(i - 1, 1) 
+
             this.updatedMenuItem.modifications.splice(i - 1, 1)
             this.prices -= 1
+
         },
         addCategoryPopup() {
             this.$store.state.view.popup.addCategoryPopup.visible = true
@@ -269,6 +317,7 @@ export default {
 }
 
 @import '../../assets/preview.scss';
+@import '../../assets/e-card.scss';
 
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all .12s ease;

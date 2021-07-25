@@ -113,22 +113,17 @@ class SceneGenerator {
             if (!user || !user.login) {
                 await ctx.reply('Вход не выполнен, воспользуйтесь командой /login')
             } else {
-                if (user && company.places.length === 1) {
-                    await ctx.reply('Доступно только 1 заведение')
-                    await ctx.scene.leave()
-                } else if (company) {
-                    for (let i in company.places) {
-                        const remove = await db.collection('users').updateOne(
-                            { _id: ObjectId(company._id) },
-                            { $pull: {
-                                ["telegram." + company.places[i]._id]: { 'chatId': Number.parseInt(ctx.update.message.chat.id) }
-                            }}
-                        )
-                    }
-                    
-                    const buttons = await company.places.map(key => Markup.callbackButton(key.name, `chan,-${key._id},-${company._id},-${ctx.update.message.chat.id}`))
-                    await ctx.reply('Теперь выберите заведение:', Extra.HTML().markup((m) => m.inlineKeyboard(buttons)))
+                for (let i in company.places) {
+                    await db.collection('users').updateOne(
+                        { _id: ObjectId(company._id) },
+                        { $pull: {
+                            ["telegram." + company.places[i]._id]: { 'chatId': Number.parseInt(ctx.update.message.chat.id) }
+                        }}
+                    )
                 }
+                
+                const buttons = await company.places.map(key => Markup.callbackButton(key.name, `chan,-${key._id},-${company._id},-${ctx.update.message.chat.id}`))
+                await ctx.reply('Теперь выберите заведение:', Extra.HTML().markup((m) => m.inlineKeyboard(buttons)))
             }
         })
 

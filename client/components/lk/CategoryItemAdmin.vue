@@ -46,8 +46,18 @@ export default {
     },
     methods: {
         remove() {
-            var confirmation = confirm(`Вы действительно хотите удалить категорию "${this.cat.name}"`);
-            if (confirmation) this.$store.dispatch('admin/removeCatAdmin', { _id: this.user._id, cat: this.cat })
+            this.$confirm({
+                message: `Вы действительно хотите удалить категорию "${this.cat.name}"`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch('admin/removeCatAdmin', { _id: this.user._id, cat: this.cat })
+                    }
+                }
+            })
         },
         edit() {
             this.isEdit = true

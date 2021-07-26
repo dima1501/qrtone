@@ -11,25 +11,28 @@
                         v-model="isEditPlaceValid")
                         .e-card__line
                             v-text-field(
-                                ref="name"
-                                label="Название"
-                                :rules="nameRules"
                                 v-model="editablePlace.name"
-                                type="text")
+                                :rules="nameRules"
+                                type="text"
+                                required
+                                label="Название"
+                                hide-details="auto")
                         .e-card__line
                             v-text-field(
-                                ref="phone"
-                                label="Телефон"
-                                :rules="editablePlace.phone.length ? phoneRules : [true]"
                                 v-model="editablePlace.phone"
-                                type="text")
+                                :rules="editablePlace.phone.length ? phoneRules : [true]"
+                                placeholder="+7(xxx)xxx-xx-xx"
+                                label="Телефон"
+                                hide-details="auto")
                         .e-card__line
                             v-text-field(
                                 v-model="editablePlace.website"
                                 type="text"
                                 hint="Полная ссылка на сайт, например https://example.com"
                                 placeholder="https://example.com"
-                                label="Сайт")
+                                label="Сайт"
+                                hide-details="auto")
+
                         .e-card__line
                             v-textarea(
                                 v-model="editablePlace.address.full"
@@ -61,35 +64,40 @@
                                 v-model="editablePlace.times"
                                 type="text"
                                 hint="Например, ежедневно с 10:00 до 23:00"
-                                label="Часы работы")
+                                label="Часы работы"
+                                hide-details="auto")
                         .e-card__line
                             v-text-field(
-                                ref="inst"
-                                label="Инстаграм"
                                 v-model="editablePlace.instagram"
                                 type="text"
                                 hint="Имя пользователя в Instagram"
-                                prefix="instagram.com/")
+                                prefix="instagram.com/"
+                                label="Инстаграм"
+                                hide-details="auto")
                         .e-card__line
                             v-text-field(
                                 v-model="editablePlace.vk"
                                 type="text"
                                 prefix="vk.com/"
                                 hint="ID аккаунта в VK"
-                                label="Вконтакте")
+                                label="Вконтакте"
+                                hide-details="auto")
                         .e-card__line
                             v-text-field(
                                 v-model="editablePlace.whatsapp"
                                 type="text"
                                 hint="Номер телефона в WhatsApp"
                                 label="WhatsApp"
+                                hide-details="auto"
                                 :rules="editablePlace.whatsapp.length ? phoneRules : [true]")
+                        
                         .e-card__line
                             v-text-field(
                                 v-model="editablePlace.telegram"
                                 type="text"
                                 hint="Имя пользователя в Telegram"
-                                label="Telegram")
+                                label="Telegram"
+                                hide-details="auto")
                         .e-card__bottom
                             v-btn(depressed color="error" @click="closePopup").e-card__bottom-item Отмена
                             v-btn(
@@ -139,7 +147,7 @@ export default {
             this.$store.state.view.popup.editPlacePopup.visible = false
         },
         fetchEditPlace() {
-            this.$store.dispatch('lk/editPlace', this.editablePlace)
+            this.$store.dispatch('lk/editPlace', { place: this.editablePlace })
         },
         async showMap() {
             if (!this.editablePlace.address.full) {

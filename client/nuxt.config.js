@@ -43,7 +43,9 @@ export default {
     { src: './plugins/vue2-dropzone.client.js' },
     { src: './plugins/dragdrop.client.js' },
     { src: './plugins/vue-html2canvas.client.js' },
-    { src: './plugins/ymap.client.js' }
+    { src: './plugins/ymap.client.js' },
+    { src: './plugins/notify.client.js' },
+    { src: './plugins/confirm.client.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

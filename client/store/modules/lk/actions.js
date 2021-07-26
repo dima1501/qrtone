@@ -4,12 +4,13 @@ import Vue from 'vue'
 const updateUserData = async (store, data) => {
   try {
     const update = await axios({
-        method: 'post',
-        url: '/api/update-user-name',
-        data: { data }
+      method: 'post',
+      url: '/api/update-user-name',
+      data: { data }
     })
     if (update) {
-        return true
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Описание компании успешно обновлено' })
+      return true
     }
   } catch (error) {
     console.error(error)
@@ -27,6 +28,7 @@ const deleteCompanyLogo = async (store, data) => {
     })
 
     if (update.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Логотип компании удален' })
       store.rootState.auth.user.photo = null
       store.rootState.auth.user.photo = ''
     }
@@ -46,6 +48,7 @@ const deleteCompanyBg = async (store, data) => {
     })
 
     if (update.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Фоновое изображение удалено' })
       store.rootState.auth.user.background = null
       store.rootState.auth.user.background = ''
     }
@@ -57,7 +60,7 @@ const deleteCompanyBg = async (store, data) => {
 const updateCompanyLogo = async (store, data) => {
     try {
       const bodyFormData = new FormData();
-      bodyFormData.append("image", data);
+      bodyFormData.append("image", data.file);
   
       const uploadPhoto = await axios({
         method: "post",
@@ -76,6 +79,7 @@ const updateCompanyLogo = async (store, data) => {
         })
   
         if (update.data) {
+          $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Логотип компании успешно обновлен' })
           store.rootState.auth.user.photo = null
           store.rootState.auth.user.photo = uploadPhoto.data.path
           store.rootState.view.loading.uploadLogo = false
@@ -89,7 +93,7 @@ const updateCompanyLogo = async (store, data) => {
 const updateCompanyBackground = async (store, data) => {
     try {
       const bodyFormData = new FormData();
-      bodyFormData.append("image", data);
+      bodyFormData.append("image", data.file);
   
       const uploadPhoto = await axios({
         method: "post",
@@ -108,6 +112,7 @@ const updateCompanyBackground = async (store, data) => {
         })
   
         if (update.data) {
+          $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Фоновое изображение успешно обновлено' })
           store.rootState.auth.user.background = null
           store.rootState.auth.user.background = uploadPhoto.data.path
           store.rootState.view.loading.uploadBg = false
@@ -123,11 +128,12 @@ const addNewPlace = async (store, data) => {
         const addNewPlace = await axios({
             method: 'post',
             url: '/api/add-new-place',
-            data: { data }
+            data: data.place
         })
         if (addNewPlace) {
             store.rootState.view.popup.addPlacePopup.visible = false
             store.rootState.auth.user.places.push(addNewPlace.data)
+            $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Новое заведение успешно создано' })
         }
     } catch (error) {
       console.error(error)
@@ -139,10 +145,11 @@ const removePlace = async (store, data) => {
       const remove = await axios({
         method: 'post',
         url: '/api/remove-place',
-        data: { data }
+        data: data.place
       })
       if (remove) {
         store.dispatch('updatePlaces')
+        $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Заведение удалено' })
       }
   } catch (error) {
     console.error(error)
@@ -154,9 +161,10 @@ const editPlace = async (store, data) => {
       const editPlace = await axios({
           method: 'post',
           url: '/api/edit-place',
-          data: { data }
+          data: data.place
       })
       if (editPlace) {
+        $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Информация о заведении успешно обновлена' })
         store.rootState.view.popup.editPlacePopup.visible = false
         store.dispatch('updatePlaces')
       }
@@ -192,6 +200,9 @@ const addNewMenuItem = async (store, data) => {
       })
 
       if (add.data) {
+        $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Позиция "${data.item.name}" добавлена в меню` })
+        store.rootState.view.popup.addMenuItemPopup.visible = false
+
         // Боже
         // Тут просто проверка, если админ загружает
         if (store.rootState.auth.user) {
@@ -245,6 +256,7 @@ const editMenuItem = async (store, data) => {
       })
 
       if (add.data) {
+        $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Изменения позиции меню "${data.item.name}" сохранены` })
         let parsedItem = store.rootState.auth.user.goods.find(e => e._id == add.data._id)
         const parsedIndex = store.rootState.auth.user.goods.indexOf(parsedItem)
         let category = store.rootState.auth.parsedMenu[add.data.category]
@@ -318,9 +330,10 @@ const addNewAction = async (store, data) => {
     const add = await axios({
       method: 'post',
       url: '/api/add-action',
-      data
+      data: data.action
     })
     if (add.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Быстрое действие успешно создано' })
       store.rootState.auth.user.actions.push(add.data)
       store.rootState.view.popup.addActionPopup = false
     }
@@ -334,12 +347,14 @@ const editAction = async (store, data) => {
     const update = await axios({
       method: 'post',
       url: '/api/update-action',
-      data
+      data: data.action
     })
     if (update.data) {
       let action = store.rootState.auth.user.actions.find(e => e._id == update.data._id)
 
       action = update.data
+
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Изменения сохранены' })
 
       // Object.assign(action, update.data)
     }
@@ -348,17 +363,18 @@ const editAction = async (store, data) => {
   }
 }
 
-const deleteAction = async (store, id) => {
+const deleteAction = async (store, data) => {
   try {
     const remove = await axios({
       method: 'delete',
-      url: `/api/delete-action/${id}`
+      url: `/api/delete-action/${data.id}`
     })
     if (remove.data) {
-      const action = store.rootState.auth.user.actions.find(e => e._id == id)
+      const action = store.rootState.auth.user.actions.find(e => e._id == data.id)
       const index = store.rootState.auth.user.actions.indexOf(action)
       if (index > -1) {
         store.rootState.auth.user.actions.splice(index, 1)
+        $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Быстрое действие удалено' })
       }
     }
   } catch (error) {
@@ -373,6 +389,7 @@ const deleteMenuItem = async (store, item) => {
       url: `/api/delete-menu-item/${item._id}`
     })
     if (remove.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Позиция "${item.name}" удалена` })
       let parsedItem = store.rootState.auth.user.goods.find(e => e._id == item._id)
       let parsedIndex = store.rootState.auth.user.goods.indexOf(parsedItem)
 
@@ -387,6 +404,29 @@ const deleteMenuItem = async (store, item) => {
   }
 }
 
+const deleteMenuItemAdmin = async (store, data) => {
+  try {
+    const remove = await axios({
+      method: 'delete',
+      url: `/api/delete-menu-item-admin/${data.item._id}/${data.user}`
+    })
+    if (remove.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Позиция "${data.item.name}" удалена` })
+      let parsedItem = store.rootState.admin.user.goods.find(e => e._id == data.item._id)
+      let parsedIndex = store.rootState.admin.user.goods.indexOf(parsedItem)
+
+      let catItem = store.rootState.admin.parsedMenu[data.item.category].find(e => e._id == data.item._id)
+      let catIndex = store.rootState.admin.parsedMenu[data.item.category].indexOf(catItem)
+
+      store.rootState.admin.user.goods.splice(parsedIndex, 1)
+      store.rootState.admin.parsedMenu[data.item.category].splice(catIndex, 1)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
 const updateCats = async (store, data) => {
   try {
     const update = await axios({
@@ -397,7 +437,7 @@ const updateCats = async (store, data) => {
       }
     })
     if (update.data) {
-      
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Изменения сохранены` })
     }
   } catch (error) {
     console.error(error)
@@ -412,6 +452,7 @@ const removeCat = async (store, cat) => {
       data: { cat }
     })
     if (update.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Категория "${cat.name}" удалена` })
       const index = store.rootState.auth.user.categories.indexOf(cat)
       store.rootState.auth.user.categories.splice(index, 1);
     }
@@ -444,7 +485,7 @@ const editCat = async (store, cat) => {
       data: { cat }
     })
     if (update.data) {
-      
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Изменения сохранены` })
     }
   } catch (error) {
     console.error(error)
@@ -505,7 +546,7 @@ const updateOrder = async (store, data) => {
       data: { data }
     })
     if (update.data) {
-      
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Изменения сохранены` })
     }
   } catch (error) {
     console.error(error)
@@ -522,7 +563,6 @@ const acceptFastAction = async (store, data) => {
     if (accept.data) {
       store.rootState.auth.user.notifications.find(e => e._id == data._id).status = 'accepted'
     }
-
   } catch (error) {
     console.error(error)
   }
@@ -619,8 +659,11 @@ const updateTables = async (store, data) => {
     const update = await axios({
       method: 'post',
       url: `/api/update-tables/`,
-      data: { data }
+      data: data.place
     })
+    if (update.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `${data.isRemove ? 'Столик удален' : 'Столик успешно создан'}` })
+    }
   } catch (error) {
     console.error(error)
   }
@@ -633,6 +676,9 @@ const updateTGTables = async (store, data) => {
       url: `/api/update-tg-tables/`,
       data: { data }
     })
+    if (update.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Изменения сохранены` })
+    }
   } catch (error) {
     console.error(error)
   }
@@ -648,6 +694,7 @@ const updateLink = async (store, data) => {
     if (add.data.success) {
       store.rootState.view.places.edit = false
       store.rootState.auth.user.places.find(e => e._id == data.place._id).link = data.link
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Ссылка на меню заведения успешно изменена' })
     } else if (add.data.exists) {
       alert("Такая ссылка занята, введите уникальное значение")
     }
@@ -754,6 +801,7 @@ const toggleFastActions = async (store, data) => {
       data: { data }
     })
     if (fetch.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `${data ? 'Быстрые действия включены' : 'Быстрые действия отключены'}` })
       store.rootState.auth.user.fastActionsEnabled = data
     }
   } catch (error) {
@@ -801,6 +849,7 @@ export default {
   updateTGUsers,
   toggleFastActions,
   deleteMenuItem,
+  deleteMenuItemAdmin,
   loadMoreOrders,
   loadMoreActions
 }

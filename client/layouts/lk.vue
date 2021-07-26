@@ -8,7 +8,16 @@
     AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
     AddActionPopup(v-if="$store.state.view.popup.addActionPopup")
     Onboard(v-if="$store.state.auth.user && !$store.state.auth.user.isOnboardCompleted || $store.state.auth.user && $store.state.view.popup.onboardPopup.visible")
-      
+    client-only
+      notifications(
+        group="custom-style"
+        position="right bottom"
+        classes="my-style"
+        :max="6"
+        :width="300"
+        :duration="4000")
+    client-only
+      vue-confirm-dialog
 </template>
 
 <script>
@@ -28,6 +37,7 @@ export default {
       }
     },
     async newOrder(data) {
+      this.$notify({ group: 'custom-style', type: 'n-info', title: 'Новый заказ', text: 'Столик #' + data.order.table })
       const notificationsEnabled = localStorage.getItem('notifications')
       if (notificationsEnabled == 'true') {
         new Notification('Новый заказ', { body: 'Столик #' + data.order.table })
@@ -38,6 +48,7 @@ export default {
       this.$store.state.auth.user.orders.find(e => e.orderId === data.orderId).status = 'accepted'
     },
     async newFastAction(data) {
+      this.$notify({ group: 'custom-style', type: 'n-info', title: data.notify.replace('@table', data.table) })
       const notificationsEnabled = localStorage.getItem('notifications')
       if (notificationsEnabled == 'true') {
         new Notification(data.notify.replace('@table', data.table) )
@@ -45,7 +56,7 @@ export default {
       this.$store.state.auth.user.notifications.unshift(data)
     },
     async newReservation(data) {
-      console.log(data)
+      this.$notify({ group: 'custom-style', type: 'n-info', title: 'Заявка на бронирование', text: 'На ' + moment(data.reservation.date).format('DD.MM.YYYY') + ', в ' + data.reservation.time + '\nКоличество гостей: ' + data.reservation.guests })
       const notificationsEnabled = localStorage.getItem('notifications')
       if (notificationsEnabled == 'true') {
         new Notification('Бронь', { body: 'На ' + moment(data.reservation.date).format('DD.MM.YYYY') + ', в ' + data.reservation.time + '\nКоличество гостей: ' + data.reservation.guests })
@@ -61,13 +72,65 @@ export default {
   },
   mounted() {
     if (!this.$store.state.auth.user) {
-      this.$store.dispatch("auth/checkAuth");
+      this.$store.dispatch("auth/checkAuth")
     }
   }
 }
 </script>
 
 <style lang="scss">
+
+.vue-notification-wrapper {
+  overflow: visible !important;
+}
+
+.vc-text {
+  margin-bottom: 5px !important;
+}
+
+.my-style {
+  position: relative;
+  padding: 10px 20px;
+  box-shadow: 0 0 15px rgb(0 0 0 / 25%);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+ 
+  .notification-title {
+    color: $color-black;
+  }
+ 
+  .notification-content {
+    color: $color-black;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    bottom: 5px;
+    width: 3px;
+    border-radius: 3px;
+  }
+ 
+  &.n-info {
+    &:before {
+      background-color: #eca62d;
+    }
+  }
+  &.n-success {
+    &:before {
+      background-color: $color-blue;
+    }
+  }
+  &.n-alarm {
+    &:before {
+      background-color: $color-red;
+    }
+  }
+}
+
 .page {
   display: flex;
   min-height: 100%;

@@ -103,8 +103,8 @@ const editMenuItemAdmin = async (store, data) => {
         })
   
         if (add.data) {
-          let parsedItem = store.rootState.auth.user.goods.find(e => e._id == add.data._id)
-          const parsedIndex = store.rootState.auth.user.goods.indexOf(parsedItem)
+          let parsedItem = store.rootState.admin.user.goods.find(e => e._id == add.data._id)
+          const parsedIndex = store.rootState.admin.user.goods.indexOf(parsedItem)
           let category = store.rootState.admin.parsedMenu[add.data.category]
           let item
   

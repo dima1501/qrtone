@@ -64,7 +64,7 @@ router.post("/api/update-company-background", auth(), async (req, res) => {
 
 router.post("/api/add-new-place", auth(), async (req, res) => {
     try {
-        const place = await new PlaceModel(req.body.data)
+        const place = await new PlaceModel(req.body)
         const check = await req.db.collection('users').findOne(
             { 'places.link': place.link }
         )
@@ -86,8 +86,8 @@ router.post("/api/add-new-place", auth(), async (req, res) => {
 router.post("/api/edit-place", auth(), async (req, res) => {
     try {
         const edit = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id), "places._id": req.body.data._id },
-            { $set: { "places.$" : req.body.data } }
+            { _id: ObjectId(req.user._id), "places._id": req.body._id },
+            { $set: { "places.$" : req.body } }
         )
         if (edit) {
             res.status(200).send(true)
@@ -100,8 +100,8 @@ router.post("/api/edit-place", auth(), async (req, res) => {
 router.post("/api/remove-place", auth(), async (req, res) => {
     try {
         const remove = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id), "places._id": req.body.data._id },
-            { $pull: { places: { _id: req.body.data._id } } }
+            { _id: ObjectId(req.user._id), "places._id": req.body._id },
+            { $pull: { places: { _id: req.body._id } } }
         )
         if (remove) {
             res.status(200).send(true)
@@ -273,6 +273,7 @@ router.post('/api/accept-order', auth(), async (req, res) => {
 
 router.post('/api/add-action', auth(), async (req, res) => {
     try {
+        console.log(req.body)
         const action = await new ActionItemModel(req.body)
         const upload = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
@@ -321,6 +322,22 @@ router.delete('/api/delete-menu-item/:id', auth(), async (req, res) => {
     try {
         const remove = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
+            { $pull: { goods: { _id: req.params.id } } }
+        )
+        if (remove) {
+            res.status(200).send(true)
+        } else {
+            res.status(300).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.delete('/api/delete-menu-item-admin/:id/:user', auth(), async (req, res) => {
+    try {
+        const remove = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.params.user) },
             { $pull: { goods: { _id: req.params.id } } }
         )
         if (remove) {
@@ -646,8 +663,8 @@ router.get('/api/load-actions-place/:id/:page', auth(), async (req, res) => {
 router.post('/api/update-tables', auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id), 'places._id': req.body.data._id },
-            { $set: { 'places.$.tables': req.body.data.tables } }
+            { _id: ObjectId(req.user._id), 'places._id': req.body._id },
+            { $set: { 'places.$.tables': req.body.tables } }
         )
         res.status(200).send(true)
     } catch (error) {
@@ -677,7 +694,6 @@ router.post('/api/update-tg-tables', auth(), async (req, res) => {
 
 
 router.get('/api/check-place-link/:id', auth(), async (req, res) => {
-    console.log(req.params.id)
     const check = await req.db.collection('users').findOne(
         { 'places.link': req.params.id }
     )
@@ -816,6 +832,7 @@ router.post('/api/load-tg-users', auth(), async (req, res) => {
 
 router.post('/api/toggle-fast-actions', auth(), async (req, res) => {
     try {
+        console.log(req.body.data)
         const set = req.db.collection("users").updateOne(
             { _id: ObjectId(req.user._id) },
             { $set: { 'fastActionsEnabled': req.body.data } }

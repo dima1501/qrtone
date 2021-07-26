@@ -12,7 +12,7 @@
                     v-text-field(
                         v-model="newTableStart"
                         type="text"
-                        label="Название или номер столика"
+                        label="Новый столик"
                         :rules="[!!newTableStart && !!newTableStart.length && !newTableStart.includes('?') && !newTableStart.includes('#') && !newTableStart.includes('&') || 'Введите корректное значение']")
                     v-btn(
                         depressed
@@ -71,11 +71,19 @@ export default {
             this.$store.state.view.popup.editTablesPopup.visible = false
         },
         removeTable(table, key) {
-            const confirmation = confirm(`Вы действительно хотите удалить столик "${table}" ?`);
-            if (confirmation) {
-                this.place.tables.splice(key, 1)
-                this.$store.dispatch("lk/updateTables", this.place)
-            }
+            this.$confirm({
+                message:`Вы действительно хотите удалить столик "${table}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.place.tables.splice(key, 1)
+                        this.$store.dispatch("lk/updateTables", { place: this.place, isRemove: true })
+                    }
+                }
+            })
         },
         clearNewTables() {
             this.newTableStart = this.newTableEnd = null
@@ -83,11 +91,10 @@ export default {
         fetchCreateTable() {
             if (!this.isTablesMulti) {
                 if (this.place.tables.indexOf(this.newTableStart.trim().replaceAll(' ', '%20')) == -1) {
-                    console.log(this.newTableStart.trim().replaceAll(' ', '%20'))
                     this.place.tables.push(this.newTableStart.trim().replaceAll(' ', '%20'))
-                    this.$store.dispatch("lk/updateTables", this.place)
+                    this.$store.dispatch("lk/updateTables", { place: this.place })
                 } else {
-                    alert('Столик с таким названием уже существует')
+                    this.$notify({ group: 'custom-style', type: 'n-alarm', title: 'Столик с таким названием уже существует' })
                 }
             } else {
                 if (Number(this.newTableStart) < Number(this.newTableEnd)) {
@@ -96,7 +103,7 @@ export default {
                             this.place.tables.push(Number(i))
                         }
                     }
-                    this.$store.dispatch("lk/updateTables", this.place)
+                    this.$store.dispatch("lk/updateTables", { place: this.place })
                 } else {
                     alert('Некорректные данные')
                 }

@@ -2,7 +2,7 @@
     .cats__item
         .cats__item-main
             transition(name="slide-fade" mode="out-in")
-                .cats__item-main-name(v-if="!isEdit" key="5") {{ updatedDop.name }}
+                .cats__item-main-name(v-if="!isEdit" key="5") {{ updatedDop.name }}{{ updatedDop.price ? `, ${updatedDop.price}${$store.state.auth.user.currencySymbol}` : `` }}
                 .cats__add-field(v-if="isEdit" key="6")
                     v-text-field(
                         v-model="updatedDop.name"
@@ -54,8 +54,18 @@ export default {
     },
     methods: {
         remove() {
-            var confirmation = confirm(`Вы действительно хотите удалить дополнение "${this.dop.name}"`);
-            if (confirmation) this.$store.dispatch('lk/removeDop', { dop: this.dop })
+            this.$confirm({
+                message:`Вы действительно хотите удалить дополнение "${this.dop.name}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch('lk/removeDop', { dop: this.dop })
+                    }
+                }
+            })
         },
         edit() {
             this.isEdit = true

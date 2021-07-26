@@ -237,8 +237,8 @@ export default {
     async mounted() {
         const id = this.$store.state.auth.user._id
         const place = this.$store.state.view.popup.styleQRPopup.place._id
-        // const tables = this.$store.state.view.popup.tablesPopup.tables
-        this.easyqr.text = this.$store.state.view.popup.wifiPopup.string ? this.$store.state.view.popup.wifiPopup.string : `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`
+
+        this.easyqr.text = this.$store.state.view.popup.styleQRPopup.type == "wifi" ? this.$store.state.view.popup.wifiPopup.string :  `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`
 
         this.updateQR()
     },

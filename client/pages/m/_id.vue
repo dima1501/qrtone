@@ -16,7 +16,7 @@ div
                     .header__controls
                         transition(name="slide-up")
                             v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
-                        v-icon.ml-5(light @click="toggleCommandsMenu" v-if="$nuxt.$route.query.table && isAvailable && $store.state.guest.companyData.fastActionsEnabled") mdi-menu 
+                        v-icon.ml-5(light @click="toggleCommandsMenu" v-if="$nuxt.$route.query.table && isAvailable && $store.state.guest.companyData.fastActionsEnabled && $store.state.guest.companyData.actions.filter(e => e.isActive == true).length") mdi-menu 
             .welcome
                 .welcome__bg(v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
                 .welcome__inner
@@ -44,7 +44,7 @@ div
                     transition(name="slide-fade" mode="out-in")
                         .commands__area(v-if="commands && !isCommandSend" key="commands")
                             .commands__actions
-                                v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
+                                v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-if="action.isActive" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
                                 v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
                         .commands__area(v-if="commands && isCommandSend" key="success")  
                             .commands__success
@@ -166,6 +166,9 @@ div
         transition(name="slide-fade")
             ReservePopup(v-if="$store.state.view.popup.reservePopup.visible")
 
+        client-only
+            vue-confirm-dialog
+
 </template>
 
 <script>
@@ -211,8 +214,8 @@ export default {
                     locking: false,
                 },
                 scrollPanel: {
-                    initialScrollY: false,
-                    initialScrollX: false,
+                    initialScrollY: 0,
+                    initialScrollX: 0,
                     speed: 250,
                     easing: 'easeInQuad',
                     verticalNativeBarPos: 'right'

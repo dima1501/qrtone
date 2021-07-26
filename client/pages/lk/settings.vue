@@ -33,8 +33,7 @@
 
                 // Это когда до международной версии дойду todo
                 //- .settings__section-block
-                //-     h3 Символ валюты
-                //-     v-select(v-if="currency.length" :items="currency" @input="setCurrency" label="Выберите символ" :item-text="curSelectText" item-value="symbol_native" :value="currency.find(e => e.symbol_native == $store.state.auth.user.currencySymbol).symbol_native")
+                //-     v-select(v-if="currency.length" :items="currency" @input="setCurrency" label="Валюта" :item-text="curSelectText" item-value="symbol_native" :value="currency.find(e => e.symbol_native == $store.state.auth.user.currencySymbol).symbol_native")
 
             .settings__section
                 .settings__section-top
@@ -283,7 +282,7 @@ export default {
     },
     methods: {
         getAddressData: function (addressData, placeResultData, id) {
-            console.log(addressData)
+            
         },
         fastActionsToggler(e) {
             this.$store.dispatch("lk/toggleFastActions", e)               
@@ -304,23 +303,61 @@ export default {
         },
         curSelectText: item => `${item.name_plural} ${item.symbol_native}`,
         logOut() {
-            var confirmation = confirm(`Вы действительно хотите выйти из аккаунта?`);
-            if (confirmation) {
-                localStorage.removeItem('place') 
-                this.$store.dispatch("auth/logout")
-            }
+            this.$confirm({
+                message: `Вы действительно хотите выйти из аккаунта?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        localStorage.removeItem('place') 
+                        this.$store.dispatch("auth/logout")
+                    }
+                }
+            })
         },
         simplify() {
-            var confirmation = confirm(`Вы действительно хотите изменить подписку на Standart? Перерасчет будет произведен автоматически`);
-            if (confirmation) this.$store.dispatch("lk/simplify")
+            this.$confirm({
+                message: `Вы действительно хотите изменить подписку на Standart? Перерасчет будет произведен автоматически`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch("lk/simplify")
+                    }
+                }
+            })
         },
         improve() {
-            var confirmation = confirm(`Вы действительно хотите улучшить текущий план до Premium? Перерасчет будет произведен автоматически`);
-            if (confirmation) this.$store.dispatch("lk/improve")
+            this.$confirm({
+                message: `Вы действительно хотите улучшить текущий план до Premium? Перерасчет будет произведен автоматически`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch("lk/improve")
+                    }
+                }
+            })
         },
         subscribe(type, month, price) {
-            var confirmation = confirm(`Вы действительно хотите оформить подписку ${type} на ${month} ${month == 1 ? "месяц" : "месяцев"}`);
-            if (confirmation) this.$store.dispatch("lk/subscribe", {type, month, price})
+            this.$confirm({
+                message: `Вы действительно хотите оформить подписку ${type} на ${month} ${month == 1 ? "месяц" : "месяцев"}`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch("lk/subscribe", {type, month, price})
+                    }
+                }
+            })
         },
         formatDate(date) {
             return moment(date).local().locale('ru').format("L")
@@ -342,24 +379,19 @@ export default {
                 this.notificationsEnabled = result
                 if (this.notificationsEnabled == 'granted') {
                     localStorage.setItem('notifications', true)
+                    this.$notify({ group: 'custom-style', type: 'n-success', title: 'Уведомления в браузере включены' })
                 } else {
                     localStorage.setItem('notifications', false)
+                    this.notificationsEnabledLocal = false
+                    this.$notify({ group: 'custom-style', type: 'n-alarm', title: 'Уведомления запрещены настройками браузера' })
                 }
             } else {
                 localStorage.setItem('notifications', false)
+                this.$notify({ group: 'custom-style', type: 'n-success', title: 'Уведомления в браузере отключены' })
             }
         },
         functionToChangeValue(e, key) {
             this.updatedLinks[key] = e.target.value
-        },
-        updateLink(key, place) {
-            if (this.updatedLinks[key]) {
-                this.$store.dispatch('lk/updateLink', {
-                    key,
-                    link: tr(this.updatedLinks[key].split(' ').join('_')),
-                    place
-                })
-            }
         },
         openAddPlacePopup() {
             this.$store.state.view.popup.addPlacePopup.visible = true

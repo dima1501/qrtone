@@ -150,7 +150,6 @@ export default {
   &__row {
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 10px;
   }
   &__note {
     font-size: 14px;
@@ -162,6 +161,7 @@ export default {
     border: 1px solid rgb(214, 207, 207);
     border-radius: 10px;
     margin-right: 10px;
+    margin-bottom: 5px;
     cursor: pointer;
     transition: color .3s, background-color .3s, border-color .3s;
     &.active {

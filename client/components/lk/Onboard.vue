@@ -172,12 +172,12 @@ export default {
         fetchMainSettings() {
             this.$store.dispatch('lk/updateUserData', {
                 name: this.mainSettings.newCompanyName,
-                description: this.mainSettings.newCompanyDescription
+                description: this.mainSettings.newCompanyDescription,
+                notify: this.$notify
             })
             this.checkStep(this.step + 1)
             this.$store.state.auth.user.name = this.mainSettings.newCompanyName
             this.$store.state.auth.user.description = this.mainSettings.newCompanyDescription
-            // this.editCompany = false
         }
     }
 }

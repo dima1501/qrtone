@@ -15,8 +15,7 @@
                             @vdropzone-file-added="afterComplete" 
                             :options="dropOptions"
                             @vdropzone-drag-over="dragOver"
-                            @vdropzone-drag-leave="dragLeave"
-                            @vdropzone-removed-file="vremoved")
+                            @vdropzone-drag-leave="dragLeave")
                             .dz-message__inner
                                 .st-dropzone
                                     .st-dropzone__inner
@@ -172,20 +171,8 @@ export default {
             drag: false,
             isDragOver: false,
             isAddItemValid: false,
-            newItemImageFile: null,
-            newItemImageSrc: null,
             uploadImages: [],
             prices: 1,
-            newItem: {
-                images: [],
-                name: '',
-                prices: [],
-                weights: [],
-                category: null,
-                weight: null,
-                places: [],
-                dops: []
-            },
             nameRules: [
                 (v) => !!v || 'error_company_name',
             ],
@@ -254,7 +241,6 @@ export default {
             } else {
                 arr.push(place)
             }
-            console.log(arr)
         },
         closePopup() {
             this.$store.state.view.popup.editMenuItemPopup.visible = false
@@ -296,11 +282,6 @@ export default {
         },
         addDopPopup() {
             this.$store.state.view.popup.addDopPopup.visible = true
-        },
-        vremoved(file) {
-            // const fl = this.uploadImages.find(e => e.file == file)
-            // const index = this.uploadImages.indexOf(fl)
-            // this.uploadImages.splice(index, 1)
         }
     }
 }
@@ -331,7 +312,7 @@ export default {
   transition: all .12s ease;
 }
 .fade-enter, .fade-leave-to {
-  transform: translateY(10px);
+//   transform: translateY(10px);
   opacity: 0;
 }
 

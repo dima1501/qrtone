@@ -95,7 +95,6 @@ export default {
                 loader.load(
                     phone3d,
                     gltf => {
-                        console.log(123)
                         if (this.phoneObject) {
                             // Remove previously loaded object
                             this.scene.remove(this.phoneObject);
@@ -161,7 +160,6 @@ export default {
                     },
                     undefined,
                     error => {
-                        console.log('Error loading 3 obj:', error);
                     }
                 );
             });

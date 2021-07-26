@@ -8,7 +8,7 @@
         .menu__content
             .menu__empty(v-if="!$store.state.admin.user.goods.length") В меню пока что нет товаров
 
-            div(v-for="(item, key) in $store.state.admin.user.categories" v-bind:key="key" v-if="$store.state.admin.user.goods && $store.state.admin.parsedMenu[item._id] && $store.state.admin.parsedMenu[item._id].length").menu__section
+            div(v-for="(item, key) in $store.state.admin.user.categories" v-bind:key="item._id" v-if="$store.state.admin.user.goods && $store.state.admin.parsedMenu[item._id] && $store.state.admin.parsedMenu[item._id].length").menu__section
                 .menu__title
                     h1.menu__title-text {{ item.name }}
 
@@ -28,6 +28,7 @@
                                         v-icon(dark) mdi-pencil-outline
                                     .m-item__controls-item.handles
                                         v-icon(dark) mdi-drag
+                                    .m-item__controls-item(@click="removeMenuItem(good)") удалить
 
                                 .m-item__img(v-if="good.images.length")
                                     img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
@@ -100,21 +101,24 @@ export default {
             console.error(error)
         }
     },
-    async mounted() {
-        while (true) {
-            const user = await axios({
-                method: 'get',
-                url: `${process.env.SERVER || "http://localhost:8000"}/api/admin/get-user-data/${this.$nuxt.$route.params.id}`
-            })
-        }
-        while (true) {
-            const user = await axios({
-                method: 'get',
-                url: `${process.env.SERVER || "http://localhost:8000"}/api/admin/get-user-data/${this.$nuxt.$route.params.id}`
-            })
-        }
-    },
     methods: {
+        removeMenuItem(item) {
+            this.$confirm({
+                message: `Вы действительно хотите удалить "${item.name}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch("lk/deleteMenuItemAdmin", { user: this.$store.state.admin.user._id, item })
+                        item.images.forEach(element => {
+                            this.$store.dispatch("lk/deletePic", element)
+                        })
+                    }
+                }
+            })
+        },
         dragOptions(id) {
             return {
                 animation: 200,

@@ -29,7 +29,7 @@
                     .settings__section-link.-blue(@click="enableEditData" ) Редактировать
                 .settings__section-bottom(v-if="editCompany" key="save_comp_data")
                     .settings__section-link.-red(@click="disableChangeUserName" v-if="editCompany") Отмена
-                    button.settings__section-link.-blue(v-if="editCompany" @click="updateUserName" :disabled="!isCompanyDataValid" type="submit") Сохранить
+                    button.settings__section-link.-blue(v-if="editCompany" :disabled="!isCompanyDataValid" type="submit") Сохранить
 </template>
 
 <script>
@@ -57,7 +57,8 @@ export default {
         updateUserName() {
             this.$store.dispatch('lk/updateUserData', {
                 name: this.newCompanyName,
-                description: this.newCompanyDescription
+                description: this.newCompanyDescription,
+                notify: this.$notify
             })
             this.$store.state.auth.user.name = this.newCompanyName
             this.$store.state.auth.user.description = this.newCompanyDescription

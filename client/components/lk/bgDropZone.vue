@@ -81,16 +81,25 @@ export default {
     },
     methods: {
         remove() {
-            let confirmation = confirm(`Вы действительно хотите удалить фоновое изображение?`)
-            if (confirmation) {
-                this.$store.dispatch("lk/deletePic", this.$store.state.auth.user.background)
-                this.$store.dispatch('lk/deleteCompanyBg')
-            }
+            this.$confirm({
+                message: `Вы действительно хотите удалить фоновое изображение?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch("lk/deletePic", this.$store.state.auth.user.background)
+                        this.$store.dispatch('lk/deleteCompanyBg', { notify: this.$notify })
+                    }
+                }
+            })
         },
         apply() {
             this.$store.state.view.loading.uploadBg = true
             if (this.$store.state.auth.user.background) this.$store.dispatch("lk/deletePic", this.$store.state.auth.user.background)
-            this.$store.dispatch('lk/updateCompanyBackground', this.uploadImage.file)
+            this.$store.dispatch('lk/updateCompanyBackground', { file: this.uploadImage.file })
+            
             this.uploadImage = {}
         },
         disable() {

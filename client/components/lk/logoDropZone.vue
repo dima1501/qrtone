@@ -81,16 +81,24 @@ export default {
     },
     methods: {
         remove() {
-            let confirmation = confirm(`Вы действительно хотите удалить логотип?`)
-            if (confirmation) {
-                this.$store.dispatch("lk/deletePic", this.$store.state.auth.user.photo)
-                this.$store.dispatch('lk/deleteCompanyLogo')
-            }
+            this.$confirm({
+                message: `Вы действительно хотите удалить логотип?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch("lk/deletePic", this.$store.state.auth.user.photo)
+                        this.$store.dispatch('lk/deleteCompanyLogo', { notify: this.$notify })
+                    }
+                }
+            })
         },
         apply() {
             this.$store.state.view.loading.uploadLogo = true
-             if (this.$store.state.auth.user.photo) this.$store.dispatch("lk/deletePic", this.$store.state.auth.user.photo)
-            this.$store.dispatch('lk/updateCompanyLogo', this.uploadImage.file)
+            if (this.$store.state.auth.user.photo) this.$store.dispatch("lk/deletePic", this.$store.state.auth.user.photo)
+            this.$store.dispatch('lk/updateCompanyLogo', { file: this.uploadImage.file } )
             this.uploadImage = {}
         },
         disable() {

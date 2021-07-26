@@ -217,7 +217,7 @@ export default {
         },
         fetchAddPlace() {
             this.addPlace.link = tr(this.addPlace.name).split(' ').join('_')
-            this.$store.dispatch('lk/addNewPlace', this.addPlace)
+            this.$store.dispatch('lk/addNewPlace', { place: this.addPlace })
         },
         closePopup() {
             this.$store.state.view.popup.addPlacePopup.visible = false

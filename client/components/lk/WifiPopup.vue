@@ -77,7 +77,7 @@ export default {
         printWifiCode() {
             const url = `WIFI:${this.radioGroup !== 'false' ? this.radioGroup : ''}S:${this.wifiName};P:${this.wifiPass};;`
             
-            this.$store.state.view.popup.styleQRPopup.type="wifi"
+            this.$store.state.view.popup.styleQRPopup.type = "wifi"
 
             this.$store.state.view.popup.wifiPopup.string = url
             this.$store.state.view.popup.styleQRPopup.place = this.$store.state.auth.user.places[0]

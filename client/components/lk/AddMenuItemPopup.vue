@@ -312,7 +312,7 @@ export default {
   transition: all .12s ease;
 }
 .fade-enter, .fade-leave-to {
-  transform: translateY(10px);
+//   transform: translateY(10px);
   opacity: 0;
 }
 

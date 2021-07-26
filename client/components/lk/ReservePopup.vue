@@ -133,7 +133,6 @@ export default {
                     url: '/api/reserve',
                     data: this.reservation
                 })
-                console.log(res)
             } catch (error) {
                 console.error(error)
             }

@@ -112,7 +112,6 @@ export default {
         // },
         movedHandler(direction) {
             if (direction.type == 'touchmove') {
-                console.log(this.detailArea.scrollTop)
                 this.startScrollPoint = direction.screenY ? direction.screenY : direction.changedTouches[0].screenY
                 this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
             }

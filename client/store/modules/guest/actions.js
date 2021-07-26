@@ -130,18 +130,30 @@ const minusCartItemMulti = async (store, data) => {
     try {
         const place = store.state.companyData.places.find(e => e.link == data.place)
         const menuItem = store.state.user.cart[place._id].goods.find(e => e._id == data.item._id)
-
+        let conf = false
         if (menuItem.count == 1) {
-            var confirmation = confirm(`Убрать из заказа "${data.item.name}"?`);
-            if (!confirmation) return
-
-            const index = store.state.user.cart[place._id].goods.indexOf(menuItem)
-            store.state.user.cart[place._id].goods.splice(index, 1);
+            $nuxt.$confirm({
+                message: `Убрать из заказа "${data.item.name}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        conf = true
+                        const index = store.state.user.cart[place._id].goods.indexOf(menuItem)
+                        store.state.user.cart[place._id].goods.splice(index, 1)
+                    }
+                }
+            })
         }
-        const priceIndex = menuItem.cartPrices.indexOf(data.price)
-        menuItem.cartPrices.splice(priceIndex, 1)
-        menuItem.count--
-        store.dispatch('updateCart', store.state.user.cart)
+        if (conf) {
+            const priceIndex = menuItem.cartPrices.indexOf(data.price)
+            menuItem.cartPrices.splice(priceIndex, 1)
+            menuItem.count--
+            store.dispatch('updateCart', store.state.user.cart)
+        }
+        
     } catch (error) {
         console.error(error)
     }
@@ -150,18 +162,29 @@ const minusCartItemMulti = async (store, data) => {
 const minusDopMulti = async (store, data) => {
     try {
         const menuItem = store.state.user.cart[data.place].dops.find(e => e._id == data.item._id)
-
+        let conf
         if (menuItem.count == 1) {
-            var confirmation = confirm(`Убрать из заказа "${data.item.name}"?`);
-            if (!confirmation) return
-
-            const index = store.state.user.cart[data.place].dops.indexOf(menuItem)
-            store.state.user.cart[data.place].dops.splice(index, 1);
+            $nuxt.$confirm({
+                message: `Убрать из заказа "${data.item.name}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        conf = true
+                        const index = store.state.user.cart[data.place].dops.indexOf(menuItem)
+                        store.state.user.cart[data.place].dops.splice(index, 1)
+                    }
+                }
+            })
         }
-        const priceIndex = menuItem.cartPrices.indexOf(data.price)
-        menuItem.cartPrices.splice(priceIndex, 1)
-        menuItem.count--
-        store.dispatch('updateCart', store.state.user.cart)
+        if (conf) {
+            const priceIndex = menuItem.cartPrices.indexOf(data.price)
+            menuItem.cartPrices.splice(priceIndex, 1)
+            menuItem.count--
+            store.dispatch('updateCart', store.state.user.cart)
+        }
     } catch (error) {
         console.error(error)
     }

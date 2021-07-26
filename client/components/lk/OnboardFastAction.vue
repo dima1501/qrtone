@@ -18,7 +18,7 @@ export default {
     },
     methods: {
         async fastActionsToggler(e, action) {
-            this.$store.dispatch('lk/editAction', action)
+            this.$store.dispatch('lk/editAction', { action: this.action })
         },
     }
 }

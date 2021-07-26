@@ -30,7 +30,11 @@
                     .place__error(v-if="isLinkExists" key="palce_link_error") Такая ссылка занята, введите уникальное значение
                 .place__bottom
                     .place__bottom-item.-red(@click="disable()") Отмена
-                    button.place__bottom-item(type="submit" :disabled="!isEditLinkValid || isLinkExists || checkedLink !== newLink") Сохранить
+                    .place__bottom-item.loading(v-if="isLoading")
+                        v-icon(light) mdi-loading
+                    button.place__bottom-item(type="submit" v-else :disabled="!isEditLinkValid || isLinkExists || checkedLink !== newLink") Сохранить
+                    
+
             div(key="edit_link_bottom" v-if="!edit")
                 a(:href="`https://qrtone.com/m/${ place.link }`" target="_blank").place__link qrtone.com/m/{{ place.link }}
                     v-icon(light @click="copyLink(place.link)") mdi-open-in-new
@@ -64,7 +68,8 @@ export default {
             linkRules: [
                 (v) => !!v && !v.includes('?') && !v.includes('#') && !v.includes('&') && !v.includes('/') || 'Введите корректное значение'
             ],
-            checkedLink: ''
+            checkedLink: '',
+            isLoading: false
         }
     },
     mounted() {
@@ -74,6 +79,7 @@ export default {
     methods: {
         async inputLink(e) {
             if (!!e) {
+                this.isLoading = true
                 const isLinkExists = await axios({
                     method: 'get',
                     url: `/api/check-place-link/${e}`
@@ -84,13 +90,22 @@ export default {
                     this.isLinkExists = true
                 }
                 this.checkedLink = e
+                this.isLoading = false
             }
         },
         remove() {
-            let confirmation = confirm(`Вы действительно хотите удалить заведение ${this.place.name}?`)
-            if (confirmation) {
-                this.$store.dispatch("lk/removePlace", this.place)
-            }
+            this.$confirm({
+                message:`Вы действительно хотите удалить заведение ${this.place.name}?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch("lk/removePlace", { place: this.place })
+                    }
+                }
+            })
         },
         disable() {
             this.newLink = this.place.link
@@ -99,7 +114,7 @@ export default {
             this.isLinkExists = false
         },
         async fetchEditLink() {
-            if (!!this.newLink) {
+            if (!!this.newLink && !this.isLoading) {
                 if (this.newLink == this.place.link) {
                     this.$store.state.view.places.edit = false
                     this.edit = false
@@ -112,11 +127,10 @@ export default {
                         this.isLinkExists = false
                         this.$store.dispatch('lk/updateLink', {
                             link: tr(this.newLink.split(' ').join('_')),
-                            place: this.place
+                            place: this.place,
+                            notify: this.$notify
                         })
-                        setTimeout(() => {
-                            this.edit = false
-                        }, 200);
+                        this.edit = false
                         
                     } else {
                         this.isLinkExists = true
@@ -137,6 +151,7 @@ export default {
         copyLink(link) {
             const url = `https://qrtone.com/m/${link}`
             navigator.clipboard.writeText(url)
+            this.$notify({ group: 'custom-style', type: 'n-success', title: 'Ссылка скопирована в буфер обмена' })
         },
         shareLink(link) {
             const url = `https://qrtone.com/m/${link}`
@@ -236,6 +251,12 @@ hr {
             }
             &:disabled {
                 color: $color-grey-dark;
+            }
+            &.loading {
+                .v-icon {
+                    font-size: 18px;
+                    animation: load 1s ease-in-out infinite;
+                }
             }
         }
     }

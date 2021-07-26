@@ -56,13 +56,21 @@ export default {
     },
     methods: {
         removeMenuItem() {
-            let confirmation = confirm(`Вы действительно хотите удалить "${this.item.name}"?`)
-            if (confirmation) {
-                this.$store.dispatch("lk/deleteMenuItem", this.item)
-                this.item.images.forEach(element => {
-                    this.$store.dispatch("lk/deletePic", element)
-                })
-            }
+            this.$confirm({
+                message: `Вы действительно хотите удалить "${this.item.name}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (confirm) {
+                        this.$store.dispatch("lk/deleteMenuItem", this.item)
+                        this.item.images.forEach(element => {
+                            this.$store.dispatch("lk/deletePic", element)
+                        })
+                    }
+                }
+            })
         },
         openEditPopup() {
             this.$emit('openEditPopup', this.item)

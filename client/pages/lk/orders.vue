@@ -116,6 +116,8 @@
                                     .board__main-content-loader(v-if="$store.state.view.loading.moreNotifications")
                                         v-icon(light) mdi-loading     
 
+        
+
 </template>
 
 <script>
@@ -125,6 +127,8 @@ import vuescroll from 'vuescroll';
 import moment from 'moment';
 
 Vue.use(vuescroll);
+
+const axios = require('axios').default
 
 export default {
     layout: 'lk',
@@ -146,8 +150,8 @@ export default {
                     locking: false,
                 },
                 scrollPanel: {
-                    initialScrollY: true,
-                    initialScrollX: false,
+                    initialScrollY: 0,
+                    initialScrollX: 0,
                     speed: 250,
                     easing: 'easeInQuad',
                     verticalNativeBarPos: 'right'
@@ -206,8 +210,20 @@ export default {
             this.$store.dispatch('lk/loadMoreActions', { place: this.place, page: this.notificationsPage + 1 } )
             this.notifications += 1
         },
-        accept(message) {
-            this.$store.dispatch('lk/acceptFastAction', message)
+        async accept(data) {
+            try {
+                const accept = await axios({
+                    method: 'post',
+                    url: '/api/accept-fast-action',
+                    data: { data }
+                })
+                if (accept.data) {
+                    this.$notify({ group: 'custom-style', type: 'n-success', title: 'Успешно подтверждено' })
+                    data.status = 'accepted'
+                }
+            } catch (error) {
+                console.error(error)
+            }
         },
         getCustomArr(arr) {
             const newArr = []
@@ -243,8 +259,20 @@ export default {
             this.$store.dispatch('lk/loadOrders', { place: this.place, page: 1 } )
             this.$store.dispatch('lk/loadActions', { place: this.place, page: 1 })
         },
-        acceptOrder(order) {
-            this.$store.dispatch('guest/acceptOrder', order)
+        async acceptOrder(order) {
+            try {
+                const accept = await axios({
+                    method: 'post',
+                    url: '/api/accept-order',
+                    data: { order }
+                })
+                if (accept) {
+                    this.$notify({ group: 'custom-style', type: 'n-success', title: 'Заказ успешно подтвержден' })
+                    order.status = 'accepted'
+                }
+            } catch (error) {
+                console.error(error)
+            }
         },
         formatTime(time) {
             return moment(time).local().locale('ru').calendar();

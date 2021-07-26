@@ -11,19 +11,19 @@
                     .e-card
                         .e-card__line
                             v-text-field(
-                                label="Текст кнопки"
-                                ref="name"
+                                label="Текст кнопки на сайте"
                                 v-model="addAction.callText"
                                 :rules="requiredRule"
                                 type="text"
-                                required)
+                                required
+                                hide-details="auto")
                         .e-card__line
                             v-text-field(
                                 label="Текст уведомления"
-                                ref="notify"
                                 v-model="addAction.notifyText"
                                 :rules="requiredRule"
-                                type="text")
+                                type="text"
+                                hide-details="auto")
                         .e-card__bottom
                             v-btn(@click="closePopup" depressed color="error").e-card__bottom-item Отмена
                             v-btn(
@@ -45,13 +45,13 @@ export default {
                 isActive: true
             },
             requiredRule: [
-                (v) => !!v || 'error_company_name',
+                (v) => !!v || 'Обязательное поле',
             ],
         }
     },
     methods: {
         fetchAddAction() {
-            this.$store.dispatch('lk/addNewAction', this.addAction)
+            this.$store.dispatch('lk/addNewAction', { action: this.addAction })
         },
         closePopup() {
             this.$store.state.view.popup.addActionPopup = false

@@ -73,8 +73,6 @@ export default {
     },
     methods: {
         closePopup() {
-            
-
             this.$confirm({
                 message: `Завершить создание QR-кода для wi-fi?`,
                 button: {

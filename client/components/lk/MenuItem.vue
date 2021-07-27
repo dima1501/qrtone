@@ -2,6 +2,7 @@
     .menu-item(v-bind:class="{ flash: flash }")
         .menu-item__more(@click="openDetail(item)")
         .menu-item__img
+            .menu-item__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
             .menu-item__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
             VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
                 .menu-item__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
@@ -247,6 +248,7 @@ export default {
         font-size: 12px;
         padding-left: 25px;
         z-index: 5;
+        box-shadow: 0 0 10px rgba(0,0,0,0.15);
         &:before {
             content: '';
             position: absolute;

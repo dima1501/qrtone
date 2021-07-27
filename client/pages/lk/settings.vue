@@ -22,14 +22,14 @@
                     h3 Уведомления
                     .ntfcs
                         .ntfcs__item(v-if="notificationsEnabled == 'denied'")
-                            h4 Уведомления отключены в браузере <a href="https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop" target="_blank">как включить</a>
+                            p Уведомления отключены в браузере, <a href="https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop" target="_blank">как включить</a>
                         .ntfcs__item(v-else)
-                        v-switch(
-                            inset
-                            @change="notificationToggler($event)"
-                            :label="`${notificationsEnabledLocal ? 'Уведомления в браузере включены' : 'Уведомления в браузере отключены'}`"
-                            v-model="notificationsEnabledLocal"
-                            hide-details="auto")
+                            v-switch(
+                                inset
+                                @change="notificationToggler($event)"
+                                :label="`${notificationsEnabledLocal ? 'Уведомления в браузере включены' : 'Уведомления в браузере отключены'}`"
+                                v-model="notificationsEnabledLocal"
+                                hide-details="auto")
 
                 // Это когда до международной версии дойду todo
                 //- .settings__section-block
@@ -85,7 +85,7 @@
                                     .subscription__info-period до {{formatDate(subs.expires)}}
                             .subscription__bottom
                                 .subscription__progress(v-if="!isDateBefore(subs.expires)")
-                                    .subscription__progress-value Осталось {{ calcDays(subs.started, subs.expires) }} дней
+                                    .subscription__progress-value Осталось дней: {{ calcDays(subs.started, subs.expires) }} 
                                     .subscription__progress-line
                                         .subscription__progress-line-bg(v-bind:style="{ width: calcPercents(subs.started, subs.expires) }")
                                 .subscription__ended(v-else) Истекла {{formatDate(subs.expires)}}

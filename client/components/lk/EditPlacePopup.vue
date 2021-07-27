@@ -1,5 +1,6 @@
 <template lang="pug">
     .popup
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -144,7 +145,19 @@ export default {
     },
     methods: {
         closePopup() {
-            this.$store.state.view.popup.editPlacePopup.visible = false
+            
+            this.$confirm({
+                message: `Завершить редактирование информации о заведении?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.editPlacePopup.visible = false
+                    }
+                }
+            })
         },
         fetchEditPlace() {
             this.$store.dispatch('lk/editPlace', { place: this.editablePlace })

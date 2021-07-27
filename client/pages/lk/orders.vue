@@ -276,6 +276,7 @@ export default {
         },
         formatTime(time) {
             return moment(time).local().locale('ru').calendar();
+            // return moment(time).format('DD.MM.YYYY HH:MM')
         },
         getCustomArr(arr) {
             const newArr = []

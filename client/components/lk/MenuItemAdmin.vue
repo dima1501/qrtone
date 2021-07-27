@@ -2,6 +2,9 @@
     .menu-item(v-bind:class="{ flash: flash }")
         .menu-item__img
             .menu-item__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+
+            .menu-item__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
+            
             VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
                 .menu-item__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
         .menu-item__content
@@ -151,6 +154,12 @@ export default {
         &-pic {
             background-position: center;
             background-size: cover;
+            &.placeholder {
+                background-position: 0 0;
+                background-size: contain;
+                background-repeat: repeat;
+                opacity: .2;
+            }
             &:after {
                 content: "";
                 display: block;

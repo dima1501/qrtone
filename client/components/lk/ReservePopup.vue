@@ -1,5 +1,6 @@
 <template lang="pug">
     .popup
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -138,7 +139,18 @@ export default {
             }
         },
         closePopup() {
-            this.$store.state.view.popup.reservePopup.visible = false
+            this.$confirm({
+                message: `Завершить бронирование?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.reservePopup.visible = false
+                    }
+                }
+            })
         },
         notBeforeToday(date) {
             return date < new Date(new Date().setHours(0, 0, 0, 0));

@@ -1,5 +1,6 @@
 <template lang="pug">
     .info-popup
+        .info-popup__overlay(@click="closePopup")
         .info-popup__container
             .info-popup__closer(@click="closePopup")
                 v-icon(light) mdi-close
@@ -87,6 +88,13 @@ export default {
     padding: 15px;
     @media screen and (min-width: 500px) {
         padding: 30px;
+    }
+    &__overlay {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
     }
     &__descr {
         margin-bottom: 10px;

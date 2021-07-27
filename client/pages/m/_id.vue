@@ -18,8 +18,8 @@ div
                             v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
                         v-icon.ml-5(light @click="toggleCommandsMenu" v-if="$nuxt.$route.query.table && isAvailable && $store.state.guest.companyData.fastActionsEnabled && $store.state.guest.companyData.actions.filter(e => e.isActive == true).length") mdi-menu 
             .welcome
-                .welcome__bg(v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
-                .welcome__inner
+                .welcome__bg(v-if="$store.state.guest.companyData.background" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
+                .welcome__inner(:class="{ hasOffset: $store.state.guest.companyData.background }")
                     h1.welcome__title {{ $store.state.guest.companyData.name }}
                         v-icon.ml-5(light @click="toggleInfoPopup") mdi-information-outline
                     .w-cats(ref="cats")
@@ -38,7 +38,7 @@ div
                             .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key")
                                 MenuItem(:item="item" :placeId="$nuxt.$route.params.id")
 
-            transition(name="slide-fade" mode="out-in")
+            transition(name="fade" mode="out-in")
                 .commands(v-if="commands")
                     .commands__back(@click="closeCommands")
                     transition(name="slide-fade" mode="out-in")
@@ -65,8 +65,9 @@ div
 
                 
             
-            transition(name="slide-fade")
+            transition(name="fade")
                 .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.view.isCartOpened")
+                    .cart__overlay(@click="closeCart")
                     .cart__area
                         .cart__top
                             h2.cart__title Корзина
@@ -77,14 +78,16 @@ div
                             // Отображение основных позиций
                             .cart__content-items
                                 .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods" v-bind:key="key")
-                                    .cart__item-img(v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+                                    .cart__item-img(v-if="item.images[0]" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
                                     .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
                                         .cart__item-content
+
                                             .cart__item-link(@click="openDetail(item, price)")
                                             .cart__item-name {{ item.name }}
                                             .cart__item-descr(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
                                             span.note {{item.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}  {{item.weights[price]}}г
                                             span.note(v-if="item.calories[price]")  {{item.calories[price]}} Ккал
+
                                         .cart__item-counter
                                             .menu__counter-control(@click="minusMulti(item, price)")
                                                 v-icon mdi-minus
@@ -113,8 +116,9 @@ div
                             v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.table && isAvailable" v-bind:class="{ loading: $store.state.view.loading.sendOrder }") Заказать
                             //- v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
 
-            transition(name="slide-fade")
+            transition(name="fade")
                 .orders(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
+                    .orders__overlay(@click="closeCart")
                     .orders__area
                         .orders__top
                             h2.orders__title Заказы
@@ -160,10 +164,10 @@ div
             transition(name="slide-fade-detail")
                 MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
 
-        transition(name="slide-fade")
+        transition(name="fade")
             InfoPopup(v-show="$store.state.view.popup.infoPopup" :place="$store.state.guest.companyData.places.find(e => e.link == $nuxt.$route.params.id)")
 
-        transition(name="slide-fade")
+        transition(name="fade")
             ReservePopup(v-if="$store.state.view.popup.reservePopup.visible")
 
         client-only
@@ -362,7 +366,8 @@ export default {
             return newArr.sort(function(a, b) { return a - b; })
         },
         getTime(time) {
-            return moment(time).local().locale('ru').calendar()
+            // return moment(time).local().locale('ru').calendar()
+            return moment(time).format('DD.MM.YYYY, HH:MM')
         },
         toggleCommandsMenu() {
             this.commands = !this.commands
@@ -425,12 +430,6 @@ export default {
             this.$store.dispatch('guest/fastAction', action)
 
             this.isCommandSend = true
-
-            // const timer = setTimeout(() => {
-            //     this.commands = false
-            //     this.isCommandSend = false
-            //     clearTimeout(timer)
-            // }, 3000)
         },
         closeCommands() {
             this.isCommandSend = false
@@ -467,6 +466,13 @@ export default {
     @media screen and (min-width: 450px) {
         padding: 40px 0;
     }
+    &__overlay {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
     &__area {
         width: 100%;
         max-width: 450px;
@@ -491,6 +497,7 @@ export default {
     &__empty {
         text-align: center;
         margin: 100px 0;
+        background-color: #fff;
     }
 }
 
@@ -544,7 +551,15 @@ export default {
     @media screen and (min-width: 450px) {
         padding: 40px 0 75px;
     }
+    &__overlay {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
     &__area {
+        position: relative;
         background-color: #fff;
         max-width: 450px;
         width: 100%;  
@@ -557,6 +572,7 @@ export default {
     &__empty {
         text-align: center;
         margin: 100px 0;
+        background-color: #fff;
     }
     &__top {
         padding: 15px;
@@ -870,13 +886,18 @@ export default {
     }
     &__inner {
         position: relative;
-        top: 240px;
         background-color: #fff;
         border-radius: 10px;
         padding: 15px 15px 45px 15px;
+        top: 80px;
+        &.hasOffset {
+            top: 240px;
+        }
         @media screen and (min-width: 580px) {
-            top: 290px;
-            border-radius: 0;
+            &.hasOffset {
+                top: 290px;
+                border-radius: 0;
+            }
         }
     }
 }

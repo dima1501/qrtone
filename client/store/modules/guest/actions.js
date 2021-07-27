@@ -131,6 +131,7 @@ const minusCartItemMulti = async (store, data) => {
         const place = store.state.companyData.places.find(e => e.link == data.place)
         const menuItem = store.state.user.cart[place._id].goods.find(e => e._id == data.item._id)
         let conf = false
+    
         if (menuItem.count == 1) {
             $nuxt.$confirm({
                 message: `Убрать из заказа "${data.item.name}"?`,
@@ -146,7 +147,10 @@ const minusCartItemMulti = async (store, data) => {
                     }
                 }
             })
+        } else {
+            conf = true
         }
+
         if (conf) {
             const priceIndex = menuItem.cartPrices.indexOf(data.price)
             menuItem.cartPrices.splice(priceIndex, 1)
@@ -178,6 +182,8 @@ const minusDopMulti = async (store, data) => {
                     }
                 }
             })
+        } else {
+            conf = true
         }
         if (conf) {
             const priceIndex = menuItem.cartPrices.indexOf(data.price)

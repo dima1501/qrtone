@@ -1,5 +1,6 @@
 <template lang="pug">
     .popup
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -238,7 +239,18 @@ export default {
             }
         },
         closePopup() {
-            this.$store.state.view.popup.addMenuItemPopup.visible = false
+            this.$confirm({
+                message: `Завершить создание позиции меню?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.addMenuItemPopup.visible = false
+                    }
+                }
+            })
         },
         afterComplete(file) {
             this.isDragOver = false

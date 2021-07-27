@@ -1,7 +1,10 @@
 <template lang="pug">
 .popup(v-if="$store.state.auth.user")
+    .popup__overlay(@click="closePopup()")
     .popup__container
         .popup__content
+            .popup__closer
+                v-icon(light @click="closePopup") mdi-close
             .onboard
                 .onboard__section(v-if="step == 1")
                     .onboard__title Добро пожаловать<br> на <span>qrtone.com</span>
@@ -140,7 +143,9 @@ export default {
                 newCompanyName: '',
                 newCompanyDescription: ''
             },
-            qr: null
+            qr: null,
+
+            isConfirmOpened: false
         }
     },
     async mounted() {
@@ -149,15 +154,33 @@ export default {
 
         this.mainSettings.newCompanyName = this.$store.state.auth.user.name
         this.mainSettings.newCompanyDescription = this.$store.state.auth.user.description
+
     },
     methods: {
-        async closePopup() {
-            this.$store.state.view.popup.onboardPopup.visible = false
-            this.$store.state.auth.user.isOnboardCompleted = true
+        closePopup() {
+            this.isConfirmOpened = true
+            this.$confirm({
+                message: `Завершить заполнение данных о компании?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.onboardPopup.visible = false
+                        this.$store.state.auth.user.isOnboardCompleted = true
+                        try {
+                            await axios({
+                                method: 'post',
+                                url: '/api/complete-onboard'
+                            })
+                        } catch (error) {
+                            console.error(error)
+                        }
+                    }
 
-            const res = await axios({
-                method: 'post',
-                url: '/api/complete-onboard'
+                    this.isConfirmOpened = false
+                }
             })
         },
         checkStep(n) {
@@ -184,6 +207,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../../assets/popup.scss';
+
 .onboard {
     &__title {
         font-size: 26px;

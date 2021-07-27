@@ -1,5 +1,6 @@
 <template lang="pug">
      .popup
+        .popup__overlay(@click="closePopup")
         .popup__container.-wide
             .popup__closer(@click="closePopup")
                 v-icon(dark) mdi-close
@@ -357,8 +358,19 @@ export default {
             }
         },
         closePopup() {
-            this.$store.state.view.popup.styleQRPopup.visible = false
-            this.$store.state.view.pdf.ref = null
+            this.$confirm({
+                message: `Завершить создание QR-кода?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.styleQRPopup.visible = false
+                        this.$store.state.view.pdf.ref = null
+                    }
+                }
+            })
         },
         async download() {
             const id = this.$store.state.auth.user._id

@@ -2,7 +2,7 @@
     .info-popup
         .info-popup__container
             .info-popup__closer(@click="closePopup")
-                v-icon(dark) mdi-close
+                v-icon(light) mdi-close
             .info-popup__content
                 h2.info-popup__title {{ $store.state.guest.companyData.name }}
                 div.info-popup__descr(v-if="$store.state.guest.companyData.description") {{ $store.state.guest.companyData.description }}

@@ -1,5 +1,6 @@
 <template lang="pug">
     .popup(v-if="updatedMenuItem")
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -243,7 +244,18 @@ export default {
             }
         },
         closePopup() {
-            this.$store.state.view.popup.editMenuItemPopup.visible = false
+            this.$confirm({
+                message: `Завершить редактирование позиции меню?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.editMenuItemPopup.visible = false
+                    }
+                }
+            })
         },
         afterComplete(file) {
             this.isDragOver = false

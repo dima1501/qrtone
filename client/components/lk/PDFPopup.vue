@@ -1,5 +1,6 @@
 <template lang="pug">
     .popup.-wide
+        .popup__overlay(@click="closePopup")
         .popup__container
             transition(name="fade-pdf")
                 .pdf__loader(v-if="$store.state.view.loading.pdfUpdating" key="pdf_loader")

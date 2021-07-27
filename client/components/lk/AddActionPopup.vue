@@ -1,5 +1,6 @@
 <template lang="pug">
     .popup.z-21
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -54,7 +55,18 @@ export default {
             this.$store.dispatch('lk/addNewAction', { action: this.addAction })
         },
         closePopup() {
-            this.$store.state.view.popup.addActionPopup = false
+            this.$confirm({
+                message: `Завершить создание быстрого действия?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.addActionPopup = false
+                    }
+                }
+            })
         }
     }
 }

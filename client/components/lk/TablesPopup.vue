@@ -1,5 +1,6 @@
 <template lang="pug">
     .popup
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer(@click="closePopup")
                 v-icon(dark) mdi-close
@@ -70,7 +71,18 @@ export default {
             this.tables.splice(key, 1)
         },
         closePopup() {
-            this.$store.state.view.popup.tablesPopup.visible = false
+            this.$confirm({
+                message: `Завершить создание QR-кода?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.tablesPopup.visible = false
+                    }
+                }
+            })
         },
         openStyleQRPopup() {
             this.$store.state.view.popup.styleQRPopup.visible = true
@@ -140,7 +152,8 @@ export default {
 .p-tables {
     margin-bottom: 10px;
     &__title {
-        color: $color-black
+        color: $color-black;
+        margin-bottom: 5px;
     }
     &__row {
         display: flex;
@@ -152,7 +165,7 @@ export default {
         border-radius: 5px;
         background-color: rgb(230, 230, 230);
         padding: 2px 10px;
-        margin: 10px 10px 10px 0;
+        margin: 0 10px 0px 0;
         &-name {
             font-size: 14px;
             color: $color-black;

@@ -1,10 +1,11 @@
 <template lang="pug">
     .popup.z-21
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
-                h2.popup__title Добавление заведения
+                h2.popup__title Создание заведения
                 v-form(
                     @submit.prevent="fetchAddPlace"
                     v-model="isAddPlaceValid")
@@ -220,7 +221,20 @@ export default {
             this.$store.dispatch('lk/addNewPlace', { place: this.addPlace })
         },
         closePopup() {
-            this.$store.state.view.popup.addPlacePopup.visible = false
+
+            this.$confirm({
+                message: `Завершить создание заведения?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.addPlacePopup.visible = false
+                    }
+                }
+            })
+            
         }
     },
     mounted() {
@@ -250,6 +264,14 @@ export default {
     justify-content: center;
     align-items: center;
     overflow-y: scroll;
+
+    &__overlay {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
 
     &.z-21 {
         z-index: 21;

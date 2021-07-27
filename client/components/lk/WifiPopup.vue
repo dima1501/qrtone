@@ -1,5 +1,6 @@
 <template lang="pug">
     .popup
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -72,7 +73,20 @@ export default {
     },
     methods: {
         closePopup() {
-            this.$store.state.view.popup.wifiPopup.visible = false
+            
+
+            this.$confirm({
+                message: `Завершить создание QR-кода для wi-fi?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (confirm) {
+                        this.$store.state.view.popup.wifiPopup.visible = false
+                    }
+                }
+            })
         },
         printWifiCode() {
             const url = `WIFI:${this.radioGroup !== 'false' ? this.radioGroup : ''}S:${this.wifiName};P:${this.wifiPass};;`

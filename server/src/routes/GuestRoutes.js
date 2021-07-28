@@ -244,19 +244,25 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 })
 
 router.post('/api/load-orders', authGuest(), async (req, res) => {
-    const orders = await req.db.collection("users").aggregate([
-        { $match: { 'places.link': req.body.data } },
-        { $unwind: '$orders' },
-        { $match: {'orders.guestId': ObjectId(req.user._id) } },
-        { $sort: { 'orders.timestamp': -1 } },
-        { $group: {_id: '$_id', list: {$push: '$orders'} } }
-    ]).toArray()
+    const user = await req.db.collection('users').findOne({ 'places.link': req.body.data })
 
-    if (orders[0] && orders[0].list) {
-        res.status(200).json(orders[0].list)
+    if (user) {
+        const orders = await req.db.collection("users").aggregate([
+            { $match: { 'places.link': req.body.data } },
+            { $unwind: '$orders' },
+            { $match: {'orders.guestId': ObjectId(req.user._id) } },
+            { $sort: { 'orders.timestamp': -1 } },
+            { $group: {_id: '$_id', list: {$push: '$orders'} } }
+        ]).toArray()
+        if (orders[0] && orders[0].list) {
+            res.status(200).json(orders[0].list)
+        } else {
+            res.status(200).json([])
+        }
     } else {
         res.status(200).json([])
     }
+    
 })
 
 router.get('/api/get-place-id/:id', async (req, res) => {

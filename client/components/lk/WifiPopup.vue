@@ -93,7 +93,7 @@ export default {
 
             this.$store.state.view.popup.wifiPopup.string = url
             this.$store.state.view.popup.styleQRPopup.place = this.$store.state.auth.user.places[0]
-            this.$store.state.view.popup.tablesPopup.tables = null
+            this.$store.state.view.popup.tablesPopup.tables = []
             this.$store.state.view.popup.wifiPopup.visible = false
             this.$store.state.view.popup.styleQRPopup.visible = true
         }

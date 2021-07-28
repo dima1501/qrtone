@@ -591,7 +591,7 @@ const loadOrders = async (store, data) => {
     store.rootState.view.loading.orders = true
     const load = await axios({
       method: 'get',
-      url: `/api/load-orders-place/${data.place}/${data.page}`
+      url: `/api/load-orders-place/${data.place}/${data.items}`
     })
     if (load.data[0]) {
       store.rootState.auth.user.orders = load.data[0].list
@@ -609,7 +609,7 @@ const loadMoreOrders = async (store, data) => {
     store.rootState.view.loading.moreOrders = true
     const load = await axios({
       method: 'get',
-      url: `/api/load-orders-place/${data.place}/${data.page}`
+      url: `/api/load-orders-place/${data.place}/${data.items}`
     })
     if (load.data[0]) {
       store.rootState.auth.user.orders = store.rootState.auth.user.orders.concat(load.data[0].list)
@@ -625,7 +625,7 @@ const loadActions = async (store, data) => {
     store.rootState.view.loading.notifications = true
     const load = await axios({
       method: 'get',
-      url: `/api/load-actions-place/${data.place}/${data.page}`
+      url: `/api/load-actions-place/${data.place}/${data.items}`
     })
     if (load.data[0]) {
       store.rootState.auth.user.notifications = load.data[0].list
@@ -643,7 +643,7 @@ const loadMoreActions = async (store, data) => {
     store.rootState.view.loading.moreNotifications = true
     const load = await axios({
       method: 'get',
-      url: `/api/load-actions-place/${data.place}/${data.page}`
+      url: `/api/load-actions-place/${data.place}/${data.items}`
     })
     if (load.data[0]) {
       store.rootState.auth.user.notifications = store.rootState.auth.user.notifications.concat(load.data[0].list)

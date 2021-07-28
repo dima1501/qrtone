@@ -15,7 +15,7 @@ export default {
     }
   },
   created() {
-      this.$store.dispatch("guest/loadData", {id: this.$route.params.id, place: this.$route.query.place }, { root: true });
+      // this.$store.dispatch("guest/loadData", {id: this.$route.params.id, place: this.$route.query.place }, { root: true })
   },
   mounted() {
     if (!this.$store.state.guest.user.length) {

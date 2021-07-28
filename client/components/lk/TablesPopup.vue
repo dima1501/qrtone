@@ -29,7 +29,7 @@
                                     @click="isAddTableForm = false").red--text Отмена
 
                         .p-tables__content(v-else key="qweqewqeqeqweqe")
-                            .p-tables__title Столики <span v-if="!tables.length">не добавлены</span>
+                            .p-tables__title Столики <span v-if="!$store.state.view.popup.tablesPopup.tables.length">не добавлены</span>
                             .p-tables__row
                                 .p-tables__item(v-for="(table, key) in $store.state.view.popup.tablesPopup.tables" :key="key")
                                     .p-tables__item-name {{ table }}
@@ -74,6 +74,7 @@ export default {
         },
         closePopup() {
             this.$store.state.view.popup.tablesPopup.visible = false
+            this.$store.state.view.popup.tablesPopup.tables = []
             // тут конфирм мешает при редактированиии возможно стоит сделать проверку todo
             // this.$confirm({
             //     message: `Завершить создание QR-кода?`,
@@ -146,8 +147,28 @@ export default {
         line-height: 1.3;
         span {
             // font-size: 16px;
-            white-space: nowrap;
+            // white-space: nowrap;
             color: $color-blue;
+
+            &.main {
+                color: $color-black;
+                white-space: normal;
+            }
+            &.tables {
+                display: inline-block;
+                font-size: 14px;
+                color: $color-black;
+                margin-right: 5px;
+                white-space: normal;
+                border-radius: 5px;
+                background-color: #e6e6e6;
+                padding: 2px 10px;
+                font-weight: normal;
+                margin-top: 5px;
+            }
+            &.edit {
+                cursor: pointer;
+            }
         }
     }
 }

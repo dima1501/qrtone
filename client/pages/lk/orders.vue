@@ -48,7 +48,7 @@
                                                         .sorder__line-item(v-for="(price, idx) in getCustomArr(dop.cartPrices)")
                                                             .sorder__line-content
                                                                 h4.sorder__line-name {{ dop.name }}
-                                                                .sorder__line-data(v-if="dop.prices[price] || dop.prices[price] > 0") {{dop.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}
+                                                                .sorder__line-data(v-if="dop.prices[price] || dop.prices[price] > 0") {{dop.prices[price]}}{{$store.state.auth.user.currencySymbol}}
                                                                 .sorder__line-data(v-else) Бесплатно
                                                             .sorder__line-count 
                                                                 span.note x
@@ -60,7 +60,7 @@
                                                     span.note Итого:
                                                     span.value  {{ getOrderPrice(order) }}{{$store.state.auth.user.currencySymbol}}
 
-                                    .board__main-content-link(@click="loadMoreOrders" v-if="$store.state.auth.user.orders.length && ordersPage * 10 == $store.state.auth.user.orders.length && !$store.state.view.loading.moreOrders") Загрузить еще 
+                                    .board__main-content-link(@click="loadMoreOrders" v-if="$store.state.auth.user.orders.length && !$store.state.view.loading.moreOrders") Загрузить еще 
 
                                     .board__main-content-loader(v-if="$store.state.view.loading.moreOrders")
                                         v-icon(light) mdi-loading              
@@ -111,7 +111,7 @@
                                                     .sorder__btn
                                                         v-btn(depressed color="primary" @click='accept(notify)') Принято
 
-                                    .board__main-content-link(@click="loadMoreNotifications" v-if="$store.state.auth.user.notifications.length && notificationsPage * 10 == $store.state.auth.user.notifications.length && !$store.state.view.loading.moreNotifications") Загрузить еще 
+                                    .board__main-content-link(@click="loadMoreNotifications" v-if="$store.state.auth.user.notifications.length && !$store.state.view.loading.moreNotifications") Загрузить еще 
 
                                     .board__main-content-loader(v-if="$store.state.view.loading.moreNotifications")
                                         v-icon(light) mdi-loading     
@@ -140,8 +140,6 @@ export default {
             loading: true,
             orders: [],
             place: '',
-            ordersPage: 1,
-            notificationsPage: 1,
             ops: {
                 vuescroll: {
                     mode: 'native',
@@ -203,12 +201,11 @@ export default {
     },
     methods: {
         loadMoreOrders() {
-            this.$store.dispatch('lk/loadMoreOrders', { place: this.place, page: this.ordersPage + 1 } )
-            this.ordersPage += 1
+            console.log(this.$store.state.auth.user.orders.length)
+            this.$store.dispatch('lk/loadMoreOrders', { place: this.place, items: this.$store.state.auth.user.orders.length } )
         },
         loadMoreNotifications() {
-            this.$store.dispatch('lk/loadMoreActions', { place: this.place, page: this.notificationsPage + 1 } )
-            this.notifications += 1
+            this.$store.dispatch('lk/loadMoreActions', { place: this.place, items: this.$store.state.auth.user.notifications.length } )
         },
         async accept(data) {
             try {
@@ -256,8 +253,8 @@ export default {
                 place: this.place,
                 socketId: this.$nuxt.$socket.id
             })
-            this.$store.dispatch('lk/loadOrders', { place: this.place, page: 1 } )
-            this.$store.dispatch('lk/loadActions', { place: this.place, page: 1 })
+            this.$store.dispatch('lk/loadOrders', { place: this.place, items: 0 } )
+            this.$store.dispatch('lk/loadActions', { place: this.place, items: 0 })
         },
         async acceptOrder(order) {
             try {

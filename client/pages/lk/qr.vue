@@ -101,7 +101,7 @@ export default {
             this.$store.state.view.popup.tablesPopup.place = findPlace
         },
         openStyleQRPopup(type) {
-            this.$store.state.view.popup.tablesPopup.tables = null
+            this.$store.state.view.popup.tablesPopup.tables = []
             this.$store.state.view.popup.styleQRPopup.visible = true
             this.$store.state.view.popup.styleQRPopup.type = type
         },

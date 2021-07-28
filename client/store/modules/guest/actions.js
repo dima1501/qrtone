@@ -278,7 +278,7 @@ const redirect = async (store, data) => {
             url: `/api/get-place-id/${data.placeId}`
         })
         if (place.data) {
-            $nuxt.$router.replace($nuxt.localePath({ path: `/m/${place.data}?table=${data.table}` }))
+            $nuxt.$router.replace($nuxt.localePath({ path: `/m/${place.data}${data.table ? '?t=' + data.table : '' }` }))
         }
     } catch (error) {
         console.error(error)

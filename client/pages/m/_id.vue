@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    .public(v-if="$store.state.guest.user && !isLoading")
+    .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
         .avavav(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
                 img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
@@ -16,7 +16,7 @@ div
                     .header__controls
                         transition(name="slide-up")
                             v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
-                        v-icon.ml-5(light @click="toggleCommandsMenu" v-if="$nuxt.$route.query.table && isAvailable && $store.state.guest.companyData.fastActionsEnabled && $store.state.guest.companyData.actions.filter(e => e.isActive == true).length") mdi-menu 
+                        v-icon.ml-5(light @click="toggleCommandsMenu" v-if="$nuxt.$route.query.t && isAvailable && $store.state.guest.companyData.fastActionsEnabled && $store.state.guest.companyData.actions.filter(e => e.isActive == true).length") mdi-menu 
             .welcome
                 .welcome__bg(v-if="$store.state.guest.companyData.background" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
                 .welcome__inner(:class="{ hasOffset: $store.state.guest.companyData.background }")
@@ -63,7 +63,6 @@ div
                                 v-icon(light) mdi-cart
                                 <span v-if="getTotalPrice > 0"> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
 
-                
             
             transition(name="fade")
                 .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.view.isCartOpened")
@@ -113,7 +112,7 @@ div
                     .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length")
                         .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
                         .cart__bottom-control
-                            v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.table && isAvailable" v-bind:class="{ loading: $store.state.view.loading.sendOrder }") Заказать
+                            v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.t && isAvailable" v-bind:class="{ loading: $store.state.view.loading.sendOrder }") Заказать
                             //- v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
 
             transition(name="fade")
@@ -258,18 +257,21 @@ export default {
                     url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}`
                 })
 
-                this.$store.state.guest.companyData = user.data
+                if (user.data) {
+                    this.$store.state.guest.companyData = user.data
 
-                for (let item of this.$store.state.guest.companyData.goods) {
-                    if (this.$store.state.guest.parsedMenu[item.category]) {
-                        this.$store.state.guest.parsedMenu[item.category].push(item)
-                    } else {
-                        this.$store.state.guest.parsedMenu[item.category] = [item]
+                    for (let item of this.$store.state.guest.companyData.goods) {
+                        if (this.$store.state.guest.parsedMenu[item.category]) {
+                            this.$store.state.guest.parsedMenu[item.category].push(item)
+                        } else {
+                            this.$store.state.guest.parsedMenu[item.category] = [item]
+                        }
+                        this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
                     }
-                    this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
                 }
 
                 this.isLoading = false
+                
             }
         } catch (error) {
             console.error(error)
@@ -392,7 +394,7 @@ export default {
                     goods: this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)].goods,
                     dops: this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)].dops,
                     status: 'pending',
-                    table: this.$nuxt.$route.query.table,
+                    table: this.$nuxt.$route.query.t,
                     place: this.$nuxt.$route.params.id,
                     price: this.getTotalPrice
                 },
@@ -426,7 +428,7 @@ export default {
         fastAction(action) {
             action.userId = this.$nuxt.$route.params.id
             action.place = this.$nuxt.$route.query.place
-            action.table = this.$nuxt.$route.query.table
+            action.table = this.$nuxt.$route.query.t
             this.$store.dispatch('guest/fastAction', action)
 
             this.isCommandSend = true

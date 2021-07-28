@@ -10,8 +10,13 @@
                     .c-qr__content
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'simple'") QR-код меню для {{ $store.state.view.popup.styleQRPopup.place.name }}
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'wifi'") QR-код Wi-Fi для {{ $store.state.view.popup.styleQRPopup.place.name }}
-                        h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'multi'") QR-коды столиков {{ '#' + $store.state.view.popup.tablesPopup.tables }} {{$store.state.view.pdf.title}}
-                            span(@click="openTablesPopup()") edit
+                        h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'multi'") 
+                            span.main QR-коды столиков для {{ $store.state.view.popup.styleQRPopup.place.name }} 
+                            //- {{ $store.state.view.popup.tablesPopup.tables }} {{$store.state.view.pdf.title}}
+                            <br>
+                            span.tables(v-for="table in $store.state.view.popup.tablesPopup.tables") {{ table }}
+                            span.edit(@click="openTablesPopup()")
+                                v-icon(light) mdi-pencil-outline
 
                         .c-qr__templates(@click="openPDFPopup")
                             .c-qr__templates-title Шаблоны <span v-if="$store.state.view.pdf.ref">({{ $store.state.view.pdf.data.name }})</span>
@@ -83,7 +88,7 @@
                                         auto-grow
                                         outlined)
 
-                        .c-qr__bottom(v-if="$store.state.view.popup.tablesPopup.tables.length")
+                        .c-qr__bottom(v-if="$store.state.view.popup.tablesPopup.tables && $store.state.view.popup.tablesPopup.tables.length || $store.state.view.popup.styleQRPopup.type == 'simple' || $store.state.view.popup.styleQRPopup.type == 'wifi'")
                             .c-qr__bottom-item(v-if="!$store.state.view.pdf.ref")
                                 v-btn(
                                     depressed 
@@ -245,7 +250,7 @@ export default {
         const id = this.$store.state.auth.user._id
         const place = this.$store.state.view.popup.styleQRPopup.place._id
 
-        this.easyqr.text = this.$store.state.view.popup.styleQRPopup.type == "wifi" ? this.$store.state.view.popup.wifiPopup.string :  `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place}`
+        this.easyqr.text = this.$store.state.view.popup.styleQRPopup.type == "wifi" ? this.$store.state.view.popup.wifiPopup.string :  `${process.env.ORIGIN || "localhost:3000"}/qr/${place}`
 
         this.updateQR()
     },
@@ -262,7 +267,7 @@ export default {
             const tablesArr = this.$store.state.view.popup.tablesPopup.tables
             
 
-            if (tablesArr) {
+            if (tablesArr && tablesArr.length) {
                 const zip = new JSZip()
                 
                 this.$confirm({
@@ -302,7 +307,7 @@ export default {
                             return
                         }
 
-                        const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`
+                        const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${place._id}?t=${tablesArr[i]}`
                         
                         this.downloadQr = await new QRCode(this.$refs.qrcode_generate, {
                             text: str,
@@ -436,7 +441,10 @@ export default {
                     if (!!confirm && confirm !== 'false') {
                         this.$store.state.view.popup.styleQRPopup.visible = false
                         this.$store.state.view.pdf.ref = null
-                        this.$store.state.view.popup.tablesPopup.tables = [...this.$store.state.view.popup.tablesPopup.place.tables]
+
+                        if (this.$store.state.view.popup.tablesPopup.place) {
+                            this.$store.state.view.popup.tablesPopup.tables = [...this.$store.state.view.popup.tablesPopup.place.tables]
+                        }
                     }
                 }
             })
@@ -451,7 +459,7 @@ export default {
 
             let doc = new jsPDF("p", "mm", [this.$store.state.view.pdf.data.height, this.$store.state.view.pdf.data.width])
 
-            if (tablesArr) {
+            if (tablesArr.length) {
 
                 var i = 0;
                 const nextStep = async () => {
@@ -461,9 +469,9 @@ export default {
                         return
                     }
 
-                    const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`
+                    const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${place._id}?t=${tablesArr[i]}`
                     const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.easyqr.logo}`) : ''
-                    
+                    console.log(str)
                     this.generatedQr.clear()
                     this.generatedQr = await new QRCode(this.$refs.qrcode, {
                         text: str,

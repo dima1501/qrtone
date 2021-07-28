@@ -66,7 +66,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.dispatch("lk/deleteMenuItem", this.item)
                         this.item.images.forEach(element => {
                             this.$store.dispatch("lk/deletePic", element)

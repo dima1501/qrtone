@@ -21,6 +21,7 @@
     "html2canvas": "^1.0.0-rc.7",
     "js-file-download": "^0.4.12",
     "jspdf": "^2.3.1",
+    "jszip": "^3.7.0",
     "mailchimp-api-v3": "^1.15.0",
     "moment": "^2.29.1",
     "nodemailer": "^6.6.1",

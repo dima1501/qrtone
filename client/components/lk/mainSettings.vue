@@ -57,8 +57,7 @@ export default {
         updateUserName() {
             this.$store.dispatch('lk/updateUserData', {
                 name: this.newCompanyName,
-                description: this.newCompanyDescription,
-                notify: this.$notify
+                description: this.newCompanyDescription
             })
             this.$store.state.auth.user.name = this.newCompanyName
             this.$store.state.auth.user.description = this.newCompanyDescription

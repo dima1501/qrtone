@@ -229,7 +229,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: async (confirm) => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.state.view.popup.addPlacePopup.visible = false
                     }
                 }

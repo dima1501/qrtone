@@ -61,7 +61,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.dispatch('lk/removeDop', { dop: this.dop })
                     }
                 }

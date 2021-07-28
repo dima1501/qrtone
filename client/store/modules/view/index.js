@@ -33,7 +33,7 @@ const state = {
     },
     tablesPopup: {
       visible: false,
-      tables: null,
+      tables: [],
       place: null
     },
     infoPopup: false,

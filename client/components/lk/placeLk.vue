@@ -101,7 +101,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.dispatch("lk/removePlace", { place: this.place })
                     }
                 }
@@ -127,8 +127,7 @@ export default {
                         this.isLinkExists = false
                         this.$store.dispatch('lk/updateLink', {
                             link: tr(this.newLink.split(' ').join('_')),
-                            place: this.place,
-                            notify: this.$notify
+                            place: this.place
                         })
                         this.edit = false
                         

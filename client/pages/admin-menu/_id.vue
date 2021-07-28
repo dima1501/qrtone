@@ -110,7 +110,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.dispatch("lk/deleteMenuItemAdmin", { user: this.$store.state.admin.user._id, item })
                         item.images.forEach(element => {
                             this.$store.dispatch("lk/deletePic", element)

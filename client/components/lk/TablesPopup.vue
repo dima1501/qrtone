@@ -31,7 +31,7 @@
                         .p-tables__content(v-else key="qweqewqeqeqweqe")
                             .p-tables__title Столики <span v-if="!tables.length">не добавлены</span>
                             .p-tables__row
-                                .p-tables__item(v-for="(table, key) in tables" :key="key")
+                                .p-tables__item(v-for="(table, key) in $store.state.view.popup.tablesPopup.tables" :key="key")
                                     .p-tables__item-name {{ table }}
                                     .p-tables__item-delete(@click="removeTable(key)")
                                         v-icon(light) mdi-close-circle-outline 
@@ -41,7 +41,7 @@
                                 depressed
                                 color="primary"
                                 @click="openStyleQRPopup()"
-                                :disabled="!tables.length") Cоздать
+                                :disabled="!$store.state.view.popup.tablesPopup.tables.length") Далее
 </template>
 
 <script>
@@ -54,42 +54,45 @@ export default {
             newTableName: '',
             tableRules: [
                 (e) => !!e || 'Обязательное поле',
-                (e) => this.tables.indexOf(e) == -1 || 'Такой столик уже существует'
+                (e) => this.$store.state.view.popup.tablesPopup.tables.indexOf(e) == -1 || 'Такой столик уже существует'
             ]
         }
     },
     mounted() {
-        this.tables = [...this.$store.state.view.popup.tablesPopup.place.tables]
+        if (!this.$store.state.view.popup.tablesPopup.tables.length && !this.$store.state.view.popup.styleQRPopup.visible) {
+            this.$store.state.view.popup.tablesPopup.tables = [...this.$store.state.view.popup.tablesPopup.place.tables]
+        }
     },
     methods: {
         addTable() {
-            this.tables.push(this.newTableName)
+            this.$store.state.view.popup.tablesPopup.tables.push(this.newTableName)
             this.isAddTableForm = false
             this.newTableName = ''
         },
         removeTable(key) {
-            this.tables.splice(key, 1)
+            this.$store.state.view.popup.tablesPopup.tables.splice(key, 1)
         },
         closePopup() {
-            this.$confirm({
-                message: `Завершить создание QR-кода?`,
-                button: {
-                    no: 'Нет',
-                    yes: 'Да'
-                },
-                callback: async (confirm) => {
-                    if (confirm) {
-                        this.$store.state.view.popup.tablesPopup.visible = false
-                    }
-                }
-            })
+            this.$store.state.view.popup.tablesPopup.visible = false
+            // тут конфирм мешает при редактированиии возможно стоит сделать проверку todo
+            // this.$confirm({
+            //     message: `Завершить создание QR-кода?`,
+            //     button: {
+            //         no: 'Нет',
+            //         yes: 'Да'
+            //     },
+            //     callback: async (confirm) => {
+            //         if (!!confirm && confirm !== 'false') {
+            //             this.$store.state.view.popup.tablesPopup.visible = false
+            //         }
+            //     }
+            // })
         },
         openStyleQRPopup() {
             this.$store.state.view.popup.styleQRPopup.visible = true
             this.$store.state.view.popup.styleQRPopup.type = 'multi'
             this.$store.state.view.popup.tablesPopup.visible = false
 
-            this.$store.state.view.popup.tablesPopup.tables = this.tables
             this.$store.state.view.popup.styleQRPopup.place = this.$store.state.view.popup.tablesPopup.place
         }
     }

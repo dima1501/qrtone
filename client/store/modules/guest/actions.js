@@ -140,7 +140,7 @@ const minusCartItemMulti = async (store, data) => {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         conf = true
                         const index = store.state.user.cart[place._id].goods.indexOf(menuItem)
                         store.state.user.cart[place._id].goods.splice(index, 1)
@@ -175,7 +175,7 @@ const minusDopMulti = async (store, data) => {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         conf = true
                         const index = store.state.user.cart[data.place].dops.indexOf(menuItem)
                         store.state.user.cart[data.place].dops.splice(index, 1)

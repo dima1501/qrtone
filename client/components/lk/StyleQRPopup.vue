@@ -11,9 +11,11 @@
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'simple'") QR-код меню для {{ $store.state.view.popup.styleQRPopup.place.name }}
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'wifi'") QR-код Wi-Fi для {{ $store.state.view.popup.styleQRPopup.place.name }}
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'multi'") QR-коды столиков {{ '#' + $store.state.view.popup.tablesPopup.tables }} {{$store.state.view.pdf.title}}
+                            span(@click="openTablesPopup()") edit
 
                         .c-qr__templates(@click="openPDFPopup")
                             .c-qr__templates-title Шаблоны <span v-if="$store.state.view.pdf.ref">({{ $store.state.view.pdf.data.name }})</span>
+                            
 
                         .c-qr__section
                             .c-qr__section-title Внешний вид
@@ -81,12 +83,7 @@
                                         auto-grow
                                         outlined)
 
-                        .c-qr__bottom
-                            //- .c-qr__bottom-item
-                            //-     v-btn(
-                            //-         depressed 
-                            //-         color="normal").error--text Отмена
-
+                        .c-qr__bottom(v-if="$store.state.view.popup.tablesPopup.tables.length")
                             .c-qr__bottom-item(v-if="!$store.state.view.pdf.ref")
                                 v-btn(
                                     depressed 
@@ -102,6 +99,7 @@
                                     depressed 
                                     color="primary"
                                     @click="download()").white--text Скачать PDF
+                        .c-qr__bottom(v-else) столики бля добавь
 
                     .c-qr__preview
                         .c-qr__preview-loader(v-if="$store.state.view.loading.pdfUpdating && $store.state.view.pdf.ref")
@@ -109,9 +107,13 @@
 
                         .c-qr__preview-svg(v-show="!$store.state.view.pdf.ref")
                             div(ref="qrcode")
+                            div(ref="qrcode_generate" hidden) asdads
                         img.c-qr__preview-image(:src='preview' v-show="$store.state.view.pdf.ref")
-                        
-            
+
+            .c-qr__preview-loader(v-if="generating")
+                v-icon(light) mdi-loading
+            //- .c-qr__preview-loader(v-if="$store.state.view.loading.pdfUpdating && $store.state.view.pdf.ref")
+                
             //- .popup__content
                 
             //-     .sqr
@@ -184,7 +186,6 @@
 </template>
 
 <script>
-import vkQr from '@vkontakte/vk-qr';
 import fileDownload from 'js-file-download'
 
 import jsPDF from 'jspdf'
@@ -192,6 +193,8 @@ import jsPDF from 'jspdf'
 import * as QRCode from 'easyqrcodejs'
 
 import {lazyInput} from 'vue-lazy-input'
+
+import JSZip from 'jszip'
 
 export default {
     props: {
@@ -227,7 +230,10 @@ export default {
             },
 
             generatedQr: null,
-            isColorPickerActive: false
+            downloadQr: null,
+            isColorPickerActive: false,
+
+            generating: false
         }
     },
     watch:{
@@ -244,47 +250,94 @@ export default {
         this.updateQR()
     },
     methods: {
+        openTablesPopup() {
+            this.$store.state.view.popup.tablesPopup.visible = true
+        },
         async downloadSVGorPNG(type) {
             const id = this.$store.state.auth.user._id
             const place = this.$store.state.view.popup.styleQRPopup.place
+            
             const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.easyqr.logo}`) : ''
 
-            if (this.generatedQr) this.generatedQr.clear()
-
             const tablesArr = this.$store.state.view.popup.tablesPopup.tables
+            
 
             if (tablesArr) {
-                var i = 0;
-                const nextStep = async () => {
-                    
-                    if(i >= tablesArr.length) return
-
-                    const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`
-                    
-                    this.generatedQr.clear()
-
-                    this.generatedQr = await new QRCode(this.$refs.qrcode, {
-                        text: str,
-                        colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
-                        logo: logo,
-                        drawer: type,
-                        onRenderingEnd: (e, x) => {
-                            if (type == 'png') {
-                                var download = document.createElement('a');
-                                download.href = x;
-                                download.download = `${place.link}_table_${tablesArr[i]}.${type}`;
-                                download.click()
-                            } else {
-                                fileDownload(x, `${place.link}_table_${tablesArr[i]}.${type}`)
-                            }
-                            i++
-                            nextStep()
+                const zip = new JSZip()
+                
+                this.$confirm({
+                    message: `Скачать файлы по отдельности или сжатым ZIP архивом?`,
+                    button: {
+                        no: 'ZIP архив',
+                        yes: 'Файлами'
+                    },
+                    callback: async (confirm) => {
+                        if (confirm == 'true') {
+                            downloadFiles('files')
+                        } else if (confirm == 'false') {
+                            downloadFiles('zip')
                         }
-                    })
+                    }
+                })
+
+                const downloadFiles = (kind) => {
+                    this.generating = true
+                    var i = 0
+                    const nextStep = async () => {
+                        
+                        if (i >= tablesArr.length) {
+                            this.generating = false
+
+                            if (kind == 'zip') {
+                                zip.generateAsync({
+                                    type: "blob"
+                                }).then((blob) => {
+                                    console.log(blob)
+                                    fileDownload(blob, `${place.link}_tables_menu.zip`)
+                                }, (err) => {
+                                    alert('export failed')
+                                })
+                            }
+                            
+                            return
+                        }
+
+                        const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`
+                        
+                        this.downloadQr = await new QRCode(this.$refs.qrcode_generate, {
+                            text: str,
+                            colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
+                            logo: logo,
+                            drawer: type,
+                            onRenderingEnd: (e, x) => {
+                                if (type == 'png') {
+                                    if (kind == 'files') {
+                                        var download = document.createElement('a');
+                                        download.href = x;
+                                        download.download = `${place.link}_table_${tablesArr[i]}.${type}`;
+                                        download.click()
+                                    } else {
+                                        zip.file(`${place.link}_table_${tablesArr[i]}.${type}`, this.b64toBlob(x))
+                                    }
+                                } else {
+                                    if (kind == 'files') {
+                                        fileDownload(x, `${place.link}_table_${tablesArr[i]}.${type}`)
+                                    } else {
+                                        zip.file(`${place.link}_table_${tablesArr[i]}.${type}`, x)
+                                    }
+                                }
+                                i++
+                                nextStep()
+                            }
+                        })
+                    }
+                    nextStep()
                 }
-                nextStep()
+
+                
             } else {
-                this.generatedQr = await new QRCode(this.$refs.qrcode, {
+                this.generating = true
+                this.downloadQr = await new QRCode(this.$refs.qrcode_generate, {
                     text: this.easyqr.text,
                     colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                     logo: logo,
@@ -298,9 +351,21 @@ export default {
                         } else {
                             fileDownload(x, `${place.link}_menu_qr.${type}`)
                         }
+                        this.generating = false
                     }
                 })
             }
+        },
+        b64toBlob(dataURI) {
+    
+            var byteString = atob(dataURI.split(',')[1]);
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: 'image/jpeg' });
         },
         uploadQRLogo(e) {
             if (e.target.files[0]) {
@@ -343,7 +408,10 @@ export default {
         },
         async updateQR(e) {
             if (this.$refs.qrcode) {
-                if (this.generatedQr) this.generatedQr.clear()
+                if (this.generatedQr) {
+                    console.log('clear')
+                    this.generatedQr.clear()
+                }
                 
                 this.generatedQr = await new QRCode(this.$refs.qrcode, {
                     text: this.easyqr.text,
@@ -365,9 +433,10 @@ export default {
                     yes: 'Да'
                 },
                 callback: async (confirm) => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.state.view.popup.styleQRPopup.visible = false
                         this.$store.state.view.pdf.ref = null
+                        this.$store.state.view.popup.tablesPopup.tables = [...this.$store.state.view.popup.tablesPopup.place.tables]
                     }
                 }
             })
@@ -378,6 +447,8 @@ export default {
             const tablesArr = this.$store.state.view.popup.tablesPopup.tables
             const el = this.$refs[this.$store.state.view.pdf.ref]
 
+            this.generating = true
+
             let doc = new jsPDF("p", "mm", [this.$store.state.view.pdf.data.height, this.$store.state.view.pdf.data.width])
 
             if (tablesArr) {
@@ -385,7 +456,10 @@ export default {
                 var i = 0;
                 const nextStep = async () => {
                     
-                    if(i >= tablesArr.length) return
+                    if(i >= tablesArr.length) {
+                        this.generating = false
+                        return
+                    }
 
                     const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${id}/?place=${place._id}&table=${tablesArr[i]}`
                     const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.easyqr.logo}`) : ''
@@ -418,9 +492,11 @@ export default {
                 if (this.$store.state.view.pdf.ref) {
                     doc.addImage(this.preview, 'JPEG', 0, 0)
                     doc.save(`${place.link}_menu_qr.pdf`)
+                    this.generating = false
                     
                 } else {
                     fileDownload(this.preview, `${place.link}_menu_qr.png`)
+                    this.generating = false
                 }
 
             }

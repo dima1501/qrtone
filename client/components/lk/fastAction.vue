@@ -61,10 +61,18 @@ export default {
             this.edit = true
         },
         deleteAction() {
-            var ask = confirm(`Вы действительно хотите удалить действие "${this.action.callText}"?`);
-            if (ask) {
-                this.$store.dispatch('lk/deleteAction', { id: this.action._id })
-            }
+            this.$confirm({
+                message: `Вы действительно хотите удалить действие "${this.action.callText}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: async (confirm) => {
+                    if (!!confirm && confirm !== 'false') {
+                        this.$store.dispatch('lk/deleteAction', { id: this.action._id })
+                    }
+                }
+            })
         },
         cancel() {
             this.edit = false

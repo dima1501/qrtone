@@ -79,7 +79,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.place.tables.splice(key, 1)
                         this.$store.dispatch("lk/updateTables", { place: this.place, isRemove: true })
                     }

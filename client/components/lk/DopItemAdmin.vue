@@ -61,7 +61,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.dispatch('admin/removeDopAdmin', { dop: this.dop, _id: this.$store.state.admin.user._id })
                     }
                 }

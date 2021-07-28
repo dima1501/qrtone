@@ -166,7 +166,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: async (confirm) => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.state.view.popup.onboardPopup.visible = false
                         this.$store.state.auth.user.isOnboardCompleted = true
                         try {
@@ -195,8 +195,7 @@ export default {
         fetchMainSettings() {
             this.$store.dispatch('lk/updateUserData', {
                 name: this.mainSettings.newCompanyName,
-                description: this.mainSettings.newCompanyDescription,
-                notify: this.$notify
+                description: this.mainSettings.newCompanyDescription
             })
             this.checkStep(this.step + 1)
             this.$store.state.auth.user.name = this.mainSettings.newCompanyName

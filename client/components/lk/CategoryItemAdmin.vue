@@ -53,7 +53,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.dispatch('admin/removeCatAdmin', { _id: this.user._id, cat: this.cat })
                     }
                 }

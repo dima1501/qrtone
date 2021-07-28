@@ -310,7 +310,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         localStorage.removeItem('place') 
                         this.$store.dispatch("auth/logout")
                     }
@@ -325,7 +325,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.dispatch("lk/simplify")
                     }
                 }
@@ -339,7 +339,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.dispatch("lk/improve")
                     }
                 }
@@ -353,7 +353,7 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
+                    if (!!confirm && confirm !== 'false') {
                         this.$store.dispatch("lk/subscribe", {type, month, price})
                     }
                 }

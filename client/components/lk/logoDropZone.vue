@@ -88,9 +88,9 @@ export default {
                     yes: 'Да'
                 },
                 callback: confirm => {
-                    if (confirm) {
-                        this.$store.dispatch("lk/deletePic", this.$store.state.auth.user.photo)
-                        this.$store.dispatch('lk/deleteCompanyLogo', { notify: this.$notify })
+                    if (!!confirm && confirm !== 'false') {
+                        // this.$store.dispatch("lk/deletePic", this.$store.state.auth.user.photo)
+                        this.$store.dispatch('lk/deleteCompanyLogo')
                     }
                 }
             })

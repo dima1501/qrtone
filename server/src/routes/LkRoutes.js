@@ -273,7 +273,6 @@ router.post('/api/accept-order', auth(), async (req, res) => {
 
 router.post('/api/add-action', auth(), async (req, res) => {
     try {
-        console.log(req.body)
         const action = await new ActionItemModel(req.body)
         const upload = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
@@ -633,7 +632,7 @@ router.get('/api/load-orders-place/:id/:items', auth(), async (req, res) => {
             { $limit: 10 },
             { $group: { _id: '$_id', list: {$push: '$orders' } } }
         ]).toArray()
-        console.log(orders)
+
         if (orders) {
             res.status(200).send(orders)
         } else {
@@ -835,7 +834,6 @@ router.post('/api/load-tg-users', auth(), async (req, res) => {
 
 router.post('/api/toggle-fast-actions', auth(), async (req, res) => {
     try {
-        console.log(req.body.data)
         const set = req.db.collection("users").updateOne(
             { _id: ObjectId(req.user._id) },
             { $set: { 'fastActionsEnabled': req.body.data } }

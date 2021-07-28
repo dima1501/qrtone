@@ -201,7 +201,6 @@ export default {
     },
     methods: {
         loadMoreOrders() {
-            console.log(this.$store.state.auth.user.orders.length)
             this.$store.dispatch('lk/loadMoreOrders', { place: this.place, items: this.$store.state.auth.user.orders.length } )
         },
         loadMoreNotifications() {

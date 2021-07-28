@@ -53,7 +53,6 @@ export default {
     },
     methods: {
         fastActionsToggler(e, action) {
-            console.log(e)
             this.updatedAction.isActive = e
             this.$store.dispatch('lk/editAction', { action: this.updatedAction })
         },

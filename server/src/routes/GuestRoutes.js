@@ -290,7 +290,6 @@ router.get('/api/get-place-id/:id', async (req, res) => {
 
 router.post('/api/reserve', authGuest(), async (req, res) => {
     try {
-        console.log(req.body)
         const user = await req.db.collection('users').findOne({ 'places.link': req.body.place })
         const place = user.places.find(e => e.link == req.body.place)
 

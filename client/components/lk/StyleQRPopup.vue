@@ -297,7 +297,6 @@ export default {
                                 zip.generateAsync({
                                     type: "blob"
                                 }).then((blob) => {
-                                    console.log(blob)
                                     fileDownload(blob, `${place.link}_tables_menu.zip`)
                                 }, (err) => {
                                     alert('export failed')
@@ -414,7 +413,6 @@ export default {
         async updateQR(e) {
             if (this.$refs.qrcode) {
                 if (this.generatedQr) {
-                    console.log('clear')
                     this.generatedQr.clear()
                 }
                 
@@ -471,7 +469,7 @@ export default {
 
                     const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${place._id}?t=${tablesArr[i]}`
                     const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.easyqr.logo}`) : ''
-                    console.log(str)
+
                     this.generatedQr.clear()
                     this.generatedQr = await new QRCode(this.$refs.qrcode, {
                         text: str,

@@ -45,6 +45,7 @@
 
 <script>
 export default {
+    name: 'registration',
     layout: 'public',
     data() {
         return {

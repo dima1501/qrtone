@@ -1,29 +1,48 @@
 <template lang="pug">
     .popup
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
-                h2.popup__title Управление столиками
-                p {{ place.name }}
+                h2.popup__title Управление столиками<br>
+                    span {{ place.name }}
+                v-form(
+                    @submit.prevent="fetchCreateTable"
+                    v-model="isAddTableValid").place__form
+                    v-text-field(
+                        v-model="newTableStart"
+                        type="text"
+                        label="Новый столик"
+                        :rules="[!!newTableStart && !!newTableStart.length && !newTableStart.includes('?') && !newTableStart.includes('#') && !newTableStart.includes('&') || 'Введите корректное значение']")
+                    v-btn(
+                        depressed
+                        color="primary"
+                        :disabled="!isAddTableValid"
+                        type="submit"
+                        v-if="isAddTableValid"
+                    ).e-card__bottom-item Добавить
                 .place__tables
                     .place__tables-inner(v-if="place.tables && place.tables.length")
                         .place__tables-item(v-for="(table, key) in place.tables" :key="key")
                             .place__tables-item-name {{ formatTable(table) }}
-                            v-icon(light @click="removeTable(table, key)") mdi-close-circle-outline
+                            .place__tables-item-remove(light @click="removeTable(table, key)")
+                                v-icon(light) mdi-trash-can-outline
 
-                    div
-                        div
-                            input(type="checkbox" id="tablesRange" v-model="isTablesMulti" @change="clearNewTables")
-                            label(for="tablesRange") Диапазон столиков
+                        // Добавление диапазона столиков
+                        //- div
+                        //-     input(type="checkbox" id="tablesRange" v-model="isTablesMulti" @change="clearNewTables")
+                        //-     label(for="tablesRange") Диапазон столиков
 
-                        label(v-if="!isTablesMulti") Введите название или номер столика
-                        label(v-if="isTablesMulti") Введите диапазон столиков, например 1 и 10
+                        //- label(v-if="!isTablesMulti") Введите название или номер столика
+                        //- label(v-if="isTablesMulti") Введите диапазон столиков, например 1 и 10
+                    
 
-                        input(:type="!isTablesMulti ? 'text' : 'number'" placeholder="" v-model="newTableStart")
-                        span(v-if="isTablesMulti") -
-                        input(type="number" placeholder="" v-if="isTablesMulti" v-model="newTableEnd")
-                        .button.-black(@click="fetchCreateTable") Добавить
+                    //- input(:type="!isTablesMulti ? 'text' : 'number'" placeholder="" v-model="newTableStart")
+                    //- span(v-if="isTablesMulti") -
+                    //- input(type="number" placeholder="" v-if="isTablesMulti" v-model="newTableEnd")
+
+                    //- .button.-black(@click="fetchCreateTable") Добавить
 
 
 </template>
@@ -37,7 +56,8 @@ export default {
         return {
             isTablesMulti: false,
             newTableStart: null,
-            newTableEnd: null
+            newTableEnd: null,
+            isAddTableValid: true
         }
     },
     methods: {
@@ -45,24 +65,37 @@ export default {
             if (typeof table == 'number') {
                 return table
             } else {
-                return table.replace('%20', ' ')
+                return table.replaceAll('%20', ' ')
             }
         },
         closePopup() {
             this.$store.state.view.popup.editTablesPopup.visible = false
         },
         removeTable(table, key) {
-            this.place.tables.splice(key, 1)
-            this.$store.dispatch("lk/updateTables", this.place)
+            this.$confirm({
+                message:`Вы действительно хотите удалить столик "${table}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (!!confirm && confirm !== 'false') {
+                        this.place.tables.splice(key, 1)
+                        this.$store.dispatch("lk/updateTables", { place: this.place, isRemove: true })
+                    }
+                }
+            })
         },
         clearNewTables() {
             this.newTableStart = this.newTableEnd = null
         },
         fetchCreateTable() {
             if (!this.isTablesMulti) {
-                if (this.place.tables.indexOf(this.newTableStart) == -1) {
-                    this.place.tables.push(this.newTableStart.replace(' ', '%20'))
-                    this.$store.dispatch("lk/updateTables", this.place)
+                if (this.place.tables.indexOf(this.newTableStart.trim().replaceAll(' ', '%20')) == -1) {
+                    this.place.tables.push(this.newTableStart.trim().replaceAll(' ', '%20'))
+                    this.$store.dispatch("lk/updateTables", { place: this.place })
+                } else {
+                    this.$notify({ group: 'custom-style', type: 'n-alarm', title: 'Столик с таким названием уже существует' })
                 }
             } else {
                 if (Number(this.newTableStart) < Number(this.newTableEnd)) {
@@ -71,11 +104,13 @@ export default {
                             this.place.tables.push(Number(i))
                         }
                     }
-                    this.$store.dispatch("lk/updateTables", this.place)
+                    this.$store.dispatch("lk/updateTables", { place: this.place })
                 } else {
                     alert('Некорректные данные')
                 }
             }
+            this.newTableStart = ''
+            this.newTableEnd = ''
         }
     }
 }

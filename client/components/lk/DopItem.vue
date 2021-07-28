@@ -2,11 +2,19 @@
     .cats__item
         .cats__item-main
             transition(name="slide-fade" mode="out-in")
-                .cats__item-main-name(v-if="!isEdit" key="5") {{ updatedDop.name }}
-            transition(name="slide-fade" mode="out-in")
-                input.cats__item-main-input(v-if="isEdit" key="6" type="text" v-model="updatedDop.name" v-focus)
-            transition(name="slide-fade" mode="out-in")
-                input.cats__item-main-input(v-if="isEdit" key="7" type="text" v-model="updatedDop.price")
+                .cats__item-main-name(v-if="!isEdit" key="5") {{ updatedDop.name }}{{ updatedDop.price ? `, ${updatedDop.price}${$store.state.auth.user.currencySymbol}` : `` }}
+                .cats__add-field(v-if="isEdit" key="6")
+                    v-text-field(
+                        v-model="updatedDop.name"
+                        type="text"
+                        label="Название"
+                        v-focus
+                        hide-details="auto").mr-5
+                    v-text-field(
+                        v-model="updatedDop.price"
+                        type="text"
+                        label="Цена"
+                        hide-details="auto")
 
         transition(name="slide-fade" mode="out-in")
             .cats__item-controls(v-if="!isEdit" key="3")
@@ -46,8 +54,18 @@ export default {
     },
     methods: {
         remove() {
-            var confirmation = confirm(`Вы действительно хотите удалить дополнение "${this.dop.name}"`);
-            if (confirmation) this.$store.dispatch('admin/removeDopAdmin', { dop: this.dop })
+            this.$confirm({
+                message:`Вы действительно хотите удалить дополнение "${this.dop.name}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (!!confirm && confirm !== 'false') {
+                        this.$store.dispatch('lk/removeDop', { dop: this.dop })
+                    }
+                }
+            })
         },
         edit() {
             this.isEdit = true
@@ -93,6 +111,18 @@ export default {
             &-btn {
                 cursor: pointer;
                 margin-left: 10px;
+            }
+        }
+        &-main {
+            &-input {
+                border: 2px solid $color-black;
+                padding: 3px 5px;
+                background-color: #fff;
+                border-radius: 4px;
+            }
+            &-name {
+                padding: 3px 5px;
+                border: 2px solid transparent;
             }
         }
     }

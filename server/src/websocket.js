@@ -55,10 +55,18 @@ module.exports = {
     }
   },
   fastAction: async (data) => {
-    console.log('fast-action')
     try {
       data.sockets.forEach(e => {
         ioCopy.to(e.socketId).emit('newFastAction', data.data);
+      });
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  newReservation: async (data) => {
+    try {
+      data.sockets.forEach(e => {
+        ioCopy.to(e.socketId).emit('newReservation', data.data);
       });
     } catch (error) {
       console.error(error)
@@ -87,7 +95,6 @@ module.exports = {
     }
   },
   newTGUser: async (data) => {
-    console.log(data)
     data.sockets.forEach(e => {
       ioCopy.to(e).emit('newTGUser');
     });

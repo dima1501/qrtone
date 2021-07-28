@@ -1,5 +1,6 @@
 <template lang="pug">
     .popup
+        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
@@ -7,21 +8,24 @@
                 h2.popup__title Управление дополнениями
                 .cats
                     .cats__add
-                        .cats__add-field
-                            v-text-field(
-                                ref="newDop"
-                                v-model="newDop.name"
-                                type="text"
-                                label="Новое дополнение")
-                            v-text-field(
-                                ref="newDop"
-                                v-model="newDop.price"
-                                type="number"
-                                label="Стоимость"
-                                :prefix="$store.state.auth.user.currencySymbol")
-                            transition(name="slide-fade" mode="out-in")
-                                .cats__item-controls-btn(@click="create" v-if="newDop.name.length")
-                                    v-icon(light) mdi-checkbox-marked-circle-outline
+                        transition(name="slide-fade" mode="out-in")
+                            .cats__add-link(@click="addDop = true" v-if="!addDop") Новое дополнение
+                            v-form(v-if="addDop" @submit.prevent="create" v-model="isFormValid")
+                                .cats__add-field
+                                    v-text-field(
+                                        ref="newDop"
+                                        v-model="newDop.name"
+                                        type="text"
+                                        label="Название").mr-5
+                                    v-text-field(
+                                        ref="newDop"
+                                        v-model="newDop.price"
+                                        type="number"
+                                        label="Цена"
+                                        :prefix="$store.state.auth.user.currencySymbol").short
+                                    transition(name="slide-fade" mode="out-in")
+                                        button.cats__item-controls-btn(type="submit" v-if="newDop.name.length")
+                                            v-icon(light) mdi-checkbox-marked-circle-outline
 
                     DopItem(v-for="(dop, i) in $store.state.auth.user.dops" :key="dop._id" :dop="dop")
 
@@ -32,6 +36,8 @@
 export default {
     data() {
         return {
+            addDop: false,
+            isFormValid: true,
             drag: false,
             newDop: {
                 name: '',
@@ -44,9 +50,12 @@ export default {
             this.$store.state.view.popup.addDopPopup.visible = false
         },
         create() {
-            this.$store.dispatch('lk/createDop', { dop: this.newDop })
-            this.newDop.name = ''
-            this.newDop.price = null
+            if (this.newDop.name) {
+                this.$store.dispatch('lk/createDop', { dop: this.newDop })
+                this.addDop = false
+                this.newDop.name = ''
+                this.newDop.price = null
+            }
         }
     },
     computed: {
@@ -73,6 +82,9 @@ export default {
         &-field {
             display: flex;
             align-items: center;
+            .short {
+                width: 90px;
+            }
         }
     }
 }

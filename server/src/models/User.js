@@ -4,6 +4,7 @@ const moment = require('moment')
 const User = class User {
   constructor(name, password, email) {
     this.name = name,
+    this.description = '',
     this.password = password,
     this.email = email,
     this.goods = [],
@@ -59,14 +60,16 @@ const User = class User {
       {
         _id: nanoid(),
         callText: 'Позвать официанта',
-        notifyText: '🙋🏼‍♂️ Столику №@table нужна ваша помощь!',
-        buttonText: '🏃 Уже бегу'
+        notifyText: '🙋🏼‍♂️ Столику #@table нужна ваша помощь!',
+        buttonText: '🏃 Уже бегу',
+        isActive: false
       },
       {
         _id: nanoid(),
         callText: 'Попросить счет',
-        notifyText: '🙋🏼‍♂️ Столику №@table нужен счет!',
-        buttonText: '🏃 Хорошо'
+        notifyText: '🙋🏼‍♂️ Столику #@table нужен счет!',
+        buttonText: '🏃 Хорошо',
+        isActive: false
       }
     ],
     this.dops = [],
@@ -81,7 +84,8 @@ const User = class User {
     ],
     this.currencySymbol = '₽',
     this.publicSockets = [],
-    this.fastActionsEnabled = true
+    this.fastActionsEnabled = true,
+    this.isOnboardCompleted = false
   }
 }
 

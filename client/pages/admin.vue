@@ -1,5 +1,7 @@
 <template lang="pug">
     .admin
+        
+        //- div(v-if="password == 'XsZuEdD9pJiheMxAEFuuI'")
         h1.admin__title
         .admin__list
             .company(v-for="(user, key) in users" :key="key") 
@@ -9,6 +11,10 @@
                     div {{sub}}
                 nuxt-link(:to="localePath(`/admin-menu/${user._id}`)") Меню
                 div _____
+        //- v-text-field(
+        //-     v-else
+        //-     v-model="password"
+        //- )
 </template>
 
 <script>
@@ -17,7 +23,8 @@ const axios = require('axios').default
 export default {
     data() {
         return {
-            users: []
+            users: [],
+            password: ''
         }
     },
     async fetch () {
@@ -31,6 +38,7 @@ export default {
             console.error(error)
         }
     }
+    
 }
 </script>
 

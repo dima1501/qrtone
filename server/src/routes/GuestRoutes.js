@@ -26,7 +26,7 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
 
         if (user) {
             const button = Markup.inlineKeyboard([
-                Markup.callbackButton(req.body.data.buttonText, 'like')
+                Markup.callbackButton('Принято', 'like')
             ]).extra()
 
             const notify = req.body.data.notifyText
@@ -41,7 +41,8 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
                 table: req.body.data.table,
                 status: 'pending',
                 buttonText: req.body.data.buttonText,
-                place: place._id
+                place: place._id,
+                timestamp: Date.now()
             }
 
             if (user.telegram[place._id]) {
@@ -83,6 +84,7 @@ router.get('/api/get-user-data/:id', async (req, res) => {
         const publicUser = {
             _id: ObjectId(user._id),
             name: user.name,
+            description: user.description,
             goods: user.goods.filter(e => e.places.find(e => e._id == place._id)),
             photo: user.photo,
             background: user.background,
@@ -101,7 +103,6 @@ router.get('/api/get-user-data/:id', async (req, res) => {
 })
 
 router.post('/api/update-cart', authGuest(), async (req, res) => {
-    console.log(req.body.data)
     const update = await req.db.collection('guests').updateOne(
         { _id: ObjectId(req.user._id) },
         { $set: { 'cart': req.body.data } }
@@ -119,15 +120,19 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
     const order = new OrderModel(req.user._id, req.body.data.order, place._id)
 
     const makeOrder = await req.db.collection('users').updateOne(
-        { 'places.link': req.body.data.order.place },
-        { $push: { 'orders': order } }
+        { _id: ObjectId(user._id) },
+        { $push: {
+            'orders': { 
+                $each: [order],
+                $position: 0
+            }
+        } }
     )
 
     const clearCart = await req.db.collection('guests').updateOne(
         { _id: ObjectId(req.user._id) },
-        { $set: { ['cart.' + place._id]: [] } }
+        { $set: { ['cart.' + place._id]: { goods: [], dops: [] } } }
     )
-    console.log(clearCart)
 
     if (user.sockets.length) {
         websocket.makeOrder({
@@ -139,13 +144,17 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
     const getOrderPrice = (order) => {
         let total = 0
-        for (let i of order.goods) {
-            for (let n in i.cartPrices) {
-                total += +i.prices[i.cartPrices[n]]
+        for (let o of ['goods', 'dops']) {
+            for (let i of order[o]) {
+                for (let n in i.cartPrices) {
+                    total += +i.prices[i.cartPrices[n]]
+                }
             }
         }
         return total
     }
+
+    getOrderPrice(order)
 
     const getCustomArr = (arr) => {
         const newArr = []
@@ -163,28 +172,47 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
         for (let n = 0; n < getCustomArr(order.goods[i].cartPrices).length; n++) {
             // Если есть модификация
             str.push('    ')
-            if (order.goods[i].modifications && order.goods[i].modifications[order.goods[i].cartPrices[n]]) {
-                str.push(`${order.goods[i].modifications[order.goods[i].cartPrices[n]]}, `)
+            if (order.goods[i].modifications && order.goods[i].modifications[n]) {
+                str.push(`${order.goods[i].modifications[n]}, `)
             }
 
-            str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}${user.currencySymbol}, `)
+            str.push(`${order.goods[i].prices[n]}${user.currencySymbol}`)
 
             // Если указан вес
-            if (order.goods[i].weights[order.goods[i].cartPrices[n]]) {
-                str.push(`${order.goods[i].weights[order.goods[i].cartPrices[n]]}`)
+            if (order.goods[i].weights[n]) {
+                str.push(`, `)
+                str.push(`${order.goods[i].weights[n]}г`)
             }
 
-            str.push(`| x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length} \n`)
+            str.push(` | x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length} \n`)
 
             // str.push(`${order.goods[i].prices[order.goods[i].cartPrices[n]]}${user.currencySymbol} ${order.goods[i].weights[order.goods[i].cartPrices[n]]}г x ${order.goods[i].cartPrices.filter(e => e == order.goods[i].cartPrices[n]).length } \n`)
             if (n !== getCustomArr(order.goods[i].cartPrices).length - 1) {
-                str.push(`    -----\n`)
+                str.push(`     -----\n`)
             }
         }
         str.push(`----------------\n`)
     }
 
-    str.push(`\n Итого: ${getOrderPrice(order)}${user.currencySymbol} `)
+    // Дополнения
+    if (order.dops.length) {
+        
+        str.push(`Дополнения\n`)
+        str.push(`\n`)
+    }
+
+    for (let i = 0; i < order.dops.length; i++) {
+        str.push(`${i + 1}) ${order.dops[i].name} `)
+        if (order.dops[i].prices[0]) {
+            str.push(', ')
+            str.push(`${order.dops[i].prices[0]}${user.currencySymbol}`)
+        }
+        str.push(` | x ${order.dops[i].count} \n`)
+
+        str.push(`-----------\n`)
+    }
+
+    str.push(`\n Итого: ${order.price}${user.currencySymbol} `)
 
     let data = {
         messages: [],
@@ -197,8 +225,8 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
     if (user.telegram[order.place]) {
         for (let i = 0; i < user.telegram[order.place].length; i++) {
             const table = typeof order.table == 'number' ? order.table : order.table.replace(' ', '%20')
-            if (user.telegram[order.place][i].notifications == 'all' || user.telegram[order.place][i].tables.indexOf(table) > -1) {
-                data.messages.push(await bot.sendMessage(user.telegram[order.place][i].chatId, `⏳ Новый заказ, ${order.table} столик \n\n${str.join('')}`, acceptOrderBtn));
+            if (user.telegram[order.place][i].notifications == 'all' || user.telegram[order.place][i].tables && user.telegram[order.place][i].tables.indexOf(table) > -1) {
+                data.messages.push(await bot.sendMessage(user.telegram[order.place][i].chatId, `⏳ Новый заказ, столик #${order.table}  \n\n${str.join('')}`, acceptOrderBtn));
                 data.chatId.push( data.messages[i].chat.id )
                 data.messageId.push( data.messages[i].message_id )
             }
@@ -216,19 +244,25 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 })
 
 router.post('/api/load-orders', authGuest(), async (req, res) => {
-    const orders = await req.db.collection("users").aggregate([
-        { $match: { 'places.link': req.body.data } },
-        { $unwind: '$orders' },
-        { $match: {'orders.guestId': ObjectId(req.user._id) } },
-        { $sort: { 'orders.timestamp': 1 } },
-        { $group: {_id: '$_id', list: {$push: '$orders'} } }
-    ]).toArray()
+    const user = await req.db.collection('users').findOne({ 'places.link': req.body.data })
 
-    if (orders[0] && orders[0].list) {
-        res.status(200).json(orders[0].list)
+    if (user) {
+        const orders = await req.db.collection("users").aggregate([
+            { $match: { 'places.link': req.body.data } },
+            { $unwind: '$orders' },
+            { $match: {'orders.guestId': ObjectId(req.user._id) } },
+            { $sort: { 'orders.timestamp': -1 } },
+            { $group: {_id: '$_id', list: {$push: '$orders'} } }
+        ]).toArray()
+        if (orders[0] && orders[0].list) {
+            res.status(200).json(orders[0].list)
+        } else {
+            res.status(200).json([])
+        }
     } else {
         res.status(200).json([])
     }
+    
 })
 
 router.get('/api/get-place-id/:id', async (req, res) => {
@@ -239,6 +273,78 @@ router.get('/api/get-place-id/:id', async (req, res) => {
         const place = user.places.find(e => e._id == req.params.id)
 
         res.status(200).send(place.link)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+// router.post('/api/reserve', async (req, res) => {
+//     try {
+//         console.log(req.body)
+
+//         res.send(true)
+//     } catch (error) {
+//         console.error(error)
+//     }
+// })
+
+router.post('/api/reserve', authGuest(), async (req, res) => {
+    try {
+        const user = await req.db.collection('users').findOne({ 'places.link': req.body.place })
+        const place = user.places.find(e => e.link == req.body.place)
+
+        if (user) {
+            const button = Markup.inlineKeyboard([
+                Markup.callbackButton('Принято', 'like')
+            ]).extra()
+
+        //     const notify = req.body.data.notifyText
+
+            let data = {
+                _id: nanoid(),
+                messages: [],
+                chatId: [],
+                messageId: [],
+                guestId: req.user._id,
+                status: 'pending',
+                place: place._id,
+                timestamp: Date.now(),
+                reservation: req.body
+            }
+
+            let str = []
+            str.push(`${ req.body.date }\n`)
+            str.push(`${ req.body.time }\n`)
+            str.push(`${ req.body.comment }\n`)
+            str.push(`${ req.body.name }\n`)
+            str.push(`${ req.body.phone }\n`)
+
+            str.push(`----------------\n`)
+
+            if (user.telegram[place._id]) {
+                for (let i = 0; i < user.telegram[place._id].length; i++) {
+                    if (user.telegram[place._id][i].notifications == 'all') {
+                        data.messages.push(await bot.sendMessage(user.telegram[place._id][i].chatId, `⏳ Заявка на бронирование \n\n${str.join('')}`, button));
+                        data.chatId.push( data.messages[i].chat.id )
+                        data.messageId.push( data.messages[i].message_id )
+                    }
+                }
+            }
+
+            if (user.sockets.length) {
+                websocket.newReservation({
+                    sockets: user.sockets.filter(e => e.place == place._id),
+                    data
+                })
+            }
+
+            await req.db.collection('users').updateOne(
+                { 'places.link': req.body.place },
+                { $push: { notifications: data } },
+            )
+
+            res.status(200).send(true)
+        }
     } catch (error) {
         console.error(error)
     }

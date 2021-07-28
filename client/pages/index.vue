@@ -79,8 +79,5 @@ export default {
 @import '../assets/m-header.scss';
 @import '../assets/m-welcome.scss';
 @import '../assets/m-form.scss';
-
-
-
 </style>
 

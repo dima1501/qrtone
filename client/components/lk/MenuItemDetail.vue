@@ -1,49 +1,136 @@
 <template lang="pug">
-    .detail
+    .detail#detail_area
+        .detail__bg
         .detail__closer(@click="closeDetail")
-        .detail__area
-            .menu-item__img
-                .menu-item__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+        .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
+            .detail__img
+                .detail__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
                 VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
-                    .menu-item__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
+                    .detail__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
+            .detail__content
+                .detail__content-descr(v-if="item.description") {{ item.description }}
+                .detail__line(v-for="(price, i) in item.prices" :key="i")
+                    .detail__line-inner
+                        .detail__line-content
+                            h4.detail__line-name {{ item.name }}<br>
+                            span.modifications(v-if="item.modifications[i]") {{ item.modifications[i] }}
+                            span.note(v-if="item.weights[i]") {{ item.weights[i] }}г. {{ price }}{{$store.state.guest.companyData.currencySymbol}}
+                            span.note(v-if="item.calories[i]") {{ item.calories[i] }} Ккал
+                            span.note(v-if="item.proteins[i]") {{ item.proteins[i] }} Белки
+                            span.note(v-if="item.fats[i]") {{ item.fats[i] }} Жиры
+                            span.note(v-if="item.carbo[i]") {{ item.carbo[i] }} Углеводы
+                        .detail__line-counter
+                            transition(name="slide-fade" mode="out-in")
+                                .detail__line-button(
+                                    key="12"
+                                    @click="plusMulti(i)"
+                                    v-if="!$store.state.guest.user.cart[getPlaceId()] || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length"
+                                ) {{ item.prices[i] }} {{$store.state.guest.companyData.currencySymbol}}
+                                .detail__line-counter(key="13" v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length")
+                                    .menu-item__counter-control(@click="minusMulti(i)")
+                                        v-icon mdi-minus
+                                    .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length }}
+                                    .menu-item__counter-control.plus(@click="plusMulti(i)")
+                                         v-icon mdi-plus
+                                       
 
-            .menu-item__content
-                .menu-item__content-inner
-                    .menu-item__name {{ item.name }}
-                    .menu-item__name {{ item.translation }}
-                    .menu-item__name {{ item.description }}
-                    .menu-item__price(v-for="(price, i) in item.prices" :key="i")
-                        input.menu-item__price-radio(type="radio" :id="`detail_${item._id}${i}`" :name="`detail_${item._id}`" :value="i"  v-model="$store.state.view.detail.checkedPrice")
-                        label.menu-item__price-label(:for="`detail_${item._id}${i}`") {{ item.prices[i] }}{{$store.state.guest.companyData.currencySymbol}} {{ item.weights[i] }}г.
-
-                .menu-item__bottom(v-if="$store.state.guest.user.cart")
-                    .menu-item__button(
-                        @click="plusMulti"
-                        v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == $store.state.view.detail.checkedPrice).length"
-                        ) {{ item.prices[$store.state.view.detail.checkedPrice] }} {{$store.state.guest.companyData.currencySymbol}}
-
-                    .menu-item__counter(v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == $store.state.view.detail.checkedPrice).length")
-                        .menu-item__counter-control.minus(@click="minusMulti()") -
-                        .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == $store.state.view.detail.checkedPrice).length }}
-                        .menu-item__counter-control.plus(@click="plusMulti()") +
-
-                .menu-item__dops(v-if="item.dops.length && $store.state.guest.companyData.dops")
-                    h4 Дополнения:
-                    .menu-item__dops-item(v-for="(dop, key) in item.dops" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop)")
-                        div {{ $store.state.guest.companyData.dops.find(e => e._id == dop).name }} {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}
-                        div x {{ $store.state.guest.companyData.dops.find(e => e._id == dop).count }}
-                        div(@click="addDopToCart(dop)") add
-                        div(@click="removeDopFromCart(dop)") remove
-                        div ____
+                .detail__dops(v-if="item.dops.length && $store.state.guest.companyData.dops")
+                    h4.detail__dops-title Дополнения:
+                    .detail__line(v-for="(dop, key) in item.dops" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop)")
+                        .detail__line-inner
+                            .detail__line-content
+                                h4.detail__line-name {{ $store.state.guest.companyData.dops.find(e => e._id == dop).name }}
+                                transition(name="slide-fade" mode="out-in")
+                                    span.note(key="15" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop).price && $store.state.guest.companyData.dops.find(e => e._id == dop).count > 0")  {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}{{$store.state.guest.companyData.currencySymbol}}
+                                    span.note(key="16" v-else-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop) && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop).count > 0") Бесплатно
+                            .detail__line-counter
+                                transition(name="slide-fade" mode="out-in")
+                                    .detail__line-button(
+                                        key="13"
+                                        @click="addDopToCart(dop)"
+                                        v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop)") 
+                                        span(v-if="$store.state.guest.companyData.dops.find(e => e._id == dop).price") {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}{{$store.state.guest.companyData.currencySymbol }}
+                                        span(v-else) Бесплатно
+                                    .detail__line-counter(key="14" v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop)")
+                                        .menu-item__counter-control(@click="removeDopFromCart(dop)")
+                                            v-icon mdi-minus
+                                        .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop).count }}
+                                        .menu-item__counter-control(@click="addDopToCart(dop)")
+                                            v-icon mdi-plus
+            .detail__area-bottom(v-bind:class="{ visible: $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.length || $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.length || $store.state.guest.user.orders.length }")
     </template>
 
 <script>
+import Vue from 'vue'
+import Vue2TouchEvents from 'vue2-touch-events'
+
+Vue.use(Vue2TouchEvents)
+
+import VueSlickCarousel from 'vue-slick-carousel'
+import 'vue-slick-carousel/dist/vue-slick-carousel.css'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+
 export default {
     props: {
         item: Object,
         placeId: String
     },
-    methods: {  
+    components: {
+        VueSlickCarousel
+    },
+    data() {
+        return {
+            isAreaVisible: false,
+            startScrollPoint: 0,
+            transitionAreaHeight: 0,
+            move: true,
+            detailArea: null,
+            isDetailAreaScrolledToTop: false
+        }
+    },
+    mounted() {
+        this.detailArea = document.getElementById("detail_area")
+        this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
+        document.documentElement.style.overflow = 'hidden'
+        document.documentElement.style.overscrollBehavior = 'none'
+        setTimeout(() => {
+            this.isAreaVisible = true
+        }, 0);
+    },
+    methods: {
+        // swipeHandler(direction) {
+        //     if (direction.screenY) {
+        //         this.startScrollPoint = direction.screenY
+        //         if (direction.screenY - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
+        //             this.move = false
+        //             this.transitionAreaHeight = direction.screenY - this.startScrollPoint
+        //             if (this.transitionAreaHeight > 80) {
+        //                 this.closeDetail()
+        //             }
+        //         }
+        //     }
+        // },
+        movedHandler(direction) {
+            if (direction.type == 'touchmove') {
+                this.startScrollPoint = direction.screenY ? direction.screenY : direction.changedTouches[0].screenY
+                this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
+            }
+        },
+        movingHandler(direction) {
+            if (direction.type == 'touchmove') {
+                if ((direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
+                    this.move = false
+                    this.transitionAreaHeight = (direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint
+                    if (this.transitionAreaHeight > 80) {
+                        this.closeDetail()
+                    }
+                }
+            }
+        },
+        endHandler() {
+            this.move = true
+            this.transitionAreaHeight = 0
+        },
         addDopToCart(dop) {
             this.$store.dispatch('guest/addDopToCart', {
                 item:  this.$store.state.guest.companyData.dops.find(e => e._id == dop),
@@ -61,22 +148,29 @@ export default {
         getPlaceId() {
             return this.$store.state.guest.companyData.places.find(e => e.link == this.placeId)._id
         },
-        plusMulti() {   
+        plusMulti(price) {   
             this.$store.dispatch('guest/addToCart', {
                 place: this.placeId,
                 item: this.item,
-                price: this.$store.state.view.detail.checkedPrice
+                price: price
             })
         },
-        minusMulti() {
+        minusMulti(price) {
             this.$store.dispatch('guest/minusCartItemMulti', {
                 place: this.placeId,
                 item: this.item,
-                price: this.$store.state.view.detail.checkedPrice
+                price: price
             })
         },
         closeDetail() {
-            this.$store.dispatch('guest/closeDetail')
+            this.move = true
+            this.isAreaVisible = false
+
+            setTimeout(() => {
+                document.documentElement.style.overflow = 'auto'
+                document.documentElement.style.overscrollBehavior = null
+                this.$store.dispatch('guest/closeDetail')
+            }, 200);
         }
     }
 }
@@ -86,52 +180,170 @@ export default {
 .detail {
     position: fixed;
     left: 0;
-    right: 0;
     top: 0;
-    bottom: 36px;
-    z-index: 23;
-    overflow-y: scroll;
+    right: 0;
+    bottom: 0;
+    z-index: 21;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0,0,0,0.8);
-    &__closer {
-        cursor: pointer;
-        position: absolute;
+    overflow-y: scroll;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 40px 0 0;
+    @media screen and (min-height: 750px) {
+        padding: 40px 0 80px;
+    }
+    &__bg {
+        position: fixed;
         left: 0;
         top: 0;
         right: 0;
         bottom: 0;
+        pointer-events: none;
+        background-color: rgba(0,0,0,0.6);
+    }
+    &__closer {
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 100%;
+        cursor: pointer;
     }
     &__area {
-        width: 100%;
-        max-width: 400px;
         position: relative;
         z-index: 2;
+        width: 100%;
+        transform: translateY(100%);
+        margin: auto auto 0;
+        /* max-height: calc(100vh - 47px); */
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
         background-color: #fff;
-        border-radius: 14px;
-        overflow-y: scroll;
-        height: 100%;
-        padding-bottom: 70px;
-    }
-
-    .menu-item {
-        &__img {
-            height: 50%;
-            &-pic {
-                height: 100%;
-                background-size: contain;
+        max-width: 400px;
+        @media screen and (min-height: 750px) {
+            max-height: unset;
+            margin: auto;
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+            overflow: hidden;
+        }
+        &:after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 4px;
+            width: 65px;
+            background-color: #fff;
+            border-radius: 2px;
+            box-shadow: 0 0 6px rgba(0,0,0,0.8);
+        }
+        &:before {
+            content: '';
+            position: absolute;
+            top: 9px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            height: 40px;
+            width: 100px;
+        }
+        &.visible {
+            transform: translateY(0);
+        }
+        &.transitionActive {
+            transition: all .3s;
+        }
+        &-bottom {
+            height: 0;
+            background-color: #fff;
+            transition: height .3s;
+            @media screen and (min-height: 750px) {
+                display: none;
+            }
+            &.visible {
+                height: 60px;
             }
         }
-        &__bottom {
-            position: fixed;
-            left: 0;
-            bottom: 36px;
-            right: 0;
-            background-color: #fff;
+    }
+    &__img {
+        position: relative;
+        overflow: hidden;
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+        &-pic {
+            width: 100%;
+            padding-bottom: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+    }
+    &__content {
+        background-color: #fff;
+        &-descr {
+            padding: 15px;
+            background-color: rgb(241, 241, 241);
+        }
+    }
+    &__line {
+        padding: 10px 15px;
+        border-bottom: 1px solid rgb(241, 241, 241);
+        &:last-child {
+            border: none;
+        }
+        &-inner {
+            display: flex;
+            align-items: center;
+        }
+        &-content {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-right: 5px;
+            span {
+                &.note {
+                    color: #a3a3a3;
+                    font-size: 14px;
+                    margin-right: 5px;
+                }
+                &.modifications {
+                    margin-right: 5px;
+                }
+            }
+        }
+        &-name {
+            margin-right: 5px;
+        }
+        &-button {
+            width: 100%;
+            padding: 7px 10px;
+            background-color: #e0dfdf;
+            border-radius: 14px;
+            font-size: 16px;
+            text-transform: none;
+            cursor: pointer;
+            position: relative;
+            text-align: center;
+        }
+        &-counter {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            width: 110px;
+            align-items: center;
+            justify-content: space-between;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+    }
+    &__dops {
+        &-title {
+            padding: 10px 15px;
+            background-color: rgb(241, 241, 241);
         }
     }
 }
-
-
 </style>

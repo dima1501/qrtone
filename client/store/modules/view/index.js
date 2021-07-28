@@ -4,6 +4,12 @@ import mutations from './mutations'
 
 const state = {
   popup: {
+    onboardPopup: {
+      visible: false
+    },
+    reservePopup: {
+      visible: false
+    },
     PDFPopup: {
       visible: false,
       data: null
@@ -22,18 +28,16 @@ const state = {
     },
     styleQRPopup: {
       visible: false,
-      place: null
+      place: null,
+      type: ''
     },
     tablesPopup: {
       visible: false,
-      tables: null,
+      tables: [],
       place: null
     },
     infoPopup: false,
     addActionPopup: false,
-    editActionPopup: {
-      visible: false
-    },
     addCategoryPopup: {
       visible: false
     },
@@ -42,6 +46,10 @@ const state = {
     },
     editTablesPopup: {
       visible: false
+    },
+    wifiPopup: {
+      visible: false,
+      string: null
     }
   },
   isOrdersOpened: false,
@@ -55,6 +63,21 @@ const state = {
     qr: null,
     ref: null,
     data: {}
+  },
+  loading: {
+    sendOrder: false,
+    uploadLogo: false,
+    uploadBg: false,
+    orders: false,
+    moreOrders: false,
+    notifications: false,
+    moreNotifications: false,
+    pdfUpdating: false
+  },
+  places: {
+    isLinkExists: false,
+    edit: false,
+    newLink: ''
   }
 }
 

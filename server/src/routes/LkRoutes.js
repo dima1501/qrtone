@@ -24,7 +24,7 @@ router.post("/api/update-user-name", auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
-            { $set: { name: req.body.name } }
+            { $set: { name: req.body.data.name, description: req.body.data.description } }
         )
         if (update) {
             res.status(200).send(true)
@@ -64,7 +64,7 @@ router.post("/api/update-company-background", auth(), async (req, res) => {
 
 router.post("/api/add-new-place", auth(), async (req, res) => {
     try {
-        const place = await new PlaceModel(req.body.data)
+        const place = await new PlaceModel(req.body)
         const check = await req.db.collection('users').findOne(
             { 'places.link': place.link }
         )
@@ -86,10 +86,24 @@ router.post("/api/add-new-place", auth(), async (req, res) => {
 router.post("/api/edit-place", auth(), async (req, res) => {
     try {
         const edit = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id), "places._id": req.body.data._id },
-            { $set: { "places.$" : req.body.data } }
+            { _id: ObjectId(req.user._id), "places._id": req.body._id },
+            { $set: { "places.$" : req.body } }
         )
         if (edit) {
+            res.status(200).send(true)
+        }
+    } catch (err) {
+        console.error(err);
+    }
+});
+
+router.post("/api/remove-place", auth(), async (req, res) => {
+    try {
+        const remove = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id), "places._id": req.body._id },
+            { $pull: { places: { _id: req.body._id } } }
+        )
+        if (remove) {
             res.status(200).send(true)
         }
     } catch (err) {
@@ -303,6 +317,38 @@ router.delete('/api/delete-action/:id', auth(), async (req, res) => {
     }
 })
 
+router.delete('/api/delete-menu-item/:id', auth(), async (req, res) => {
+    try {
+        const remove = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $pull: { goods: { _id: req.params.id } } }
+        )
+        if (remove) {
+            res.status(200).send(true)
+        } else {
+            res.status(300).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.delete('/api/delete-menu-item-admin/:id/:user', auth(), async (req, res) => {
+    try {
+        const remove = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.params.user) },
+            { $pull: { goods: { _id: req.params.id } } }
+        )
+        if (remove) {
+            res.status(200).send(true)
+        } else {
+            res.status(300).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 router.post('/api/update-categories-drag', auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(
@@ -363,7 +409,6 @@ router.post('/api/remove-category-admin', auth(), async (req, res) => {
 
 
 router.post('/api/remove-dop', auth(), async (req, res) => {
-    console.log(req.body)
     try {
         const update = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user ? req.user._id : req.body.data._id) },
@@ -406,7 +451,6 @@ router.post('/api/edit-category-admin', auth(), async (req, res) => {
 })
 
 router.post('/api/edit-dop', auth(), async (req, res) => {
-    console.log(req.body)
     try {
         const edit = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user ? req.user._id : req.body.data._id), "dops._id": req.body.data.dop._id },
@@ -522,7 +566,7 @@ router.post('/api/accept-fast-action', auth(), async (req, res) => {
                 req.body.data.messages[i].chat.id,
                 req.body.data.messages[i].message_id,
                 req.body.data.messages[i].message_id,
-                `${req.body.data.messages[i].text.replace('⏳', '✅')}`,
+                `${req.body.data.messages[i].text.replace('⏳', '✅').replace('🙋🏼‍♂️', '✅')}`
             );
         }
 
@@ -554,16 +598,10 @@ router.post('/api/accept-fast-action-tg', auth(), async (req, res) => {
 
 router.post('/api/set-place-socket-id', auth(), async (req, res) => {
     try {
-        // await req.db.collection('users').updateOne(
-        //     { 'sockets.socketId': req.body.data.socketId },
-        //     {'$pull': { "sockets": { "socketId": req.body.data.socketId } } }
-        // )
-        // console.log(req.body.data.socketId)
-        // const lal = await req.db.collection('users').updateOne(
-        //     { 'publicSockets': { $in: [req.body.data.socketId] } },
-        //     {'$pull': { "publicSockets": req.body.data.socketId } }
-        // )
-        // console.log(lal)
+        await req.db.collection('users').updateOne(
+            { 'sockets.socketId': req.body.data.socketId },
+            {'$pull': { "sockets": { "socketId": req.body.data.socketId } } }
+        )
         if (req.user) {
             if (req.body.data.place) {
                 const set = await req.db.collection('users').updateOne(
@@ -583,28 +621,37 @@ router.post('/api/set-place-socket-id', auth(), async (req, res) => {
     }
 })
 
-router.get('/api/load-orders-place/:id', auth(), async (req, res) => {
+router.get('/api/load-orders-place/:id/:items', auth(), async (req, res) => {
     try {
         const orders = await req.db.collection("users").aggregate([
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$orders'},
             { $match: {'orders.place': req.params.id } },
-            { $group: {_id: '$_id', list: {$push: '$orders'}}}
+            { $sort: { 'orders.timestamp': -1 } },
+            { $skip: +req.params.items },
+            { $limit: 10 },
+            { $group: { _id: '$_id', list: {$push: '$orders' } } }
         ]).toArray()
+
         if (orders) {
             res.status(200).send(orders)
+        } else {
+            res.status(404).send(false)
         }
     } catch (error) {
         console.error(error)
     }
 })
 
-router.get('/api/load-actions-place/:id', auth(), async (req, res) => {
+router.get('/api/load-actions-place/:id/:items', auth(), async (req, res) => {
     try {
         const notifications = await req.db.collection("users").aggregate([
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$notifications'},
             { $match: {'notifications.place': req.params.id } },
+            { $sort: { 'notifications.timestamp': -1 } },
+            { $skip: +req.params.items },
+            { $limit: 10 },
             { $group: {_id: '$_id', list: {$push: '$notifications'}}}
         ]).toArray()
         if (notifications) {
@@ -618,8 +665,8 @@ router.get('/api/load-actions-place/:id', auth(), async (req, res) => {
 router.post('/api/update-tables', auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(
-            { _id: ObjectId(req.user._id), 'places._id': req.body.data._id },
-            { $set: { 'places.$.tables': req.body.data.tables } }
+            { _id: ObjectId(req.user._id), 'places._id': req.body._id },
+            { $set: { 'places.$.tables': req.body.tables } }
         )
         res.status(200).send(true)
     } catch (error) {
@@ -647,22 +694,35 @@ router.post('/api/update-tg-tables', auth(), async (req, res) => {
     }
 })
 
+
+router.get('/api/check-place-link/:id', auth(), async (req, res) => {
+    const check = await req.db.collection('users').findOne(
+        { 'places.link': req.params.id }
+    )
+    if (check) {
+        res.send(true)
+    } else {
+        res.send(false)
+    }
+})
+
+
 router.post('/api/update-menu-link', auth(), async (req, res) => {
     try {
         const check = await req.db.collection('users').findOne(
             { 'places.link': req.body.data.link }
         )
-
+        
         if (!check) {
             const add = await req.db.collection('users').updateOne(
-                { _id: ObjectId(req.user._id), 'places._id': req.body.data.place },
+                { _id: ObjectId(req.user._id), 'places._id': req.body.data.place._id },
                 { $set: { 'places.$.link': req.body.data.link } }
             )
             if (add) {
                 res.status(200).send({success: true})
             }
         } else {
-            res.status(200).send({success: false})
+            res.status(200).send({success: false, exists: true})
         }
         
     } catch (error) {
@@ -676,7 +736,9 @@ router.post('/api/subscribe', auth(), async (req, res) => {
         const sub = {
             type: req.body.data.type,
             started: currentPlan,
-            expires: moment(currentPlan).add(req.body.data.month, 'month')._d
+            expires: moment(currentPlan).add(req.body.data.month, 'month')._d,
+            month: req.body.data.month,
+            price: req.body.data.price
         }
 
         if (req.user.subscription[req.user.subscription.length - 1].type == req.body.data.type) {
@@ -722,10 +784,10 @@ router.post('/api/simplify', auth(), async (req, res) => {
         const started = req.user.subscription[req.user.subscription.length - 1].started
         const expires = req.user.subscription[req.user.subscription.length - 1].expires
 
-        const diff = moment(expires).diff(started, 'hours', true) * 2
+        const diff = moment(expires).diff(started, 'days', true) * 2
 
         req.user.subscription[req.user.subscription.length - 1].type = 'standart'
-        req.user.subscription[req.user.subscription.length - 1].expires = moment(started).add(diff, 'hours')._d
+        req.user.subscription[req.user.subscription.length - 1].expires = moment(started).add(diff, 'days')._d
 
         req.db.collection("users").updateOne(
             { _id: ObjectId(req.user._id) },
@@ -772,10 +834,26 @@ router.post('/api/load-tg-users', auth(), async (req, res) => {
 
 router.post('/api/toggle-fast-actions', auth(), async (req, res) => {
     try {
-        console.log(req.body.data)
         const set = req.db.collection("users").updateOne(
             { _id: ObjectId(req.user._id) },
             { $set: { 'fastActionsEnabled': req.body.data } }
+        )
+        if (set) {
+            res.status(200).send(true)
+        } else {
+            res.status(200).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+
+router.post('/api/complete-onboard', auth(), async (req, res) => {
+    try {
+        const set = req.db.collection("users").updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $set: { 'isOnboardCompleted': true } }
         )
         if (set) {
             res.status(200).send(true)

@@ -11,61 +11,42 @@ const SessionService = require('../services/SessionService')
 
 const crypto = require('crypto')
 
+const PreloadUserModel = require('../models/PreloadUser')
+
 router.post("/api/checkauth", auth(), async (req, res) => {
   if (req.user) {
-    const preloadUser = {
-      _id: ObjectId(req.user._id),
-      name: req.user.name,
-      bot_token: req.user.bot_token,
-      photo: req.user.photo,
-      background: req.user.background,
-      places: req.user.places,
-      categories: req.user.categories,
-      telegram: req.user.telegram,
-      actions: req.user.actions,
-      goods: req.user.goods,
-      dops: req.user.dops,
-      orders: req.user.orders,
-      messages: [],
-      notifications: req.user.notifications,
-      sockets: [],
-      subscription: req.user.subscription,
-      currencySymbol: req.user.currencySymbol,
-      fastActionsEnabled: req.user.fastActionsEnabled
-    }
-    res.send(preloadUser);
+    const preloadUser = await new PreloadUserModel(req.user)
+    res.send(preloadUser)
   } else {
     res.send(false)
   }
-  
-});
+})
 
 router.post("/api/checkauth-guest", authGuest(), async (req, res) => {
-  res.send(req.user);
-});
+  res.send(req.user)
+})
 
 router.post("/api/login", auth(), async (req, res) => {
-  console.log(req.body)
-  const { email, password } = req.body;
+  const { email, password } = req.body
   try {
-    const user = await new UserService().findUserByUsername(req, email);
-    console.log(user)
+    const user = await new UserService().findUserByUsername(req, email)
+    const preloadUser = await new PreloadUserModel(user)
     const passwordHash = await crypto
       .createHash("sha256")
       .update(password)
-      .digest("hex");
+      .digest("hex")
 
     if (!user || passwordHash !== user.password) {
       res.status(200).send(false)
-      return;
+      return
     }
 
-    const sessionId = await new SessionService().createSession(req, user._id);
-    res.cookie("sessionId", sessionId, { httpOnly: true }).send(user);
+    const sessionId = await new SessionService().createSession(req, user._id)
+    res.cookie("sessionId", sessionId, { httpOnly: true }).send(preloadUser)
   } catch (err) {
-    console.error(err);
+    console.error(err)
   }
-});
+})
 
 router.post('/api/registration', auth(), async (req, res) => {
   if (!req.user) {
@@ -74,9 +55,10 @@ router.post('/api/registration', auth(), async (req, res) => {
           res.status(200).send(false)
       } else {
           const createUser = await new UserService().createUser(req)
+          const preloadUser = await new PreloadUserModel(user)
           if (createUser) {
-              const sessionId = await new SessionService().createSession(req, createUser._id);
-              res.cookie("sessionId", sessionId, { httpOnly: true }).send(createUser);
+              const sessionId = await new SessionService().createSession(req, createUser._id)
+              res.cookie("sessionId", sessionId, { httpOnly: true }).send(preloadUser)
           } else {
               res.status(200).send(false)
           }
@@ -90,8 +72,8 @@ router.post('/api/registration-guest', authGuest(), async (req, res) => {
   if (!req.user) {
     const createUser = await new UserService().createGuest(req)
     if (createUser) {
-        const sessionId = await new SessionService().createSession(req, createUser._id);
-        res.cookie("guestSessionId", sessionId, { httpOnly: true }).send(createUser);
+        const sessionId = await new SessionService().createSession(req, createUser._id)
+        res.cookie("guestSessionId", sessionId, { httpOnly: true }).send(createUser)
     } else {
         res.status(200).send(false)
     }
@@ -102,14 +84,14 @@ router.post('/api/registration-guest', authGuest(), async (req, res) => {
 
 router.post("/api/logout", auth(), async (req, res) => {
     if (!req.user) {
-      return res.redirect("/");
+      return res.redirect("/")
     }
   
     try {
-      await new SessionService().deleteSession(req, req.sessionId);
-      res.clearCookie("sessionId").redirect("/");
+      await new SessionService().deleteSession(req, req.sessionId)
+      res.clearCookie("sessionId").redirect("/")
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
 })
 
@@ -158,15 +140,19 @@ router.post('/api/set-socket-id-guest', authGuest(), async (req, res) => {
 
 router.delete('/api/delete-socket-id/:id', auth(), async (req, res) => {
   try {
-    await req.db.collection('users').updateOne(
+    const deleteSocketPlace = await req.db.collection('users').updateOne(
       { 'sockets.socketId': req.params.id },
       {'$pull': { "sockets": { "socketId": req.params.id } } }
     )
-    const lal = await req.db.collection('users').updateOne(
+    const deleteSocketPublic = await req.db.collection('users').updateOne(
       { 'publicSockets': { $in: [req.params.id] } },
       { '$pull': { "publicSockets": req.params.id } }
     )
-    res.send(true)
+    if (deleteSocketPlace && deleteSocketPublic) {
+      res.send(true)
+    } else {
+      throw err()
+    }
   } catch (error) {
     console.error(error)
   }

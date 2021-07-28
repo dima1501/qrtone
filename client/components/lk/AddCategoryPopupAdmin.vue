@@ -5,31 +5,36 @@
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
                 h2.popup__title Управление категориями
-                p Изменения сохранятся автоматически {{user.name}}
                 .cats
                     .cats__add
-                        .cats__add-field
-                            v-text-field(
-                                ref="newCat"
-                                v-model="newCat"
-                                type="text"
-                                label="Новая категория")
-                            transition(name="slide-fade" mode="out-in")
-                                .cats__item-controls-btn(@click="create" v-if="newCat.length")
-                                    v-icon(light) mdi-checkbox-marked-circle-outline
+                        transition(name="slide-fade" mode="out-in")
+                            .cats__add-link(@click="addCategory = true" v-if="!addCategory") Новая категория
+                            v-form(v-if="addCategory" @submit.prevent="create" v-model="isFormValid")
+                                .cats__add-field
+                                    v-text-field(
+                                        ref="newCat"
+                                        v-model="newCat"
+                                        type="text"
+                                        label="Новая категория"
+                                        hide-details="auto"
+                                        :rules="nameRules")
+                                    transition(name="slide-fade" mode="out-in")
+                                        button.cats__item-controls-btn(type="submit" v-if="newCat.length")
+                                            v-icon(light) mdi-checkbox-marked-circle-outline
 
                     draggable(
                         ref="asdas"
                         class="drags"
-                        v-model="user.categories"
+                        v-model="$store.state.admin.user.categories"
                         v-bind="dragOptions"
                         @start="drag = true"
                         @end="drag = false"
                         handle=".handleit"
                         @change="change"
                         :forceFallback="true")
-                        div(v-for="(cat, i) in user.categories" :key="cat._id" )
-                            CategoryItemAdmin(:cat="cat" :user="user")
+                        //- transition-group(type="transition" name="flip-list")
+                        div(v-for="(cat, i) in $store.state.admin.user.categories" :key="cat._id" )
+                            CategoryItemAdmin(:cat="cat" :user="$store.state.admin.user")
 
 </template>
 
@@ -47,7 +52,12 @@ export default {
         return {
             drag: false,
             newCat: '',
-            updatedCats: []
+            updatedCats: [],
+            addCategory: false,
+            nameRules: [
+                (v) => !!v || 'Обязательное поле',
+            ],
+            isFormValid: true
         }
     },
     mounted() {
@@ -63,8 +73,11 @@ export default {
             this.$store.dispatch('admin/updateCatsAdmin', { user: this.user })
         },
         create() {
-            this.$store.dispatch('admin/createCatAdmin', {_id: this.user._id, cat: this.newCat})
-            this.newCat = ''
+            if (this.newCat.length) {
+                this.$store.dispatch('admin/createCatAdmin', {_id: this.user._id, cat: this.newCat})
+                this.addCategory = false
+                this.newCat = ''
+            }
         }
     },
     computed: {

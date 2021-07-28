@@ -1,0 +1,41 @@
+.previews {
+    span {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
+.preview {
+    width: 23.5%;
+    margin: 0 2% 2% 0;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    overflow: hidden;
+    &:nth-child(4n) {
+        margin-right: 0;
+    }
+
+    &__img {
+        width: 100%;
+        padding-bottom: 100%;
+        background-size: cover;
+        background-position: center;
+    }
+    &__bottom {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &-item {
+            cursor: pointer;
+            margin: 0 2px;
+            
+            .v-icon {
+                color: $color-black;
+                font-size: 20px;
+                &.trash {
+                    color: $color-red;
+                }
+            }
+        }
+    }
+}

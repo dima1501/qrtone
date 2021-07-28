@@ -46,8 +46,18 @@ export default {
     },
     methods: {
         remove() {
-            var confirmation = confirm(`Вы действительно хотите удалить категорию "${this.cat.name}"`);
-            if (confirmation) this.$store.dispatch('lk/removeCat', this.cat)
+            this.$confirm({
+                message: `Вы действительно хотите удалить категорию "${this.cat.name}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (!!confirm && confirm !== 'false') {
+                        this.$store.dispatch('lk/removeCat', this.cat)
+                    }
+                }
+            })
         },
         edit() {
             this.isEdit = true
@@ -67,6 +77,14 @@ export default {
 </script>
 
 <style lang="scss">
+
+.sortable-chosen {
+    &.ghost {
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        border-radius: 14px;
+    }
+}
+
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all .12s ease;
 }

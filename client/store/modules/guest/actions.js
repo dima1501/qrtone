@@ -83,7 +83,6 @@ const addDopToCart = async (store, data) => {
                 Vue.set(store.state.user.cart, data.place, { dops: [data.item], goods: [] })
             }
         }
-        console.log(store.state.user.cart)
         store.dispatch('updateCart', store.state.user.cart)
     } catch (error) {
         console.error(error)
@@ -108,7 +107,6 @@ const addToCart = async (store, data) => {
                 Vue.set(store.state.user.cart, place._id, { goods: [data.item], dops: [] })
             }
         }
-        console.log(store.state.user.cart)
         store.dispatch('updateCart', store.state.user.cart)
     } catch (error) {
         console.error(error)
@@ -132,15 +130,34 @@ const minusCartItemMulti = async (store, data) => {
     try {
         const place = store.state.companyData.places.find(e => e.link == data.place)
         const menuItem = store.state.user.cart[place._id].goods.find(e => e._id == data.item._id)
-
+        let conf = false
+    
         if (menuItem.count == 1) {
-            const index = store.state.user.cart[place._id].goods.indexOf(menuItem)
-            store.state.user.cart[place._id].goods.splice(index, 1);
+            $nuxt.$confirm({
+                message: `Убрать из заказа "${data.item.name}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (!!confirm && confirm !== 'false') {
+                        conf = true
+                        const index = store.state.user.cart[place._id].goods.indexOf(menuItem)
+                        store.state.user.cart[place._id].goods.splice(index, 1)
+                    }
+                }
+            })
+        } else {
+            conf = true
         }
-        const priceIndex = menuItem.cartPrices.indexOf(data.price)
-        menuItem.cartPrices.splice(priceIndex, 1)
-        menuItem.count--
-        store.dispatch('updateCart', store.state.user.cart)
+
+        if (conf) {
+            const priceIndex = menuItem.cartPrices.indexOf(data.price)
+            menuItem.cartPrices.splice(priceIndex, 1)
+            menuItem.count--
+            store.dispatch('updateCart', store.state.user.cart)
+        }
+        
     } catch (error) {
         console.error(error)
     }
@@ -149,15 +166,31 @@ const minusCartItemMulti = async (store, data) => {
 const minusDopMulti = async (store, data) => {
     try {
         const menuItem = store.state.user.cart[data.place].dops.find(e => e._id == data.item._id)
-
+        let conf
         if (menuItem.count == 1) {
-            const index = store.state.user.cart[data.place].dops.indexOf(menuItem)
-            store.state.user.cart[data.place].dops.splice(index, 1);
+            $nuxt.$confirm({
+                message: `Убрать из заказа "${data.item.name}"?`,
+                button: {
+                    no: 'Нет',
+                    yes: 'Да'
+                },
+                callback: confirm => {
+                    if (!!confirm && confirm !== 'false') {
+                        conf = true
+                        const index = store.state.user.cart[data.place].dops.indexOf(menuItem)
+                        store.state.user.cart[data.place].dops.splice(index, 1)
+                    }
+                }
+            })
+        } else {
+            conf = true
         }
-        const priceIndex = menuItem.cartPrices.indexOf(data.price)
-        menuItem.cartPrices.splice(priceIndex, 1)
-        menuItem.count--
-        store.dispatch('updateCart', store.state.user.cart)
+        if (conf) {
+            const priceIndex = menuItem.cartPrices.indexOf(data.price)
+            menuItem.cartPrices.splice(priceIndex, 1)
+            menuItem.count--
+            store.dispatch('updateCart', store.state.user.cart)
+        }
     } catch (error) {
         console.error(error)
     }
@@ -192,9 +225,12 @@ const makeOrder = async (store, data) => {
             data: { data }
         })
         if (order) {
-            store.state.user.orders.push(order.data)
-            store.state.user.cart[store.state.companyData.places.find(e => e.link == data.order.place)._id] = []
-
+            store.state.user.orders.unshift(order.data)
+            store.state.user.cart[store.state.companyData.places.find(e => e.link == data.order.place)._id] = {
+                goods: [],
+                dops: []
+            }
+            store.rootState.view.loading.sendOrder = false
             store.rootState.view.isCartOpened = false
             store.rootState.view.isOrdersOpened = true
         }
@@ -242,7 +278,7 @@ const redirect = async (store, data) => {
             url: `/api/get-place-id/${data.placeId}`
         })
         if (place.data) {
-            $nuxt.$router.push($nuxt.localePath({ path: `/m/${place.data}` }))
+            $nuxt.$router.replace($nuxt.localePath({ path: `/m/${place.data}${data.table ? '?t=' + data.table : '' }` }))
         }
     } catch (error) {
         console.error(error)

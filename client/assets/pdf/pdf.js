@@ -3,20 +3,20 @@ const cur = [
         ref: null
     },
     {
-        name: 'A4',
+        name: 'A4, 210мм х 297мм',
         width: 210,
         height: 297,
         pic: '/PDF_1.png',
-        title: '',
-        subtitle: '',
+        title: 'Отсканируйте для просмотра меню',
+        subtitle: 'Сделайте заказ, позовите официанта или попросите счет',
         ref: 'pdf1'
     },
     {
-        name: 'simple card, 70mm x 87mm',
+        name: 'Карточка, 70мм x 87мм',
         width: 70,
         height: 93,
         pic: '/PDF_2.png',
-        subtitle: '',
+        subtitle: 'Отсканируйте для просмотра меню',
         ref: 'pdf2'
     }
 ]

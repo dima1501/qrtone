@@ -5,13 +5,12 @@
 <script>
 export default {
     mounted() {
-        if (!this.$route.query.place) {
+        if (!this.$route.params.id) {
             this.$router.push($nuxt.localePath({ path: '/' }))
         } else {
-            $nuxt.$router.push($nuxt.localePath({ path: `/m/` }))
             this.$store.dispatch('guest/redirect', {
-                placeId: this.$route.query.place,
-                table: this.$route.query.table
+                placeId: this.$route.params.id,
+                table: this.$route.query.t
             })
         }
         

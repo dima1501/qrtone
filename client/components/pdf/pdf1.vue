@@ -3,7 +3,7 @@
         .pdf-list__area
             h1 {{$store.state.view.pdf.data.title}}
             p {{$store.state.view.pdf.data.subtitle}}
-            .pdf-list__qr(v-html="$store.state.view.pdf.qr")
+            img.pdf-list__qr(:src="$store.state.view.pdf.qr")
 </template>
 
 <script>
@@ -34,14 +34,20 @@ export default {
         border-radius: 14px;
         height: calc(100% - 200px);
         width: 100%;
-        padding: 50px 0;
+        padding: 50px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
 
         h1 {
+            text-align: center;
             margin-bottom: 50px;
+            white-space: pre-wrap; 
+            word-wrap: break-word;
+            line-height: 1.3;
+            max-height: 200px;
+            overflow: hidden;
         }
 
         p {
@@ -49,6 +55,9 @@ export default {
             max-width: 300px;
             margin: 0 auto 50px;
             text-align: center;
+            white-space: pre-wrap; 
+            word-wrap: break-word;
+            line-height: 1.4;
         }
     }
     &__qr {
@@ -56,7 +65,6 @@ export default {
             width: 300px;
             height: 300px;
         }
-        
     }
 }
 

@@ -7,72 +7,52 @@
                 h2.qr__field-title QR-код меню
                 .qr__field-text(v-if="$store.state.auth.user.places.length > 1") Код открывает меню выбранного заведения, без привязки к столику 
                 .qr__field-text(v-else) Код открывает меню заведения, без привязки к столику
+                
+                div(v-if="$store.state.auth.user.places.length")
+                    v-select(:items="$store.state.auth.user.places" v-model="checkedSimplePlace" label="Выберите заведение" item-text="name" item-value="_id" hide-details="auto" v-on:change="checkQRPlace").qr__field-select
+                    v-btn(
+                        depressed
+                        color="primary"
+                        :disabled="!checkedSimplePlace"
+                        @click="openStyleQRPopup('simple')").white--text Создать
 
-                div(v-if="$store.state.auth.user.places.length > 1")
-                    .qr__field-text Выберите заведение:
-                    .qr__field-line(v-for="place in $store.state.auth.user.places")
-                        input(
-                            type="radio" 
-                            :id='`simple_${place._id}`' 
-                            name='simpleQR'
-                            v-on:change="checkQRPlace(place)" )
-                        label(:for='`simple_${place._id}`' ) {{ place.name }}
-                    v-btn(
-                        color="primary"
-                        text
-                        :disabled="!$store.state.view.popup.styleQRPopup.place"
-                        @click="openStyleQRPopup()"
-                    ) Стилизовать и скачать
-                div(v-else-if="$store.state.auth.user.places.length == 1")
-                    div для {{$store.state.auth.user.places[0].name}}
-                    v-btn(
-                        color="primary"
-                        text
-                        @click="openStyleQRPopup($store.state.auth.user.places[0])"
-                    ) Стилизовать и скачать
                 div(v-else)
-                    .button.-black(@click="openAddPlacePopup") Добавить заведение
+                    v-btn(
+                        depressed 
+                        color="primary"
+                        @click="openAddPlacePopup") Добавить заведение
 
-            .qr__field-pic
         .qr__field
             .qr__field-content
                 h2.qr__field-title QR-коды столиков
                 .qr__field-text Код открывает меню выбранного заведения с привязкой к столику. Дает возможность сделать заказ к столику, а также позвать официанта или попросить счет
                 
                 div(v-if="isAvailable")
-                    div(v-if="$store.state.auth.user.places.length > 1")
-                        .qr__field-text Выберите заведение:
-                        .qr__field-line(v-for="place in $store.state.auth.user.places")
-                            input(
-                                type="radio" 
-                                :id='`multi_${place._id}`'  
-                                name='multiQR'
-                                v-on:change="checkMultiQRPlace(place)" )
-                            label(:for='`multi_${place._id}`') {{ place.name }}
+                    div(v-if="$store.state.auth.user.places.length")
+                        v-select(:items="$store.state.auth.user.places" v-model="checkedMultiPlace" label="Выберите заведение" item-text="name" item-value="_id" hide-details="auto" v-on:change="checkMultiQRPlace").qr__field-select
                         v-btn(
+                            depressed
                             color="primary"
-                            text
-                            :disabled="!$store.state.view.popup.tablesPopup.place"
-                            @click="openTablesPopup()"
-                        ) Управление столиками
-                    div(v-else-if="$store.state.auth.user.places.length == 1")
-                        .qr__field-text Для {{$store.state.auth.user.places[0].name}}
-                        v-btn(
-                            color="primary"
-                            text
-                            @click="openTablesPopup( $store.state.auth.user.places[0])"
-                        ) Управление столиками
+                            :disabled="!checkedMultiPlace"
+                            @click="openTablesPopup()") Создать
+
                     div(v-else)
                         .button.-black(@click="openAddPlacePopup") Добавить заведение
 
-
                 div(v-else)
                     v-btn(
+                        depressed
                         color="primary"
-                        text
-                        to="/lk/settings"
-                    ) Доступно с Premium
-            .qr__field-pic
+                        to="/lk/settings") Доступно с Premium
+
+        .qr__field
+            .qr__field-content
+                h2.qr__field-title QR-код Wi-Fi
+                .qr__field-text Можно отсканировать и сразу подключиться к wi-if, пароль вводить не нужно
+                v-btn(
+                    depressed
+                    color="primary"
+                    @click="openWifiPopup()") Создать
 
         StyleQRPopup(
             v-if="$store.state.view.popup.styleQRPopup.visible"
@@ -83,17 +63,21 @@
         PDFPopup(
             v-if="$store.state.view.popup.PDFPopup.visible"
         )
+        WifiPopup(
+            v-if="$store.state.view.popup.wifiPopup.visible"
+        )
 
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
     layout: 'lk',
     data() {
         return {
-            
+            checkedSimplePlace: null,
+            checkedMultiPlace: null
         }
     },
     computed: {
@@ -109,28 +93,27 @@ export default {
             this.$store.state.view.popup.addPlacePopup.visible = true
         },
         checkQRPlace(place) {
-            this.$store.state.view.popup.styleQRPopup.place = place
+            const findPlace = this.$store.state.auth.user.places.find(e => e._id == place)
+            this.$store.state.view.popup.styleQRPopup.place = findPlace
         },
         checkMultiQRPlace(place) {
-            this.$store.state.view.popup.tablesPopup.place = place
+            const findPlace = this.$store.state.auth.user.places.find(e => e._id == place)
+            this.$store.state.view.popup.tablesPopup.place = findPlace
         },
-        openStyleQRPopup(place) {
-            if (place) {
-                this.$store.state.view.popup.styleQRPopup.place = place
-            }
-            this.$store.state.view.popup.tablesPopup.tables = null
+        openStyleQRPopup(type) {
+            this.$store.state.view.popup.tablesPopup.tables = []
             this.$store.state.view.popup.styleQRPopup.visible = true
+            this.$store.state.view.popup.styleQRPopup.type = type
         },
         openTablesPopup(place) {
             if (place) {
                 this.$store.state.view.popup.tablesPopup.place = place
             }
             this.$store.state.view.popup.tablesPopup.visible = true
+        },
+        openWifiPopup() {
+            this.$store.state.view.popup.wifiPopup.visible = true
         }
-    },
-    beforeDestroy() {
-        this.$store.state.view.popup.styleQRPopup.place = null
-        this.$store.state.view.popup.tablesPopup.place = null
     }
 }
 </script>
@@ -139,22 +122,22 @@ export default {
 .qr {
     &__title {
         margin-bottom: 20px;
+        color: $color-black;
     }
     &__field {
-        background: #F5F7FB;
-        border-radius: 15px;
+        border: 3px solid #F5F7FB;
+        box-shadow: 0 0 20px rgb(0 0 0 / 20%);
+        border-radius: 16px;
         padding: 20px;
         display: flex;
         align-items: center;
         margin-bottom: 30px;
-        max-width: 650px;
+        max-width: 400px;
         &:last-child {
             margin-bottom: 0;
         }
         &-content {
             width: 100%;
-            max-width: 350px;
-            margin-right: 20px;
         }
         &-pic {
             margin-left: auto;
@@ -165,10 +148,18 @@ export default {
         &-download {
             cursor: pointer;
             margin-top: 15px;
-            color: rgb(14, 98, 177);
+            color: $color-blue;
             text-decoration: underline;
         }
+        &-title {
+            color: $color-black;
+        }
         &-text {
+            margin-bottom: 15px;
+            color: $color-black;
+            line-height: 1.35;
+        }
+        &-select {
             margin-bottom: 15px;
         }
     }

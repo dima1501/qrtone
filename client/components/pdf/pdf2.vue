@@ -1,6 +1,6 @@
 <template lang="pug">
     .pdf-list_2
-        .pdf-list_2__qr(v-html="$store.state.view.pdf.qr")
+        img.pdf-list_2__qr(:src="$store.state.view.pdf.qr")
         .pdf-list_2__text {{$store.state.view.pdf.data.subtitle}}
             
 </template>
@@ -25,14 +25,16 @@ export default {
     &__text {
         display: flex;
         align-items: center;
-        margin-top: -4px;
         line-height: 1.3;
-        height: 79px;
+        height: 90px;
+        overflow: hidden;
         padding: 0 10px 10px;
         text-align: center;
         font-size: 20px;
         max-width: 100%;
         overflow: hidden;
+        white-space: pre-wrap; 
+        word-wrap: break-word;
     }
     &__qr {
         width: 100%;

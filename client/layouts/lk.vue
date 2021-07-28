@@ -45,7 +45,8 @@ export default {
       this.$store.state.auth.user.orders.unshift(data.order)
     },
     async acceptOrderAdmin(data) {
-      this.$store.state.auth.user.orders.find(e => e.orderId === data.orderId).status = 'accepted'
+      const order = this.$store.state.auth.user.orders.find(e => e.orderId === data.orderId)
+      if (order) order.status = 'accepted'
     },
     async newFastAction(data) {
       this.$notify({ group: 'custom-style', type: 'n-info', title: data.notify.replace('@table', data.table) })
@@ -64,7 +65,8 @@ export default {
       this.$store.state.auth.user.notifications.unshift(data)
     },
     async acceptFastAction(data) {
-      this.$store.state.auth.user.notifications.find(e => e._id == data._id).status = 'accepted'
+      const notify = this.$store.state.auth.user.notifications.find(e => e._id == data._id)
+      if (notify) notify.status = 'accepted'
     },
     async newTGUser() {
       this.$store.dispatch("lk/updateTGUsers")

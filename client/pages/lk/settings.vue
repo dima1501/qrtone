@@ -70,6 +70,11 @@
                         fastAction(v-for="(action, key) in $store.state.auth.user.actions" :key="key" :action="action")
 
             .settings__section
+                .settings__section-top
+                    h2.settings__section-title Чаевые
+                p Добавьте данные о официантах, зарегистрированных<br> на <a target="_blank" href="https://chachachay.me/">chachachay.me</a> для быстрого получения чаевых
+
+            .settings__section
                 div(v-if="!isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
                     .settings__section-top
                         h2.settings__section-title Подписка

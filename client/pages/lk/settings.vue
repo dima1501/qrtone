@@ -63,7 +63,7 @@
                                 v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
                             <span>Добавить быстрое действие</span>
 
-                    h3.settings__section-unavailable(v-if="!isAvailable") Доступно с подпиской Premium
+                p.red--text(v-if="!isAvailable") Доступно с подпиской <b>Premium</b>
                 div
                     p <code>@table</code> отображает номер столика, с которого поступил запрос
                     .options
@@ -72,7 +72,16 @@
             .settings__section
                 .settings__section-top
                     h2.settings__section-title Чаевые
-                p Добавьте данные о официантах, зарегистрированных<br> на <a target="_blank" href="https://chachachay.me/">chachachay.me</a> для быстрого получения чаевых
+                    .settings__section-link(@click="addWaiter")
+                        v-tooltip(top)
+                            template(v-slot:activator="{ on, attrs }")
+                                v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
+                            <span>Добавить официанта</span>
+
+                p(v-if="!isAvailable").red--text Активно с подпиской <b>Premium</b>
+                p Добавьте данные об официантах, зарегистрированных<br> на <a target="_blank" href="https://10q.ru/1075852">chachachay.me</a> для быстрого получения чаевых
+
+                .chay
 
             .settings__section
                 div(v-if="!isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
@@ -286,22 +295,11 @@ export default {
         }
     },
     methods: {
-        getAddressData: function (addressData, placeResultData, id) {
-            
+        addWaiter() {
+            console.log(123)
         },
         fastActionsToggler(e) {
             this.$store.dispatch("lk/toggleFastActions", e)               
-        },
-        copyLink(text) {
-            const link = `https://qrtone.com/m/${text}`
-            navigator.clipboard.writeText(link)
-        },
-        shareLink(text) {
-            const link = `https://qrtone.com/m/${text}`
-            navigator.share({
-                title: 'QRTone.com',
-                url: link
-            })
         },
         setCurrency(value) {
             this.$store.dispatch('lk/setCurrency', value)
@@ -395,9 +393,6 @@ export default {
                 this.$notify({ group: 'custom-style', type: 'n-success', title: 'Уведомления в браузере отключены' })
             }
         },
-        functionToChangeValue(e, key) {
-            this.updatedLinks[key] = e.target.value
-        },
         openAddPlacePopup() {
             this.$store.state.view.popup.addPlacePopup.visible = true
         },
@@ -409,39 +404,8 @@ export default {
             this.editableTablesPlace = Object.assign({}, place)
             this.$store.state.view.popup.editTablesPopup.visible = true
         },
-        loadLogo(e) {
-            if (e) {
-                this.newCompanyLogoSrc = URL.createObjectURL(e)
-                this.newCompanyLogoFile = e
-            } else {
-                this.newCompanyLogoSrc = null
-                this.newCompanyLogoFile = null
-            }
-        },
-        uploadCompanyLogo() {
-            this.$store.dispatch('lk/updateCompanyLogo', this.newCompanyLogoFile)
-        },
-        loadBackground(e) {
-            if (e) {
-                this.newCompanyBackgroundSrc = URL.createObjectURL(e)
-                this.newCompanyBackgroundFile = e
-            } else {
-                this.newCompanyBackgroundSrc = null
-                this.newCompanyBackgroundFile = null
-            }
-        },
-        uploadCompanyBackground() {
-            this.$store.dispatch('lk/updateCompanyBackground', this.newCompanyBackgroundFile)
-        },
         addFastAction() {
             this.$store.state.view.popup.addActionPopup = true
-        },
-        formatTable(table) {
-            if (typeof table == 'number') {
-                return table
-            } else {
-                return table.replace('%20', ' ')
-            }
         },
         openOnboardPopup() {
             this.$store.state.view.popup.onboardPopup.visible = true

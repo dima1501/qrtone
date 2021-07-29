@@ -55,7 +55,7 @@ router.post('/api/registration', auth(), async (req, res) => {
           res.status(200).send(false)
       } else {
           const createUser = await new UserService().createUser(req)
-          const preloadUser = await new PreloadUserModel(user)
+          const preloadUser = await new PreloadUserModel(createUser)
           if (createUser) {
               const sessionId = await new SessionService().createSession(req, createUser._id)
               res.cookie("sessionId", sessionId, { httpOnly: true }).send(preloadUser)

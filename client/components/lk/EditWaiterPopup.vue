@@ -135,13 +135,10 @@ export default {
                         url: '/api/edit-waiter',
                         data: this.newWaiter
                     })
-console.log(add.data)
                     if (add.data) {
-                        
                         this.$store.state.view.popup.editWaiterPopup.visible = false
                         this.$store.state.auth.user.waiters = add.data
                         this.$notify({ group: 'custom-style', type: 'n-success', title: 'Изменения сохранены' })
-
                         if (this.deletePic) {
                             this.$store.dispatch("lk/deletePic", this.deletePic)
                         }
@@ -149,10 +146,8 @@ console.log(add.data)
                 }
 
                 if (this.newWaiter.photo.upload) {
-
                     const bodyFormData = new FormData();
                     bodyFormData.append("image", this.newWaiter.photo);
-                
                     const uploadPhoto = await axios({
                         method: "post",
                         url: "/api/upload-company-logo",

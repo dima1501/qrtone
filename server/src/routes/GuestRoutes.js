@@ -94,7 +94,8 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             currencySymbol: user.currencySymbol,
             subscription: user.subscription,
             fastActionsEnabled: user.fastActionsEnabled,
-            dops: user.dops
+            dops: user.dops,
+            waiters: user.waiters.filter(e => e.places.find(e => e == place._id))
         }
         res.status(200).send(publicUser)
     } else {

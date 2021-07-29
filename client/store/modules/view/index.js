@@ -4,6 +4,13 @@ import mutations from './mutations'
 
 const state = {
   popup: {
+    addWaiterPopup: {
+      visible: false
+    },
+    editWaiterPopup: {
+      visible: false,
+      data: {}
+    },
     onboardPopup: {
       visible: false
     },

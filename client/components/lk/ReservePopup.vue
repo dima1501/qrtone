@@ -24,8 +24,6 @@
                                         format="HH:mm"
                                         value-type="format"
                                         type="time")
-                                    datetime
-                                    div {{date}}
                                         //- :disabled-time="notBeforeNow")
                             //- .reserve__note Ежедневно с 10:00 до 23:00
 

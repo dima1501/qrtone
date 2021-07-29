@@ -624,6 +624,10 @@ router.post('/api/set-place-socket-id', auth(), async (req, res) => {
 
 router.get('/api/load-orders-place/:id/:items', auth(), async (req, res) => {
     try {
+        if (!req.user) {
+            res.status(200).send(false)
+            return
+        }
         const orders = await req.db.collection("users").aggregate([
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$orders'},
@@ -637,7 +641,7 @@ router.get('/api/load-orders-place/:id/:items', auth(), async (req, res) => {
         if (orders) {
             res.status(200).send(orders)
         } else {
-            res.status(404).send(false)
+            res.status(200).send(false)
         }
     } catch (error) {
         console.error(error)
@@ -646,6 +650,10 @@ router.get('/api/load-orders-place/:id/:items', auth(), async (req, res) => {
 
 router.get('/api/load-actions-place/:id/:items', auth(), async (req, res) => {
     try {
+        if (!req.user) {
+            res.status(200).send(false)
+            return
+        }
         const notifications = await req.db.collection("users").aggregate([
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$notifications'},
@@ -657,6 +665,8 @@ router.get('/api/load-actions-place/:id/:items', auth(), async (req, res) => {
         ]).toArray()
         if (notifications) {
             res.status(200).send(notifications)
+        } else {
+            res.status(200).send(false)
         }
     } catch (error) {
         console.error(error)

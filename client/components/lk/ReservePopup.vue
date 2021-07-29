@@ -1,5 +1,5 @@
 <template lang="pug">
-    .popup
+    .popup.z-22
         .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
@@ -23,9 +23,11 @@
                                         :minute-step="1"
                                         format="HH:mm"
                                         value-type="format"
-                                        type="time"
-                                        :disabled-time="notBeforeNow")
-                            .reserve__note Ежедневно с 10:00 до 23:00
+                                        type="time")
+                                    datetime
+                                    div {{date}}
+                                        //- :disabled-time="notBeforeNow")
+                            //- .reserve__note Ежедневно с 10:00 до 23:00
 
                         .reserve__section
                             .reserve__title Количество гостей
@@ -186,4 +188,6 @@ export default {
 .theme--light.v-btn.v-btn--disabled.v-btn--has-bg {
     background-color: #f5f5f5 !important;
 }
+
+@import '../../assets/popup.scss';
 </style>

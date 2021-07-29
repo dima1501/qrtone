@@ -4,6 +4,9 @@ import mutations from './mutations'
 
 const state = {
   popup: {
+    tipsPopup: {
+      visible: false
+    },
     addWaiterPopup: {
       visible: false
     },

@@ -1,7 +1,7 @@
 <template lang="pug">
 div
     .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
-        .avavav(v-if="!isSubscriptionActive")
+        .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
                 img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
             span {{$store.state.guest.companyData.name}}
@@ -179,6 +179,9 @@ div
         transition(name="fade")
             ReservePopup(v-if="$store.state.view.popup.reservePopup.visible")
 
+        transition(name="fade")
+            TipsPopup(v-if="$store.state.view.popup.tipsPopup.visible")
+
         client-only
             vue-confirm-dialog
 
@@ -332,7 +335,8 @@ export default {
     },
     methods: {
         letTips() {
-            console.log('let tips')
+            this.$store.state.view.popup.tipsPopup.visible = true
+            this.commands = false
         },
         onItemChanged(event, currentItem, lastActiveItem) {
             if (currentItem) {
@@ -1056,7 +1060,7 @@ export default {
     }
 }
 
-.avavav {
+.geser {
     position: fixed;
     left: 0;
     top: 0;

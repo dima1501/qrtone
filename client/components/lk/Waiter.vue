@@ -5,9 +5,9 @@
             .chay__item-content
                 .chay__item-name {{ waiter.name }}
                 .chay__item-id Id: {{ waiter.id }}
-        .chay__item-bottom
-            .chay__item-link.red--text(@click="deleteWaiter") Удалить
-            .chay__item-link.blue--text(@click="editWaiterPopup") Изменить
+                .chay__item-bottom
+                    .chay__item-link.red--text(@click="deleteWaiter") Удалить
+                    .chay__item-link.blue--text(@click="editWaiterPopup") Изменить
 </template>
 
 <script>
@@ -65,15 +65,14 @@ export default {
         &-row {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
         }
         &-photo {
             border-radius: 10px;
             overflow: hidden;
             background-size: cover;
             background-position: center;
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             flex-shrink: 0;
             margin-right: 15px;
         }

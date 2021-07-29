@@ -82,6 +82,7 @@
                 p Добавьте данные об официантах, зарегистрированных<br> на <a target="_blank" href="https://10q.ru/1075852">chachachay.me</a> для быстрого получения чаевых
 
                 .chay
+                    Waiter(v-for="waiter in $store.state.auth.user.waiters" :waiter="waiter" :key="waiter._id")
 
             .settings__section
                 div(v-if="!isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
@@ -242,10 +243,14 @@
             
             EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
             EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
+            //- EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
+
+            CreateWaiterPopup(v-if="$store.state.view.popup.addWaiterPopup.visible")
+            EditWaiterPopup(v-if="$store.state.view.popup.editWaiterPopup.visible")
+
 </template>
 
 <script>
-import { transliterate as tr } from 'transliteration';
 import moment from 'moment';
 
 import currencies from 'assets/json/currency.json'
@@ -296,7 +301,7 @@ export default {
     },
     methods: {
         addWaiter() {
-            console.log(123)
+            this.$store.state.view.popup.addWaiterPopup.visible = true
         },
         fastActionsToggler(e) {
             this.$store.dispatch("lk/toggleFastActions", e)               

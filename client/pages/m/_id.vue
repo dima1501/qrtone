@@ -1,7 +1,7 @@
 <template lang="pug">
 div
     .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
-        .avavav(v-if="!isSubscriptionActive")
+        .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
                 img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
             span {{$store.state.guest.companyData.name}}
@@ -16,7 +16,12 @@ div
                     .header__controls
                         transition(name="slide-up")
                             v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
-                        v-icon.ml-5(light @click="toggleCommandsMenu" v-if="$nuxt.$route.query.t && isAvailable && $store.state.guest.companyData.fastActionsEnabled && $store.state.guest.companyData.actions.filter(e => e.isActive == true).length") mdi-menu 
+
+                        v-icon.ml-5(
+                            light 
+                            @click="toggleCommandsMenu"
+                            v-if="$nuxt.$route.query.t && isAvailable && $store.state.guest.companyData.fastActionsEnabled && ($store.state.guest.companyData.actions.filter(e => e.isActive == true).length || $store.state.guest.companyData.waiters.length)") mdi-menu 
+
             .welcome
                 .welcome__bg(v-if="$store.state.guest.companyData.background" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
                 .welcome__inner(:class="{ hasOffset: $store.state.guest.companyData.background }")
@@ -44,6 +49,11 @@ div
                     transition(name="slide-fade" mode="out-in")
                         .commands__area(v-if="commands && !isCommandSend" key="commands")
                             .commands__actions
+                                v-btn.commands__item.tips(depressed v-if="$store.state.guest.companyData.waiters.length" @click="letTips")
+                                    img(v-if="navigator && navigator.match(/iPhone|iPod|iPad|Mac/)" src="https://img.icons8.com/ios-glyphs/60/000000/apple-pay.png")
+                                    img(v-else-if="navigator && navigator.match(/Android/)" src="https://img.icons8.com/nolan/64/google-pay.png")
+                                    img(v-else src="https://img.icons8.com/ios/24/000000/macbook-cards--v3.png")
+                                    span Оставить чаевые
                                 v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-if="action.isActive" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
                                 v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
                         .commands__area(v-if="commands && isCommandSend" key="success")  
@@ -169,6 +179,9 @@ div
         transition(name="fade")
             ReservePopup(v-if="$store.state.view.popup.reservePopup.visible")
 
+        transition(name="fade")
+            TipsPopup(v-if="$store.state.view.popup.tipsPopup.visible")
+
         client-only
             vue-confirm-dialog
 
@@ -278,6 +291,7 @@ export default {
         }
     },
     mounted() {
+        this.navigator = navigator.platform
         window.addEventListener('scroll', (e) => {
             this.headerTop = this.$refs.cats.getBoundingClientRect().top;
         })
@@ -320,6 +334,10 @@ export default {
         }
     },
     methods: {
+        letTips() {
+            this.$store.state.view.popup.tipsPopup.visible = true
+            this.commands = false
+        },
         onItemChanged(event, currentItem, lastActiveItem) {
             if (currentItem) {
                 this.$refs["vs"].scrollTo(
@@ -1032,10 +1050,17 @@ export default {
         &:last-child {
             margin-bottom: 0;
         }
+        &-images {
+            margin-top: 2px;
+        }
+        img {
+            max-height: 36px;
+            margin-right: 10px;
+        }
     }
 }
 
-.avavav {
+.geser {
     position: fixed;
     left: 0;
     top: 0;

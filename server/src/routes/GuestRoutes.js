@@ -85,7 +85,7 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             _id: ObjectId(user._id),
             name: user.name,
             description: user.description,
-            goods: user.goods.filter(e => e.places.find(e => e._id == place._id)),
+            goods: user.goods.filter(e => e.places.find(e => e == place._id)),
             photo: user.photo,
             background: user.background,
             categories: user.categories,
@@ -94,7 +94,8 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             currencySymbol: user.currencySymbol,
             subscription: user.subscription,
             fastActionsEnabled: user.fastActionsEnabled,
-            dops: user.dops
+            dops: user.dops,
+            waiters: user.waiters.filter(e => e.places.find(e => e == place._id))
         }
         res.status(200).send(publicUser)
     } else {

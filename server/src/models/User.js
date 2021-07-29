@@ -85,7 +85,8 @@ const User = class User {
     this.currencySymbol = '₽',
     this.publicSockets = [],
     this.fastActionsEnabled = true,
-    this.isOnboardCompleted = false
+    this.isOnboardCompleted = false,
+    this.waiters = []
   }
 }
 

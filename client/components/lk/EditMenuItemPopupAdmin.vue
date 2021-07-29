@@ -239,10 +239,10 @@ export default {
         },
         togglePlace(place) {
             const arr = this.updatedMenuItem.places
-            if (arr.indexOf(place) > -1) {
-                arr.splice(arr.indexOf(place), 1)
+            if (arr.indexOf(place._id) > -1) {
+                arr.splice(arr.indexOf(place._id), 1)
             } else {
-                arr.push(place)
+                arr.push(place._id)
             }
         },
         closePopup() {

@@ -1,4 +1,7 @@
 .popup {
+    &.z-22 {
+        z-index: 22;
+    }
     &__overlay {
         position: fixed;
         left: 0;

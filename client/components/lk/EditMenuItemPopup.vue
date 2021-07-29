@@ -143,7 +143,7 @@
                             h4 Активировать в:
                             .e-card__line-inner.wrap
                                 div(v-for="place in $store.state.auth.user.places").e-card__place
-                                    v-checkbox(@change="togglePlace(place)" :input-value="!!updatedMenuItem.places.find(p => p._id == place._id)" :label="place.name" hide-details="auto" :id="place.id").mt-1
+                                    v-checkbox(@change="togglePlace(place)" :input-value="!!updatedMenuItem.places.find(p => p == place._id)" :label="place.name" hide-details="auto" :id="place.id").mt-1
 
                         .e-card__bottom
                             v-btn(@click="closePopup" depressed).red--text.e-card__bottom-item Отмена
@@ -237,10 +237,10 @@ export default {
         },
         togglePlace(place) {
             const arr = this.updatedMenuItem.places
-            if (arr.indexOf(place) > -1) {
-                arr.splice(arr.indexOf(place), 1)
+            if (arr.indexOf(place._id) > -1) {
+                arr.splice(arr.indexOf(place._id), 1)
             } else {
-                arr.push(place)
+                arr.push(place._id)
             }
         },
         closePopup() {

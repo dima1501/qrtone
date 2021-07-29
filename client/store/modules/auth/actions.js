@@ -26,6 +26,8 @@ const checkAuth = async (store, data) => {
         }
         store.state.parsedMenu[item.category] = store.state.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
       }
+    } else {
+      $nuxt.$router.push($nuxt.localePath({ path: '/auth/login' }))
     }
   } catch (err) {
     console.error(err)

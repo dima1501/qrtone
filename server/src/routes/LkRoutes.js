@@ -12,6 +12,7 @@ const MenuItemModel = require('../models/MenuItem')
 const ActionItemModel = require('../models/Action')
 const CategoryModel = require('../models/Category')
 const DopModel = require('../models/Dop')
+const WaiterModel = require('../models/Waiter')
 
 // telegram area
 const Markup = require('telegraf/markup')
@@ -623,6 +624,10 @@ router.post('/api/set-place-socket-id', auth(), async (req, res) => {
 
 router.get('/api/load-orders-place/:id/:items', auth(), async (req, res) => {
     try {
+        if (!req.user) {
+            res.status(200).send(false)
+            return
+        }
         const orders = await req.db.collection("users").aggregate([
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$orders'},
@@ -636,7 +641,7 @@ router.get('/api/load-orders-place/:id/:items', auth(), async (req, res) => {
         if (orders) {
             res.status(200).send(orders)
         } else {
-            res.status(404).send(false)
+            res.status(200).send(false)
         }
     } catch (error) {
         console.error(error)
@@ -645,6 +650,10 @@ router.get('/api/load-orders-place/:id/:items', auth(), async (req, res) => {
 
 router.get('/api/load-actions-place/:id/:items', auth(), async (req, res) => {
     try {
+        if (!req.user) {
+            res.status(200).send(false)
+            return
+        }
         const notifications = await req.db.collection("users").aggregate([
             { $match: { _id: ObjectId(req.user._id) } },
             { $unwind: '$notifications'},
@@ -656,6 +665,8 @@ router.get('/api/load-actions-place/:id/:items', auth(), async (req, res) => {
         ]).toArray()
         if (notifications) {
             res.status(200).send(notifications)
+        } else {
+            res.status(200).send(false)
         }
     } catch (error) {
         console.error(error)
@@ -865,6 +876,60 @@ router.post('/api/complete-onboard', auth(), async (req, res) => {
     }
 })
 
+router.post('/api/add-new-waiter', auth(), async (req, res) => {
+    try {
+        const waiter = await new WaiterModel(req.body)
+        const add = await req.db.collection("users").updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $push: { 'waiters': waiter } }
+        )
+        if (add.modifiedCount) {
+            res.status(200).send(waiter)
+        } else {
+            res.status(200).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.post('/api/edit-waiter', auth(), async (req, res) => {
+    try {
+        const waiter = await new WaiterModel(req.body)
+
+        const set = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id), "waiters._id": req.body._id },
+            { $set: { "waiters.$": waiter } }
+        )
+        
+        if (set) {
+            const user = await req.db.collection("users").findOne({ _id: ObjectId(req.user._id) })
+            res.status(200).send(user.waiters)
+        } else {
+            res.status(200).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+router.delete('/api/delete-waiter/:id', auth(), async (req, res) => {
+    try {
+        const del = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id) },
+            {'$pull': { "waiters": { "_id": req.params.id } } }
+        )
+
+        if (del.modifiedCount) {
+            const user = await req.db.collection("users").findOne({ _id: ObjectId(req.user._id) })
+            res.status(200).send(user.waiters)
+        } else {
+            res.status(200).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
 
 
 

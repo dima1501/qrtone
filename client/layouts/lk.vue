@@ -31,7 +31,7 @@ export default {
         place: localStorage.getItem('place')
       }, { root: true });
       const place = localStorage.getItem("place")
-      if (place && this.$store.state.auth.user) {
+      if (place) {
         this.$store.dispatch('lk/loadOrders', { place, items: 0 }, {root: true})
         this.$store.dispatch('lk/loadActions', { place, items: 0 }, {root: true})
       }

@@ -143,10 +143,6 @@
                                             v-icon(light) mdi-checkbox-marked-circle 
                                         .subs__list-item-text Раздельный стоп-лист для каждого заведения
                                     .subs__list-item 
-                                            .subs__list-item-icon
-                                                v-icon(light) mdi-checkbox-marked-circle 
-                                            .subs__list-item-text Удобная форма бронирования на сайте
-                                    .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
                                         .subs__list-item-text Интерфейс на Русском и Английском языках
@@ -205,6 +201,10 @@
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
                                         .subs__list-item-text Настраиваемые быстрые команды (Позвать официанта / Попросить счет и тд)
+                                    .subs__list-item 
+                                            .subs__list-item-icon
+                                                v-icon(light) mdi-checkbox-marked-circle 
+                                            .subs__list-item-text Удобная форма бронирования на сайте
                                     .subs__list-item
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 

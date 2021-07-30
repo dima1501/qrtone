@@ -314,11 +314,9 @@ router.post('/api/reserve', authGuest(), async (req, res) => {
             }
 
             let str = []
-            str.push(`${ req.body.date }\n`)
-            str.push(`${ req.body.time }\n`)
+            str.push(`${ req.body.date }, в ${ req.body.time }\n`)
             str.push(`${ req.body.comment }\n`)
-            str.push(`${ req.body.name }\n`)
-            str.push(`${ req.body.phone }\n`)
+            str.push(`${ req.body.phone }, ${ req.body.name }\n`)
 
             str.push(`----------------\n`)
 

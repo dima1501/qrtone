@@ -184,9 +184,9 @@
             // Для печати
             .pdf(v-if="$store.state.view.popup.styleQRPopup.visible")
                 .pdf__print
-                    .pdf__list(ref="pdf1" v-show="$store.state.view.pdf.ref == 'pdf1'")
+                    .pdf__list(ref="pdf1" v-if="$store.state.view.pdf.ref == 'pdf1'")
                         pdf1
-                    .pdf__list(ref="pdf2" v-show="$store.state.view.pdf.ref == 'pdf2'")
+                    .pdf__list(ref="pdf2" v-if="$store.state.view.pdf.ref == 'pdf2'")
                         pdf2
 </template>
 
@@ -243,11 +243,14 @@ export default {
     },
     watch:{
         '$store.state.view.pdf.ref'(value, oldValue) {
-            if (value) this.updatePdf(value)
+            if (value) {
+                setTimeout(() => {
+                    this.updatePdf(value)
+                }, 0);
+            }
         }
     },
     async mounted() {
-        const id = this.$store.state.auth.user._id
         const place = this.$store.state.view.popup.styleQRPopup.place._id
 
         this.easyqr.text = this.$store.state.view.popup.styleQRPopup.type == "wifi" ? this.$store.state.view.popup.wifiPopup.string :  `${process.env.ORIGIN || "localhost:3000"}/qr/${place}`
@@ -259,7 +262,6 @@ export default {
             this.$store.state.view.popup.tablesPopup.visible = true
         },
         async downloadSVGorPNG(type) {
-            const id = this.$store.state.auth.user._id
             const place = this.$store.state.view.popup.styleQRPopup.place
             
             const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.easyqr.logo}`) : ''
@@ -309,7 +311,7 @@ export default {
                         const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${place._id}?t=${tablesArr[i]}`
                         
                         this.downloadQr = await new QRCode(this.$refs.qrcode_generate, {
-                            text: str,
+                            text: str.replaceAll(' ', '%20'),
                             colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                             logo: logo,
                             drawer: type,
@@ -342,7 +344,7 @@ export default {
             } else {
                 this.generating = true
                 this.downloadQr = await new QRCode(this.$refs.qrcode_generate, {
-                    text: this.easyqr.text,
+                    text: this.easyqr.text.replaceAll(' ', '%20'),
                     colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                     logo: logo,
                     drawer: type,
@@ -472,7 +474,7 @@ export default {
 
                     this.generatedQr.clear()
                     this.generatedQr = await new QRCode(this.$refs.qrcode, {
-                        text: str,
+                        text: str.replaceAll(' ', '%20'),
                         colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                         logo: logo,
                         drawer: 'canvas',

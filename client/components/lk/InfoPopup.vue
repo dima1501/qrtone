@@ -41,8 +41,7 @@
                         v-icon.instagram mdi-instagram 
                     a(:href="`https://wa.me/${place.whatsapp}`" target="_blank"  v-if="place.whatsapp").info-popup__soc-item
                         v-icon.whatsapp mdi-whatsapp
-                // Будет когда будет todo
-                .info-popup__reserve 
+                .info-popup__reserve(v-if="isAvailable")
                     v-btn(
                         depressed
                         @click="openReservePopup"
@@ -50,6 +49,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
     props: {
         place: Object
@@ -57,6 +58,14 @@ export default {
     data() {
         return {
             
+        }
+    },
+    computed: {
+        isAvailable() {
+            const isStandart = this.$store.state.guest.companyData.subscription[this.$store.state.guest.companyData.subscription.length - 1].type == 'standart'
+            const isNotExpired = !moment(this.$store.state.guest.companyData.subscription[this.$store.state.guest.companyData.subscription.length - 1].expires).isBefore()
+            const isTrial = !moment(this.$store.state.guest.companyData.subscription[0].expires).isBefore()
+            return !isStandart && isNotExpired || isTrial
         }
     },
     methods: {

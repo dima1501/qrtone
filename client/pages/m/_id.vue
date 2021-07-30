@@ -16,7 +16,6 @@ div
                     .header__controls
                         transition(name="slide-up")
                             v-icon.ml-5(light @click="toggleInfoPopup" v-if="isHeaderSticky") mdi-information-outline
-
                         v-icon.ml-5(
                             light 
                             @click="toggleCommandsMenu"
@@ -198,7 +197,6 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
 import moment from 'moment';
-
 
 Vue.use(VueScrollactive);
 Vue.use(vuescroll);

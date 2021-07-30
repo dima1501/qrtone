@@ -53,7 +53,7 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
             user[0].list[0].messages[i].chat.id,
             user[0].list[0].messages[i].message_id,
             user[0].list[0].messages[i].message_id,
-            `${ctx.update.callback_query.message.text.replace('🙋🏼‍♂️', '✅')}`,
+            `${ctx.update.callback_query.message.text.replace('🙋🏼‍♂️', '✅').replace('⏳', '✅')}`,
           );
         }
       }
@@ -80,7 +80,7 @@ MongoClient.connect(process.env.DB_URI, { useUnifiedTopology: true }).then(async
             user[0].list[0].messages[i].chat.id,
             user[0].list[0].messages[i].message_id,
             user[0].list[0].messages[i].message_id,
-            `${ctx.update.callback_query.message.text.replace('⏳', '✅')}`,
+            `${ctx.update.callback_query.message.text.replace('⏳', '✅').replace('🙋🏼‍♂️', '✅')}`,
           );
         }
       }

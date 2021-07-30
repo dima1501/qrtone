@@ -85,7 +85,7 @@
                                                     .sorder__line
                                                         .sorder__line-item
                                                             .sorder__line-content
-                                                                h4.sorder__line-name На {{ formatDate(notify.reservation.date) }}, в {{ notify.reservation.time }}
+                                                                h4.sorder__line-name На {{ notify.reservation.date }}, в {{ notify.reservation.time }}
                                                                 .sorder__line-data Количество гостей: {{ notify.reservation.guests }} 
                                                                 .sorder__line-data 
                                                                     a(:href="`tel: ${notify.reservation.phone}`").phone {{ notify.reservation.phone }}

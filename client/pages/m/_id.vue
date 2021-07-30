@@ -270,7 +270,6 @@ export default {
 
                 if (user.data) {
                     this.$store.state.guest.companyData = user.data
-
                     for (let item of this.$store.state.guest.companyData.goods) {
                         if (this.$store.state.guest.parsedMenu[item.category]) {
                             this.$store.state.guest.parsedMenu[item.category].push(item)
@@ -545,7 +544,7 @@ export default {
     opacity: 0.95;
     color: #fff;
     box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-    margin: 0 10px;
+    margin: 0 6px;
     span {
         margin-left: 15px;
     }
@@ -994,6 +993,9 @@ export default {
         &-text {
             line-height: 1.2;
         }
+    }
+    &__controls {
+        flex-shrink: 0;
     }
 }
 

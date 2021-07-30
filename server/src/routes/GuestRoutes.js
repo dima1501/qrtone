@@ -291,6 +291,8 @@ router.get('/api/get-place-id/:id', async (req, res) => {
 
 router.post('/api/reserve', authGuest(), async (req, res) => {
     try {
+        var moment = require('moment')
+
         const user = await req.db.collection('users').findOne({ 'places.link': req.body.place })
         const place = user.places.find(e => e.link == req.body.place)
 
@@ -314,11 +316,9 @@ router.post('/api/reserve', authGuest(), async (req, res) => {
             }
 
             let str = []
-            str.push(`${ req.body.date }, в ${ req.body.time }\n`)
+            str.push(`${ moment(req.body.date).format('DD.MM.YYYY') }, в ${ req.body.time }\n`)
             str.push(`${ req.body.comment }\n`)
             str.push(`${ req.body.phone }, ${ req.body.name }\n`)
-
-            str.push(`----------------\n`)
 
             if (user.telegram[place._id]) {
                 for (let i = 0; i < user.telegram[place._id].length; i++) {

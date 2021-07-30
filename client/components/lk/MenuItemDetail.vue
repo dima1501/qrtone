@@ -4,8 +4,9 @@
         .detail__closer(@click="closeDetail")
         .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
             .detail__img
+                .detail__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
                 .detail__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
-                VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
+                VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1").detail__img-slider
                     .detail__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
             .detail__content
                 .detail__content-descr(v-if="item.description") {{ item.description }}
@@ -14,7 +15,8 @@
                         .detail__line-content
                             h4.detail__line-name {{ item.name }}<br>
                             span.modifications(v-if="item.modifications[i]") {{ item.modifications[i] }}
-                            span.note(v-if="item.weights[i]") {{ item.weights[i] }}г. {{ price }}{{$store.state.guest.companyData.currencySymbol}}
+                            span.note(v-if="item.weights[i]") {{ item.weights[i] }}г
+                            span.note {{ price }}{{$store.state.guest.companyData.currencySymbol}}
                             span.note(v-if="item.calories[i]") {{ item.calories[i] }} Ккал
                             span.note(v-if="item.proteins[i]") {{ item.proteins[i] }} Белки
                             span.note(v-if="item.fats[i]") {{ item.fats[i] }} Жиры
@@ -25,7 +27,8 @@
                                     key="12"
                                     @click="plusMulti(i)"
                                     v-if="!$store.state.guest.user.cart[getPlaceId()] || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length"
-                                ) {{ item.prices[i] }} {{$store.state.guest.companyData.currencySymbol}}
+                                ) В корзину
+                                //- ) {{ item.prices[i] }} {{$store.state.guest.companyData.currencySymbol}}
                                 .detail__line-counter(key="13" v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length")
                                     .menu-item__counter-control(@click="minusMulti(i)")
                                         v-icon mdi-minus
@@ -57,7 +60,7 @@
                                         .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop).count }}
                                         .menu-item__counter-control(@click="addDopToCart(dop)")
                                             v-icon mdi-plus
-            .detail__area-bottom(v-bind:class="{ visible: $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.length || $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.length || $store.state.guest.user.orders.length }")
+                .detail__area-bottom(v-bind:class="{ visible: $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.length || $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.length || $store.state.guest.user.orders.length }")
     </template>
 
 <script>
@@ -188,9 +191,9 @@ export default {
     overflow-y: scroll;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
-    padding: 40px 0 0;
-    @media screen and (min-height: 750px) {
-        padding: 40px 0 80px;
+    padding: 40px 0 80px;
+    @media screen and (max-width: 1000px) {
+        padding: 40px 0 0;
     }
     &__bg {
         position: fixed;
@@ -217,39 +220,43 @@ export default {
         transform: translateY(100%);
         margin: auto auto 0;
         /* max-height: calc(100vh - 47px); */
-        border-top-left-radius: 14px;
-        border-top-right-radius: 14px;
-        background-color: #fff;
+        
+        /* background-color: #fff; */
         max-width: 400px;
-        @media screen and (min-height: 750px) {
+
+        @media screen and (min-width: 1000px) {
             max-height: unset;
             margin: auto;
             border-bottom-left-radius: 14px;
             border-bottom-right-radius: 14px;
             overflow: hidden;
         }
-        &:after {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 4px;
-            width: 65px;
-            background-color: #fff;
-            border-radius: 2px;
-            box-shadow: 0 0 6px rgba(0,0,0,0.8);
-        }
-        &:before {
-            content: '';
-            position: absolute;
-            top: 9px;
-            left: 50%;
-            transform: translateX(-50%);
-            cursor: pointer;
-            height: 40px;
-            width: 100px;
-        }
+
+        @media screen and (max-width: 1000px) {
+            &:after {
+                content: '';
+                position: absolute;
+                top: -15px;
+                left: 50%;
+                transform: translateX(-50%);
+                height: 4px;
+                width: 65px;
+                background-color: #fff;
+                border-radius: 2px;
+                box-shadow: 0 0 3px rgba(0,0,0,0.3);
+            }
+            &:before {
+                content: '';
+                position: absolute;
+                top: -40px;
+                left: 50%;
+                transform: translateX(-50%);
+                cursor: pointer;
+                height: 40px;
+                width: 100px;
+            }
+        } 
+        
         &.visible {
             transform: translateY(0);
         }
@@ -260,8 +267,9 @@ export default {
             height: 0;
             background-color: #fff;
             transition: height .3s;
-            @media screen and (min-height: 750px) {
-                display: none;
+            display: none;
+            @media screen and (max-width: 1000px) {
+                display: block;
             }
             &.visible {
                 height: 60px;
@@ -271,6 +279,8 @@ export default {
     &__img {
         position: relative;
         overflow: hidden;
+        background-color: #fff;
+        overflow: hidden;
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
         &-pic {
@@ -278,6 +288,15 @@ export default {
             padding-bottom: 100%;
             background-size: cover;
             background-position: center;
+            &.placeholder {
+                background-size: contain;
+                padding-bottom: 40%;
+                opacity: 0.2;
+                background-repeat: repeat;
+            }
+        }
+        &-slider {
+            margin-bottom: -6px;
         }
     }
     &__content {

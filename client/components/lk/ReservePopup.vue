@@ -118,7 +118,7 @@ export default {
     methods: {
         async fetchReserve() {
             try {
-                this.reservation.date = moment(this.reservation.date).format('DD.MM.YYYY')
+                // this.reservation.date = moment(this.reservation.date).format('DD.MM.YYYY')
                 const res = await axios({
                     method: 'post',
                     url: '/api/reserve',
@@ -240,7 +240,9 @@ export default {
         &-title {
             font-size: 26px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            line-height: 1.1;
+            text-align: center;
         }
         &-note {
             font-size: 14px;

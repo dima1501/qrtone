@@ -405,7 +405,7 @@ export default {
             this.$store.state.view.loading.pdfUpdating = true
             const el = this.$refs[value ? value : this.$store.state.view.pdf.ref ]
             if (el) {
-                this.preview = await this.$html2canvas(el, { type: 'dataURL' })
+                this.preview = await this.$html2canvas(el, { scale: 1, type: 'dataURL' })
             }
             this.$store.state.view.loading.pdfUpdating = false
         },
@@ -480,7 +480,7 @@ export default {
                         drawer: 'canvas',
                         onRenderingEnd: async (e, x) => {
                             this.$store.state.view.pdf.qr = x
-                            const canvas = await this.$html2canvas(el, { type: 'dataURL' })
+                            const canvas = await this.$html2canvas(el, { scale: 1, type: 'dataURL' })
 
                             doc.addImage(canvas, 'JPEG', 0, 0)
                             if (i < (tablesArr.length - 1)) {

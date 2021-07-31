@@ -12,7 +12,7 @@
                 .menu-item__name {{ item.name }}
                 .menu-item__translation(v-if="item.translation") {{ item.translation }} (en)
 
-                .menu-item__price(v-if="item.modifications")
+                .menu-item__prices(v-if="item.modifications")
                     div.menu-item__price-label.-admin(v-for="(mod, key) in item.prices")
                         div
                             span {{ item.prices[key] }}{{$store.state.auth.user.currencySymbol}} 

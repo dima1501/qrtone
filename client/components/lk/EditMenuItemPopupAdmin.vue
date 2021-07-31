@@ -203,6 +203,10 @@ export default {
         this.updatedMenuItem.weights = [...this.editableMenuItem.weights]
         this.updatedMenuItem.modifications = [...this.editableMenuItem.modifications]
         this.updatedMenuItem.dops = [...this.editableMenuItem.dops]
+        this.updatedMenuItem.calories = [...this.editableMenuItem.calories]
+        this.updatedMenuItem.proteins = [...this.editableMenuItem.proteins]
+        this.updatedMenuItem.fats = [...this.editableMenuItem.fats]
+        this.updatedMenuItem.carbo = [...this.editableMenuItem.carbo]
         this.prices = this.updatedMenuItem.prices.length
     },
     computed: {

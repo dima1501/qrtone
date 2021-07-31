@@ -66,15 +66,15 @@ div
                         transition(name="slide-fade" mode="out-in")
                             v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length" @click="openOrders") Заказы ({{ $store.state.guest.user.orders.length }})
                     
-                    div(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)]")
+                    div(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[$store.state.guest.companyData.place._id]")
                         transition(name="slide-fade" mode="out-in")
-                            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length" @click="openCart")
+                            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length || $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length" @click="openCart")
                                 v-icon(light) mdi-cart
-                                <span v-if="getTotalPrice > 0"> {{ getTotalPrice }} {{$store.state.guest.companyData.currencySymbol}} </span>
+                                <span v-if="getTotalPrice > 0"> {{ getTotalPrice }}{{$store.state.guest.companyData.currencySymbol}} </span>
 
             
             transition(name="fade")
-                .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)] && $store.state.view.isCartOpened")
+                .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.view.isCartOpened")
                     .cart__overlay(@click="closeCart")
                     .cart__area
                         .cart__top
@@ -82,10 +82,10 @@ div
                             .cart__back(@click="closeCart")
                                 v-icon(light) mdi-close
                         .cart__content
-                            h3.cart__empty(v-if="!$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length && !$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length") Корзина пуста
+                            h3.cart__empty(v-if="!$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length && !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length") Корзина пуста
                             // Отображение основных позиций
                             .cart__content-items
-                                .cart__item(v-for="(item, key) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods" v-bind:key="key")
+                                .cart__item(v-for="(item, key) in $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods" v-bind:key="key")
                                     .cart__item-img(v-if="item.images[0]" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
                                     .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
                                         .cart__item-content
@@ -104,8 +104,8 @@ div
                                                 v-icon mdi-plus
 
                             // Отображение дополнений
-                            h3.cart__item-title(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length") Дополнения:
-                            .cart__item(v-for="(item, keys) in $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops" v-bind:key="item._id")
+                            h3.cart__item-title(v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length") Дополнения:
+                            .cart__item(v-for="(item, keys) in $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops" v-bind:key="item._id")
                                 .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
                                     .cart__item-content
                                         .cart__item-name {{ item.name }}
@@ -118,7 +118,7 @@ div
                                         .menu__counter-control(@click="addDopToCart(item)")
                                             v-icon mdi-plus
 
-                    .cart__bottom(v-if="$store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].goods.length || $store.state.guest.user.cart[getPlaceId($nuxt.$route.params.id)].dops.length")
+                    .cart__bottom(v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length || $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length")
                         .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
                         .cart__bottom-control
                             v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.t && isAvailable" v-bind:class="{ loading: $store.state.view.loading.sendOrder }") Заказать
@@ -173,7 +173,7 @@ div
                 MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
 
         transition(name="fade")
-            InfoPopup(v-show="$store.state.view.popup.infoPopup" :place="$store.state.guest.companyData.places.find(e => e.link == $nuxt.$route.params.id)")
+            InfoPopup(v-show="$store.state.view.popup.infoPopup" :place="$store.state.guest.companyData.place")
 
         transition(name="fade")
             ReservePopup(v-if="$store.state.view.popup.reservePopup.visible")
@@ -305,8 +305,8 @@ export default {
     computed: {
         getTotalPrice: function () {
             let total = 0
-            for (let o in this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)]) {
-                for (let i of this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)][o]) {
+            for (let o in this.$store.state.guest.user.cart[this.$store.state.guest.companyData.place._id]) {
+                for (let i of this.$store.state.guest.user.cart[this.$store.state.guest.companyData.place._id][o]) {
                     for (let n in i.cartPrices) {
                         let price = +i.prices[+i.cartPrices[n]] ? parseFloat(+i.prices[+i.cartPrices[n]]) : 0
                         total += +parseFloat(price)
@@ -345,13 +345,13 @@ export default {
         addDopToCart(dop) {
             this.$store.dispatch('guest/addDopToCart', {
                 item:  dop,
-                place: this.getPlaceId(this.$nuxt.$route.params.id),
+                place: this.$store.state.guest.companyData.place._id,
                 price: 0
             })
         },
         removeDopFromCart(dop) {
             this.$store.dispatch('guest/minusDopMulti', {
-                place: this.getPlaceId(this.$nuxt.$route.params.id),
+                place: this.$store.state.guest.companyData.place._id,
                 item: dop,
                 price: 0
             })
@@ -406,8 +406,8 @@ export default {
             this.$store.state.view.loading.sendOrder = true
             this.$store.dispatch('guest/makeOrder', {
                 order: {
-                    goods: this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)].goods,
-                    dops: this.$store.state.guest.user.cart[this.getPlaceId(this.$nuxt.$route.params.id)].dops,
+                    goods: this.$store.state.guest.user.cart[this.$store.state.guest.companyData.place._id].goods,
+                    dops: this.$store.state.guest.user.cart[this.$store.state.guest.companyData.place._id].dops,
                     status: 'pending',
                     table: this.$nuxt.$route.query.t,
                     place: this.$nuxt.$route.params.id,

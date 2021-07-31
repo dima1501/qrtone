@@ -12,27 +12,31 @@
                 .detail__content-descr(v-if="item.description") {{ item.description }}
                 .detail__line(v-for="(price, i) in item.prices" :key="i")
                     .detail__line-inner
+
                         .detail__line-content
-                            h4.detail__line-name {{ item.name }}<br>
-                            span.modifications(v-if="item.modifications[i]") {{ item.modifications[i] }}
-                            span.note(v-if="item.weights[i]") {{ item.weights[i] }}г
-                            span.note {{ price }}{{$store.state.guest.companyData.currencySymbol}}
-                            span.note(v-if="item.calories[i]") {{ item.calories[i] }} Ккал
-                            span.note(v-if="item.proteins[i]") {{ item.proteins[i] }} Белки
-                            span.note(v-if="item.fats[i]") {{ item.fats[i] }} Жиры
-                            span.note(v-if="item.carbo[i]") {{ item.carbo[i] }} Углеводы
+                            .detail__line-content-line
+                                h4.detail__line-name {{ item.name }}
+                                    span.note.ml-2 {{item.prices[i]}}{{$store.state.guest.companyData.currencySymbol}} <br>
+                                .modifications(v-if="item.modifications[i]") {{ item.modifications[i] }}
+                            .detail__line-content-line(v-if="item.weights[i]")
+                                span.note {{ item.weights[i] }}г
+
+                            .detail__line-content-line
+                                span.note(v-if="item.calories[i]") {{ item.calories[i] }} Ккал
+                                span.note(v-if="item.proteins[i] && item.fats[i] && item.carbo[i]") ({{item.proteins[i]}}-{{item.fats[i]}}-{{item.carbo[i]}})
+                            
                         .detail__line-counter
                             transition(name="slide-fade" mode="out-in")
                                 .detail__line-button(
                                     key="12"
                                     @click="plusMulti(i)"
-                                    v-if="!$store.state.guest.user.cart[getPlaceId()] || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length"
-                                ) В корзину
-                                //- ) {{ item.prices[i] }} {{$store.state.guest.companyData.currencySymbol}}
-                                .detail__line-counter(key="13" v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length")
+                                    v-if="!$store.state.guest.user.cart[$store.state.guest.companyData.place._id] || $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length"
+                                ) {{ item.prices[i] }}{{$store.state.guest.companyData.currencySymbol}}
+
+                                .detail__line-counter(key="13" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length")
                                     .menu-item__counter-control(@click="minusMulti(i)")
                                         v-icon mdi-minus
-                                    .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length }}
+                                    .menu-item__counter-value.-detail {{ $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length }}
                                     .menu-item__counter-control.plus(@click="plusMulti(i)")
                                          v-icon mdi-plus
                                        
@@ -45,22 +49,22 @@
                                 h4.detail__line-name {{ $store.state.guest.companyData.dops.find(e => e._id == dop).name }}
                                 transition(name="slide-fade" mode="out-in")
                                     span.note(key="15" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop).price && $store.state.guest.companyData.dops.find(e => e._id == dop).count > 0")  {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}{{$store.state.guest.companyData.currencySymbol}}
-                                    span.note(key="16" v-else-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop) && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop).count > 0") Бесплатно
+                                    span.note(key="16" v-else-if="!$store.state.guest.companyData.dops.find(e => e._id == dop).prices.length") Бесплатно
                             .detail__line-counter
                                 transition(name="slide-fade" mode="out-in")
                                     .detail__line-button(
                                         key="13"
                                         @click="addDopToCart(dop)"
-                                        v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop)") 
+                                        v-if="!$store.state.guest.user.cart[$store.state.guest.companyData.place._id] || !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.find(e => e._id == dop)") 
                                         span(v-if="$store.state.guest.companyData.dops.find(e => e._id == dop).price") {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}{{$store.state.guest.companyData.currencySymbol }}
                                         span(v-else) Бесплатно
-                                    .detail__line-counter(key="14" v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop)")
+                                    .detail__line-counter(key="14" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.find(e => e._id == dop)")
                                         .menu-item__counter-control(@click="removeDopFromCart(dop)")
                                             v-icon mdi-minus
-                                        .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].dops.find(e => e._id == dop).count }}
+                                        .menu-item__counter-value.-detail {{ $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.find(e => e._id == dop).count }}
                                         .menu-item__counter-control(@click="addDopToCart(dop)")
                                             v-icon mdi-plus
-                .detail__area-bottom(v-bind:class="{ visible: $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods.length || $store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].dops.length || $store.state.guest.user.orders.length }")
+                .detail__area-bottom(v-bind:class="{ visible: $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length || $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length || $store.state.guest.user.orders.length }")
     </template>
 
 <script>
@@ -137,13 +141,13 @@ export default {
         addDopToCart(dop) {
             this.$store.dispatch('guest/addDopToCart', {
                 item:  this.$store.state.guest.companyData.dops.find(e => e._id == dop),
-                place: this.getPlaceId(this.placeId),
+                place: this.$store.state.guest.companyData.place._id,
                 price: 0
             })
         },
         removeDopFromCart(dop) {
             this.$store.dispatch('guest/minusDopMulti', {
-                place: this.getPlaceId(this.placeId),
+                place: this.$store.state.guest.companyData.place._id,
                 item: this.$store.state.guest.companyData.dops.find(e => e._id == dop),
                 price: 0
             })
@@ -318,9 +322,6 @@ export default {
         }
         &-content {
             height: 100%;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
             margin-right: 5px;
             span {
                 &.note {
@@ -335,6 +336,9 @@ export default {
         }
         &-name {
             margin-right: 5px;
+            span {
+                font-weight: normal;
+            }
         }
         &-button {
             width: 100%;

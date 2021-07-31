@@ -1,5 +1,5 @@
 <template lang="pug">
-    .menu-item(v-bind:class="{ flash: flash }")
+    .menu-item(v-bind:class="{ flash: flash }" v-if="$store.state.guest.user.cart")
         .menu-item__more(@click="openDetail(item)")
         .menu-item__img
             .menu-item__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
@@ -10,35 +10,54 @@
             .menu-item__content-inner
                 .menu-item__vegan(v-if="item.isVegan") Вегетарианское
 
-                .menu-item__name {{ item.name }}
-                .menu-item__translation(v-if="item.translation") {{ item.translation }} (en)
+                //
 
-                .menu-item__price
-                    input.menu-item__price-radio(type="radio" :id="`${item._id}${0}`" :name="item._id" :value="0" v-model="checkedPrice")
-                    label.menu-item__price-label(:for="`${item._id}${0}`")
-                        span(v-if="item.modifications && item.modifications[0]")  {{ item.modifications[0] }}
-                        span  {{ item.prices[0] }} {{$store.state.guest.companyData.currencySymbol}} 
-                        span(v-if="item.weights[0]") &bull; {{ item.weights[0] }} г
-                        span(v-if="item.calories[0]") &bull; {{ item.calories[0] }} Ккал
+                //- .menu-item__name {{ item.name }}
+                //- .menu-item__translation(v-if="item.translation") {{ item.translation }} (en)
 
-                div(v-if="item.prices.length > 1")
-                    span.menu-item__price-label Еще {{ item.prices.length - 1 }} 
-                    span.menu-item__price-label(v-if="item.prices.length - 1 == 1") вариант
-                    span.menu-item__price-label(v-if="item.prices.length - 1 > 1 && item.prices.length - 1 < 5") варианта
-                    span.menu-item__price-label(v-if="item.prices.length - 1 > 4 && item.prices.length - 1 < 21") вариантов
+                //- .menu-item__price
+                //-     input.menu-item__price-radio(type="radio" :id="`${item._id}${0}`" :name="item._id" :value="0" v-model="checkedPrice")
+                //-     label.menu-item__price-label(:for="`${item._id}${0}`")
+                //-         span(v-if="item.modifications && item.modifications[0]")  {{ item.modifications[0] }}
+                //-         span(v-if="$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id)")  {{ item.prices[0] }}{{$store.state.guest.companyData.currencySymbol}} 
+                //-         span(v-if="item.weights[0]") &bull; {{ item.weights[0] }}г
+                //-         span(v-if="item.calories[0]") &bull; {{ item.calories[0] }}Ккал
+
+
+                
+
+                //
+
+                .menu-item__name
+                    .menu-item__name-title Том ям
+                    .menu-item__name-translation Tom yam
+                .menu-item__data
+                    .menu-item__data-calories(v-if="item.weights[0]")
+                        span {{ item.weights[0] }}г 
+                    //- .menu-item__data-calories
+                    //-     span(v-if="item.calories[0]") {{ item.calories[0] }} Ккал 
+                    //-     span(v-if="item.proteins[0] && item.fats[0] && item.carbo[0]") ({{item.proteins[0]}}-{{item.fats[0]}}-{{item.carbo[0]}})
+                
+                .menu-item__options(v-if="item.prices.length > 1")
+                    span.menu-item__options-label Еще {{ item.prices.length - 1 }} 
+                    span.menu-item__options-label(v-if="item.prices.length - 1 == 1") вариант
+                    span.menu-item__options-label(v-if="item.prices.length - 1 > 1 && item.prices.length - 1 < 5") варианта
+                    span.menu-item__options-label(v-if="item.prices.length - 1 > 4 && item.prices.length - 1 < 21") вариантов
+                    
 
             .menu-item__bottom(v-if="$store.state.guest.user.cart")
                 transition(name="slide-fade" mode="out-in")
                     .menu-item__button(
                         key="10"
                         @click="plusMulti"
-                        v-if="!$store.state.guest.user.cart[getPlaceId()] || !$store.state.guest.user.cart[getPlaceId()].goods || !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[getPlaceId()] && !$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count")
-                        span(v-if="item.prices.length > 1") от 
-                        span {{ item.prices[checkedPrice] }} {{$store.state.guest.companyData.currencySymbol}}
-                    .menu-item__counter(key="11" v-if="$store.state.guest.user.cart[getPlaceId()] && $store.state.guest.user.cart[getPlaceId()].goods && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count")
+                        v-if="!$store.state.guest.user.cart[$store.state.guest.companyData.place._id] || !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods || !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).count")
+                        //- span(v-if="item.prices.length > 1") Еще {{item.prices.length}} 
+                        span {{ item.prices[checkedPrice] }}{{$store.state.guest.companyData.currencySymbol}}
+                    .menu-item__counter(key="11" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).count")
                         .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : minusMulti()")
                             v-icon mdi-minus
-                        .menu-item__counter-value {{ $store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id).count }}
+                        .menu-item__counter-value {{ $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).count }} 
+                            span.menu-item__counter-value-price(v-if="item.prices.length == 1")  x {{item.prices[0]}}{{$store.state.guest.companyData.currencySymbol}}
                         .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : plusMulti()")
                             v-icon mdi-plus
 
@@ -137,6 +156,9 @@ export default {
     &__img {
         position: relative;
         z-index: 3;
+        .slick-slider {
+            margin-bottom: -6px;
+        }
         &-pic {
             background-position: center;
             background-size: cover;
@@ -218,9 +240,22 @@ export default {
                 pointer-events: none;
             }
         }
+        &-value {
+            font-weight: bold;
+            &-price {
+                font-weight: normal;
+                color: $color-black;
+                opacity: 0.9;
+                font-size: 14px;
+            }
+        }
     }
     &__price {
         line-height: 14px;
+        font-size: 14px;
+        color: $color-black;
+        margin-top: 5px;
+        height: 14px;
         &-radio {
             visibility: hidden;
             opacity: 0;
@@ -234,9 +269,40 @@ export default {
     &__name {
         margin-bottom: 4px;
         line-height: 1.3;
+        color: $color-black;
+        &-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        &-translation {
+            font-size: 12px;
+            opacity: 0.9;
+            @media screen and (min-width: 1000px) {
+                font-size: 14px;
+            }
+        }
     }
-    &__translation {
+    &__data {
+        color: $color-black;
+        &-calories {
+            font-size: 12px;
+            opacity: .9;
+            span {
+                display: block;
+                margin-right: 5px;
+            }
+            @media screen and (min-width: 1000px) {
+                font-size: 14px;
+                span {
+                    display: inline-block;
+                }
+            }
+        }
+    }
+    &__options {
+        color: $color-black;
         font-size: 14px;
+        opacity: .9;
     }
     &__vegan {
         position: absolute;

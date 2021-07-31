@@ -89,7 +89,7 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             photo: user.photo,
             background: user.background,
             categories: user.categories,
-            places: user.places,
+            place: place,
             actions: user.actions,
             currencySymbol: user.currencySymbol,
             subscription: user.subscription,

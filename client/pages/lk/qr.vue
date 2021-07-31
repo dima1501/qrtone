@@ -109,6 +109,7 @@ export default {
             if (place) {
                 this.$store.state.view.popup.tablesPopup.place = place
             }
+            this.$store.state.view.popup.tablesPopup.tables = [ ...this.$store.state.view.popup.tablesPopup.place.tables]
             this.$store.state.view.popup.tablesPopup.visible = true
         },
         openWifiPopup() {

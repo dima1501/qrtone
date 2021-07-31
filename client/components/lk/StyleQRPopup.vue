@@ -15,7 +15,7 @@
                             //- {{ $store.state.view.popup.tablesPopup.tables }} {{$store.state.view.pdf.title}}
                             <br>
                             span.tables(v-for="table in $store.state.view.popup.tablesPopup.tables") {{ table }}
-                            span.edit(@click="openTablesPopup()")
+                            span.edit(@click="openTablesPopup()" v-if="$store.state.view.popup.tablesPopup.tables.length")
                                 v-icon(light) mdi-pencil-outline
 
                         .c-qr__templates(@click="openPDFPopup")
@@ -104,7 +104,12 @@
                                     depressed 
                                     color="primary"
                                     @click="download()").white--text Скачать PDF
-                        .c-qr__bottom(v-else) столики бля добавь
+                        .c-qr__bottom(v-else)
+                            .c-qr__bottom-item
+                                v-btn(
+                                    depressed 
+                                    color="primary"
+                                    @click="openTablesPopup()").white--text Указать столики
 
                     .c-qr__preview
                         .c-qr__preview-loader(v-if="$store.state.view.loading.pdfUpdating && $store.state.view.pdf.ref")

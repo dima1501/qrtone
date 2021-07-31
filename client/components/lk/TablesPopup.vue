@@ -74,20 +74,6 @@ export default {
         },
         closePopup() {
             this.$store.state.view.popup.tablesPopup.visible = false
-            this.$store.state.view.popup.tablesPopup.tables = []
-            // тут конфирм мешает при редактированиии возможно стоит сделать проверку todo
-            // this.$confirm({
-            //     message: `Завершить создание QR-кода?`,
-            //     button: {
-            //         no: 'Нет',
-            //         yes: 'Да'
-            //     },
-            //     callback: async (confirm) => {
-            //         if (!!confirm && confirm !== 'false') {
-            //             this.$store.state.view.popup.tablesPopup.visible = false
-            //         }
-            //     }
-            // })
         },
         openStyleQRPopup() {
             this.$store.state.view.popup.styleQRPopup.visible = true

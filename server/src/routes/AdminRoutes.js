@@ -3,8 +3,6 @@ const router = express.Router()
 
 const { ObjectId } = require('mongodb').ObjectID
 
-const websocket = require('../websocket')
-
 const auth = require('../middlewares/AuthMiddleware')
 
 router.get('/api/admin/get-users', auth(), async (req, res) => {

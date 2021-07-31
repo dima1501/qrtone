@@ -1,6 +1,6 @@
 
 <template lang="pug">
-    .menu(v-if="$store.state.admin.user")
+    .menu(v-if="$store.state.admin.user && $store.state.auth.user && $store.state.auth.user.admin")
         .menu__top
             h1.menu__top-title Меню
             .menu__top-add(@click="openAddPopup") Создать позицию
@@ -82,8 +82,13 @@ export default {
             editableMenuItem: null
         }
     },
-    async fetch () {
+    async created () {
         try {
+            
+            if (!this.$store.state.auth.user) {
+                this.$store.dispatch("auth/checkAuth")
+            }
+
             const user = await axios({
                 method: 'get',
                 url: `${process.env.SERVER || "http://localhost:8000"}/api/admin/get-user-data/${this.$nuxt.$route.params.id}`

@@ -22,7 +22,8 @@ const PreloadUser = class PreloadUser {
     this.currencySymbol = data.currencySymbol,
     this.fastActionsEnabled = data.fastActionsEnabled,
     this.isOnboardCompleted = data.isOnboardCompleted,
-    this.waiters = data.waiters
+    this.waiters = data.waiters,
+    this.admin = data.admin
   }
 }
 

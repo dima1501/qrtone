@@ -1,6 +1,7 @@
 const UserService = require('../services/UserService')
 
 const auth = () => async (req, res, next) => {
+
   if (!req.cookies.sessionId) {
     return next()
   }

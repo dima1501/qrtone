@@ -1,5 +1,5 @@
 <template lang="pug">
-    .menu-item(v-bind:class="{ flash: flash }" v-if="$store.state.guest.user.cart")
+    .menu-item(v-bind:class="{ flash: flash }")
         .menu-item__more(@click="openDetail(item)")
         .menu-item__img
             .menu-item__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
@@ -9,24 +9,6 @@
         .menu-item__content
             .menu-item__content-inner
                 .menu-item__vegan(v-if="item.isVegan") Вегетарианское
-
-                //
-
-                //- .menu-item__name {{ item.name }}
-                //- .menu-item__translation(v-if="item.translation") {{ item.translation }} (en)
-
-                //- .menu-item__price
-                //-     input.menu-item__price-radio(type="radio" :id="`${item._id}${0}`" :name="item._id" :value="0" v-model="checkedPrice")
-                //-     label.menu-item__price-label(:for="`${item._id}${0}`")
-                //-         span(v-if="item.modifications && item.modifications[0]")  {{ item.modifications[0] }}
-                //-         span(v-if="$store.state.guest.user.cart[getPlaceId()].goods.find(e => e._id == item._id)")  {{ item.prices[0] }}{{$store.state.guest.companyData.currencySymbol}} 
-                //-         span(v-if="item.weights[0]") &bull; {{ item.weights[0] }}г
-                //-         span(v-if="item.calories[0]") &bull; {{ item.calories[0] }}Ккал
-
-
-                
-
-                //
 
                 .menu-item__name
                     .menu-item__name-title Том ям
@@ -45,15 +27,15 @@
                     span.menu-item__options-label(v-if="item.prices.length - 1 > 4 && item.prices.length - 1 < 21") вариантов
                     
 
-            .menu-item__bottom(v-if="$store.state.guest.user.cart")
+            .menu-item__bottom
                 transition(name="slide-fade" mode="out-in")
                     .menu-item__button(
                         key="10"
                         @click="plusMulti"
-                        v-if="!$store.state.guest.user.cart[$store.state.guest.companyData.place._id] || !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods || !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).count")
+                        v-if="!$store.state.guest.user.cart[$store.state.guest.companyData.place._id] || !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id)")
                         //- span(v-if="item.prices.length > 1") Еще {{item.prices.length}} 
                         span {{ item.prices[checkedPrice] }}{{$store.state.guest.companyData.currencySymbol}}
-                    .menu-item__counter(key="11" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).count")
+                    .menu-item__counter(key="11" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id)")
                         .menu-item__counter-control(@click="item.prices.length > 1 ? openDetail(item) : minusMulti()")
                             v-icon mdi-minus
                         .menu-item__counter-value {{ $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).count }} 

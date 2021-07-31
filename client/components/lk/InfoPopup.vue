@@ -7,39 +7,35 @@
             .info-popup__content
                 h2.info-popup__title {{ $store.state.guest.companyData.name }}
                 div.info-popup__descr(v-if="$store.state.guest.companyData.description") {{ $store.state.guest.companyData.description }}
-                div(v-if="place.phone")
+                div(v-if="$store.state.guest.companyData.place.phone")
                     .info-popup__subtitle Телефон:
-                    a(:href="`tel:${place.phone}`").info-popup__link
-                        span.link {{ place.phone }}
+                    a(:href="`tel:${$store.state.guest.companyData.place.phone}`").info-popup__link
+                        span.link {{ $store.state.guest.companyData.place.phone }}
 
-                div(v-if="place.address.full")
+                div(v-if="$store.state.guest.companyData.place.address.full")
                     .info-popup__subtitle Адрес:
-                    a(:href="`http://maps.google.com/?q=${$store.state.guest.companyData.name}, ${place.address.value}, ${place.address.description}`" target="_blank").info-popup__address
-                        span.info-popup__address-title.link(v-if="!place.address.value") {{ place.address.full }}
-                        span.info-popup__address-title.link {{ place.address.value }}<br>
-                        span.info-popup__address-descr.link {{ place.address.description }}
+                    a(:href="`http://maps.google.com/?q=${$store.state.guest.companyData.name}, ${$store.state.guest.companyData.place.address.value}, ${$store.state.guest.companyData.place.address.description}`" target="_blank").info-popup__address
+                        span.info-popup__address-title.link(v-if="!$store.state.guest.companyData.place.address.value") {{ $store.state.guest.companyData.place.address.full }}
+                        span.info-popup__address-title.link {{ $store.state.guest.companyData.place.address.value }}<br>
+                        span.info-popup__address-descr.link {{ $store.state.guest.companyData.place.address.description }}
 
-                div(v-if="place.website") 
+                div(v-if="$store.state.guest.companyData.place.website") 
                     .info-popup__subtitle Сайт:
-                    a(:href="`${place.website.includes('http') ? '' : 'https://'}${place.website}`" target="_blank").info-popup__link
-                        span.link {{ place.website }}
-
-                div(v-if="place.addr") 
-                    .info-popup__subtitle Место:
-                    a(:href="`https://yandex.ru/maps/?ll=37.62,55.75&z=12`" target="_blank").info-popup__link
-                        span.link {{ place.addr }}
-                div(v-if="place.times") 
+                    a(:href="`${$store.state.guest.companyData.place.website.includes('http') ? '' : 'https://'}${$store.state.guest.companyData.place.website}`" target="_blank").info-popup__link
+                        span.link {{ $store.state.guest.companyData.place.website }}
+                        
+                div(v-if="$store.state.guest.companyData.place.times") 
                     .info-popup__subtitle График:
                     div.info-popup__link
-                        span {{ place.times }}
+                        span {{ $store.state.guest.companyData.place.times }}
                 .info-popup__soc
-                    a(:href="`https://t.me/${place.telegram}`" target="_blank" v-if="place.telegram").info-popup__soc-item
+                    a(:href="`https://t.me/${$store.state.guest.companyData.place.telegram}`" target="_blank" v-if="$store.state.guest.companyData.place.telegram").info-popup__soc-item
                         v-icon.telegram mdi-telegram
-                    a(:href="`https://vk.com/${place.vk}`" target="_blank" v-if="place.vk").info-popup__soc-item
+                    a(:href="`https://vk.com/${$store.state.guest.companyData.place.vk}`" target="_blank" v-if="$store.state.guest.companyData.place.vk").info-popup__soc-item
                         v-icon.vk mdi-vk
-                    a(:href="`https://www.instagram.com/${place.instagram}`" target="_blank"  v-if="place.instagram").info-popup__soc-item
+                    a(:href="`https://www.instagram.com/${$store.state.guest.companyData.place.instagram}`" target="_blank"  v-if="$store.state.guest.companyData.place.instagram").info-popup__soc-item
                         v-icon.instagram mdi-instagram 
-                    a(:href="`https://wa.me/${place.whatsapp}`" target="_blank"  v-if="place.whatsapp").info-popup__soc-item
+                    a(:href="`https://wa.me/${$store.state.guest.companyData.place.whatsapp}`" target="_blank"  v-if="$store.state.guest.companyData.place.whatsapp").info-popup__soc-item
                         v-icon.whatsapp mdi-whatsapp
                 .info-popup__reserve(v-if="isAvailable")
                     v-btn(
@@ -52,9 +48,6 @@
 import moment from 'moment';
 
 export default {
-    props: {
-        place: Object
-    },
     data() {
         return {
             

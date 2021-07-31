@@ -45,6 +45,7 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
                 timestamp: Date.now()
             }
 
+
             if (user.telegram[place._id]) {
                 for (let i = 0; i < user.telegram[place._id].length; i++) {
                     const table = typeof req.body.data.table == 'number' ? req.body.data.table : req.body.data.table.replace(' ', '%20')
@@ -322,11 +323,12 @@ router.post('/api/reserve', authGuest(), async (req, res) => {
 
             if (user.telegram[place._id]) {
                 for (let i = 0; i < user.telegram[place._id].length; i++) {
-                    if (user.telegram[place._id][i].notifications == 'all') {
+                    // todo возможно сделать галочку в админке лдя ограничения уведомлений
+                    // if (user.telegram[place._id][i].notifications == 'all') {
                         data.messages.push(await bot.sendMessage(user.telegram[place._id][i].chatId, `⏳ Заявка на бронирование \n\n${str.join('')}`, button));
                         data.chatId.push( data.messages[i].chat.id )
                         data.messageId.push( data.messages[i].message_id )
-                    }
+                    // }
                 }
             }
 

@@ -41,7 +41,7 @@
                                          v-icon mdi-plus
                                        
 
-                .detail__dops(v-if="item.dops.length && $store.state.guest.companyData.dops")
+                .detail__dops(v-if="item.dops.length")
                     h4.detail__dops-title Дополнения:
                     .detail__line(v-for="(dop, key) in item.dops" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop)")
                         .detail__line-inner

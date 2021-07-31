@@ -1,6 +1,10 @@
 <template lang="pug">
 div
-    .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
+    .geser(v-if="$fetchState.pending")
+            div(v-if="$store.state.guest.companyData.photo")
+                img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
+            span {{$store.state.guest.companyData.name}}
+    .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !$fetchState.pending")
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
                 img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
@@ -62,11 +66,10 @@ div
             
             .cart-buttons
                 .cart-buttons-inner
-                    div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
-                        transition(name="slide-fade" mode="out-in")
-                            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length" @click="openOrders") Заказы ({{ $store.state.guest.user.orders.length }})
+                    transition(name="slide-fade" mode="out-in")
+                        v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length" @click="openOrders") Заказы ({{ $store.state.guest.user.orders.length }})
                     
-                    div(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[$store.state.guest.companyData.place._id]")
+                    div(v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id]")
                         transition(name="slide-fade" mode="out-in")
                             v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length || $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length" @click="openCart")
                                 v-icon(light) mdi-cart
@@ -74,7 +77,7 @@ div
 
             
             transition(name="fade")
-                .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.view.isCartOpened")
+                .cart(v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.view.isCartOpened")
                     .cart__overlay(@click="closeCart")
                     .cart__area
                         .cart__top
@@ -125,7 +128,7 @@ div
                             //- v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
 
             transition(name="fade")
-                .orders(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
+                .orders(v-if="$store.state.view.isOrdersOpened")
                     .orders__overlay(@click="closeCart")
                     .orders__area
                         .orders__top
@@ -173,7 +176,7 @@ div
                 MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
 
         transition(name="fade")
-            InfoPopup(v-show="$store.state.view.popup.infoPopup" :place="$store.state.guest.companyData.place")
+            InfoPopup(v-show="$store.state.view.popup.infoPopup")
 
         transition(name="fade")
             ReservePopup(v-if="$store.state.view.popup.reservePopup.visible")

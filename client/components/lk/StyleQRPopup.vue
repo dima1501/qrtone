@@ -12,7 +12,6 @@
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'wifi'") QR-код Wi-Fi для {{ $store.state.view.popup.styleQRPopup.place.name }}
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'multi'") 
                             span.main QR-коды столиков для {{ $store.state.view.popup.styleQRPopup.place.name }} 
-                            //- {{ $store.state.view.popup.tablesPopup.tables }} {{$store.state.view.pdf.title}}
                             <br>
                             span.tables(v-for="table in $store.state.view.popup.tablesPopup.tables") {{ table }}
                             span.edit(@click="openTablesPopup()" v-if="$store.state.view.popup.tablesPopup.tables.length")
@@ -20,7 +19,6 @@
 
                         .c-qr__templates(@click="openPDFPopup")
                             .c-qr__templates-title Шаблоны <span v-if="$store.state.view.pdf.ref">({{ $store.state.view.pdf.data.name }})</span>
-                            
 
                         .c-qr__section
                             .c-qr__section-title Внешний вид
@@ -67,10 +65,9 @@
                                 .c-qr__section-line-title Контент
                                 .c-qr__section-line-content
                                     v-textarea(
-                                        v-if="'title' in $store.state.view.pdf.data"
+                                        v-if="$store.state.view.pdf.data.title"
                                         v-model="$store.state.view.pdf.data.title"
                                         type="text"
-                                        name="input-10-1"
                                         :label="'Заголовок'"
                                         v-lazy-input:debounce="250"
                                         @input="updatePdf()"
@@ -78,7 +75,7 @@
                                         auto-grow
                                         outlined)
                                     v-textarea(
-                                        v-if="'subtitle' in $store.state.view.pdf.data"
+                                        v-if="$store.state.view.pdf.data.subtitle"
                                         v-model="$store.state.view.pdf.data.subtitle"
                                         type="text"
                                         :label="'Текст'"
@@ -117,74 +114,11 @@
 
                         .c-qr__preview-svg(v-show="!$store.state.view.pdf.ref")
                             div(ref="qrcode")
-                            div(ref="qrcode_generate" hidden) asdads
+                            div(ref="qrcode_generate" hidden)
                         img.c-qr__preview-image(:src='preview' v-show="$store.state.view.pdf.ref")
 
             .c-qr__preview-loader(v-if="generating")
                 v-icon(light) mdi-loading
-            //- .c-qr__preview-loader(v-if="$store.state.view.loading.pdfUpdating && $store.state.view.pdf.ref")
-                
-            //- .popup__content
-                
-            //-     .sqr
-            //-         //- .sqr__pic#image(v-html="qr")
-            //-         img#img(:src="asdasd")
-            //-         v-qr(
-            //-             :text="str"
-            //-             :qrcodeColor="settings.mainColor"
-            //-             :backgroundColor="settings.bgColor"
-            //-             :logo="`http://localhost:3000/uploads/${$store.state.auth.user.photo}`"
-            //-             :size="300"
-            //-             :logoSize="50"
-            //-             :ratio="1"
-            //-             level="M"
-            //-             :on-finish="onFinish()")#qr_preview
-
-            //-         .sqr__pdf(@click="openPDFPopup") Шаблоны для печати
-            //-         .sqr__name {{ $store.state.view.popup.styleQRPopup.place.name }}
-            //-         .sqr__line
-            //-             .sqr__line-label Лого
-            //-             .sqr__line-value
-            //-                 input(type="checkbox" v-model="settings.logo" @change="updateQR()")
-
-            //-         // Настраиваемые поля
-            //-         .sqr__line(v-if="'title' in $store.state.view.pdf.data") Заголовок
-            //-             input(type="text" v-model="$store.state.view.pdf.data.title")
-            //-         .sqr__line(v-if="'subtitle' in $store.state.view.pdf.data") Текст
-            //-             input(type="text" v-model="$store.state.view.pdf.data.subtitle")
-            //-         // Настраиваемые поля
-
-            //-         .sqr__line
-            //-             .sqr__line-label Основной цвет
-            //-             .sqr__line-value
-            //-                 input(type="text" v-model="settings.mainColor" @input="updateQR()")
-            //-                 v-color-picker(
-            //-                     dot-size="15"
-            //-                     swatches-max-height="200"
-            //-                     v-model="settings.mainColor"
-            //-                     @input="updateQR()"
-            //-                     hide-mode-switch
-            //-                     mode="hexa")
-            //-         .sqr__line
-            //-             .sqr__line-label Цвет фона
-            //-             .sqr__line-value
-            //-                 input(type="text" v-model="settings.bgColor" @input="updateQR()")
-            //-                 v-color-picker(
-            //-                     dot-size="15"
-            //-                     swatches-max-height="200"
-            //-                     v-model="settings.bgColor"
-            //-                     @input="updateQR()"
-            //-                     hide-mode-switch
-            //-                     mode="hexa")
-  
-            //-         .sqr__bottom
-            //-             .sqr__bottom-item
-            //-                 .sqr__disable Отмена
-            //-             .sqr__bottom-item
-            //-                 a.sqr__save(@click="download()") Скачать
-
-            //-         div {{asdasd}}
-
 
             // Для печати
             .pdf(v-if="$store.state.view.popup.styleQRPopup.visible")
@@ -207,9 +141,6 @@ import {lazyInput} from 'vue-lazy-input'
 import JSZip from 'jszip'
 
 export default {
-    props: {
-        // qrs: String
-    },
     directives:{
         lazyInput
     },
@@ -217,17 +148,7 @@ export default {
         return {
             qr: '',
             str: '',
-            settings: {
-                // logo: true,
-                mainColor: '#ccc',
-                // bgColor: '#fff',
-                onRenderingEnd: (e, x) => {
-                    this.ended(e, x)
-                }
-            },
 
-            asdasd: '',
-            isSet: false,
             preview: '',
 
             easyqr: {
@@ -268,15 +189,11 @@ export default {
         },
         async downloadSVGorPNG(type) {
             const place = this.$store.state.view.popup.styleQRPopup.place
-            
             const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.easyqr.logo}`) : ''
-
             const tablesArr = this.$store.state.view.popup.tablesPopup.tables
-            
 
             if (tablesArr && tablesArr.length) {
                 const zip = new JSZip()
-                
                 this.$confirm({
                     message: `Скачать файлы по отдельности или сжатым ZIP архивом?`,
                     button: {
@@ -296,10 +213,8 @@ export default {
                     this.generating = true
                     var i = 0
                     const nextStep = async () => {
-                        
                         if (i >= tablesArr.length) {
                             this.generating = false
-
                             if (kind == 'zip') {
                                 zip.generateAsync({
                                     type: "blob"
@@ -309,7 +224,6 @@ export default {
                                     alert('export failed')
                                 })
                             }
-                            
                             return
                         }
 

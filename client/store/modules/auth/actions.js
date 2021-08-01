@@ -43,7 +43,7 @@ const registrationAction = async (store, data) => {
     })
 
     if (registration.data) {
-      store.dispatch("auth/regEmail")
+      store.dispatch("regEmail")
       store.state.user = registration.data
       // eslint-disable-next-line no-undef
       $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))

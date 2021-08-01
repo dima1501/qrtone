@@ -6,10 +6,12 @@ const { pugEngine } = require('nodemailer-pug-engine')
 
 const auth = require('../middlewares/AuthMiddleware')
 
+const moment = require('moment')
+
 const transporter = nodemailer.createTransport({
     host: "smtp.mailtrap.io",
     port: 2525,
-    secure: false,
+    secure: process.env.NODE_ENV !== 'production' ? false : true,
     sendmail: process.env.NODE_ENV !== 'production' ? false : true,
     auth: {
         user: "e13923d70a29d4",
@@ -20,7 +22,7 @@ const transporter = nodemailer.createTransport({
 transporter.use(
     "compile",
     pugEngine({
-        templateDir: "./src/email",
+        templateDir: "./src/email/templates",
         pretty: true
     })
 )
@@ -34,7 +36,7 @@ router.post("/api/send-reg-email", auth(), async (req, res) => {
             template: "registration-email",
             ctx: {
                 name: req.user.name,
-                bot_token: req.user.bot_token
+                plan: moment(req.user.subscription[0].expires).format('DD.MM.YYYY')
             }
         }
         transporter.sendMail(mailOptions, async (error) => {

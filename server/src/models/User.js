@@ -79,7 +79,7 @@ const User = class User {
       {
         type: 'free',
         started: moment()._d,
-        expires: moment().add(15, 'days')._d
+        expires: moment().add(14, 'days')._d
       }
     ],
     this.currencySymbol = '₽',

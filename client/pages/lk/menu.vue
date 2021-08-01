@@ -5,7 +5,7 @@
             .menu__top-add(@click="openAddPopup") Создать позицию
             .menu__top-add(@click="openCatPopup") Категории
         .menu__content
-            .menu__empty(v-if="!$store.state.auth.user.goods.length") В меню пока что нет товаров
+            .menu__empty(v-if="!$store.state.auth.user.goods.length") В меню пока ничего нет
 
             div(v-for="(item, key) in $store.state.auth.user.categories" v-bind:key="key" v-if="$store.state.auth.user.goods && $store.state.auth.parsedMenu[item._id] && $store.state.auth.parsedMenu[item._id].length").menu__section
                 .menu__title

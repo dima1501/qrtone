@@ -37,7 +37,10 @@
                             @click="openTablesPopup()") Создать
 
                     div(v-else)
-                        .button.-black(@click="openAddPlacePopup") Добавить заведение
+                        v-btn(
+                            depressed 
+                            color="primary"
+                            @click="openAddPlacePopup") Добавить заведение
 
                 div(v-else)
                     v-btn(

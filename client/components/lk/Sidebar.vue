@@ -1,6 +1,6 @@
 <template lang="pug">
   .sidebar(v-if="$store.state.auth.user")
-    .sidebar__name QRTone
+    .sidebar__name(@click="sendMail()") QRTone
     nuxt-link(:to="localePath('/lk/settings')").sidebar__settings
     .sidebar__company
       // .sidebar__company-logo(v-bind:style="{ backgroundImage: 'url(' + ($store.state.auth.user.photo ? '../../uploads/' + $store.state.auth.user.photo : '' ) + ')' }")

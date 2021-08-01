@@ -76,6 +76,11 @@ export default {
             this.$store.dispatch('auth/loginAction', this.loginData)
         },
     },
+    mounted() {
+        if (!this.$store.state.auth.user) {
+            this.$store.dispatch("auth/checkAuth")
+        }
+    }
 }
 </script>
 

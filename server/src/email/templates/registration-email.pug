@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        style(type='text/css')
+            include ../style/main.css
+    body
+        .mail
+            .mail__content
+                h1 Привет, <span>#{name}</span>!
+                p Вы успешно зарегистрировались на <span>qrtone.com</span>
+                p Бесплатный пробный период составит <span>14 дней</span> и продлится до <span>#{plan}</span>
+                p В этот период вам доступны все возможности сервиса
+                a(href="https://qrtone.com/lk/settings").button Начать

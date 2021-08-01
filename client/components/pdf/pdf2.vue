@@ -2,6 +2,7 @@
     .pdf-list_2
         img.pdf-list_2__qr(:src="$store.state.view.pdf.qr")
         .pdf-list_2__text {{$store.state.view.pdf.data.subtitle}}
+        .pdf-list_2__table(v-if="$store.state.view.popup.tablesPopup.tables.length && $store.state.view.pdf.data.table") Столик {{!$store.state.view.pdf.table ? $store.state.view.popup.tablesPopup.tables[0] : $store.state.view.pdf.table}}
             
 </template>
 

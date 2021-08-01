@@ -83,7 +83,9 @@
                                         @input="updatePdf()"
                                         rows="2"
                                         auto-grow
-                                        outlined)
+                                        outlined
+                                        hide-details="auto")
+                                    v-checkbox(v-model="$store.state.view.pdf.data.table" v-if="'table' in $store.state.view.pdf.data && $store.state.view.popup.styleQRPopup.type == 'multi'" v-lazy-input:debounce="250" @change="updatePdf()" :label="`Номер столика`" hide-details="auto")
 
                         .c-qr__bottom(v-if="$store.state.view.popup.tablesPopup.tables && $store.state.view.popup.tablesPopup.tables.length || $store.state.view.popup.styleQRPopup.type == 'simple' || $store.state.view.popup.styleQRPopup.type == 'wifi'")
                             .c-qr__bottom-item(v-if="!$store.state.view.pdf.ref")
@@ -219,7 +221,7 @@ export default {
                                 zip.generateAsync({
                                     type: "blob"
                                 }).then((blob) => {
-                                    fileDownload(blob, `${place.link}_tables_menu.zip`)
+                                    fileDownload(blob, `${place.name}_tables_menu.zip`)
                                 }, (err) => {
                                     alert('export failed')
                                 })
@@ -239,16 +241,16 @@ export default {
                                     if (kind == 'files') {
                                         var download = document.createElement('a');
                                         download.href = x;
-                                        download.download = `${place.link}_table_${tablesArr[i]}.${type}`;
+                                        download.download = `${place.name}_table_${tablesArr[i]}.${type}`;
                                         download.click()
                                     } else {
-                                        zip.file(`${place.link}_table_${tablesArr[i]}.${type}`, this.b64toBlob(x))
+                                        zip.file(`${place.name}_table_${tablesArr[i]}.${type}`, this.b64toBlob(x))
                                     }
                                 } else {
                                     if (kind == 'files') {
-                                        fileDownload(x, `${place.link}_table_${tablesArr[i]}.${type}`)
+                                        fileDownload(x, `${place.name}_table_${tablesArr[i]}.${type}`)
                                     } else {
-                                        zip.file(`${place.link}_table_${tablesArr[i]}.${type}`, x)
+                                        zip.file(`${place.name}_table_${tablesArr[i]}.${type}`, x)
                                     }
                                 }
                                 i++
@@ -271,10 +273,10 @@ export default {
                         if (type == 'png') {
                             var download = document.createElement('a');
                             download.href = x;
-                            download.download = `${place.link}_menu_qr.${type}`;
+                            download.download = `${place.name}_menu_qr.${type}`;
                             download.click()
                         } else {
-                            fileDownload(x, `${place.link}_menu_qr.${type}`)
+                            fileDownload(x, `${place.name}_menu_qr.${type}`)
                         }
                         this.generating = false
                     }
@@ -399,13 +401,14 @@ export default {
                         drawer: 'canvas',
                         onRenderingEnd: async (e, x) => {
                             this.$store.state.view.pdf.qr = x
+                            this.$store.state.view.pdf.table = tablesArr[i]
                             const canvas = await this.$html2canvas(el, { scale: 1, type: 'dataURL' })
 
                             doc.addImage(canvas, 'JPEG', 0, 0)
                             if (i < (tablesArr.length - 1)) {
                                 doc.addPage()
                             } else {
-                                doc.save(`${place.link}_tables_menu.pdf`)
+                                doc.save(`${place.name}_tables_menu.pdf`)
                             }
                             i++
                             nextStep()
@@ -418,11 +421,11 @@ export default {
 
                 if (this.$store.state.view.pdf.ref) {
                     doc.addImage(this.preview, 'JPEG', 0, 0)
-                    doc.save(`${place.link}_menu_qr.pdf`)
+                    doc.save(`${place.name}_menu_qr.pdf`)
                     this.generating = false
                     
                 } else {
-                    fileDownload(this.preview, `${place.link}_menu_qr.png`)
+                    fileDownload(this.preview, `${place.name}_menu_qr.png`)
                     this.generating = false
                 }
 

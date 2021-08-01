@@ -9,6 +9,7 @@ const cur = [
         pic: '/PDF_1.png',
         title: 'Отсканируйте для просмотра меню',
         subtitle: 'Сделайте заказ, позовите официанта или попросите счет',
+        table: true,
         ref: 'pdf1'
     },
     {
@@ -17,6 +18,7 @@ const cur = [
         height: 93,
         pic: '/PDF_2.png',
         subtitle: 'Отсканируйте для просмотра меню',
+        table: true,
         ref: 'pdf2'
     }
 ]

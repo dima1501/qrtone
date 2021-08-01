@@ -72,7 +72,8 @@ const state = {
   pdf: {
     qr: null,
     ref: null,
-    data: {}
+    data: {},
+    table: null
   },
   loading: {
     sendOrder: false,

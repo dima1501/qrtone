@@ -371,11 +371,11 @@ export default {
             return moment(date).local().locale('ru').format("L")
         },
         calcDays(started, expires) {
-            return moment(expires).diff(moment(), 'days')
+            return moment(expires).set({hour:0,minute:0,second:0,millisecond:0}).diff(moment().set({hour:0,minute:0,second:0,millisecond:0}), 'days')
         },
         calcPercents(started, expires) {
-            const totalDiff = moment(expires).diff(moment(started), 'days')
-            const startDiff = moment().diff(moment(started), 'days')
+            const totalDiff = moment(expires).set({hour:0,minute:0,second:0,millisecond:0}).diff(moment(started).set({hour:0,minute:0,second:0,millisecond:0}), 'days')
+            const startDiff = moment().set({hour:0,minute:0,second:0,millisecond:0}).diff(moment(started).set({hour:0,minute:0,second:0,millisecond:0}), 'days')
             return (startDiff / totalDiff) * 100 + '%'
         },
         isDateBefore(date) {

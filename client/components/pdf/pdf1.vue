@@ -4,6 +4,7 @@
             h1 {{$store.state.view.pdf.data.title}}
             p {{$store.state.view.pdf.data.subtitle}}
             img.pdf-list__qr(:src="$store.state.view.pdf.qr")
+            p.table(v-if="$store.state.view.popup.tablesPopup.tables.length && $store.state.view.pdf.data.table") Столик {{!$store.state.view.pdf.table ? $store.state.view.popup.tablesPopup.tables[0] : $store.state.view.pdf.table}}
 </template>
 
 <script>
@@ -46,25 +47,31 @@ export default {
             white-space: pre-wrap; 
             word-wrap: break-word;
             line-height: 1.3;
-            max-height: 200px;
+            max-height: 167px;
             overflow: hidden;
+            max-width: 300px;
         }
 
         p {
             margin-bottom: 50px;
             max-width: 300px;
+            overflow: hidden;
+            max-height: 89.6px;
             margin: 0 auto 50px;
             text-align: center;
             white-space: pre-wrap; 
             word-wrap: break-word;
             line-height: 1.4;
+            &.table {
+                margin-top: 10px;
+                font-weight: bold;
+                margin-bottom: -14px;
+            }
         }
     }
     &__qr {
-        svg {
-            width: 300px;
-            height: 300px;
-        }
+        width: 270px;
+        height: 270px;
     }
 }
 

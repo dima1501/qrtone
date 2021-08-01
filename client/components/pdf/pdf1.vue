@@ -64,7 +64,6 @@ export default {
             line-height: 1.4;
             &.table {
                 margin-top: 10px;
-                font-weight: bold;
                 margin-bottom: -14px;
             }
         }

@@ -65,27 +65,39 @@
                                 .c-qr__section-line-title Контент
                                 .c-qr__section-line-content
                                     v-textarea(
-                                        v-if="$store.state.view.pdf.data.title"
+                                        v-if="'title' in $store.state.view.pdf.data"
                                         v-model="$store.state.view.pdf.data.title"
                                         type="text"
                                         :label="'Заголовок'"
                                         v-lazy-input:debounce="250"
                                         @input="updatePdf()"
-                                        rows="2"
+                                        rows="1"
                                         auto-grow
                                         outlined)
+
                                     v-textarea(
-                                        v-if="$store.state.view.pdf.data.subtitle"
+                                        v-if="'subtitle' in $store.state.view.pdf.data"
                                         v-model="$store.state.view.pdf.data.subtitle"
                                         type="text"
                                         :label="'Текст'"
                                         v-lazy-input:debounce="250"
                                         @input="updatePdf()"
-                                        rows="2"
+                                        rows="1"
                                         auto-grow
-                                        outlined
-                                        hide-details="auto")
-                                    v-checkbox(v-model="$store.state.view.pdf.data.table" v-if="'table' in $store.state.view.pdf.data && $store.state.view.popup.styleQRPopup.type == 'multi'" v-lazy-input:debounce="250" @change="updatePdf()" :label="`Номер столика`" hide-details="auto")
+                                        outlined)
+
+                                    v-textarea(
+                                        v-if="'feature_text' in $store.state.view.pdf.data"
+                                        v-model="$store.state.view.pdf.data.feature_text"
+                                        type="text"
+                                        :label="'Описание'"
+                                        v-lazy-input:debounce="250"
+                                        @input="updatePdf()"
+                                        rows="1"
+                                        auto-grow
+                                        outlined)
+
+                                    v-checkbox(v-model="$store.state.view.pdf.data.table" v-if="'table' in $store.state.view.pdf.data && $store.state.view.popup.styleQRPopup.type == 'multi'" v-lazy-input:debounce="250" @change="updatePdf()" :label="`Номер столика`" hide-details="auto").mt-0
 
                         .c-qr__bottom(v-if="$store.state.view.popup.tablesPopup.tables && $store.state.view.popup.tablesPopup.tables.length || $store.state.view.popup.styleQRPopup.type == 'simple' || $store.state.view.popup.styleQRPopup.type == 'wifi'")
                             .c-qr__bottom-item(v-if="!$store.state.view.pdf.ref")
@@ -236,6 +248,8 @@ export default {
                             colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                             logo: logo,
                             drawer: type,
+                            width: 500,
+                            height: 500,
                             onRenderingEnd: (e, x) => {
                                 if (type == 'png') {
                                     if (kind == 'files') {
@@ -269,6 +283,8 @@ export default {
                     colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                     logo: logo,
                     drawer: type,
+                    width: 500,
+                    height: 500,
                     onRenderingEnd: (e, x) => {
                         if (type == 'png') {
                             var download = document.createElement('a');
@@ -326,7 +342,7 @@ export default {
             this.$store.state.view.loading.pdfUpdating = true
             const el = this.$refs[value ? value : this.$store.state.view.pdf.ref ]
             if (el) {
-                this.preview = await this.$html2canvas(el, { scale: 1, type: 'dataURL' })
+                this.preview = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true  })
             }
             this.$store.state.view.loading.pdfUpdating = false
         },
@@ -344,6 +360,8 @@ export default {
                     colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                     logo:  this.easyqr.logo ? this.easyqr.logo : '',
                     drawer: 'canvas',
+                    width: 500,
+                    height: 500,
                     onRenderingEnd: (e, x) => {
                         this.$store.state.view.pdf.qr = x
                         this.updatePdf()
@@ -399,10 +417,12 @@ export default {
                         colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                         logo: logo,
                         drawer: 'canvas',
+                        width: 500,
+                        height: 500,
                         onRenderingEnd: async (e, x) => {
                             this.$store.state.view.pdf.qr = x
                             this.$store.state.view.pdf.table = tablesArr[i]
-                            const canvas = await this.$html2canvas(el, { scale: 1, type: 'dataURL' })
+                            const canvas = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true })
 
                             doc.addImage(canvas, 'JPEG', 0, 0)
                             if (i < (tablesArr.length - 1)) {

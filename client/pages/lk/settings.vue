@@ -98,12 +98,13 @@
                                 .subscription__info(v-if="!isDateBefore(subs.expires)")
                                     .subscription__info-period.small с {{formatDate(subs.started)}}
                                     .subscription__info-period до {{formatDate(subs.expires)}}
-                            .subscription__bottom
+                            .subscription__bottom(v-if="isDateBefore(subs.started)")
                                 .subscription__progress(v-if="!isDateBefore(subs.expires)")
-                                    .subscription__progress-value Осталось дней: {{ calcDays(subs.started, subs.expires) }} 
+                                    .subscription__progress-value Осталось дней: {{ calcDays(subs.started, subs.expires) }}
                                     .subscription__progress-line
                                         .subscription__progress-line-bg(v-bind:style="{ width: calcPercents(subs.started, subs.expires) }")
                                 .subscription__ended(v-else) Истекла {{formatDate(subs.expires)}}
+
                         .subscription__bubbles
                             .subscription__bubbles-item._1
                             .subscription__bubbles-item._2
@@ -371,7 +372,7 @@ export default {
             return moment(date).local().locale('ru').format("L")
         },
         calcDays(started, expires) {
-            return moment(expires).set({hour:0,minute:0,second:0,millisecond:0}).diff(moment(started).set({hour:0,minute:0,second:0,millisecond:0}), 'days')
+            return moment(expires).set({hour:0,minute:0,second:0,millisecond:0}).diff(moment().set({hour:0,minute:0,second:0,millisecond:0}), 'days')
         },
         calcPercents(started, expires) {
             const totalDiff = moment(expires).set({hour:0,minute:0,second:0,millisecond:0}).diff(moment(started).set({hour:0,minute:0,second:0,millisecond:0}), 'days')

@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    .geser(v-if="$fetchState.pending") loading
+    .geser(v-if="$fetchState.pending") geser
     .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !$fetchState.pending")
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
@@ -289,7 +289,6 @@ export default {
     },
     mounted() {
         this.navigator = navigator.platform
-        document.body.style.height = window.innerHeight + 'px';
         window.addEventListener('scroll', (e) => {
             this.headerTop = this.$refs.cats.getBoundingClientRect().top;
         })
@@ -384,7 +383,6 @@ export default {
             return newArr.sort(function(a, b) { return a - b; })
         },
         getTime(time) {
-            // return moment(time).local().locale('ru').calendar()
             return moment(time).format('DD.MM.YYYY, HH:MM')
         },
         toggleCommandsMenu() {

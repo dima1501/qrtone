@@ -1,4 +1,5 @@
 <template lang="pug">
+kinesis-container
   .main
     .m-header
       .m-container
@@ -18,22 +19,27 @@
                 input(type="text" placeholder="Введите ваш email адрес" v-model="email" @input="checkForm" :class="{ 'validation-failed': emailValidationErrors[0] }" @focus="isEmailFocused = true" @blur="isEmailFocused = false")
                 .m-form__error.error-label {{ emailValidationErrors[0] }}
               .m-form__btn
-                button(type="submit" :to="localePath('auth/registration')").button.-short.-black Начать бесплатно
-            p.m-welcome__note Попробуйте QRTONE бесплатно в течение 14 дней, кредитная карта не требуется.<br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от QRTone.
-          .m-welcome__media
-            //- video(src="video2.mp4" autoplay muted loop)
-            <client-only>
-              <threejs-component />
-            </client-only>
+                nuxt-link(:to="localePath('/auth/registration')").button.-short.-black Начать бесплатно
+            p.m-welcome__note Попробуйте QRTONE бесплатно в течение 14 дней,<br> кредитная карта не требуется.
+            //- <br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от QRTone.
+          kinesis-element(:strength="10" type="depth")
+            .m-welcome__media
+              //- video(src="video2.mp4" autoplay muted loop)
+              //- <client-only>
+              //-   <threejs-component />
+              //- </client-only>
+              kinesis-element(:strength="10" type="depth")
+                img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
+              kinesis-element(:strength="10" type="depth")
+                .m-welcome__media-text Отсканируйте для просмотра демо меню или <a href='http://localhost:3000/m/Dimas_diner?t=1' target="_blank">перейдите по ссылке</a>
+
 
 </template>
 
 <script>
+
 export default {
   layout: 'public',
-  components: {
-    ThreejsComponent: process.browser ? () => import('~/components/ThreejsComponent.vue') : null
-  },
   data() {
     return {
       emailValidationErrors: [],

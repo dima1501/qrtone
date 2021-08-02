@@ -262,6 +262,7 @@ export default {
                             drawer: type,
                             width: 500,
                             height: 500,
+                            colorLight: 'transparent',
                             onRenderingEnd: (e, x) => {
                                 if (type == 'png') {
                                     if (kind == 'files') {
@@ -374,6 +375,7 @@ export default {
                     drawer: 'canvas',
                     width: 500,
                     height: 500,
+                    backgroundImageAlpha: 0,
                     onRenderingEnd: (e, x) => {
                         this.$store.state.view.pdf.qr = x
                         this.$store.state.view.pdf.link = this.easyqr.text

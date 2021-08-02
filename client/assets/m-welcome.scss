@@ -12,19 +12,33 @@
     &__title {
         font-weight: 700;
         font-size: 48px;
-        line-height: 64px;
+        line-height: 60px;
         margin-bottom: 30px;
     }
     &__note {
         font-size: 12px;
-        line-height: 18px;
+        line-height: 16px;
         color: $color-grey-dark;
     }
     &__media {
         width: 100%;
-        border-radius: 20px;
+        // border-radius: 20px;
         overflow: hidden;
         position: relative;
+        max-width: 380px;
+
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background-image: url('../static/papyrus-dark.png');
+        background-size: cover;
+        background-position: center;
+
+
         video {
             max-width: 120%;
             height: auto;
@@ -36,6 +50,19 @@
             // left: 50%;
             // top: 50%;
             // transform: translate(-50%, -50%);
+        }
+        &-qr {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        &-text {
+            text-align: center;
+            color: white;
+            a {
+                color: $color-blue;
+                font-weight: bold;
+                text-decoration: none;
+            }
         }
     }
 }

@@ -130,10 +130,10 @@
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
                                         .subs__list-item-text Адаптивный интерфейс для работы с любых устройств
-                                    //- .subs__list-item 
-                                    //-     .subs__list-item-icon
-                                    //-         v-icon(light) mdi-checkbox-marked-circle 
-                                    //-     .subs__list-item-text Каждое заведение индексируется в поиске
+                                    .subs__list-item 
+                                        .subs__list-item-icon
+                                            v-icon(light) mdi-checkbox-marked-circle 
+                                        .subs__list-item-text Информация о компании индексируется в поисковых системах
                                     .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
@@ -142,10 +142,10 @@
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
                                         .subs__list-item-text Раздельный стоп-лист для каждого заведения
-                                    .subs__list-item 
-                                        .subs__list-item-icon
-                                            v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Интерфейс на Русском и Английском языках
+                                    //- .subs__list-item 
+                                    //-     .subs__list-item-icon
+                                    //-         v-icon(light) mdi-checkbox-marked-circle 
+                                    //-     .subs__list-item-text Интерфейс на Русском и Английском языках
                                     .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
@@ -163,22 +163,22 @@
                                 .subs__plan-period Перейти на Standart <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
 
                             div(v-else)
-                                .subs__plan.-blue(@click="subscribe('standart', 1, 1000)")
+                                .subs__plan.-blue(@click="subscribe('standart', 1, 750)")
                                     .subs__plan-period 1 месяц
                                     .subs__plan-price
-                                        .subs__plan-price-value 1000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-value 750{{$store.state.auth.user.currencySymbol}}
 
-                                .subs__plan.-orange(@click="subscribe('standart', 6, 5000)")
+                                .subs__plan.-orange(@click="subscribe('standart', 6, 4200)")
                                     .subs__plan-period 6 месяцев
                                     .subs__plan-price
-                                        .subs__plan-price-value 5000{{$store.state.auth.user.currencySymbol}}
-                                        .subs__plan-price-sale 6000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-value 4200{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-sale 700{{$store.state.auth.user.currencySymbol}}/мес
 
-                                .subs__plan.-voilet(@click="subscribe('standart', 12, 10000)")
+                                .subs__plan.-voilet(@click="subscribe('standart', 12, 7800)")
                                     .subs__plan-period 12 месяцев
                                     .subs__plan-price
-                                        .subs__plan-price-value 10000{{$store.state.auth.user.currencySymbol}}
-                                        .subs__plan-price-sale 12000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-value 7800{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-sale 650{{$store.state.auth.user.currencySymbol}}/мес
 
                                     
                         .subs__item
@@ -218,22 +218,22 @@
                                 .subs__plan-period Улучшить до Premium <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
 
                             div(v-else)
-                                .subs__plan.-blue(@click="subscribe('premium', 1, 2000)")
+                                .subs__plan.-blue(@click="subscribe('premium', 1, 1500)")
                                     .subs__plan-period 1 месяц
                                     .subs__plan-price
-                                        .subs__plan-price-value 2000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-value 1500{{$store.state.auth.user.currencySymbol}}
 
-                                .subs__plan.-orange(@click="subscribe('premium', 6, 10000)")
+                                .subs__plan.-orange(@click="subscribe('premium', 6, 8400)")
                                     .subs__plan-period 6 месяцев
                                     .subs__plan-price
-                                        .subs__plan-price-value 10000{{$store.state.auth.user.currencySymbol}}
-                                        .subs__plan-price-sale 12000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-value 8400{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-sale 1400{{$store.state.auth.user.currencySymbol}}/мес
 
-                                .subs__plan.-voilet(@click="subscribe('premium', 12, 20000)")
+                                .subs__plan.-voilet(@click="subscribe('premium', 12, 15600)")
                                     .subs__plan-period 12 месяцев
                                     .subs__plan-price
-                                        .subs__plan-price-value 20000{{$store.state.auth.user.currencySymbol}}
-                                        .subs__plan-price-sale 24000{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-value 15600{{$store.state.auth.user.currencySymbol}}
+                                        .subs__plan-price-sale 1300{{$store.state.auth.user.currencySymbol}}/мес
 
                     .subs__note Полный возврат средств в первые 7 дней после покупки.<br> По всем вопросам пишите на <a href="mailto:info@qrtone.com">info@qrtone.com</a>
 
@@ -371,7 +371,7 @@ export default {
             return moment(date).local().locale('ru').format("L")
         },
         calcDays(started, expires) {
-            return moment(expires).set({hour:0,minute:0,second:0,millisecond:0}).diff(moment().set({hour:0,minute:0,second:0,millisecond:0}), 'days')
+            return moment(expires).set({hour:0,minute:0,second:0,millisecond:0}).diff(moment(started).set({hour:0,minute:0,second:0,millisecond:0}), 'days')
         },
         calcPercents(started, expires) {
             const totalDiff = moment(expires).set({hour:0,minute:0,second:0,millisecond:0}).diff(moment(started).set({hour:0,minute:0,second:0,millisecond:0}), 'days')
@@ -620,7 +620,6 @@ export default {
                 font-size: 14px;
                 opacity: 0.9;
                 margin-top: -7px;
-                text-decoration: line-through;
             }
         }
     }

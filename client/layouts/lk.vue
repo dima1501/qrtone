@@ -168,6 +168,10 @@ input[type=number] {
   margin-right: 15px;
 }
 
+.v-textarea textarea {
+  line-height: 1.35rem;
+  margin-bottom: 10px;
+}
 
 </style>
 

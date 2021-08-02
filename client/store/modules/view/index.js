@@ -73,7 +73,8 @@ const state = {
     qr: null,
     ref: null,
     data: {},
-    table: null
+    table: null,
+    link: null
   },
   loading: {
     sendOrder: false,

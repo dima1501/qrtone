@@ -4,7 +4,11 @@
             h1 {{$store.state.view.pdf.data.title}}
             p {{$store.state.view.pdf.data.subtitle}}
             img.pdf-list__qr(:src="$store.state.view.pdf.qr")
-            p.table(v-if="$store.state.view.popup.tablesPopup.tables.length && $store.state.view.pdf.data.table") Столик {{!$store.state.view.pdf.table ? $store.state.view.popup.tablesPopup.tables[0] : $store.state.view.pdf.table}}
+            p.table
+                span
+                span(v-if="$store.state.view.popup.tablesPopup.tables.length && $store.state.view.pdf.data.table") Столик {{!$store.state.view.pdf.table ? $store.state.view.popup.tablesPopup.tables[0] : $store.state.view.pdf.table}}
+                span(v-if="$store.state.view.pdf.data.link && $store.state.view.pdf.link && $store.state.view.popup.styleQRPopup.type !== 'wifi'") {{$store.state.view.pdf.link}}
+                span
 </template>
 
 <script>
@@ -65,6 +69,9 @@ export default {
             &.table {
                 margin-top: 10px;
                 margin-bottom: -14px;
+                span {
+                    display: block;
+                }
             }
         }
     }

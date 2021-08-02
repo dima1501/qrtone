@@ -11,6 +11,7 @@ const cur = [
 просмотра меню`,
         subtitle: 'Сделайте заказ, позовите официанта или попросите счет',
         table: true,
+        link: true,
         ref: 'pdf1'
     },
     {
@@ -24,7 +25,19 @@ const cur = [
 Позвать официанта
 Попросить счет`,
         table: true,
+        link: true,
         ref: 'pdf2'
+    },
+    {
+        name: 'Карточка, 90мм x 140мм',
+        width: 90,
+        height: 140,
+        pic: '/PDF_3.png',
+        title: `Смотрите
+наше меню`,
+        table: true,
+        link: true,
+        ref: 'pdf3'
     }
 ]
 

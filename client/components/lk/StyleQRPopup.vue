@@ -97,7 +97,21 @@
                                         auto-grow
                                         outlined)
 
-                                    v-checkbox(v-model="$store.state.view.pdf.data.table" v-if="'table' in $store.state.view.pdf.data && $store.state.view.popup.styleQRPopup.type == 'multi'" v-lazy-input:debounce="250" @change="updatePdf()" :label="`Номер столика`" hide-details="auto").mt-0
+                                    v-checkbox(
+                                        v-model="$store.state.view.pdf.data.table" 
+                                        v-if="'table' in $store.state.view.pdf.data && $store.state.view.popup.styleQRPopup.type == 'multi'" 
+                                        v-lazy-input:debounce="250" 
+                                        @change="updatePdf()"
+                                        :label="`Номер столика`" 
+                                        hide-details="auto").mt-0
+
+                                    v-checkbox(
+                                        v-model="$store.state.view.pdf.data.link" 
+                                        v-if="'link' in $store.state.view.pdf.data && $store.state.view.popup.styleQRPopup.type !== 'wifi'"
+                                        v-lazy-input:debounce="250" 
+                                        @change="updatePdf()"
+                                        :label="`Ссылка на меню`" 
+                                        hide-details="auto").mt-0
 
                         .c-qr__bottom(v-if="$store.state.view.popup.tablesPopup.tables && $store.state.view.popup.tablesPopup.tables.length || $store.state.view.popup.styleQRPopup.type == 'simple' || $store.state.view.popup.styleQRPopup.type == 'wifi'")
                             .c-qr__bottom-item(v-if="!$store.state.view.pdf.ref")
@@ -141,17 +155,15 @@
                         pdf1
                     .pdf__list(ref="pdf2" v-if="$store.state.view.pdf.ref == 'pdf2'")
                         pdf2
+                    .pdf__list(ref="pdf3" v-if="$store.state.view.pdf.ref == 'pdf3'")
+                        pdf3
 </template>
 
 <script>
 import fileDownload from 'js-file-download'
-
 import jsPDF from 'jspdf'
-
 import * as QRCode from 'easyqrcodejs'
-
 import {lazyInput} from 'vue-lazy-input'
-
 import JSZip from 'jszip'
 
 export default {
@@ -364,6 +376,7 @@ export default {
                     height: 500,
                     onRenderingEnd: (e, x) => {
                         this.$store.state.view.pdf.qr = x
+                        this.$store.state.view.pdf.link = this.easyqr.text
                         this.updatePdf()
                     }
                 })
@@ -422,6 +435,7 @@ export default {
                         onRenderingEnd: async (e, x) => {
                             this.$store.state.view.pdf.qr = x
                             this.$store.state.view.pdf.table = tablesArr[i]
+                            this.$store.state.view.pdf.link = str
                             const canvas = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true })
 
                             doc.addImage(canvas, 'JPEG', 0, 0)
@@ -597,6 +611,12 @@ export default {
                 font-size: 36px;
                 color: $color-blue;
                 animation: load 1s ease-in-out infinite;
+            }
+        }
+        &-svg {
+            canvas {
+                max-width: 100%;
+                height: auto;
             }
         }
     }

@@ -4,7 +4,12 @@
         .pdf-list-2__qr
             img.pdf-list-2__qr-pic(:src="$store.state.view.pdf.qr")
 
-        .pdf-list-2__table(v-if="$store.state.view.popup.tablesPopup.tables.length && $store.state.view.pdf.data.table") Столик {{!$store.state.view.pdf.table ? $store.state.view.popup.tablesPopup.tables[0] : $store.state.view.pdf.table}}
+        .pdf-list-2__table
+            span
+            span(v-if="$store.state.view.popup.tablesPopup.tables.length && $store.state.view.pdf.data.table") Столик {{!$store.state.view.pdf.table ? $store.state.view.popup.tablesPopup.tables[0] : $store.state.view.pdf.table}}
+            span(v-if="$store.state.view.pdf.data.link && $store.state.view.pdf.link && $store.state.view.popup.styleQRPopup.type !== 'wifi'") {{$store.state.view.pdf.link}}
+            span
+
         .pdf-list-2__content
             .pdf-list-2__content-title {{$store.state.view.pdf.data.subtitle}}
             .pdf-list-2__content-line {{$store.state.view.pdf.data.feature_text}}
@@ -52,12 +57,15 @@ export default {
         color: #fff;
         text-align: center;
         margin-top: 5px;
-        margin-bottom: -29px;
+        // margin-bottom: -29px;
+        span {
+            margin: 0 10px;
+        }
     }
     &__content {
         color: white;
         width: 100%;
-        margin-top: 45px;
+        margin-top: 15px;
         max-width: 360px;
         margin-right: auto;
         white-space: pre-wrap; 
@@ -78,7 +86,7 @@ export default {
     &__pic {
         position: absolute;
         right: 15px;
-        bottom: 25px;
+        bottom: 20px;
         z-index: 12;
         width: 160px;
         height: 160px;

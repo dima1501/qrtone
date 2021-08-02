@@ -91,7 +91,7 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             background: user.background,
             categories: user.categories,
             place: place,
-            actions: user.actions,
+            actions: user.actions.filter(e => e.isActive),
             currencySymbol: user.currencySymbol,
             subscription: user.subscription,
             fastActionsEnabled: user.fastActionsEnabled,

@@ -34,7 +34,6 @@
     "qrcode-with-logos": "^1.0.3",
     "socket.io": "^4.0.0",
     "socket.io-client": "^4.0.0",
-    "three": "^0.129.0",
     "transliteration": "^2.2.0",
     "v-mask": "^2.2.4",
     "v-qr": "0.0.2",

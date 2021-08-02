@@ -1,5 +1,5 @@
 .m-form {
-    margin-bottom: 22px;
+    margin-bottom: 15px;
     display: flex;
     &__input {
         position: relative;
@@ -12,8 +12,5 @@
         &.focused {
             border: 2px solid $color-blue;
         }
-    }
-    &__btn {
-        padding: 3px;
     }
 }

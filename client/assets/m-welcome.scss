@@ -2,7 +2,9 @@
     &__inner {
         display: flex;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
+        margin: auto;
+        padding: 100px 0;
     }
     &__content {
         width: 600px;
@@ -12,13 +14,17 @@
     &__title {
         font-weight: 700;
         font-size: 48px;
-        line-height: 60px;
-        margin-bottom: 30px;
+        line-height: 56px;
+        margin-bottom: 15px;
+    }
+    &__text {
+        font-size: 20px;
     }
     &__note {
         font-size: 12px;
         line-height: 16px;
         color: $color-grey-dark;
+        margin-bottom: 0;
     }
     &__media {
         width: 100%;

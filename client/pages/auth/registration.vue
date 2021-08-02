@@ -84,6 +84,13 @@ export default {
             this.$store.dispatch('auth/registrationAction', this.registrationData)
         },
     },
+    mounted() {
+        if (!this.$store.state.auth.user) {
+            this.$store.dispatch("auth/checkAuth", { page: 'registration' })
+        } else {
+            $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
+        }
+    }
 }
 </script>
 

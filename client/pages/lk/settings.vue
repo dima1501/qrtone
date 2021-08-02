@@ -422,6 +422,7 @@ export default {
 
 <style lang="scss">
 
+@import '../../assets/subs.scss';
 
 .theme--light.v-label--is-disabled,
 .theme--light.v-input--is-disabled input, .theme--light.v-input--is-disabled textarea {
@@ -505,123 +506,6 @@ export default {
             padding: 5px 10px;
             background: #F5F7FB;
             border-radius: 10px;
-        }
-    }
-}
-
-.subs {
-    margin: 30px 0;
-    &__title {
-        text-align: center;
-        font-size: 28px;
-        color: $color-black;
-    }
-    &__subtitle {
-        text-align: center;
-        margin-bottom: 30px;
-        color: $color-black;
-    }
-    &__inner {
-        display: flex;
-        justify-content: center;
-        // align-items: center;
-        align-items: flex-start;
-    }
-    &__item {
-        border: 3px solid #F5F7FB;
-        box-shadow: 0 0 20px rgba(0,0,0,0.2);
-        border-radius: 16px;
-        max-width: 350px;
-        margin: 0 20px;
-        padding: 20px;
-        &-title {
-            margin-bottom: 10px;
-            font-size: 24px;
-            font-weight: bold;
-            color: $color-black;
-        }
-        &-content {
-            margin-bottom: auto;
-        }
-    }
-    &__list {
-        margin-bottom: 20px;
-        &-item {
-            margin-bottom: 12px;
-            display: flex;
-            &:last-child {
-                margin-bottom: 0;
-            }
-            
-            &-icon {
-                margin-right: 10px;
-                margin-top: -2px;
-                .v-icon {
-                    color: #61a7fd;
-                }
-            }
-            &-text {
-                line-height: 1.3;
-            }
-        }
-    }
-    &__note {
-        margin: 20px 0;
-        text-align: center;
-        font-size: 14px;
-        a {
-            text-decoration: none;
-            color: $color-blue;
-        }
-    }
-    &__plan {
-        margin-bottom: 15px;
-        border-radius: 10px;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 20px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.12);
-        min-height: 70px;
-        cursor: pointer;
-        &.-blue {
-            background-color: #61a7fd;
-        }
-        &.-orange {
-            background-color: #fda076;
-        }
-        &.-voilet {
-            background-color: #7476da;
-        }
-        &.-transp {
-            color: $color-black;
-            border: 2px solid rgb(236, 236, 236);
-        }
-        &:last-child {
-            margin-bottom: 0;
-        }
-        &-period {
-            font-size: 18px;
-            font-weight: bold;
-            span {
-                display: block;
-                font-size: 14px;
-                line-height: 1.3;
-                font-weight: normal;
-            }
-        }
-        &-price {
-            text-align: right;
-            &-value {
-                font-size: 24px;
-                font-weight: bold;
-            }
-            &-sale {
-                font-size: 14px;
-                opacity: 0.9;
-                margin-top: -7px;
-            }
         }
     }
 }

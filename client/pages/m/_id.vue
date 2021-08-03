@@ -1,9 +1,6 @@
 <template lang="pug">
 div
-    .geser(v-if="$fetchState.pending")
-            div(v-if="$store.state.guest.companyData.photo")
-                img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
-            span {{$store.state.guest.companyData.name}}
+    .geser(v-if="$fetchState.pending") geser
     .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !$fetchState.pending")
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
@@ -23,7 +20,7 @@ div
                         v-icon.ml-5(
                             light 
                             @click="toggleCommandsMenu"
-                            v-if="$nuxt.$route.query.t && isAvailable && $store.state.guest.companyData.fastActionsEnabled && ($store.state.guest.companyData.actions.filter(e => e.isActive == true).length || $store.state.guest.companyData.waiters.length)") mdi-menu 
+                            v-if="$nuxt.$route.query.t && isAvailable && ($store.state.guest.companyData.actions.length && $store.state.guest.companyData.fastActionsEnabled || $store.state.guest.companyData.waiters.length)") mdi-menu 
 
             .welcome
                 .welcome__bg(v-if="$store.state.guest.companyData.background" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
@@ -386,7 +383,6 @@ export default {
             return newArr.sort(function(a, b) { return a - b; })
         },
         getTime(time) {
-            // return moment(time).local().locale('ru').calendar()
             return moment(time).format('DD.MM.YYYY, HH:MM')
         },
         toggleCommandsMenu() {

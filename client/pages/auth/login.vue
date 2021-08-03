@@ -78,7 +78,9 @@ export default {
     },
     mounted() {
         if (!this.$store.state.auth.user) {
-            this.$store.dispatch("auth/checkAuth")
+            this.$store.dispatch("auth/checkAuth", { page: 'login' })
+        } else {
+            $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
         }
     }
 }

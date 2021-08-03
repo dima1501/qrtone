@@ -197,7 +197,6 @@ export default {
         }
     },
     mounted() {
-        console.log(this.editableMenuItem.calories)
         this.updatedMenuItem = Object.assign({}, this.editableMenuItem)
         this.updatedMenuItem.images = [...this.editableMenuItem.images]
         this.updatedMenuItem.prices = [...this.editableMenuItem.prices]

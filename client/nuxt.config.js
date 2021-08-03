@@ -26,7 +26,7 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Сервис бесконтактного меню для ресторанов и кафе. С доступом по QR коду и уведомлениями в telegram' }
+      { hid: 'description', name: 'description', content: 'Сервис электронного меню для ресторанов и кафе. С доступом по QR коду и уведомлениями в telegram' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -45,7 +45,8 @@ export default {
     { src: './plugins/vue-html2canvas.client.js' },
     { src: './plugins/ymap.client.js' },
     { src: './plugins/notify.client.js' },
-    { src: './plugins/confirm.client.js' }
+    { src: './plugins/confirm.client.js' },
+    { src: './plugins/parallax.client.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

@@ -144,6 +144,7 @@
                             div(ref="qrcode")
                             div(ref="qrcode_generate" hidden)
                         img.c-qr__preview-image(:src='preview' v-show="$store.state.view.pdf.ref")
+                        //- .c-qr__preview-image(v-html='preview.toDataURL()' v-show="$store.state.view.pdf.ref")
 
             .c-qr__preview-loader(v-if="generating")
                 v-icon(light) mdi-loading
@@ -165,6 +166,8 @@ import jsPDF from 'jspdf'
 import * as QRCode from 'easyqrcodejs'
 import {lazyInput} from 'vue-lazy-input'
 import JSZip from 'jszip'
+
+import domtoimage from 'dom-to-image-more'
 
 export default {
     directives:{
@@ -260,6 +263,7 @@ export default {
                             drawer: type,
                             width: 500,
                             height: 500,
+                            colorLight: 'transparent',
                             onRenderingEnd: (e, x) => {
                                 if (type == 'png') {
                                     if (kind == 'files') {
@@ -352,7 +356,10 @@ export default {
             this.$store.state.view.loading.pdfUpdating = true
             const el = this.$refs[value ? value : this.$store.state.view.pdf.ref ]
             if (el) {
-                this.preview = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true })
+                // this.preview = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true  })
+
+                this.preview = await domtoimage.toPng(el)
+
             }
             this.$store.state.view.loading.pdfUpdating = false
         },
@@ -372,6 +379,7 @@ export default {
                     drawer: 'canvas',
                     width: 500,
                     height: 500,
+                    backgroundImageAlpha: 0,
                     onRenderingEnd: (e, x) => {
                         this.$store.state.view.pdf.qr = x
                         this.$store.state.view.pdf.link = this.easyqr.text
@@ -434,7 +442,17 @@ export default {
                             this.$store.state.view.pdf.qr = x
                             this.$store.state.view.pdf.table = tablesArr[i]
                             this.$store.state.view.pdf.link = str
-                            const canvas = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true })
+                            // const canvas = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true })
+
+                            // domtoimage.toPng(el).then((dataUrl) => {
+                            //     this.preview = dataUrl
+                            // })
+                            // .catch(function (error) {
+                            //     console.error('oops, something went wrong!', error)
+                            // })
+
+                            const canvas = await domtoimage.toPng(el)
+
 
                             doc.addImage(canvas, 'JPEG', 0, 0)
                             if (i < (tablesArr.length - 1)) {

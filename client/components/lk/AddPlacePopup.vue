@@ -118,8 +118,6 @@
 <script>
 import Vue from 'vue'
 import { transliterate as tr, slugify } from 'transliteration';
-import { VueMaskDirective } from 'v-mask'
-Vue.directive('mask', VueMaskDirective);
 
 const axios = require('axios').default
 

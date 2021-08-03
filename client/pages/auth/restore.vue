@@ -145,6 +145,13 @@ export default {
             this.$store.dispatch('auth/updatePassword', this.$store.state.auth.restore)
         }
     },
+    mounted() {
+        if (!this.$store.state.auth.user) {
+            this.$store.dispatch("auth/checkAuth", { page: 'restore' })
+        } else {
+            $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
+        }
+    }
 }
 </script>
 

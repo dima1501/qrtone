@@ -11,8 +11,8 @@
                 .menu-item__vegan(v-if="item.isVegan") Вегетарианское
 
                 .menu-item__name
-                    .menu-item__name-title Том ям
-                    .menu-item__name-translation Tom yam
+                    .menu-item__name-title {{item.name}}
+                    .menu-item__name-translation {{item.translation}}
                 .menu-item__data
                     .menu-item__data-calories(v-if="item.weights[0]")
                         span {{ item.weights[0] }}г 

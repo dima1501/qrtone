@@ -97,7 +97,7 @@ const updateCompanyBackground = async (store, data) => {
   
       const uploadPhoto = await axios({
         method: "post",
-        url: "/api/upload-company-logo",
+        url: "/api/upload-company-background",
         data: bodyFormData,
         headers: { "Content-Type": "multipart/form-data" },
       });

@@ -151,11 +151,11 @@
             // Для печати
             .pdf(v-if="$store.state.view.popup.styleQRPopup.visible")
                 .pdf__print
-                    .pdf__list(ref="pdf1" v-if="$store.state.view.pdf.ref == 'pdf1'")
+                    .pdf__list(ref="pdf1" v-show="$store.state.view.pdf.ref == 'pdf1'")
                         pdf1
-                    .pdf__list(ref="pdf2" v-if="$store.state.view.pdf.ref == 'pdf2'")
+                    .pdf__list(ref="pdf2" v-show="$store.state.view.pdf.ref == 'pdf2'")
                         pdf2
-                    .pdf__list(ref="pdf3" v-if="$store.state.view.pdf.ref == 'pdf3'")
+                    .pdf__list(ref="pdf3" v-show="$store.state.view.pdf.ref == 'pdf3'")
                         pdf3
 </template>
 
@@ -196,9 +196,7 @@ export default {
     watch:{
         '$store.state.view.pdf.ref'(value, oldValue) {
             if (value) {
-                setTimeout(() => {
-                    this.updatePdf(value)
-                }, 0);
+                this.updatePdf(value)
             }
         }
     },
@@ -354,7 +352,7 @@ export default {
             this.$store.state.view.loading.pdfUpdating = true
             const el = this.$refs[value ? value : this.$store.state.view.pdf.ref ]
             if (el) {
-                this.preview = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true  })
+                this.preview = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true })
             }
             this.$store.state.view.loading.pdfUpdating = false
         },

@@ -30,7 +30,6 @@ router.post("/api/login", auth(), async (req, res) => {
   const { email, password } = req.body
   try {
     const user = await new UserService().findUserByUsername(req, email)
-    const preloadUser = await new PreloadUserModel(user)
     const passwordHash = await crypto
       .createHash("sha256")
       .update(password)
@@ -40,7 +39,8 @@ router.post("/api/login", auth(), async (req, res) => {
       res.status(200).send(false)
       return
     }
-
+    
+    const preloadUser = await new PreloadUserModel(user)
     const sessionId = await new SessionService().createSession(req, user._id)
     res.cookie("sessionId", sessionId, { httpOnly: true }).send(preloadUser)
   } catch (err) {

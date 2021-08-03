@@ -358,10 +358,7 @@ export default {
             this.$store.state.view.loading.pdfUpdating = true
             const el = this.$refs[value ? value : this.$store.state.view.pdf.ref ]
             if (el) {
-                // this.preview = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true  })
-
                 this.preview = await domtoimage.toPng(el)
-
             }
             this.$store.state.view.loading.pdfUpdating = false
         },
@@ -444,17 +441,8 @@ export default {
                             this.$store.state.view.pdf.qr = x
                             this.$store.state.view.pdf.table = tablesArr[i]
                             this.$store.state.view.pdf.link = str
-                            // const canvas = await this.$html2canvas(el, { scale: 1, type: 'dataURL', useCORS: true })
-
-                            // domtoimage.toPng(el).then((dataUrl) => {
-                            //     this.preview = dataUrl
-                            // })
-                            // .catch(function (error) {
-                            //     console.error('oops, something went wrong!', error)
-                            // })
 
                             const canvas = await domtoimage.toPng(el)
-
 
                             doc.addImage(canvas, 'JPEG', 0, 0)
                             if (i < (tablesArr.length - 1)) {

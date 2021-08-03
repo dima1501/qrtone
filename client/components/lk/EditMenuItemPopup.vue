@@ -97,10 +97,10 @@
                                     hide-details="auto").mr-5
                                 v-text-field(
                                     ref="price"
-                                     :rules="i > 1 && !updatedMenuItem.modifications[i - 1] ? nameRules : [true]"
+                                    :rules="i > 1 && !updatedMenuItem.modifications[i - 1] ? nameRules : [true]"
                                     v-model="updatedMenuItem.weights[i - 1]"
                                     type="number"
-                                    prefix="г."
+                                    label="Вес (г)*"
                                     hide-details="auto")
 
                             // Калории

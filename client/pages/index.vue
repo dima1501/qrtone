@@ -87,18 +87,18 @@
                       v-icon(light) mdi-checkbox-marked-circle 
                     .subs__list-item-text Быстрый запуск без ожидания менеджера
                     
-                nuxt-link(:to="localePath('/auth/registration')").subs__plan.-blue
+                nuxt-link(:to="localePath('/auth/registration')" target="_blank").subs__plan.-blue
                   .subs__plan-period 1 месяц
                   .subs__plan-price
                     .subs__plan-price-value 750₽
 
-                nuxt-link(:to="localePath('/auth/registration')").subs__plan.-orange
+                nuxt-link(:to="localePath('/auth/registration')" target="_blank").subs__plan.-orange
                   .subs__plan-period 6 месяцев
                   .subs__plan-price
                     .subs__plan-price-value 4200₽
                     .subs__plan-price-sale 700₽/мес
 
-                nuxt-link(:to="localePath('/auth/registration')").subs__plan.-voilet
+                nuxt-link(:to="localePath('/auth/registration')" target="_blank").subs__plan.-voilet
                   .subs__plan-period 12 месяцев
                   .subs__plan-price
                     .subs__plan-price-value 7800₽

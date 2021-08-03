@@ -31,6 +31,8 @@ const checkAuth = async (store, data) => {
       }
     } else if (data) {
       $nuxt.$router.push($nuxt.localePath({ path: `/auth/${data.page}` }))
+    } else {
+      $nuxt.$router.push($nuxt.localePath({ path: `/auth/login` }))
     }
   } catch (err) {
     console.error(err)

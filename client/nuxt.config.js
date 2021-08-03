@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+const axios = require("axios")
 
 const config = {
   port: process.env.NODE_ENV !== 'production' ? '3000' : '80',
@@ -84,8 +85,23 @@ export default {
         lazy: true,
         langDir: 'lang/',
       }
-    ]
+    ],
+    '@nuxtjs/sitemap'
   ],
+
+  sitemap: {
+    hostname: 'https://qrtone.com/m/',
+    gzip: true,
+    path: '/sitemap.xml',
+    routes: async () => {
+      let arr = await axios({
+        method: 'get',
+        url: `${config.apiserver}/api/get-sitemap-routes/`
+      })
+
+      return arr.data
+    }
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {

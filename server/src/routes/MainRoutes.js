@@ -1,13 +1,15 @@
-const bodyParser = require('body-parser')
 const express = require('express')
 const router = express.Router()
 
-const { ObjectId } = require('mongodb').ObjectID
+router.get('/api/get-sitemap-routes/', async (req, res) => {
+    try {
+        const users = await req.db.collection("users").find( {} ).toArray()
+        const placesArr = await users.map(e => e.places.map(i => i.link)).reduce((a, b) => a.concat(b) )
 
-const websocket = require('../websocket')
-
-router.get('/', async (req, res) => {
-    res.status(200)
+        res.status(200).send(placesArr)
+    } catch (error) {
+        console.error(error)
+    }
 })
 
 module.exports = router

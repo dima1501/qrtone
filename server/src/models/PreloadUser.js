@@ -23,7 +23,8 @@ const PreloadUser = class PreloadUser {
     this.fastActionsEnabled = data.fastActionsEnabled,
     this.isOnboardCompleted = data.isOnboardCompleted,
     this.waiters = data.waiters,
-    this.admin = data.admin
+    this.admin = data.admin,
+    this.bgWebp = data.bgWebp
   }
 }
 

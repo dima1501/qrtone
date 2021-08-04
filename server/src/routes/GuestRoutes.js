@@ -96,7 +96,8 @@ router.get('/api/get-user-data/:id', async (req, res) => {
             subscription: user.subscription,
             fastActionsEnabled: user.fastActionsEnabled,
             dops: user.dops,
-            waiters: user.waiters.filter(e => e.places.find(e => e == place._id))
+            waiters: user.waiters.filter(e => e.places.find(e => e == place._id)),
+            bgWebp: user.bgWebp
         }
         res.status(200).send(publicUser)
     } else {

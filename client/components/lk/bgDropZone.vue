@@ -18,7 +18,7 @@
                                 .st-dropzone__image(
                                     key='logo_dropzone_image_uploaded'
                                     v-if="$store.state.auth.user.background && !uploadImage.src && !$store.state.view.loading.uploadBg"
-                                    v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.auth.user.background + ')' }")
+                                    v-bind:style="{ backgroundImage: 'url(../../uploads/560-' + $store.state.auth.user.background + ')' }")
                                 .st-dropzone__image(
                                     key='logo_dropzone_image'
                                     v-if="uploadImage.src && !$store.state.view.loading.uploadBg"

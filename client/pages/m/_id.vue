@@ -5,6 +5,7 @@ div
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
                 img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
+
             span {{$store.state.guest.companyData.name}}
         div(v-else)
             header.header
@@ -23,7 +24,13 @@ div
                             v-if="$nuxt.$route.query.t && isAvailable && ($store.state.guest.companyData.actions.length && $store.state.guest.companyData.fastActionsEnabled || $store.state.guest.companyData.waiters.length)") mdi-menu 
 
             .welcome
-                .welcome__bg(v-if="$store.state.guest.companyData.background" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
+                .welcome__bg(v-if="$store.state.guest.companyData.background && !$store.state.guest.companyData.bgWebp" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
+
+                picture.welcome__bg(v-else)
+                    source(:srcset="`../../uploads/560-${$store.state.guest.companyData.background}.webp 1x, ../../uploads/1080-${$store.state.guest.companyData.background}.webp 2x`" type="image/webp" media="(max-width: 560px)")
+                    source(:srcset="`../../uploads/1080-${$store.state.guest.companyData.background}.webp 1x, ../../uploads/2160-${$store.state.guest.companyData.background}.webp 2x`" type="image/webp" media="(min-width: 561px)")
+                    img(:src="`../../uploads/560-${$store.state.guest.companyData.background}`" :srcset="`../../uploads/1080-${$store.state.guest.companyData.background} 2x, ../../uploads/560-${$store.state.guest.companyData.background} 1x`" alt="Изображения")
+                
                 .welcome__inner(:class="{ hasOffset: $store.state.guest.companyData.background }")
                     h1.welcome__title {{ $store.state.guest.companyData.name }}
                         v-icon.ml-5(light @click="toggleInfoPopup") mdi-information-outline
@@ -896,6 +903,11 @@ export default {
         width: 100%;
         left: 50%;
         transform: translateX(-50%);
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         @media screen and (min-width: 580px) {
             height: 300px;
         }

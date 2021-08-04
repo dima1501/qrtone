@@ -53,7 +53,7 @@ router.post("/api/update-company-background", auth(), async (req, res) => {
     try {
         const update = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user._id) },
-            { $set: { background: req.body.url } }
+            { $set: { background: req.body.url, bgWebp: req.body.webp } }
         )
         if (update) {
             res.status(200).send(true)

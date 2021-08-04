@@ -107,7 +107,8 @@ const updateCompanyBackground = async (store, data) => {
           method: 'post',
           url: '/api/update-company-background',
           data: {
-            url: uploadPhoto.data.path
+            url: uploadPhoto.data.path,
+            webp: uploadPhoto.data.webp
           },
         })
   
@@ -115,6 +116,7 @@ const updateCompanyBackground = async (store, data) => {
           $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Фоновое изображение успешно обновлено' })
           store.rootState.auth.user.background = null
           store.rootState.auth.user.background = uploadPhoto.data.path
+          store.rootState.auth.user.bgWebp = uploadPhoto.data.webp
           store.rootState.view.loading.uploadBg = false
         }
       }

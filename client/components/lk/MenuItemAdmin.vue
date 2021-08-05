@@ -13,7 +13,7 @@
                 source(:srcset="`../../uploads/400-${item.images[0]}.webp 1x, ../../uploads/800-${item.images[0]}.webp 2x`" type="image/webp" media="(min-width: 601px)")
                 img(:src="`../../uploads/400-${item.images[0]}`" :srcset="`../../uploads/400-${item.images[0]} 1x, ../../uploads/800-${item.images[0]} 2x`" alt="Изображения")
 
-            VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
+            VueSlickCarousel(:arrows="true" :dots="false" v-if="item.images.length > 1")
                 picture(v-for="(image, key) in item.images" :key="key" ).menu-item__img-pic
                     source(:srcset="`../../uploads/171-${image}.webp 1x, ../../uploads/342-${image}.webp 2x`" type="image/webp" media="(max-width: 380px)")
                     source(:srcset="`../../uploads/196-${image}.webp 1x, ../../uploads/392-${image}.webp 2x`" type="image/webp" media="(max-width: 430px)")

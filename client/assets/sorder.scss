@@ -72,6 +72,7 @@
         &-data {
             color: #838383;
             font-size: 14px;
+            line-height: 1.2;
             .phone {
                 text-decoration: none;
                 color: $color-blue;
@@ -80,9 +81,11 @@
         &-descr {
             font-size: 14px;
             line-height: 1.25;
+            margin-bottom: 5px;
         }
         &-name {
             line-height: 1.2;
+            margin-bottom: 5px;
         }
         &-count {
             margin-left: auto;

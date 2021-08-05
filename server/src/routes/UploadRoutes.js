@@ -60,7 +60,6 @@ router.post("/api/upload-company-logo", auth(), upload.single("image"), (req, re
 
 router.post("/api/upload-menu-item-image", auth(), upload.single("image"), (req, res) => {
   try {
-
     if (req.file.mimetype == "image/jpeg" || req.file.mimetype == "image/png") {
 
       let qual = 100
@@ -68,13 +67,13 @@ router.post("/api/upload-menu-item-image", auth(), upload.single("image"), (req,
       sharp(req.file.path, { failOnError: false })
 
       .jpeg({ quality: qual })
-      .rotate().resize(260, 260, { withoutEnlargement: true })
-      .toFile(`../client/static/uploads/260-opt_${req.file.filename}`, (err, info) => {
+      .rotate().resize(255, 255, { withoutEnlargement: true })
+      .toFile(`../client/static/uploads/255-opt_${req.file.filename}`, (err, info) => {
         if (err) {  console.error(err) }
       })
       .webp({ quality: qual })
-      .rotate().resize(260, 260, { withoutEnlargement: true })
-      .toFile(`../client/static/uploads/260-opt_${req.file.filename}.webp`, (err, info) => {
+      .rotate().resize(255, 255, { withoutEnlargement: true })
+      .toFile(`../client/static/uploads/255-opt_${req.file.filename}.webp`, (err, info) => {
         if (err) {  console.error(err) }
       })
 
@@ -258,7 +257,7 @@ router.post("/api/delete-pic", auth(), (req, res) => {
   fs.unlink(path + '1080-' + fileName, function(err) { if (err) console.error(err) })
   fs.unlink(path + '560-' + fileName, function(err) { if (err) console.error(err) })
 
-  fs.unlink(path + '260-' + fileName, function(err) { if (err) console.error(err) })
+  fs.unlink(path + '255-' + fileName, function(err) { if (err) console.error(err) })
   fs.unlink(path + '520-' + fileName, function(err) { if (err) console.error(err) })
   fs.unlink(path + '196-' + fileName, function(err) { if (err) console.error(err) })
   fs.unlink(path + '392-' + fileName, function(err) { if (err) console.error(err) })
@@ -271,7 +270,7 @@ router.post("/api/delete-pic", auth(), (req, res) => {
   fs.unlink(path + '1080-' + fileName + '.webp', function(err) { if (err) console.error(err) })
   fs.unlink(path + '560-' + fileName + '.webp', function(err) { if (err) console.error(err) })
 
-  fs.unlink(path + '260-' + fileName + '.webp', function(err) { if (err) console.error(err) })
+  fs.unlink(path + '255-' + fileName + '.webp', function(err) { if (err) console.error(err) })
   fs.unlink(path + '520-' + fileName + '.webp', function(err) { if (err) console.error(err) })
   fs.unlink(path + '196-' + fileName + '.webp', function(err) { if (err) console.error(err) })
   fs.unlink(path + '392-' + fileName + '.webp', function(err) { if (err) console.error(err) })

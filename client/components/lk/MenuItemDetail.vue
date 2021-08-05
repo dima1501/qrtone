@@ -5,9 +5,22 @@
         .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
             .detail__img
                 .detail__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
-                .detail__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+
+
+                //- .detail__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+                
+
+                picture.detail__img-pic(v-if="item.images.length == 1")
+                    source(:srcset="`${ '../../uploads/400-' + item.images[0] }.webp 1x, ${ '../../uploads/800-' + item.images[0] }.webp 2x`" type="image/webp")
+                    img(:src="`${ '../../uploads/400-' + item.images[0] }`" :srcset="`${ '../../uploads/400-' + item.images[0] } 1x, ${ '../../uploads/800-' + item.images[0] } 2x`" alt="Изображения")
+
                 VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1").detail__img-slider
-                    .detail__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
+                    //- .detail__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
+
+                    picture.detail__img-pic(v-for="(image, key) in item.images" :key="key")
+                        source(:srcset="`${ '../../uploads/400-' + item.images[key] }.webp 1x, ${ '../../uploads/800-' + item.images[key] }.webp 2x`" type="image/webp")
+                        img(:src="`${ '../../uploads/400-' + item.images[key] }`" :srcset="`${ '../../uploads/400-' + item.images[key] } 1x, ${ '../../uploads/800-' + item.images[key] } 2x`" alt="Изображения")
+
             .detail__content
                 .detail__content-descr(v-if="item.description") {{ item.description }}
                 .detail__line(v-for="(price, i) in item.prices" :key="i")
@@ -288,10 +301,21 @@ export default {
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
         &-pic {
+            position: relative;
             width: 100%;
             padding-bottom: 100%;
             background-size: cover;
             background-position: center;
+            display: block;
+            img {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                object-fit: cover;
+                pointer-events: none;
+            }
             &.placeholder {
                 background-size: contain;
                 padding-bottom: 40%;

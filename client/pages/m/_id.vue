@@ -26,7 +26,7 @@ div
             .welcome
                 .welcome__bg(v-if="$store.state.guest.companyData.background && !$store.state.guest.companyData.bgWebp" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
 
-                picture.welcome__bg(v-else)
+                picture.welcome__bg(v-else-if="$store.state.guest.companyData.background")
                     source(:srcset="`../../uploads/560-${$store.state.guest.companyData.background}.webp 1x, ../../uploads/1080-${$store.state.guest.companyData.background}.webp 2x`" type="image/webp" media="(max-width: 560px)")
                     source(:srcset="`../../uploads/1080-${$store.state.guest.companyData.background}.webp 1x, ../../uploads/2160-${$store.state.guest.companyData.background}.webp 2x`" type="image/webp" media="(min-width: 561px)")
                     img(:src="`../../uploads/560-${$store.state.guest.companyData.background}`" :srcset="`../../uploads/1080-${$store.state.guest.companyData.background} 2x, ../../uploads/560-${$store.state.guest.companyData.background} 1x`" alt="Изображения")
@@ -93,7 +93,10 @@ div
                             // Отображение основных позиций
                             .cart__content-items
                                 .cart__item(v-for="(item, key) in $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods" v-bind:key="key")
-                                    .cart__item-img(v-if="item.images[0]" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+                                    //- .cart__item-img(v-if="item.images[0]" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
+                                    picture.cart__item-img(v-if="item.images[0]")
+                                        source(:srcset="`${ '../../uploads/171-' + item.images[0] }.webp 1x, ${ '../../uploads/342-' + item.images[0] }.webp 2x`" type="image/webp")
+                                        img(:src="`${ '../../uploads/171-' + item.images[0] }`" :srcset="`${ '../../uploads/171-' + item.images[0] } 1x, ${ '../../uploads/342-' + item.images[0] } 2x`" alt="Изображения")
                                     .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
                                         .cart__item-content
 
@@ -470,7 +473,6 @@ export default {
 
 <style lang="scss" scoped>
 
-@import '../../assets/sorder.scss';
 
 .orders {
     position: fixed;
@@ -636,6 +638,12 @@ export default {
             flex-shrink: 0;
             border-radius: 10px;
             margin-bottom: 10px;
+            overflow: hidden;
+            img {
+                max-width: 100%;
+                height: auto;
+                image-rendering: -webkit-optimize-contrast;
+            }
         }
         &-inner {
             width: 100%;

@@ -16,10 +16,21 @@
     }
 
     &__img {
+        position: relative;
+        display: block;
         width: 100%;
         padding-bottom: 100%;
-        background-size: cover;
         background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: auto;
+            image-rendering: -webkit-optimize-contrast;
+        }
     }
     &__bottom {
         display: flex;

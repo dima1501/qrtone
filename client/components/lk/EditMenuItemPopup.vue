@@ -38,7 +38,11 @@
                             @end="drag = false")
                             transition-group(type="transition" :name="!drag ? 'flip-list' : null")
                                 .preview(v-for="(element, i) in updatedMenuItem.images" :key="element.src ? element.src : element")
-                                    .preview__img(v-bind:style="{ backgroundImage: `url( ${ element.src ? element.src : '../../uploads/' + element } )` }")
+                                    .preview__img(v-if="element.src" v-bind:style="{ backgroundImage: `url( ${ element.src } )` }")
+                                    picture.preview__img(v-else)
+                                        source(:srcset="`${ '../../uploads/171-' + element }.webp 1x, ${ '../../uploads/342-' + element }.webp 2x`" type="image/webp")
+                                        img(:src="`${ '../../uploads/171-' + element }`" :srcset="`${ '../../uploads/171-' + element } 1x, ${ '../../uploads/342-' + element } 2x`" alt="Изображения")
+
                                     .preview__bottom
                                         .preview__bottom-item(@click="removePic(element.file ? element.file : element, i)")
                                             v-icon(light) mdi-trash-can-outline

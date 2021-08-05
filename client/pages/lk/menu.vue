@@ -222,6 +222,7 @@ export default {
     display: flex;
     align-items: center;
     flex-direction: column;
+    max-width: 290px;
     &__img {
         width: 100px;
         margin-bottom: 30px;

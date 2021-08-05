@@ -82,6 +82,8 @@ export default {
 
 <style lang="scss">
 
+@import '../assets/menu-item.scss';
+
 .vue-notification-wrapper {
   overflow: visible !important;
 }

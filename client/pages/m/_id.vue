@@ -1,11 +1,9 @@
 <template lang="pug">
 div
-    .geser(v-if="$fetchState.pending") geser
-    .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !$fetchState.pending")
+    .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
                 img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
-
             span {{$store.state.guest.companyData.name}}
         div(v-else)
             header.header
@@ -21,16 +19,10 @@ div
                         v-icon.ml-5(
                             light 
                             @click="toggleCommandsMenu"
-                            v-if="$nuxt.$route.query.t && isAvailable && ($store.state.guest.companyData.actions.length && $store.state.guest.companyData.fastActionsEnabled || $store.state.guest.companyData.waiters.length)") mdi-menu 
+                            v-if="$nuxt.$route.query.t && isAvailable && $store.state.guest.companyData.fastActionsEnabled && ($store.state.guest.companyData.actions.filter(e => e.isActive == true).length || $store.state.guest.companyData.waiters.length)") mdi-menu 
 
             .welcome
-                .welcome__bg(v-if="$store.state.guest.companyData.background && !$store.state.guest.companyData.bgWebp" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
-
-                picture.welcome__bg(v-else)
-                    source(:srcset="`../../uploads/560-${$store.state.guest.companyData.background}.webp 1x, ../../uploads/1080-${$store.state.guest.companyData.background}.webp 2x`" type="image/webp" media="(max-width: 560px)")
-                    source(:srcset="`../../uploads/1080-${$store.state.guest.companyData.background}.webp 1x, ../../uploads/2160-${$store.state.guest.companyData.background}.webp 2x`" type="image/webp" media="(min-width: 561px)")
-                    img(:src="`../../uploads/560-${$store.state.guest.companyData.background}`" :srcset="`../../uploads/1080-${$store.state.guest.companyData.background} 2x, ../../uploads/560-${$store.state.guest.companyData.background} 1x`" alt="Изображения")
-                
+                .welcome__bg(v-if="$store.state.guest.companyData.background" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.guest.companyData.background + ')' }")
                 .welcome__inner(:class="{ hasOffset: $store.state.guest.companyData.background }")
                     h1.welcome__title {{ $store.state.guest.companyData.name }}
                         v-icon.ml-5(light @click="toggleInfoPopup") mdi-information-outline
@@ -70,10 +62,11 @@ div
             
             .cart-buttons
                 .cart-buttons-inner
-                    transition(name="slide-fade" mode="out-in")
-                        v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length" @click="openOrders") Заказы ({{ $store.state.guest.user.orders.length }})
+                    div(v-if="$store.state.guest.user.cart && $store.state.guest.user.orders")
+                        transition(name="slide-fade" mode="out-in")
+                            v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.orders.length" @click="openOrders") Заказы ({{ $store.state.guest.user.orders.length }})
                     
-                    div(v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id]")
+                    div(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[$store.state.guest.companyData.place._id]")
                         transition(name="slide-fade" mode="out-in")
                             v-btn.cart-btn(color="blue" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length || $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length" @click="openCart")
                                 v-icon(light) mdi-cart
@@ -81,7 +74,7 @@ div
 
             
             transition(name="fade")
-                .cart(v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.view.isCartOpened")
+                .cart(v-if="$store.state.guest.user.cart && $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.view.isCartOpened")
                     .cart__overlay(@click="closeCart")
                     .cart__area
                         .cart__top
@@ -132,7 +125,7 @@ div
                             //- v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
 
             transition(name="fade")
-                .orders(v-if="$store.state.view.isOrdersOpened")
+                .orders(v-if="$store.state.view.isOrdersOpened && $store.state.guest.user")
                     .orders__overlay(@click="closeCart")
                     .orders__area
                         .orders__top
@@ -180,7 +173,7 @@ div
                 MenuItemDetail(v-if="$store.state.view.detail.visible" :item="$store.state.view.detail.item" :placeId="$nuxt.$route.params.id")
 
         transition(name="fade")
-            InfoPopup(v-show="$store.state.view.popup.infoPopup")
+            InfoPopup(v-show="$store.state.view.popup.infoPopup" :place="$store.state.guest.companyData.place")
 
         transition(name="fade")
             ReservePopup(v-if="$store.state.view.popup.reservePopup.visible")
@@ -390,6 +383,7 @@ export default {
             return newArr.sort(function(a, b) { return a - b; })
         },
         getTime(time) {
+            // return moment(time).local().locale('ru').calendar()
             return moment(time).format('DD.MM.YYYY, HH:MM')
         },
         toggleCommandsMenu() {
@@ -903,11 +897,6 @@ export default {
         width: 100%;
         left: 50%;
         transform: translateX(-50%);
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
         @media screen and (min-width: 580px) {
             height: 300px;
         }

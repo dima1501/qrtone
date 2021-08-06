@@ -296,10 +296,15 @@ export default {
         }
     },
     mounted() {
-        this.navigator = navigator.platform
-        window.addEventListener('scroll', (e) => {
-            this.headerTop = this.$refs.cats.getBoundingClientRect().top;
-        })
+        if (this.$store.state.guest.companyData) {
+            this.navigator = navigator.platform
+            window.addEventListener('scroll', (e) => {
+                this.headerTop = this.$refs.cats.getBoundingClientRect().top;
+            })
+        } else {
+            this.$router.push($nuxt.localePath({ name: 'error' }))
+        }
+        
     },
     watch: {
         headerTop(newValue) {

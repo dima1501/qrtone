@@ -5,8 +5,8 @@
         video(:src="require('~/static/travolta.mp4')" autoplay loop muted)
       .p-error__content
         .p-error__num 404
-        .p-error__title Page not found
-        nuxt-link(:to="localePath('/')").p-error__link Back to home
+        .p-error__title Стриница не найдена
+        nuxt-link(:to="localePath('/')").p-error__link На главную
 </template>
 <script>
 export default {

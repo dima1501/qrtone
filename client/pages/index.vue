@@ -18,19 +18,20 @@
               .m-welcome__content
                 h1.m-welcome__title Электронное меню для ресторанов и кафе
                 p.m-welcome__text С доступом по QR коду и уведомлениями в telegram
+                a.m-welcome__try(href="http://localhost:3000/m/Dimas_diner?t=1" target="_blank") Демо меню
                 form.m-form(@submit.prevent="checkForm")
                   //- .m-form__input(:class="{ 'focused': isEmailFocused }")
                     input(type="text" placeholder="Введите ваш email адрес" v-model="email" @input="checkForm" :class="{ 'validation-failed': emailValidationErrors[0] }" @focus="isEmailFocused = true" @blur="isEmailFocused = false")
                     .m-form__error.error-label {{ emailValidationErrors[0] }}
                   .m-form__btn
                     nuxt-link(:to="localePath('/auth/registration')").button.-short.-black Начать бесплатно
-                div.m-welcome__note Попробуйте QRTONE бесплатно в течение 14 дней,<br> кредитная карта не требуется.
+                .m-welcome__note Попробуйте QRTONE бесплатно в течение 14 дней,<br> кредитная карта не требуется.
                 //- <br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от QRTone.
               kinesis-element(:strength="10" type="depth")
                 .m-welcome__media
-                  kinesis-element(:strength="12" type="depth")
+                  kinesis-element(:strength="10" type="depth")
                     img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
-                  kinesis-element(:strength="12" type="depth")
+                  kinesis-element(:strength="10" type="depth")
                     .m-welcome__media-text Отсканируйте для просмотра демо меню или <a href='http://localhost:3000/m/Dimas_diner?t=1' target="_blank">перейдите по ссылке</a>
 
 

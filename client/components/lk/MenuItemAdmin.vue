@@ -1,10 +1,7 @@
 <template lang="pug">
     .menu-item(v-bind:class="{ flash: flash }")
         .menu-item__img
-            //- .menu-item__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
-
             .menu-item__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
-
 
             picture(v-if="item.images.length == 1").menu-item__img-pic
                 source(:srcset="`../../uploads/171-${item.images[0]}.webp 1x, ../../uploads/342-${item.images[0]}.webp 2x`" type="image/webp" media="(max-width: 380px)")
@@ -24,8 +21,10 @@
 
         .menu-item__content
             .menu-item__content-inner
-                .menu-item__name {{ item.name }}
-                .menu-item__translation(v-if="item.translation") {{ item.translation }} (en)
+
+                .menu-item__name
+                    .menu-item__name-translation {{item.translation}}
+                    .menu-item__name-title {{item.name}}
 
                 .menu-item__prices(v-if="item.modifications")
                     div.menu-item__price-label.-admin(v-for="(mod, key) in item.prices")

@@ -102,6 +102,7 @@ export default {
     &__list {
         display: flex;
         flex-wrap: wrap;
+        align-items: flex-start;
         &-preview {
             width: 30%;
             margin-right: 3%;
@@ -113,9 +114,13 @@ export default {
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            align-self: flex-start;
             &.active {
                 border: 3px solid #a9b0be;
                 box-shadow: 0 0 20px rgb(0 0 0 / 30%);
+            }
+            &.-empty {
+                align-self: normal;
             }
             &-pic {
                &-img {

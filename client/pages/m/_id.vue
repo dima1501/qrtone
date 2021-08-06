@@ -10,9 +10,9 @@ div
         div(v-else)
             header.header
                 .header__inner  
-                    .header__logo(v-if="$store.state.guest.companyData.photo")
+                    .header__logo
                         // nuxt-link(to="https://google.com" target="_blank").header__logo-link
-                        img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
+                        img(v-if="$store.state.guest.companyData.photo" :src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
                         transition(name="slide-up")
                             h3.header__logo-text(v-if="isHeaderSticky") {{ $store.state.guest.companyData.name }}
                     .header__controls
@@ -986,6 +986,7 @@ export default {
         align-items: center;
         max-width: 1080px;
         margin: 0 auto;
+        min-height: 70px;
     }
 
     &__logo {
@@ -1013,6 +1014,7 @@ export default {
     }
     &__controls {
         flex-shrink: 0;
+        margin-left: auto;
     }
 }
 

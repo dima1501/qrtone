@@ -38,6 +38,16 @@ const cur = [
         table: true,
         link: true,
         ref: 'pdf3'
+    },
+    {
+        name: 'Карточка, 100мм x 115мм',
+        width: 100,
+        height: 115,
+        pic: '/PDF_4.png',
+        title: `Отсканируйте для просмотра меню`,
+        table: true,
+        link: true,
+        ref: 'pdf4'
     }
 ]
 

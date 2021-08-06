@@ -158,6 +158,8 @@
                         pdf2
                     .pdf__list(ref="pdf3" v-show="$store.state.view.pdf.ref == 'pdf3'")
                         pdf3
+                    .pdf__list(ref="pdf4" v-show="$store.state.view.pdf.ref == 'pdf4'")
+                        pdf4
 </template>
 
 <script>
@@ -299,6 +301,7 @@ export default {
                     drawer: type,
                     width: 500,
                     height: 500,
+                    colorLight: 'transparent',
                     onRenderingEnd: (e, x) => {
                         if (type == 'png') {
                             var download = document.createElement('a');
@@ -355,6 +358,7 @@ export default {
         async updatePdf(value) {
             this.$store.state.view.loading.pdfUpdating = true
             const el = this.$refs[value ? value : this.$store.state.view.pdf.ref ]
+            console.log(el)
             if (el) {
                 this.preview = await domtoimage.toPng(el)
             }
@@ -368,7 +372,7 @@ export default {
                 if (this.generatedQr) {
                     this.generatedQr.clear()
                 }
-                
+                console.log(this.$store.state.view.pdf.data.defaultColor)
                 this.generatedQr = await new QRCode(this.$refs.qrcode, {
                     text: this.easyqr.text,
                     colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
@@ -376,7 +380,7 @@ export default {
                     drawer: 'canvas',
                     width: 500,
                     height: 500,
-                    backgroundImageAlpha: 0,
+                    colorLight: this.$store.state.view.pdf.data.defaultColor ? this.$store.state.view.pdf.data.defaultColor : 'transparent',
                     onRenderingEnd: (e, x) => {
                         this.$store.state.view.pdf.qr = x
                         this.$store.state.view.pdf.link = this.easyqr.text
@@ -435,6 +439,7 @@ export default {
                         drawer: 'canvas',
                         width: 500,
                         height: 500,
+                        colorLight: 'transparent',
                         onRenderingEnd: async (e, x) => {
                             this.$store.state.view.pdf.qr = x
                             this.$store.state.view.pdf.table = tablesArr[i]

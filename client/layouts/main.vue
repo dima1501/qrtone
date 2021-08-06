@@ -1,6 +1,6 @@
 <template lang="pug">
-    v-app
-        Nuxt
+  v-app
+    Nuxt
 </template>
 
 <script>
@@ -62,6 +62,7 @@ body {
 img {
   image-rendering: -webkit-optimize-contrast;
 }
+
 
 </style>
 

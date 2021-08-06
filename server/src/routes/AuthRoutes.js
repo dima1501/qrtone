@@ -161,9 +161,9 @@ router.delete('/api/delete-socket-id/:id', auth(), async (req, res) => {
 router.post("/api/check-key", async (req, res) => {
   const user =  await req.db.collection("users").findOne({ restoreCode: +req.body.data.token })
   if (user) {
-    res.sendStatus(200)
+    res.status(200).send(true)
   } else {
-    res.sendStatus(304)
+    res.status(200).send(false)
   }
 })
 

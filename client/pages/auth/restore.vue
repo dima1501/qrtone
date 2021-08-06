@@ -1,26 +1,26 @@
 <template lang="pug">
     .auth
+        .auth__logo QRTONE
         h1.auth__title Восстановление пароля
-        
         .auth__content(v-if="$store.state.auth.restore.isKeyValid")
             v-form(
             @submit.prevent="updatePassword"
             v-model="isUpdatePasswordValid")
-                v-card-text
-                    v-text-field(
-                    ref="password"
-                    type="password"
-                    v-model="$store.state.auth.restore.newPassword"
-                    :rules="passwordRules"
-                    label="Введите новый пароль")
-                    v-text-field(
-                    ref="password"
-                    type="password"
-                    v-model="$store.state.auth.restore.newPasswordRepeat"
-                    :rules="passwordRulesRepeat"
-                    label="Введите новый пароль")
-                v-divider(class="mt-12")
-                v-card-actions
+                v-text-field(
+                autocomplete="false"
+                name="password_new"
+                type="password"
+                v-model="$store.state.auth.restore.newPassword"
+                :rules="passwordRules"
+                label="Введите новый пароль")
+                v-text-field(
+                autocomplete="false"
+                name="password_new_2"
+                type="password"
+                v-model="$store.state.auth.restore.newPasswordRepeat"
+                :rules="passwordRulesRepeat"
+                label="Введите новый пароль")
+                .auth__buttons.mt-5
                     v-btn(
                     text
                     :to="localePath('/auth/registration')"
@@ -70,12 +70,13 @@
             v-form(
             @submit.prevent="checkKey"
             v-model="isRestoreKeyValid")
+                .auth__restore-text На указанную почту был отправлен код для восстановления пароля
                 v-card-text
                     v-text-field(
                     ref="token"
                     type="number"
                     v-model="$store.state.auth.restore.token"
-                    :rules="nameRules"
+                    required
                     label="Введите код из Email")
                 v-divider(class="mt-12")
                 v-card-actions
@@ -99,7 +100,7 @@
 
 <script>
 export default {
-    layout: 'public',
+    layout: 'login',
     data() {
         return {
             isUpdatePasswordValid: false,
@@ -108,25 +109,28 @@ export default {
             showPassword: false,
             isEmailSent: false,
             nameRules: [
-                (v) => !!v || 'error_company_name',
+                (v) => !!v || 'Используйте реальное название компании',
+            ],
+            codeRules: [
+                (v) => !!v || 'Введите код',
             ],
             emailRules: [
-                (v) => !!v || 'error_required_field',
+                (v) => !!v || 'Введите адрес электронной почты',
                 (v) =>
                 !v ||
                 /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-                'error_email_not_correct',
+                'Ошибка в адресе электронной почты',
             ],
             passwordRules: [
-                (v) => !!v || 'error_required_field',
+                (v) => !!v || 'Введите пароль',
                 (v) =>
-                (v && v.length >= 5) || 'error_password_min_length',
+                (v && v.length >= 5) || 'Ошибка в пароле. Минимум 6 символов, одна цифра, один знак. Без символов',
                 (v) =>
                 /(?=.*[A-Z])/.test(v) ||
-                'error_password_uppercase_symbol',
+                'Ошибка в пароле. Минимум 6 символов, одна цифра, один знак. Без символов',
                 (v) =>
                 /(?=.*\d)/.test(v) ||
-                'error_password_number_symbol',
+                'Ошибка в пароле. Минимум 6 символов, одна цифра, один знак. Без символов',
             ],
             passwordRulesRepeat: [
                 (v) => v === this.$store.state.auth.restore.newPassword || 'Пароли не совпадают'
@@ -136,7 +140,7 @@ export default {
     methods: {
         sendRestoreEmail() {
             this.$store.dispatch('auth/sendRestoreEmail', this.$store.state.auth.restore)
-            this.$store.state.auth.restore.isEmailSent = true
+            // this.$store.state.auth.restore.isEmailSent = true
         },
         checkKey() {
             this.$store.dispatch('auth/checkKey', this.$store.state.auth.restore)

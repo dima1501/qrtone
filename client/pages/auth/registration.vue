@@ -1,52 +1,48 @@
 <template lang="pug">
     .auth
-        h1.auth__title Регистрация
+        .auth__logo QRTONE
+        h1.auth__title Пробная подписка на 14 дней
         .auth__content
-            v-card(
-            theme--light
-            class="mt-15")
             v-form(
             @submit.prevent="fetchCompanyRegistration"
             v-model="isCompanyRegistrationValid")
-                v-card-text
-                    v-text-field(
-                    ref="name"
-                    v-model="registrationData.name"
-                    :rules="nameRules"
-                    :label="'form_company_name'"
-                    required)
-                    v-text-field(
-                    ref="email"
-                    v-model="registrationData.email"
-                    :rules="emailRules"
-                    label="form_email")
-                    v-text-field(
-                    v-model="registrationData.password"
-                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                    :rules="passwordRules"
-                    :type="showPassword ? 'text' : 'password'"
-                    :label="'form_password'"
-                    @click:append="showPassword = !showPassword")
-                v-divider(class="mt-12")
-                v-card-actions
+                v-text-field(
+                ref="name"
+                v-model="registrationData.name"
+                :rules="nameRules"
+                label="Название компании"
+                required)
+                v-text-field(
+                ref="email"
+                v-model="registrationData.email"
+                :rules="emailRules"
+                label="Email")
+                v-text-field(
+                v-model="registrationData.password"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :rules="passwordRules"
+                :type="showPassword ? 'text' : 'password'"
+                label="Пароль"
+                @click:append="showPassword = !showPassword")
+                .auth__buttons.mt-5
                     v-btn(
-                    text
+                    depressed
                     :to="localePath('/auth/login')"
-                    ) {{ 'form_login' }}
-                    v-spacer
+                    ) Войти
                     v-btn(
+                    depressed
                     color="primary"
                     :disabled="!isCompanyRegistrationValid"
-                    text
                     type="submit"
-                    ) {{ 'form_create_account' }}
+                    ) Создать аккаунт
+                nuxt-link(:to="localePath('/auth/restore')").auth__restore Восстановить пароль
 
 </template>
 
 <script>
 export default {
     name: 'registration',
-    layout: 'public',
+    layout: 'login',
     data() {
         return {
             isCompanyRegistrationValid: false,
@@ -57,25 +53,25 @@ export default {
                 email: '',
             },
             nameRules: [
-                (v) => !!v || 'error_company_name',
+                (v) => !!v || 'Введите название компании',
             ],
             emailRules: [
-                (v) => !!v || 'error_required_field',
+                (v) => !!v || 'Введите адрес электронной почты',
                 (v) =>
                 !v ||
                 /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-                'error_email_not_correct',
+                'Ошибка в адресе электронной почты',
             ],
             passwordRules: [
-                (v) => !!v || 'error_required_field',
+                (v) => !!v || 'Введите пароль',
                 (v) =>
-                (v && v.length >= 5) || 'error_password_min_length',
+                (v && v.length >= 5) || 'Ошибка в пароле. Минимум 6 символов, одна цифра, один знак. Без символов',
                 (v) =>
                 /(?=.*[A-Z])/.test(v) ||
-                'error_password_uppercase_symbol',
+                'Ошибка в пароле. Минимум 6 символов, одна цифра, один знак. Без символов',
                 (v) =>
-            /(?=.*\d)/.test(v) ||
-            'error_password_number_symbol',
+                /(?=.*\d)/.test(v) ||
+                'Ошибка в пароле. Минимум 6 символов, одна цифра, один знак. Без символов',
             ],
         }
     },

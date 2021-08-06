@@ -28,10 +28,6 @@
                 //- <br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от QRTone.
               kinesis-element(:strength="10" type="depth")
                 .m-welcome__media
-                  //- video(src="video2.mp4" autoplay muted loop)
-                  //- <client-only>
-                  //-   <threejs-component />
-                  //- </client-only>
                   kinesis-element(:strength="12" type="depth")
                     img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
                   kinesis-element(:strength="12" type="depth")
@@ -179,8 +175,6 @@
 </template>
 
 <script>
-const axios = require("axios")
-
 export default {
   layout: 'public',
   data() {

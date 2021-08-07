@@ -35,21 +35,11 @@
                             label="Без шифрования"
                             value="false")
 
-                //- div
-                //-     label(for="wifiWPA") WPA/WPA2
-                //-     input(type="radio" id="wifiWPA" v-model="wifiType" checked name="wifiEnc" value="T:WPA;")
-                //- div
-                //-     label(for="wifiWEP") WEP
-                //-     input(type="radio" id=" wifiWEP" v-model="wifiType" name="wifiEnc" value="T:WEP;")
-                //- div
-                //-     label(for="wifiNoEncryption") Без шифрования
-                //-     input(type="radio" id="wifiNoEncryption" v-model="wifiType" name="wifiEnc" value="")
-
-                v-btn(
-                    depressed
-                    color="blue"
-                    :disabled="!isFormValid"
-                    @click="printWifiCode()").white--text Далее
+                    v-btn(
+                        depressed
+                        color="blue"
+                        :disabled="!isFormValid"
+                        type="submit").white--text Далее
 
 </template>
 

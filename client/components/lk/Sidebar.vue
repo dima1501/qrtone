@@ -37,13 +37,17 @@ export default {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 300px;
+  width: 260px;
   background-color: #00293B;
   border-radius: 0 40px 40px 0;
   display: flex;
   align-items: center;
   flex-direction: column;
   padding: 16px;
+
+  @media screen and (min-width: 1280px) {
+    width: 300px;
+  }
 
   &__name {
     color: #fff;

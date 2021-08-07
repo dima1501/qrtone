@@ -6,37 +6,61 @@
             .detail__img
                 .detail__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
 
-
-                //- .detail__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
-                
-
                 picture.detail__img-pic(v-if="item.images.length == 1")
                     source(:srcset="`${ '../../uploads/400-' + item.images[0] }.webp 1x, ${ '../../uploads/800-' + item.images[0] }.webp 2x`" type="image/webp")
                     img(:src="`${ '../../uploads/400-' + item.images[0] }`" :srcset="`${ '../../uploads/400-' + item.images[0] } 1x, ${ '../../uploads/800-' + item.images[0] } 2x`" alt="Изображения")
 
-                VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1").detail__img-slider
-                    //- .detail__img-pic(v-for="(image, key) in item.images" :key="key" :style="{ backgroundImage: 'url(../../uploads/' + image + ')' }")
-
+                VueSlickCarousel(:arrows="true" :dots="false" v-if="item.images.length > 1").detail__img-slider
                     picture.detail__img-pic(v-for="(image, key) in item.images" :key="key")
                         source(:srcset="`${ '../../uploads/400-' + item.images[key] }.webp 1x, ${ '../../uploads/800-' + item.images[key] }.webp 2x`" type="image/webp")
                         img(:src="`${ '../../uploads/400-' + item.images[key] }`" :srcset="`${ '../../uploads/400-' + item.images[key] } 1x, ${ '../../uploads/800-' + item.images[key] } 2x`" alt="Изображения")
+            
+            
+            .detail__content(v-if="item.prices.length == 1")
+                .detail__single
+                    .detail__single-translation {{ item.translation }}
+                    .detail__single-name {{ item.name }}
+                    .detail__single-descr {{ item.description }}
+                    .detail__single-info
+                        .detail__single-weight(v-if="item.weights.length") Вес: {{ item.weights[0] }}г
+                        .detail__single-weight(v-if="item.calories.length") Ккал: {{ item.calories[0] }}
+                        .detail__single-weight(v-if="item.proteins.length && item.fats.length && item.carbo.length") БЖУ: {{item.proteins[0]}}-{{item.fats[0]}}-{{item.carbo[0]}}
 
-            .detail__content
-                .detail__content-descr(v-if="item.description") {{ item.description }}
+                    .detail__single-btn
+                        transition(name="slide-fade" mode="out-in")
+                            .detail__line-button(
+                                key="12"
+                                @click="plusMulti(0)"
+                                v-if="!$store.state.guest.user.cart[$store.state.guest.companyData.place._id] || $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id) || $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).cartPrices.filter(e => e == 0).length"
+                            ) {{ item.prices[0] }}{{$store.state.guest.companyData.currencySymbol}}
+
+                            .detail__line-counter.-wide(key="13" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id) && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).cartPrices.filter(e => e == 0).length")
+                                .menu-item__counter-control(@click="minusMulti(0)")
+                                    v-icon mdi-minus
+                                .menu-item__counter-value.-detail {{ $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).cartPrices.filter(e => e == 0).length }} 
+                                    span.menu-item__counter-value-price x {{ item.prices[0] }}{{$store.state.guest.companyData.currencySymbol}}
+                                .menu-item__counter-control.plus(@click="plusMulti(0)")
+                                        v-icon mdi-plus
+
+            .detail__content(v-else)
+                .detail__content-top
+                    .detail__single-translation(v-if="item.translation") {{ item.translation }}
+                    .detail__single-name {{ item.name }}
+                    .detail__content-descr(v-if="item.description") {{ item.description }}
+
                 .detail__line(v-for="(price, i) in item.prices" :key="i")
                     .detail__line-inner
 
                         .detail__line-content
                             .detail__line-content-line
-                                h4.detail__line-name {{ item.name }}
-                                    span.note.ml-2 {{item.prices[i]}}{{$store.state.guest.companyData.currencySymbol}} <br>
-                                .modifications(v-if="item.modifications[i]") {{ item.modifications[i] }}
-                            .detail__line-content-line(v-if="item.weights[i]")
-                                span.note {{ item.weights[i] }}г
+                                .detail__line-price {{item.prices[i]}}{{$store.state.guest.companyData.currencySymbol}}
+                                .detail__line-name(v-if="item.modifications[i]") {{ item.modifications[i] }}
 
                             .detail__line-content-line
-                                span.note(v-if="item.calories[i]") {{ item.calories[i] }} Ккал
-                                span.note(v-if="item.proteins[i] && item.fats[i] && item.carbo[i]") ({{item.proteins[i]}}-{{item.fats[i]}}-{{item.carbo[i]}})
+                                span.note(v-if="item.weights[i]") Вес: {{ item.weights[i] }}г
+                                span.note(v-if="item.calories[i]") Ккал: {{ item.calories[i] }}
+                            .detail__line-content-line
+                                span.note(v-if="item.proteins[i] && item.fats[i] && item.carbo[i]") БЖУ: {{item.proteins[i]}}-{{item.fats[i]}}-{{item.carbo[i]}}
                             
                         .detail__line-counter
                             transition(name="slide-fade" mode="out-in")
@@ -54,30 +78,30 @@
                                          v-icon mdi-plus
                                        
 
-                .detail__dops(v-if="item.dops.length")
-                    h4.detail__dops-title Дополнения:
-                    .detail__line(v-for="(dop, key) in item.dops" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop)")
-                        .detail__line-inner
-                            .detail__line-content
-                                h4.detail__line-name {{ $store.state.guest.companyData.dops.find(e => e._id == dop).name }}
+            .detail__dops(v-if="item.dops.length")
+                h4.detail__dops-title Дополнения:
+                .detail__line(v-for="(dop, key) in item.dops" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop)")
+                    .detail__line-inner
+                        .detail__line-content
+                            h4.detail__line-name {{ $store.state.guest.companyData.dops.find(e => e._id == dop).name }}
                                 transition(name="slide-fade" mode="out-in")
                                     span.note(key="15" v-if="$store.state.guest.companyData.dops.find(e => e._id == dop).price && $store.state.guest.companyData.dops.find(e => e._id == dop).count > 0")  {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}{{$store.state.guest.companyData.currencySymbol}}
                                     span.note(key="16" v-else-if="!$store.state.guest.companyData.dops.find(e => e._id == dop).prices.length") Бесплатно
-                            .detail__line-counter
-                                transition(name="slide-fade" mode="out-in")
-                                    .detail__line-button(
-                                        key="13"
-                                        @click="addDopToCart(dop)"
-                                        v-if="!$store.state.guest.user.cart[$store.state.guest.companyData.place._id] || !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.find(e => e._id == dop)") 
-                                        span(v-if="$store.state.guest.companyData.dops.find(e => e._id == dop).price") {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}{{$store.state.guest.companyData.currencySymbol }}
-                                        span(v-else) Бесплатно
-                                    .detail__line-counter(key="14" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.find(e => e._id == dop)")
-                                        .menu-item__counter-control(@click="removeDopFromCart(dop)")
-                                            v-icon mdi-minus
-                                        .menu-item__counter-value.-detail {{ $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.find(e => e._id == dop).count }}
-                                        .menu-item__counter-control(@click="addDopToCart(dop)")
-                                            v-icon mdi-plus
-                .detail__area-bottom(v-bind:class="{ visible: $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length || $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length || $store.state.guest.user.orders.length }")
+                        .detail__line-counter
+                            transition(name="slide-fade" mode="out-in")
+                                .detail__line-button(
+                                    key="13"
+                                    @click="addDopToCart(dop)"
+                                    v-if="!$store.state.guest.user.cart[$store.state.guest.companyData.place._id] || !$store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.find(e => e._id == dop)") 
+                                    span(v-if="$store.state.guest.companyData.dops.find(e => e._id == dop).price") {{ $store.state.guest.companyData.dops.find(e => e._id == dop).price }}{{$store.state.guest.companyData.currencySymbol }}
+                                    span(v-else) Бесплатно
+                                .detail__line-counter(key="14" v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.find(e => e._id == dop)")
+                                    .menu-item__counter-control(@click="removeDopFromCart(dop)")
+                                        v-icon mdi-minus
+                                    .menu-item__counter-value.-detail {{ $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.find(e => e._id == dop).count }}
+                                    .menu-item__counter-control(@click="addDopToCart(dop)")
+                                        v-icon mdi-plus
+            .detail__area-bottom(v-bind:class="{ visible: $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length || $store.state.guest.user.cart[$store.state.guest.companyData.place._id] && $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length || $store.state.guest.user.orders.length }")
     </template>
 
 <script>
@@ -303,18 +327,19 @@ export default {
         &-pic {
             position: relative;
             width: 100%;
-            padding-bottom: 100%;
+            /* padding-bottom: 100%; */
             background-size: cover;
             background-position: center;
             display: block;
             img {
-                position: absolute;
+                /* position: absolute; */
                 left: 0;
                 top: 0;
                 width: 100%;
                 height: auto;
                 object-fit: cover;
                 pointer-events: none;
+                display: block;
             }
             &.placeholder {
                 background-size: contain;
@@ -329,8 +354,8 @@ export default {
     }
     &__content {
         background-color: #fff;
-        &-descr {
-            padding: 15px;
+        &-top {
+            padding: 10px 15px;
             background-color: rgb(241, 241, 241);
         }
     }
@@ -340,6 +365,14 @@ export default {
         &:last-child {
             border: none;
         }
+        &-price {
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+        &-name {
+            margin-bottom: 5px;
+        }
         &-inner {
             display: flex;
             align-items: center;
@@ -347,11 +380,15 @@ export default {
         &-content {
             height: 100%;
             margin-right: 5px;
+            &-line {
+                line-height: 1.2;
+            }
             span {
                 &.note {
                     color: #a3a3a3;
                     font-size: 14px;
                     margin-right: 5px;
+                    line-height: 1.2;
                 }
                 &.modifications {
                     margin-right: 5px;
@@ -384,12 +421,47 @@ export default {
             justify-content: space-between;
             margin-left: auto;
             flex-shrink: 0;
+            &.-wide {
+                width: 100%;
+                max-width: 200px;
+                margin: 0 auto;
+            }
         }
     }
     &__dops {
+        background-color: #fff;
         &-title {
             padding: 10px 15px;
             background-color: rgb(241, 241, 241);
+        }
+    }
+    &__single {
+        padding: 5px 10px;
+        background-color: #fff;
+        /* background-color: rgb(241, 241, 241); */
+        &-translation {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        &-name {
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+        &-descr {
+            margin-bottom: 5px;
+        }
+        &-info {
+            display: flex;
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        &-weight {
+            margin-right: 10px;
+        }
+        &-btn {
+            margin: 5px 0;
         }
     }
 }

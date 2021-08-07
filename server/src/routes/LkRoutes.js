@@ -795,10 +795,10 @@ router.post('/api/simplify', auth(), async (req, res) => {
         const started = req.user.subscription[req.user.subscription.length - 1].started
         const expires = req.user.subscription[req.user.subscription.length - 1].expires
 
-        const diff = moment(expires).diff(started, 'days', true) * 2
+        const diff = moment(expires).diff(started, 'hours', true) * 2
 
         req.user.subscription[req.user.subscription.length - 1].type = 'standart'
-        req.user.subscription[req.user.subscription.length - 1].expires = moment(started).add(diff, 'days')._d
+        req.user.subscription[req.user.subscription.length - 1].expires = moment(started).add(diff, 'hours')._d
 
         req.db.collection("users").updateOne(
             { _id: ObjectId(req.user._id) },

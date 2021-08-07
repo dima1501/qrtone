@@ -1,10 +1,7 @@
 <template lang="pug">
     .menu-item(v-bind:class="{ flash: flash }")
         .menu-item__img
-            //- .menu-item__img-pic(v-if="item.images.length == 1" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
-
             .menu-item__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
-
 
             picture(v-if="item.images.length == 1").menu-item__img-pic
                 source(:srcset="`../../uploads/171-${item.images[0]}.webp 1x, ../../uploads/342-${item.images[0]}.webp 2x`" type="image/webp" media="(max-width: 380px)")
@@ -13,7 +10,7 @@
                 source(:srcset="`../../uploads/400-${item.images[0]}.webp 1x, ../../uploads/800-${item.images[0]}.webp 2x`" type="image/webp" media="(min-width: 601px)")
                 img(:src="`../../uploads/400-${item.images[0]}`" :srcset="`../../uploads/400-${item.images[0]} 1x, ../../uploads/800-${item.images[0]} 2x`" alt="Изображения")
 
-            VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
+            VueSlickCarousel(:arrows="true" :dots="false" v-if="item.images.length > 1")
                 picture(v-for="(image, key) in item.images" :key="key" ).menu-item__img-pic
                     source(:srcset="`../../uploads/171-${image}.webp 1x, ../../uploads/342-${image}.webp 2x`" type="image/webp" media="(max-width: 380px)")
                     source(:srcset="`../../uploads/196-${image}.webp 1x, ../../uploads/392-${image}.webp 2x`" type="image/webp" media="(max-width: 430px)")
@@ -24,8 +21,10 @@
 
         .menu-item__content
             .menu-item__content-inner
-                .menu-item__name {{ item.name }}
-                .menu-item__translation(v-if="item.translation") {{ item.translation }} (en)
+
+                .menu-item__name
+                    .menu-item__name-translation {{item.translation}}
+                    .menu-item__name-title {{item.name}}
 
                 .menu-item__prices(v-if="item.modifications")
                     div.menu-item__price-label.-admin(v-for="(mod, key) in item.prices")

@@ -43,10 +43,11 @@ export default {
     background-color: $color-black;
     padding: 20px 30px;
     &__title {
+        width: 100%;
         text-align: center;
         text-transform: uppercase;
         font-weight: lighter;
-        font-size: 38px;
+        font-size: 36px;
         color: white;
         margin-bottom: 20px;
         line-height: 1;

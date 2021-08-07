@@ -7,36 +7,33 @@
             picture(v-if="item.images.length == 1").menu-item__img-pic
                 source(:srcset="`../../uploads/171-${item.images[0]}.webp 1x, ../../uploads/342-${item.images[0]}.webp 2x`" type="image/webp" media="(max-width: 380px)")
                 source(:srcset="`../../uploads/196-${item.images[0]}.webp 1x, ../../uploads/392-${item.images[0]}.webp 2x`" type="image/webp" media="(max-width: 430px)")
-                source(:srcset="`../../uploads/260-${item.images[0]}.webp 1x, ../../uploads/520-${item.images[0]}.webp 2x`" type="image/webp" media="(min-width: 431px)")
-                img(:src="`../../uploads/400-${item.images[0]}`" :srcset="`../../uploads/400-${item.images[0]} 1x, ../../uploads/800-${item.images[0]} 2x`" alt="Изображения")
+                source(:srcset="`../../uploads/255-${item.images[0]}.webp 1x, ../../uploads/520-${item.images[0]}.webp 2x`" type="image/webp" media="(min-width: 431px)")
+                img(:src="`../../uploads/400-${item.images[0]}`" :srcset="`../../uploads/400-${item.images[0]} 1x, ../../uploads/800-${item.images[0]} 2x`" alt="Изображения" loading="lazy")
 
-            VueSlickCarousel(:arrows="false" :dots="true" v-if="item.images.length > 1")
+            VueSlickCarousel(:arrows="true" :dots="false" v-if="item.images.length > 1")
                 picture(v-for="(image, key) in item.images" :key="key" ).menu-item__img-pic
                     source(:srcset="`../../uploads/171-${image}.webp 1x, ../../uploads/342-${image}.webp 2x`" type="image/webp" media="(max-width: 380px)")
                     source(:srcset="`../../uploads/196-${image}.webp 1x, ../../uploads/392-${image}.webp 2x`" type="image/webp" media="(max-width: 430px)")
-                    source(:srcset="`../../uploads/260-${image}.webp 1x, ../../uploads/520-${image}.webp 2x`" type="image/webp" media="(min-width: 431px)")
-                    img(:src="`../../uploads/400-${image}`" :srcset="`../../uploads/400-${image} 1x, ../../uploads/800-${image} 2x`" alt="Изображения")
+                    source(:srcset="`../../uploads/255-${image}.webp 1x, ../../uploads/520-${image}.webp 2x`" type="image/webp" media="(min-width: 431px)")
+                    img(:src="`../../uploads/400-${image}`" :srcset="`../../uploads/400-${image} 1x, ../../uploads/800-${image} 2x`" alt="Изображения" loading="lazy")
 
         .menu-item__content
             .menu-item__content-inner
                 .menu-item__vegan(v-if="item.isVegan") Вегетарианское
 
                 .menu-item__name
-                    .menu-item__name-title {{item.name}}
                     .menu-item__name-translation {{item.translation}}
+                    .menu-item__name-title {{item.name}}
+                    .menu-item__name-descr(v-if="item.description") {{item.description}}
+                    
                 .menu-item__data
-                    .menu-item__data-calories(v-if="item.weights[0]")
-                        span {{ item.weights[0] }}г 
-                    //- .menu-item__data-calories
-                    //-     span(v-if="item.calories[0]") {{ item.calories[0] }} Ккал 
-                    //-     span(v-if="item.proteins[0] && item.fats[0] && item.carbo[0]") ({{item.proteins[0]}}-{{item.fats[0]}}-{{item.carbo[0]}})
+                    .menu-item__data-calories(v-if="item.weights[0]") {{ item.weights[0] }}г 
                 
                 .menu-item__options(v-if="item.prices.length > 1")
                     span.menu-item__options-label Еще {{ item.prices.length - 1 }} 
                     span.menu-item__options-label(v-if="item.prices.length - 1 == 1") вариант
                     span.menu-item__options-label(v-if="item.prices.length - 1 > 1 && item.prices.length - 1 < 5") варианта
                     span.menu-item__options-label(v-if="item.prices.length - 1 > 4 && item.prices.length - 1 < 21") вариантов
-                    
 
             .menu-item__bottom
                 transition(name="slide-fade" mode="out-in")

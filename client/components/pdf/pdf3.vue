@@ -20,7 +20,7 @@
 
 <script>
 export default {
-    name: 'pdf_1'
+    name: 'pdf_3'
 }
 </script>
 

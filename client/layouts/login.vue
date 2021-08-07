@@ -1,0 +1,113 @@
+<template lang="pug">
+v-app
+    client-only
+        kinesis-container
+            .login
+                .login__bg
+                .login__inner
+                    .login__form
+                        Nuxt
+                    .login__media
+                        kinesis-element(:strength="7" type="depth")
+                            .m-welcome__media
+                                kinesis-element(:strength="7" type="depth")
+                                    img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
+                                kinesis-element(:strength="7" type="depth")
+                                    .m-welcome__media-text Отсканируйте для просмотра демо меню или <a href='http://localhost:3000/m/Dimas_diner?t=1' target="_blank">перейдите по ссылке</a>
+
+    client-only
+        notifications(
+            group="custom-style"
+            position="right bottom"
+            classes="my-style"
+            :max="6"
+            :width="300"
+            :duration="4000")
+</template>
+
+<script>
+
+export default {
+  
+}
+</script>
+
+<style lang="scss">
+@import '../assets/m-welcome.scss';
+
+.login {
+    position: relative;
+    min-height: 100vh;
+    &__bg {
+        background-color: #F4FFD3;
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 258px;
+    }
+    &__inner {
+        position: relative;
+        max-width: 1080px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        padding-top: 86px;
+    }
+    &__form {
+        max-width: 600px;
+        flex-grow: 1;
+        background-color: #fff;
+        padding: 55px 100px;
+    }
+    &__media {
+        flex-shrink: 0;
+        width: 380px;
+        margin-left: auto;
+    }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active
+{
+ -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+.auth {
+    &__title {
+        margin-bottom: 32px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: 600;
+    }
+    &__logo {
+        font-size: 18px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 67px;
+        text-align: center;
+    }
+    &__buttons {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    &__restore {
+        text-align: center;
+        color: $color-blue;
+        text-decoration: none;
+        font-size: 14px;
+        display: block;
+        margin-top: 20px;
+        &-text {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+    }
+}
+
+</style>
+

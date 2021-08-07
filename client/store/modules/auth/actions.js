@@ -197,8 +197,11 @@ const sendRestoreEmail = async (store, data) => {
       data: { data }
     })
     if (sentMail.data) {
+      store.state.restore.isEmailSent = true
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Сообщение с информацией о восстановлении пароля отправлено на указанный адрес электронной почты' })
       console.log('sent')
     } else {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-alarm', title: 'Адрес электронной почты не зарегистрирован' })
       console.log('error')
     }
   } catch (error) {
@@ -214,9 +217,11 @@ const checkKey = async (store, data) => {
       data: { data }
     })
     if (check.data) {
+      console.log(check.data)
       store.state.restore.isKeyValid = true
       console.log('good')
     } else {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-alarm', title: 'Код не подходит, перепроверьте и попробуйте еще раз' })
       console.log('not good')
     }
   } catch (error) {
@@ -232,6 +237,7 @@ const updatePassword = async (store, data) => {
       data: { data }
     })
     if (update.data) {
+      $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Пароль успешно изменен. Войдите, используя новые данные' })
       $nuxt.$router.push($nuxt.localePath({ path: '/auth/login' }))
       store.state.restore = {
         isKeyValid: false,

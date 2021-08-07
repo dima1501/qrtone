@@ -2,23 +2,53 @@
     &__inner {
         display: flex;
         align-items: center;
-        min-height: 100vh;
         margin: auto;
-        padding: 100px 0;
+        padding: 100px 0 30px 0;
+        @media screen and (min-width: 768px) {
+            min-height: 100vh;
+        }
+        @media screen and (min-width: 1020px) {
+            padding: 100px 0;
+        }
     }
     &__content {
-        width: 600px;
-        margin-right: 128px;
+        width: 100%;
+        max-width: 450px;
+        margin-right: auto;
         flex-shrink: 0;
+        @media screen and (min-width: 1020px) {
+            max-width: none;
+            width: 600px;
+            margin-right: auto;
+        }
+        @media screen and (min-width: 1280px) {
+            margin-right: 150px;
+        }
     }
     &__title {
         font-weight: 700;
-        font-size: 48px;
-        line-height: 56px;
-        margin-bottom: 15px;
+        font-size: 28px;
+        line-height: 1.2;
+        margin-bottom: 10px;
+        @media screen and (min-width: 370px) {
+            font-size: 32px;
+        }
+        @media screen and (min-width: 390px) {
+            font-size: 36px;
+        }
+        @media screen and (min-width: 1020px) {
+            font-size: 48px;
+            line-height: 56px;
+            margin-bottom: 15px;
+        }
     }
     &__text {
         font-size: 20px;
+        line-height: 1.35;
+        margin-bottom: 10px !important;
+        @media screen and (min-width: 768px) {
+            margin-bottom: 16px !important;
+        }
     }
     &__note {
         font-size: 12px;
@@ -26,24 +56,40 @@
         color: $color-grey-dark;
         margin-bottom: 0;
     }
+    &__try {
+        font-size: 18px;
+        text-decoration: none;
+        color: $color-blue;
+        margin-bottom: 20px;
+        display: inline-block;
+        @media screen and (min-width: 768px) {
+            display: none;
+        }
+    }
     &__media {
-        width: 100%;
-        // border-radius: 20px;
-        overflow: hidden;
-        position: relative;
-        max-width: 380px;
+        display: none;
 
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: 0 0 30px rgba(0,0,0,0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        background-image: url('../static/papyrus-dark.png');
-        background-size: cover;
-        background-position: center;
+        @media screen and (min-width: 768px) {
+            display: block;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            max-width: 330px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-image: url('../static/papyrus-dark.png');
+            background-size: cover;
+            background-position: center;
+        }
 
+        @media screen and (min-width: 1020px) {
+            max-width: 380px;
+        }
 
         video {
             max-width: 120%;
@@ -64,10 +110,14 @@
         &-text {
             text-align: center;
             color: white;
+            font-size: 14px;
             a {
                 color: $color-blue;
                 font-weight: bold;
                 text-decoration: none;
+            }
+            @media screen and (min-width: 1020px) {
+                font-size: 16px;
             }
         }
     }

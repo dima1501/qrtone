@@ -140,15 +140,21 @@ export default {
   min-height: 100%;
 
   &__sidebar {
-    width: 300px;
+    width: 260px;
     flex-shrink: 0;
+    @media screen and (min-width: 1280px) {
+      width: 300px;
+    }
   }
 
   &__content {
     flex-grow: 1;
     padding: 30px;
     height: 100%;
-    max-width: calc(100% - 300px);
+    max-width: calc(100% - 260px);
+    @media screen and (min-width: 1280px) {
+      max-width: calc(100% - 300px);
+    }
   }
 }
 input::-webkit-outer-spin-button,

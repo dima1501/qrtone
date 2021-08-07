@@ -36,7 +36,7 @@
                                                         .sorder__line-content
                                                             h4.sorder__line-name {{ good.name }}
                                                             .sorder__line-descr(v-if="good.modifications[price]") {{ good.modifications[price] }}
-                                                            .sorder__line-data {{ good.prices[price] }}{{ $store.state.auth.user.currencySymbol }} {{ good.weights[price] }}г
+                                                            .sorder__line-data {{ good.prices[price] }}{{ $store.state.auth.user.currencySymbol }} <span v-if="good.weights[price]">{{ good.weights[price] }}г</span>
                                                         .sorder__line-count 
                                                             span.note x
                                                             span.value {{ good.cartPrices.filter(e => e == price).length }}

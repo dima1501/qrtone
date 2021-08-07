@@ -1,6 +1,6 @@
 <template lang="pug">
-    v-app
-        Nuxt
+  v-app
+    Nuxt
 </template>
 
 <script>
@@ -48,6 +48,21 @@ body {
   height: calc(var(--vh, 1vh) * 100);
   width: 100%;
 }
+
+.slick-next {
+  right: 5px !important;
+  z-index: 3 !important;
+}
+
+.slick-prev {
+  left: 5px !important;
+  z-index: 3 !important;
+}
+
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+
 
 </style>
 

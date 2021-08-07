@@ -8,9 +8,9 @@ div
         div(v-else)
             header.header
                 .header__inner  
-                    .header__logo(v-if="$store.state.guest.companyData.photo")
+                    .header__logo
                         // nuxt-link(to="https://google.com" target="_blank").header__logo-link
-                        img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
+                        img(v-if="$store.state.guest.companyData.photo" :src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)").header__logo-img
                         transition(name="slide-up")
                             h3.header__logo-text(v-if="isHeaderSticky") {{ $store.state.guest.companyData.name }}
                     .header__controls
@@ -98,12 +98,11 @@ div
                                         img(:src="`${ '../../uploads/171-' + item.images[0] }`" :srcset="`${ '../../uploads/171-' + item.images[0] } 1x, ${ '../../uploads/342-' + item.images[0] } 2x`" alt="Изображения")
                                     .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
                                         .cart__item-content
-
                                             .cart__item-link(@click="openDetail(item, price)")
                                             .cart__item-name {{ item.name }}
                                             .cart__item-descr(v-if="item.modifications && item.modifications[price]") {{item.modifications[price]}}
-                                            span.note {{item.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}  {{item.weights[price]}}г
-                                            span.note(v-if="item.calories[price]")  {{item.calories[price]}} Ккал
+                                            span.note {{item.prices[price]}}{{$store.state.guest.companyData.currencySymbol}}  
+                                            span.note(v-if="item.weights[price]") {{item.weights[price]}}г
 
                                         .cart__item-counter
                                             .menu__counter-control(@click="minusMulti(item, price)")
@@ -155,8 +154,7 @@ div
                                                 .sorder__line-link(v-if="$store.state.guest.parsedMenu[good.category] && $store.state.guest.parsedMenu[good.category].find(e => e._id == good._id)" @click="openDetail(good, price)")
                                                 h4.sorder__line-name {{ good.name }}
                                                 .sorder__line-descr(v-if="good.modifications[price]") {{ good.modifications[price] }}
-                                                .sorder__line-data {{ good.prices[price] }}{{ $store.state.guest.companyData.currencySymbol }} {{ good.weights[price] }}г
-                                                .sorder__line-data(v-if="good.calories && good.calories[price]") {{ good.calories[price] }} Ккал
+                                                .sorder__line-data {{ good.prices[price] }}{{ $store.state.guest.companyData.currencySymbol }} <span v-if="good.weights[price]">{{ good.weights[price] }}г</span>
                                             .sorder__line-count 
                                                 span.note x
                                                 span.value {{ good.cartPrices.filter(e => e == price).length }}
@@ -297,10 +295,15 @@ export default {
         }
     },
     mounted() {
-        this.navigator = navigator.platform
-        window.addEventListener('scroll', (e) => {
-            this.headerTop = this.$refs.cats.getBoundingClientRect().top;
-        })
+        if (this.$store.state.guest.companyData) {
+            this.navigator = navigator.platform
+            window.addEventListener('scroll', (e) => {
+                this.headerTop = this.$refs.cats.getBoundingClientRect().top;
+            })
+        } else {
+            this.$router.push($nuxt.localePath({ name: 'error' }))
+        }
+        
     },
     watch: {
         headerTop(newValue) {
@@ -771,7 +774,7 @@ export default {
         }
         @media screen and (min-width: 580px) {
             width: calc(33.3333% - 10px);
-            max-width: 260px;
+            max-width: 255px;
             margin-right: 15px;
             &:nth-child(even) {
                 margin-right: 15px;
@@ -983,6 +986,7 @@ export default {
         align-items: center;
         max-width: 1080px;
         margin: 0 auto;
+        min-height: 70px;
     }
 
     &__logo {
@@ -1010,6 +1014,7 @@ export default {
     }
     &__controls {
         flex-shrink: 0;
+        margin-left: auto;
     }
 }
 

@@ -1,45 +1,42 @@
 <template lang="pug">
     .auth
+        .auth__logo QRTONE
         h1.auth__title Вход в аккаунт
         .auth__content
-            v-card(
-            theme--light
-            class="mt-15")
             v-form(
             @submit.prevent="fetchCompanyLogin"
             v-model="isCompanyRegistrationValid")
-                v-card-text
-                    v-text-field(
-                    ref="email"
-                    v-model="loginData.email"
-                    :rules="emailRules"
-                    label="form_email")
-                    v-text-field(
-                    v-model="loginData.password"
-                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                    :rules="passwordRules"
-                    :type="showPassword ? 'text' : 'password'"
-                    :label="'form_password'"
-                    @click:append="showPassword = !showPassword")
-                v-divider(class="mt-12")
-                v-card-actions
+                v-text-field(
+                ref="email"
+                v-model="loginData.email"
+                :rules="emailRules"
+                label="Email")
+                v-text-field(
+                v-model="loginData.password"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :rules="passwordRules"
+                :type="showPassword ? 'text' : 'password'"
+                :label="'Пароль'"
+                @click:append="showPassword = !showPassword")
+                .auth__buttons.mt-5
                     v-btn(
-                    text
+                    depressed
                     :to="localePath('/auth/registration')"
-                    ) {{ 'form_resg' }}
-                    v-spacer
+                    ) Регистрация
                     v-btn(
-                    color="primary"
-                    :disabled="!isCompanyRegistrationValid"
-                    text
-                    type="submit"
-                    ) {{ 'form_login' }}
+                        depressed 
+                        color="primary"
+                        :disabled="!isCompanyRegistrationValid"
+                        type="submit"
+                    ).e-card__bottom-item Войти
+                nuxt-link(:to="localePath('/auth/restore')").auth__restore Восстановить пароль
+
 
 </template>
 
 <script>
 export default {
-    layout: 'public',
+    layout: 'login',
     data() {
         return {
             isCompanyRegistrationValid: false,
@@ -52,22 +49,22 @@ export default {
                 (v) => !!v || 'error_company_name',
             ],
             emailRules: [
-                (v) => !!v || 'error_required_field',
+                (v) => !!v || 'Введите адрес электронной почты',
                 (v) =>
                 !v ||
                 /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-                'error_email_not_correct',
+                'Ошибка в адресе электронной почты',
             ],
             passwordRules: [
-                (v) => !!v || 'error_required_field',
+                (v) => !!v || 'Введите пароль',
                 (v) =>
-                (v && v.length >= 5) || 'error_password_min_length',
+                (v && v.length >= 5) || 'Ошибка в пароле. Минимум 6 символов, одна цифра, один знак. Без символов',
                 (v) =>
                 /(?=.*[A-Z])/.test(v) ||
-                'error_password_uppercase_symbol',
+                'Ошибка в пароле. Минимум 6 символов, одна цифра, один знак. Без символов',
                 (v) =>
-            /(?=.*\d)/.test(v) ||
-            'error_password_number_symbol',
+                /(?=.*\d)/.test(v) ||
+                'Ошибка в пароле. Минимум 6 символов, одна цифра, один знак. Без символов',
             ],
         }
     },
@@ -88,11 +85,7 @@ export default {
 
 
 <style lang="scss">
-.auth {
-    &__title {
-        margin-bottom: 20px;
-    }
-}
+
 
 </style>
 

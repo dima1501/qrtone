@@ -3,6 +3,7 @@
         .detail__bg
         .detail__closer(@click="closeDetail")
         .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
+            .menu-item__vegan(v-if="item.isVegan") Вегетарианское
             .detail__img
                 .detail__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
 

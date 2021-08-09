@@ -124,6 +124,7 @@ export default {
 
 <style lang="scss">
 .qr {
+    margin-bottom: 30px;
     &__title {
         margin-bottom: 20px;
         color: $color-black;

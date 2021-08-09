@@ -1,35 +1,35 @@
 <template lang="pug">
-  div(v-if="$store.state.auth.user && isAvailable")
-    .telega
-        h1.page__title Телеграм бот
-        .telegram
-            .telegram__content(v-if="$store.state.auth.user.places.length") 
-              p Перейдите по ссылке <a href="https://t.me/SafetyMenuBot" target="_blank">t.me/SafetyMenuBot</a> или отсканируйте QR код
-              p Введите команду <code>/login</code>
-              p Введите код <code>{{$store.state.auth.user.bot_token}}</code>
-            .telegram__content(v-else) <span @click="openAddPlacePopup"> Создайте заведение</span>, чтобы начать использовать бота
-            .telegram__qr(v-html="qr")
-        p.page__note
-    div(v-if="$store.state.auth.user.telegram")
-      .t-line(v-for="(place, key) of $store.state.auth.user.places" v-bind:key="key") 
-        h3.t-line__title {{place.name}}
-        div(v-for="(item, key) in $store.state.auth.user.telegram[place._id]" v-bind:key="key").t-line__item
-          div.t-line__username {{ item.user.first_name }} {{ item.user.last_name }}
+  .telega
+    div(v-if="$store.state.auth.user && isAvailable")
+      h1.page__title Телеграм бот
+      .telegram
+          .telegram__content(v-if="$store.state.auth.user.places.length") 
+            p Перейдите по ссылке <a href="https://t.me/SafetyMenuBot" target="_blank">t.me/SafetyMenuBot</a> или отсканируйте QR код
+            p Введите команду <code>/login</code>
+            p Введите код <code>{{$store.state.auth.user.bot_token}}</code>
+          .telegram__content(v-else) <span @click="openAddPlacePopup"> Создайте заведение</span>, чтобы начать использовать бота
+          .telegram__qr(v-html="qr")
+      p.page__note
+      div(v-if="$store.state.auth.user.telegram")
+        .t-line(v-for="(place, key) of $store.state.auth.user.places" v-bind:key="key") 
+          h3.t-line__title {{place.name}}
+          div(v-for="(item, key) in $store.state.auth.user.telegram[place._id]" v-bind:key="key").t-line__item
+            div.t-line__username {{ item.user.first_name }} {{ item.user.last_name }}
 
-          v-checkbox(@change="toggleNotify($event, item, place)" :input-value="item.notifications == 'all'" label="Уведомления со всех столиков" hide-details="auto" :id="place.id").mt-1
+            v-checkbox(@change="toggleNotify($event, item, place)" :input-value="item.notifications == 'all'" label="Уведомления со всех столиков" hide-details="auto" :id="place.id").mt-1
 
-          div(v-if="item.notifications == 'partially' || notificationsToggle")
-            
-            .tables
-              .tables__row
-                .tables__item(v-for="(table, idx) in place.tables" v-bind:key="idx" @click="selectTable(table, item, place)" :class="{ active: item.tables.indexOf(table) > -1 }") {{ formatTable(table) }}
-              .tables__note Отметьте столики, с которых должны приходить уведомления
+            div(v-if="item.notifications == 'partially' || notificationsToggle")
+              
+              .tables
+                .tables__row
+                  .tables__item(v-for="(table, idx) in place.tables" v-bind:key="idx" @click="selectTable(table, item, place)" :class="{ active: item.tables.indexOf(table) > -1 }") {{ formatTable(table) }}
+                .tables__note Отметьте столики, с которых должны приходить уведомления
 
-        .t-line__note(v-if="!$store.state.auth.user.telegram[place._id] || !$store.state.auth.user.telegram[place._id].length") Пользователи пока не подключены
+          .t-line__note(v-if="!$store.state.auth.user.telegram[place._id] || !$store.state.auth.user.telegram[place._id].length") Пользователи пока не подключены
 
-  div(v-else)
-    h2 Доступно с подпиской Premium 
-    nuxt-link(:to="localePath('/lk/settings')") Настройки
+    div(v-else)
+      h2 Доступно с подпиской Premium 
+      nuxt-link(:to="localePath('/lk/settings')") Настройки
 
 </template>
 
@@ -96,6 +96,9 @@ export default {
 </script>
 
 <style lang="scss"> 
+.telega {
+  margin-bottom: 30px;
+}
 .telegram {
   display: flex;
   align-items: center;

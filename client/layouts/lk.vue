@@ -10,6 +10,23 @@
         Sidebar
       .page__content
         Nuxt
+        footer.footer
+          .m-container
+            .footer__inner
+              .footer__item
+                nuxt-link(:to="localePath('/')").footer__item-text Условия использования
+              .footer__item
+                nuxt-link(:to="localePath('/')").footer__item-text Пользовательское соглашение
+            .footer__inner
+              .footer__item
+                a(href="mailto:info@qrtone.com").footer__item-text info@qrtone.com
+              .footer__item
+                a(href="https://www.instagram.com/dima.voropaev" target="_blank").footer__item-text Instagram
+              .footer__item
+                a(href="tel:8(950)046-84-72").footer__item-text 8(950)046-84-72
+            .footer__inner
+              .footer__item
+                .footer__item-text © 2021 Все права защищены. QRTONE
     transition(name="fade")
       AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
       AddActionPopup(v-if="$store.state.view.popup.addActionPopup")
@@ -203,6 +220,8 @@ export default {
   }
 
   &__content {
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
     padding: 20px 15px;
     height: 100%;
@@ -216,6 +235,14 @@ export default {
     }
     @media screen and (min-width: 1280px) {
       max-width: calc(100% - 300px);
+    }
+  }
+  .footer {
+    margin: 0 -15px -20px;
+    @media screen and (min-width: 768px) {
+      margin: auto -30px -30px -67px;
+      padding-left: 67px;
+      padding-right: 30px;
     }
   }
 }

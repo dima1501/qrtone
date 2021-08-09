@@ -55,6 +55,7 @@ export default {
         padding: 30px 0;
         min-height: 100vh;
         @media screen and (min-width: 768px) {
+            align-items: flex-start;
             padding-top: 86px;
         }
     }
@@ -74,7 +75,7 @@ export default {
         @media screen and (min-width: 1024px) {
             display: block;
             flex-shrink: 0;
-            width: 380px;
+            width: 340px;
             margin-left: auto;
         }
     }

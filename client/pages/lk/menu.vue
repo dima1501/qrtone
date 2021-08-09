@@ -112,6 +112,7 @@ export default {
 }
 
 .menu {
+    margin-bottom: 30px;
     &__empty {
         display: flex;
         justify-content: center;

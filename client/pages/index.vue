@@ -168,7 +168,7 @@
             a(href="tel:8(950)046-84-72").footer__item-text 8(950)046-84-72
         .footer__inner
           .footer__item
-            .footer__item-text © 2020-2021 Все права защищены. QRTONE
+            .footer__item-text © 2021 Все права защищены. QRTONE
 
 
 </template>

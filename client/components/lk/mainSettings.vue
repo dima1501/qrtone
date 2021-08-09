@@ -10,7 +10,8 @@
                     v-model="newCompanyName"
                     :rules="nameRules"
                     required
-                    :disabled="editCompany ? false : true")
+                    :disabled="editCompany ? false : true"
+                    hide-details="auto")
 
             .settings__section-item
                 .settings__section-input
@@ -19,7 +20,7 @@
                         label="Описание компании"
                         v-model="newCompanyDescription"
                         auto-grow
-                        rows="2"
+                        rows="1"
                         row-height="20"
                         :disabled="editCompany ? false : true")
 

@@ -17,6 +17,12 @@
                             span.edit(@click="openTablesPopup()" v-if="$store.state.view.popup.tablesPopup.tables.length")
                                 v-icon(light) mdi-pencil-outline
 
+                        //- img.c-qr__content-preview(:src='preview' v-show="$store.state.view.pdf.ref")
+
+                        .c-qr__content-svg(v-show="!$store.state.view.pdf.ref")
+                            img.c-qr__content-preview(:src='$store.state.view.pdf.qr')
+                        img.c-qr__content-preview(:src='preview' v-show="$store.state.view.pdf.ref")
+
                         .c-qr__templates(@click="openPDFPopup")
                             .c-qr__templates-title Шаблоны <span v-if="$store.state.view.pdf.ref">({{ $store.state.view.pdf.data.name }})</span>
 
@@ -372,7 +378,6 @@ export default {
                 if (this.generatedQr) {
                     this.generatedQr.clear()
                 }
-                console.log(this.$store.state.view.pdf.data.defaultColor)
                 this.generatedQr = await new QRCode(this.$refs.qrcode, {
                     text: this.easyqr.text,
                     colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
@@ -480,55 +485,6 @@ export default {
 
 
 <style lang="scss">
-.popup {
-    position: fixed;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    padding: 30px;
-    z-index: 20;
-    background-color: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow-y: scroll;
-
-    &__closer {
-        position: absolute;
-        right: 20px;
-        top: 25px;
-        cursor: pointer;
-        z-index: 3;
-
-        .v-icon {
-            color: #000;
-            transition: transform .3s;
-            &:hover {
-                transform: rotate(140deg);
-            }
-        }
-    }
-
-    &__container {
-        position: relative;
-        margin-top: auto;
-        margin-bottom: auto;
-        background-color: #fff;
-        border-radius: 20px;
-        padding: 20px;
-        width: 100%;
-        max-width: 400px;
-
-        &.-wide {
-            max-width: 900px;
-        }
-    }
-
-    &__title {
-        margin-bottom: 15px;
-    }
-}
 
 .sqr {
     &__pic {
@@ -574,10 +530,9 @@ export default {
 
 .pdf {
     &__print {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
-        z-index: 100;
         opacity: 0;
         pointer-events: none;
         z-index: -1000;
@@ -589,33 +544,64 @@ export default {
         display: flex;
     }
     &__content {
-        width: 50%;
         display: flex;
         flex-direction: column;
+        width: 100%;
+        @media screen and (min-width: 768px) {
+            width: 50%;
+        }
+        &-preview {
+            width: 100%;
+            height: auto;
+            max-width: 400px;
+            margin: 0 auto 20px;
+            @media screen and (min-width: 768px) {
+                display: none;
+            }
+        }
+        &-svg {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            img {
+                width: 100%;
+                height: auto;
+            }
+        }
     }
     &__preview {
-        position: relative;
-        width: 50%;
-        min-height: 400px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 30px 15px;
+        display: none;
+        @media screen and (min-width: 768px) {
+            position: relative;
+            width: 50%;
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+        }
         &-image {
             max-width: 100%;
             height: auto;
             box-shadow: 0 0 15px rgba(0,0,0,0.4);
         }
         &-loader {
-            position: absolute;
+            position: fixed;
             left: 0;
             top: 0;
             right: 0;
             bottom: 0;
-            z-index: 2;
+            z-index: 23;
             background-color: rgba(255,255,255,0.5);
             display: flex;
             justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            @media screen and (min-width: 768px) {
+                position: absolute;
+                width: auto;
+                height: auto;
+            }
             .v-icon {
                 font-size: 36px;
                 color: $color-blue;
@@ -716,6 +702,7 @@ export default {
             width: 65px;
             height: 65px;
             cursor: pointer;
+            overflow: hidden;
             &:hover {
                 opacity: 0.9;
             }
@@ -750,10 +737,16 @@ export default {
         }
     }
     &__bottom {
-        display: flex;
-        margin-top: auto;
+        @media screen and (min-width: 768px) {
+            display: flex;
+            margin-top: auto;
+        }
         &-item {
             margin-right: 15px;
+            margin-bottom: 15px;
+            @media screen and (min-width: 768px) {
+                margin-bottom: 0;
+            }
         }
     }
 }

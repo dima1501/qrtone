@@ -1,13 +1,19 @@
 <template lang="pug">
   v-app
     .page
+      .page__burger(@click="toggleSidebar")
+        .page__burger-bar
+        .page__burger-bar
+        .page__burger-bar
       .page__sidebar
+        .page__sidebar-overlay(:class="{ '-visible': $store.state.view.sidebar.visible }" @click="toggleSidebar")
         Sidebar
       .page__content
         Nuxt
-    AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
-    AddActionPopup(v-if="$store.state.view.popup.addActionPopup")
-    Onboard(v-if="$store.state.auth.user && !$store.state.auth.user.isOnboardCompleted || $store.state.auth.user && $store.state.view.popup.onboardPopup.visible")
+    transition(name="fade")
+      AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
+      AddActionPopup(v-if="$store.state.view.popup.addActionPopup")
+      Onboard(v-if="$store.state.auth.user && !$store.state.auth.user.isOnboardCompleted || $store.state.auth.user && $store.state.view.popup.onboardPopup.visible")
     client-only
       notifications(
         group="custom-style"
@@ -72,6 +78,11 @@ export default {
       this.$store.dispatch("lk/updateTGUsers")
     }
   },
+  methods: {
+    toggleSidebar() {
+      this.$store.state.view.sidebar.visible = !this.$store.state.view.sidebar.visible
+    }
+  },
   mounted() {
     if (!this.$store.state.auth.user) {
       this.$store.dispatch("auth/checkAuth")
@@ -81,8 +92,8 @@ export default {
 </script>
 
 <style lang="scss">
-
 @import '../assets/menu-item.scss';
+@import '../assets/popup.scss';
 
 .vue-notification-wrapper {
   overflow: visible !important;
@@ -139,6 +150,31 @@ export default {
   display: flex;
   min-height: 100%;
 
+  &__burger {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 50px;
+    height: 50px;
+    z-index: 19;
+    background-color: #fff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    &-bar {
+      width: 20px;
+      height: 2px;
+      margin-bottom: 5px;
+      background-color: $color-black;
+    }
+    @media screen and (min-width: 1024px) {
+      display: none;
+    }
+  }
+
   &__sidebar {
     // width: 260px;
     flex-shrink: 0;
@@ -148,13 +184,32 @@ export default {
     @media screen and (min-width: 1280px) {
       width: 300px;
     }
+    &-overlay {
+      position: fixed;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.7);
+      visibility: hidden;
+      opacity: 0;
+      z-index: 20;
+      transition: all .3s;
+      &.-visible {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
   }
 
   &__content {
     flex-grow: 1;
-    padding: 20px;
+    padding: 20px 15px;
     height: 100%;
-    // max-width: calc(100% - 260px);
+    width: 100%;
+    @media screen and (min-width: 768px) {
+      padding: 20px;
+    }
     @media screen and (min-width: 1024px) {
       max-width: calc(100% - 260px);
       padding: 30px;

@@ -99,6 +99,7 @@ export default {
 .telegram {
   display: flex;
   align-items: center;
+  flex-direction: column;
   padding: 10px;
   border-radius: 14px;
   max-width: 440px;
@@ -107,12 +108,16 @@ export default {
   border-radius: 16px;
   margin-top: 20px;
 
+  @media screen and (min-width: 410px) {
+    flex-direction: row;
+  }
+
   &__content {
     padding-right: 15px;
   }
 
   &__qr {
-    width: 150px;
+    width: 200px;
     flex-shrink: 0;
   }
 

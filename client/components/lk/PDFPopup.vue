@@ -70,17 +70,17 @@ export default {
  100% { transform: rotate(360deg) }
 }
 
-.popup {
-    &__container {
-        position: relative;
-        overflow: hidden;
-    }
-    &.-wide {
-        .popup__container {
-            max-width: 1000px;
-        }
-    }
-}
+// .popup {
+//     &__container {
+//         position: relative;
+//         overflow: hidden;
+//     }
+//     &.-wide {
+//         .popup__container {
+//             max-width: 1000px;
+//         }
+//     }
+// }
 .pdf {
     position: relative;
     &__loader {
@@ -103,9 +103,14 @@ export default {
         display: flex;
         flex-wrap: wrap;
         align-items: flex-start;
+        justify-content: space-between;
+        &:after {
+            content: '';
+            display: block;
+            width: 32%;
+        }
         &-preview {
-            width: 30%;
-            margin-right: 3%;
+            width: 100%;
             margin-bottom: 20px;
             border: 3px solid transparent;
             cursor: pointer;
@@ -115,12 +120,19 @@ export default {
             display: flex;
             flex-direction: column;
             align-self: flex-start;
+            @media screen and (min-width: 410px) {
+                width: 48%;
+            }
+            @media screen and (min-width: 610px) {
+                width: 32%;
+            }
             &.active {
                 border: 3px solid #a9b0be;
                 box-shadow: 0 0 20px rgb(0 0 0 / 30%);
             }
             &.-empty {
                 align-self: normal;
+                min-height: 200px;
             }
             &-pic {
                &-img {

@@ -242,12 +242,15 @@
                 .settings__section-top
                     .settings__section-link.-red(@click="logOut()") Выйти из аккаунта
             
-            EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
-            EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
+            transition(name="fade")
+                EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
+            transition(name="fade")
+                EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
             //- EditTablesPopup(v-if="$store.state.view.popup.editTablesPopup.visible" :place="editableTablesPlace")
-
-            CreateWaiterPopup(v-if="$store.state.view.popup.addWaiterPopup.visible")
-            EditWaiterPopup(v-if="$store.state.view.popup.editWaiterPopup.visible")
+            transition(name="fade")
+                CreateWaiterPopup(v-if="$store.state.view.popup.addWaiterPopup.visible")
+            transition(name="fade")
+                EditWaiterPopup(v-if="$store.state.view.popup.editWaiterPopup.visible")
 
 </template>
 
@@ -439,7 +442,10 @@ export default {
         }
     }
     &__section {
-        padding: 20px 15px;
+        padding: 10px 0px;
+        @media screen and (min-width: 768px) {
+            padding: 20px 15px;
+        }
         &.-short {
             max-width: 420px;
         }
@@ -448,9 +454,16 @@ export default {
             display: flex;
             flex-wrap: wrap;
             &-item {
-                margin-right: 15px;
+                margin-bottom: 25px;
                 &:last-child {
-                    margin-right: 0;
+                    margin-bottom: 0;
+                }
+                @media screen and (min-width: 768px) {
+                    margin-bottom: 0;
+                    margin-right: 15px;
+                        &:last-child {
+                        margin-right: 0;
+                    }
                 }
             }
         }
@@ -463,13 +476,24 @@ export default {
             align-items: center;
         }
         &-title {
-            margin-right: 20px;
+            margin-right: 10px;
+            font-size: 20px;
+            @media screen and (min-width: 768px) {
+                font-size: 24px;
+                margin-right: 20px;
+            }
         }
         &-link {
             text-decoration: none;
             color: $color-blue;
             cursor: pointer;
-            margin-right: 15px;
+            margin-right: 10px;
+            @media screen and (min-width: 768px) {
+                margin-right: 15px;
+            }
+            &:last-child {
+                margin-right: 0;
+            }
             &.-red {
                 color: $color-red;
             }
@@ -542,16 +566,23 @@ export default {
             border-radius: 4px;
         }
         .note {
-            font-size: 14px;
-            color: $color-black;
-            opacity: 0.9;
+            display: none;
+            @media screen and (min-width: 370px) {
+                display: inline-block;
+                font-size: 14px;
+                color: $color-black;
+                opacity: 0.9;
+            }
         }
     }
     &__info {
         &-period {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 16px;
             color: $color-black;
+            @media screen and (min-width: 370px) {
+               font-size: 18px; 
+            }
             &.small {
                 font-size: 14px;
                 opacity: 0.9;

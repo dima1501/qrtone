@@ -1,5 +1,5 @@
 <template lang="pug">
-    .popup.z-21
+    .popup.z-22
         .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
@@ -249,62 +249,62 @@ export default {
     margin-top: 10px;
 }
 
-.popup {
-    position: fixed;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    padding: 30px;
-    z-index: 20;
-    background-color: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow-y: scroll;
+// .popup {
+//     position: fixed;
+//     left: 0;
+//     top: 0;
+//     right: 0;
+//     bottom: 0;
+//     padding: 30px;
+//     z-index: 20;
+//     background-color: rgba(0,0,0,0.6);
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     overflow-y: scroll;
 
-    &__overlay {
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-    }
+//     &__overlay {
+//         position: absolute;
+//         left: 0;
+//         top: 0;
+//         right: 0;
+//         bottom: 0;
+//     }
 
-    &.z-21 {
-        z-index: 21;
-    }
+//     &.z-21 {
+//         z-index: 21;
+//     }
 
-    &__closer {
-        position: absolute;
-        right: 20px;
-        top: 25px;
-        cursor: pointer;
+//     &__closer {
+//         position: absolute;
+//         right: 20px;
+//         top: 25px;
+//         cursor: pointer;
 
-        .v-icon {
-            color: #000;
-            transition: transform .3s;
-            &:hover {
-                transform: rotate(140deg);
-            }
-        }
-    }
+//         .v-icon {
+//             color: #000;
+//             transition: transform .3s;
+//             &:hover {
+//                 transform: rotate(140deg);
+//             }
+//         }
+//     }
 
-    &__container {
-        position: relative;
-        margin-top: auto;
-        margin-bottom: auto;
-        background-color: #fff;
-        border-radius: 20px;
-        padding: 20px;
-        width: 100%;
-        max-width: 400px;
-    }
+//     &__container {
+//         position: relative;
+//         margin-top: auto;
+//         margin-bottom: auto;
+//         background-color: #fff;
+//         border-radius: 20px;
+//         padding: 20px;
+//         width: 100%;
+//         max-width: 400px;
+//     }
 
-    &__title {
-        margin-bottom: 15px;
-    }
-}
+//     &__title {
+//         margin-bottom: 15px;
+//     }
+// }
 
 @import '../../assets/e-card.scss';
 

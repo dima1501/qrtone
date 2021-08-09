@@ -3,6 +3,9 @@ import getters from './getters'
 import mutations from './mutations'
 
 const state = {
+  sidebar: {
+    visible: false
+  },
   popup: {
     tipsPopup: {
       visible: false

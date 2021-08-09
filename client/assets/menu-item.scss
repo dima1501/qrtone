@@ -78,6 +78,7 @@
             &.handles {
                 cursor: pointer;
                 position: relative;
+                margin-left: auto;
                 &:after {
                     content: '';
                     position: absolute;
@@ -124,6 +125,8 @@
         }
         &-value {
             font-weight: bold;
+            text-align: center;
+            line-height: 1.2;
             &-price {
                 font-weight: normal;
                 color: $color-black;

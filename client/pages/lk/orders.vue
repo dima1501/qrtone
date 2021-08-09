@@ -14,8 +14,9 @@
                 .board__main-select
                     v-select(:items="$store.state.auth.user.places" v-model="place" label="Выберите заведение" item-text="name" item-value="_id" @change="changePlace")
                 .board__main-content
-                    .board__main-content-section.-main
+                    .board__main-content-section.-main(:class="{ visible: mobileVisible == 'main' }")
                         .board__main-content-section-top Заказы <span v-if="getPendingOrders">{{ getPendingOrders }}</span>
+                            span.toggler(@click="toggleMobileSection('aside')") Уведомления <span v-if="getPendingNotifications">{{ getPendingNotifications }}</span>
 
                         transition(name="slide-fade" mode="out-in")
                             .board__main-content-section-loading(v-if="$store.state.view.loading.orders" key="orders_loader")
@@ -65,8 +66,9 @@
                                     .board__main-content-loader(v-if="$store.state.view.loading.moreOrders")
                                         v-icon(light) mdi-loading              
                             
-                    .board__main-content-section.-aside
+                    .board__main-content-section.-aside(:class="{ visible: mobileVisible == 'aside' }")
                         .board__main-content-section-top Уведомления <span v-if="getPendingNotifications">{{ getPendingNotifications }}</span>
+                            span.toggler(@click="toggleMobileSection('main')") Заказы <span v-if="getPendingOrders">{{ getPendingOrders }}</span>
                         transition(name="slide-fade" mode="out-in")
                             .board__main-content-section-loading(v-if="$store.state.view.loading.notifications" key="notify_loader")
                                 v-icon(light) mdi-loading
@@ -137,6 +139,7 @@ export default {
     },
     data() {
         return {
+            mobileVisible: 'main',
             loading: true,
             orders: [],
             place: '',
@@ -200,6 +203,9 @@ export default {
         }
     },
     methods: {
+        toggleMobileSection(name) {
+            this.mobileVisible = name
+        },
         loadMoreOrders() {
             this.$store.dispatch('lk/loadMoreOrders', { place: this.place, items: this.$store.state.auth.user.orders.length } )
         },
@@ -353,8 +359,15 @@ export default {
         width: 100%;
         display: flex;
         flex-direction: column;
+        @media screen and (min-width: 1280px) {
+            
+        }
         &-select {
             max-width: 320px;
+            padding-right: 40px;
+            @media screen and (min-width: 1024px) {
+                padding-right: 0;
+            }
         }
         &-content {
             display: flex;
@@ -363,32 +376,79 @@ export default {
                 border-radius: 14px;
                 border: 3px solid #F5F7FB;
                 box-shadow: 0 0 20px rgb(0 0 0 / 10%);
-                height: calc(100vh - 130px);
+                height: calc(100vh - 110px);
                 background-color: #eef1f8;
                 overflow: hidden;
+                @media screen and (min-width: 1024px) {
+                    height: calc(100vh - 130px);
+                }
+                display: none;
+                opacity: 0;
+                transition: opacity .3s;
+                width: 100%;
+                &.visible {
+                    display: block;
+                    opacity: 1;
+                }
+                @media screen and (min-width: 768px) {
+                    display: block;
+                    opacity: 1;
+                }
                 &.-main {
-                    width: 500px;
-                    margin-right: 30px;
+                    @media screen and (min-width: 768px) {
+                        width: 50%;
+                        flex-shrink: 0;
+                        margin-right: 15px;
+                    }
+                    @media screen and (min-width: 1280px) {
+                        width: 500px;
+                        margin-right: 30px;
+                    }
                 }
                 &.-aside {
-                    width: 400px;
-                    flex-shrink: 0;
+                    
+                    @media screen and (min-width: 768px) {
+                        width: 50%;
+                    }
+                    @media screen and (min-width: 1280px) {
+                        width: 400px;
+                        flex-shrink: 0;
+                    }
                 }
                 &-top {
-                    font-size: 22px;
+                    display: flex;
+                    align-items: center;
+                    font-size: 20px;
                     font-weight: bold;
                     padding: 10px 20px;
                     box-shadow: 0 0 20px rgb(0 0 0 / 5%);
+                    @media screen and (min-width: 768px) {
+                        font-size: 22px;
+                    }
                     span {
                         color: $color-blue;
                         border-radius: 50%;
                         margin-left: 5px;
+                        &.toggler {
+                            font-size: 14px;
+                            margin-left: auto;
+                            font-weight: lighter;
+                            span {
+                                font-weight: bold;
+                            }
+                            @media screen and (min-width: 768px) {
+                                display: none;
+                            }
+                        }
                     }
                 }
                 &-content {
                     display: flex;
                     flex-direction: column;
-                    height: calc(100vh - 189px);
+                    height: calc(100vh - 166px);
+                    @media screen and (min-width: 1024px) {
+                        height: calc(100vh - 189px);
+                    }
                 }
                 &-loading {
                     font-size: 24px;

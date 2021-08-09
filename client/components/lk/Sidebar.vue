@@ -1,22 +1,22 @@
 <template lang="pug">
-  .sidebar(v-if="$store.state.auth.user")
+  .sidebar(v-if="$store.state.auth.user" :class="{ '-visible': $store.state.view.sidebar.visible }")
     .sidebar__name QRTone
-    nuxt-link(:to="localePath('/lk/settings')").sidebar__settings
+    nuxt-link(:to="localePath('/lk/settings')" @click.native="toggleSidebar").sidebar__settings
     .sidebar__company
       // .sidebar__company-logo(v-bind:style="{ backgroundImage: 'url(' + ($store.state.auth.user.photo ? '../../uploads/' + $store.state.auth.user.photo : '' ) + ')' }")
       .sidebar__company-logo(v-if="$store.state.auth.user.photo" v-bind:style="{ backgroundImage: 'url(../../uploads/' + $store.state.auth.user.photo +')' }")
       .sidebar__company-name {{ $store.state.auth.user.name }}
     nav.sidebar__nav
-      nuxt-link(:to="localePath('/lk/orders')").sidebar__nav-item
+      nuxt-link(:to="localePath('/lk/orders')" @click.native="toggleSidebar").sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name Дэшборд
-      nuxt-link(:to="localePath('/lk/menu')").sidebar__nav-item
+      nuxt-link(:to="localePath('/lk/menu')" @click.native="toggleSidebar").sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name Меню
-      nuxt-link(:to="localePath('/lk/qr')").sidebar__nav-item
+      nuxt-link(:to="localePath('/lk/qr')" @click.native="toggleSidebar").sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name QR-коды
-      nuxt-link(:to="localePath('/lk/telegram')").sidebar__nav-item
+      nuxt-link(:to="localePath('/lk/telegram')" @click.native="toggleSidebar").sidebar__nav-item
         .sidebar__nav-icon
         .sidebar__nav-name Телеграм бот
 </template>
@@ -26,6 +26,9 @@
 export default {
   name: 'Sidebar',
   methods: {
+    toggleSidebar() {
+      this.$store.state.view.sidebar.visible = false
+    }
   }
 }
 </script>
@@ -44,8 +47,19 @@ export default {
   align-items: center;
   flex-direction: column;
   padding: 16px;
+  transform: translateX(-100%);
+  transition: transform .3s;
+  z-index: 20;
+  &.-visible {
+    transform: translateX(0);
+  }
+
+  @media screen and (min-width: 1024px) {
+    transform: none;
+  }
 
   @media screen and (min-width: 1280px) {
+    
     width: 300px;
   }
 

@@ -23,40 +23,15 @@
                         transition-group(type="transition" :name="!drag ? null : null")
                             .m-item(v-for="(good, key) in $store.state.auth.parsedMenu[item._id]" :key="good._id")
                                 MenuItemAdmin(:item="good" v-on:openEditPopup="openEditPopup")
-                                //- .m-item__controls
-                                //-     .m-item__controls-item(@click="openEditPopup(good)")
-                                //-         v-icon(dark) mdi-pencil-outline
-                                //-     .m-item__controls-item.handles
-                                //-         v-icon(dark) mdi-drag
-
-                                //- .m-item__img(v-if="good.images.length")
-                                //-     img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
-                                //-     VueSlickCarousel(:arrows="false" :dots="true" v-if="good.images.length > 1")
-                                //-         img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`")
-
-                                //- .m-item__name {{ good.name }}
-                                //- .m-item__name {{ good.translation }}
-                                //- .m-item__name {{ good.description }}
-
-                                //- .m-item__line(v-for="(item, key) in good.prices" :key="key")
-                                //-     .m-item__price Цена: {{ good.prices[key] }}
-                                //-     .m-item__price(v-if="good.modifications") Модификация: {{ good.modifications[key] }}
-                                //-     .m-item__weight Вес: {{ good.weights[key] }}
-
-                                //- .m-item__category Категория: {{ $store.state.auth.user.categories.find(e => e._id == good.category).name }}
-                                //- .m-item__dops
-                                //-     .m-item__dops-item(v-for="(dop, idx) in good.dops" :key="idx" v-if="$store.state.auth.user.dops.find(e => e._id === dop)") {{ $store.state.auth.user.dops.find(e => e._id === dop).name }} {{ $store.state.auth.user.dops.find(e => e._id === dop).price }}
-
-                                //- .m-item__available
-                                //-     .m-item__available-title Доступно в:
-                                //-     div(v-for="(place, key) in $store.state.auth.user.places" :key="key")
-                                //-         label(:for="`${good._id}${place._id}`") {{ place.name }}
-                                //-         input(type='checkbox' :id="`${good._id}${place._id}`" @change="toggleActivePlace(good, place)" :checked="good.places.find(p => p._id === place._id)")
         
-        EditMenuItemPopup(v-if='$store.state.view.popup.editMenuItemPopup.visible' v-bind:editableMenuItem="editableMenuItem")
-        AddMenuItemPopup(v-if='$store.state.view.popup.addMenuItemPopup.visible')
-        AddCategoryPopup(v-if='$store.state.view.popup.addCategoryPopup.visible')
-        AddDopPopup(v-if='$store.state.view.popup.addDopPopup.visible')
+        transition(name="fade")
+            EditMenuItemPopup(v-if='$store.state.view.popup.editMenuItemPopup.visible' v-bind:editableMenuItem="editableMenuItem")
+        transition(name="fade")
+            AddMenuItemPopup(v-if='$store.state.view.popup.addMenuItemPopup.visible')
+        transition(name="fade")
+            AddCategoryPopup(v-if='$store.state.view.popup.addCategoryPopup.visible')
+        transition(name="fade")
+            AddDopPopup(v-if='$store.state.view.popup.addDopPopup.visible')
 
 </template>
 
@@ -150,9 +125,15 @@ export default {
         display: flex;
         align-items: center;
         margin-bottom: 20px;
+        flex-wrap: wrap;
 
         &-title {
             margin-right: 30px;
+            font-size: 26px;
+            width: 100%;
+            @media screen and (min-width: 768px) {
+                font-size: 32px;
+            }
         }
 
         &-add {
@@ -162,6 +143,10 @@ export default {
             position: relative;
             top: 5px;
             margin-right: 30px;
+            font-size: 14px;
+            @media screen and (min-width: 768px) {
+                font-size: 16px;
+            }
         }
     }
 
@@ -214,15 +199,26 @@ export default {
 
 .m-item {
     position: relative;
-    margin-right: 15px;
     margin-bottom: 15px;
     background: #F5F7FB;
     border-radius: 16px;
-    width: calc(20% - 15px);
+    // width: calc(50% - 15px);
     display: flex;
     align-items: center;
     flex-direction: column;
-    max-width: 290px;
+    // max-width: 450px;
+    min-width: 290px;
+    width: 100%;
+    @media screen and (min-width: 640px) {
+        margin-right: 15px;
+        width: calc(50% - 15px);
+    }
+    @media screen and (min-width: 1280px) {
+        width: calc(25% - 15px);
+    }
+    @media screen and (min-width: 1700px) {
+        width: calc(20% - 15px);
+    }
     &__img {
         width: 100px;
         margin-bottom: 30px;

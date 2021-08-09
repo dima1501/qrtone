@@ -18,9 +18,13 @@
 }
 
 .st-dropzone {
-    width: 280px;
+    width: 100%;
+    max-width: 440px;
     text-align: left;
     position: relative;
+    @media screen and (min-width: 768px) {
+        max-width: 280px;
+    }
     &__title {
         margin-bottom: 5px;
         color: $color-black;

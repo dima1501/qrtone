@@ -72,7 +72,7 @@ if (cluster.isMaster) {
 
 	io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
 
-	process.on('message', function(message, connection) {
+	process.once('message', function(message, connection) {
         console.log(message !== 'sticky-session:connection')
 		if (message !== 'sticky-session:connection') {
 			return;

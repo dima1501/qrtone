@@ -130,7 +130,7 @@
               .subs__list-item
                   .subs__list-item-icon
                       v-icon(light) mdi-checkbox-marked-circle 
-                  .subs__list-item-text Зарегистрируйте официантов для быстрого получения чаевых через сервис chachachay.me
+                  .subs__list-item-text Зарегистрируйте официантов для быстрого получения чаевых через любой сервис
 
             nuxt-link(:to="localePath('/auth/registration')").subs__plan.-blue
               .subs__plan-period 1 месяц

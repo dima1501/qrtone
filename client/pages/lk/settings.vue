@@ -79,7 +79,8 @@
                             <span>Добавить официанта</span>
 
                 p(v-if="!isAvailable").red--text Активно с подпиской <b>Premium</b>
-                p Добавьте данные об официантах, зарегистрированных<br> на <a target="_blank" href="https://10q.ru/1075852">chachachay.me</a> для быстрого получения чаевых
+                //- p Добавьте данные об официантах, зарегистрированных<br> на <a target="_blank" href="https://10q.ru/1075852">chachachay.me</a> для быстрого получения чаевых
+                p Добавьте данные об официантах, зарегистрированных<br> в системах для получения чаевых, например в <a target="_blank" href="https://10q.ru/1075852">chachachay.me</a>
 
                 .chay
                     Waiter(v-for="waiter in $store.state.auth.user.waiters" :waiter="waiter" :key="waiter._id")
@@ -213,7 +214,7 @@
                                     .subs__list-item
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Зарегистрируйте официантов для быстрого получения чаевых через сервис chachachay.me
+                                        .subs__list-item-text Зарегистрируйте официантов для быстрого получения чаевых через любой сервис
 
                             .subs__plan.-transp(v-if="$store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].type == 'standart' && !isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)" @click="improve()")
                                 .subs__plan-period Улучшить до Premium <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>

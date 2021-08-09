@@ -4,7 +4,7 @@
             .chay__item-photo(v-if="waiter.photo" v-bind:style="{ backgroundImage: `url(../../uploads/${waiter.photo})` }")
             .chay__item-content
                 .chay__item-name {{ waiter.name }}
-                .chay__item-id Id: {{ waiter.id }}
+                a(target="_blank" :href="waiter.id.includes('http') ? waiter.id : 'https://' + waiter.id").chay__item-id {{ waiter.id }}
                 .chay__item-bottom
                     .chay__item-link.red--text(@click="deleteWaiter") Удалить
                     .chay__item-link.blue--text(@click="editWaiterPopup") Изменить

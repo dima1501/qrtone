@@ -12,8 +12,8 @@
                         .tip__pic(v-if="waiter.photo" v-bind:style="{ backgroundImage: `url(../../uploads/${waiter.photo})` }")
                         .tip__content
                             .tip__name {{waiter.name}}
-                                span {{'#'+waiter.id}}
-                            a(:href='`https://chachachay.me/${waiter.id}`' target="_blank").tip__link Оставить чаевые
+                                span {{waiter.id}}
+                            a(target="_blank" :href="waiter.id.includes('http') ? waiter.id : 'https://' + waiter.id").tip__link Оставить чаевые
 </template>
 
 <script>

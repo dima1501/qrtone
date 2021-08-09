@@ -46,13 +46,12 @@
                         required
                         hide-details="auto").mb-3  
                     v-text-field(
-                        label="Id"
+                        label="Ссылка на официанта"
                         v-model="newWaiter.id"
-                        :rules="requiredRule"
-                        type="number"
+                        :rules="linkRules"
+                        type="text"
                         required
-                        hide-details="auto"
-                        prefix="chachachay.me/").mb-3
+                        hint="Полная ссылка, ведущая на страницу официанта").mb-3
                     h4 Заведения
                     .e-card__line-inner.wrap
                         .e-card__place(v-for="place in $store.state.auth.user.places")
@@ -106,6 +105,13 @@ export default {
 
             requiredRule: [
                 (v) => !!v || 'Обязательное поле',
+            ],
+            linkRules: [
+                (v) => !!v || 'Обязательное поле',
+                (v) =>
+                    !v ||
+                    /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm.test(v) ||
+                    'Введите корректную ссылку',
             ],
 
             isAddWaiterValid: true

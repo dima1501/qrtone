@@ -34,7 +34,7 @@
                     color="primary"
                     :disabled="!isCompanyRegistrationValid"
                     type="submit"
-                    ) Создать аккаунт
+                    ) Регистрация
                 nuxt-link(:to="localePath('/auth/restore')").auth__restore Восстановить пароль
 
 </template>

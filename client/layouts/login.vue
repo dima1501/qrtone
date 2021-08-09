@@ -52,18 +52,31 @@ export default {
         margin: 0 auto;
         display: flex;
         align-items: center;
-        padding-top: 86px;
+        padding: 30px 0;
+        min-height: 100vh;
+        @media screen and (min-width: 768px) {
+            padding-top: 86px;
+        }
     }
     &__form {
-        max-width: 600px;
+        max-width: 90%;
         flex-grow: 1;
         background-color: #fff;
-        padding: 55px 100px;
+        padding: 40px 15px;
+        margin: 0 auto;
+        @media screen and (min-width: 1024px) {
+            padding: 55px 100px;
+            max-width: 600px;
+        }
     }
     &__media {
-        flex-shrink: 0;
-        width: 380px;
-        margin-left: auto;
+        display: none;
+        @media screen and (min-width: 1024px) {
+            display: block;
+            flex-shrink: 0;
+            width: 380px;
+            margin-left: auto;
+        }
     }
 }
 
@@ -81,13 +94,17 @@ input:-webkit-autofill:active
         text-align: center;
         font-size: 24px;
         font-weight: 600;
+        
     }
     &__logo {
         font-size: 18px;
         font-weight: bold;
         text-transform: uppercase;
-        margin-bottom: 67px;
+        margin-bottom: 40px;
         text-align: center;
+        @media screen and (min-width: 768px) {
+            margin-bottom: 32px;
+        }
     }
     &__buttons {
         display: flex;

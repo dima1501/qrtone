@@ -48,8 +48,15 @@
                     v-model="$store.state.auth.restore.email"
                     :rules="emailRules"
                     label="Введите email")
-                v-divider(class="mt-12")
-                v-card-actions
+                .auth__buttons
+                    v-btn(
+                    color="primary"
+                    :disabled="!isRestoreValid"
+                    text
+                    type="submit"
+                    ) Восстановить
+                v-divider(class="mt-6")
+                .auth__buttons
                     v-btn(
                     text
                     :to="localePath('/auth/registration')"
@@ -58,13 +65,7 @@
                     text
                     :to="localePath('/auth/login')"
                     ) Вход
-                    v-spacer
-                    v-btn(
-                    color="primary"
-                    :disabled="!isRestoreValid"
-                    text
-                    type="submit"
-                    ) Восстановить
+                    
 
         .auth__content(v-else-if="!$store.state.auth.restore.isKeyValid")
             v-form(
@@ -164,6 +165,12 @@ export default {
 .auth {
     &__title {
         margin-bottom: 20px;
+    }
+    &__buttons {
+        flex-wrap: wrap;
+        &-item {
+            margin-bottom: 15px;
+        }
     }
 }
 

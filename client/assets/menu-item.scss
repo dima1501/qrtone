@@ -32,6 +32,12 @@
                 height: 100%;
                 display: block;
             }
+            &.placeholder {
+                background-size: contain;
+                padding-bottom: 40%;
+                opacity: 0.2;
+                background-repeat: repeat;
+            }
         }
     }
     &__content {

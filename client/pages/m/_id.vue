@@ -277,7 +277,7 @@ export default {
 
                 if (user.data) {
                     this.$store.state.guest.companyData = user.data
-                    this.$store.state.guest.parsedMenu = {}
+                    console.log(this.$store.state.guest.companyData.goods.length)
                     for (let item of this.$store.state.guest.companyData.goods) {
                         if (this.$store.state.guest.parsedMenu[item.category]) {
                             this.$store.state.guest.parsedMenu[item.category].push(item)

@@ -7,11 +7,13 @@ let ioCopy = null
 
 module.exports = {
   start: async(io) => {
+    console.log('start')
     ioCopy = io
     io.sockets.on('connection', (socket) => {
+      console.log('conn')
       io.to(socket.id).emit('updateSocketId', socket.id);
       socket.on('disconnect', async () => {
-        socket.close()
+        console.log('disc')
         try {
           await axios({
             method: 'delete',

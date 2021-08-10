@@ -10,10 +10,11 @@ const moment = require('moment')
 
 const transporter = nodemailer.createTransport({
     host: "smtp.mailtrap.io",
-    port: 25,
+    port: 2525,
     // secure: process.env.NODE_ENV !== 'production' ? false : true,
     secure: false,
-    sendmail: process.env.NODE_ENV !== 'production' ? false : true,
+    // sendmail: process.env.NODE_ENV !== 'production' ? false : true,
+    sendmail: true,
     auth: {
         user: "e13923d70a29d4",
         pass: "36e942d8a5528e",
@@ -30,6 +31,7 @@ transporter.use(
 
 router.post("/api/send-reg-email", auth(), async (req, res) => {
     if (req.user) {
+        console.log('snsns')
         const mailOptions = {
             from: "info@qrtone.com",
             to: req.user.email,

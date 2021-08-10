@@ -1,7 +1,7 @@
 <template lang="pug">
     .detail#detail_area
         .detail__bg
-        .detail__closer(@click="closeDetail")
+        .detail__closer(@click="closeDetail" v-my-touch:start="closeDetail")
         .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-my-touch:moving="movingHandler" v-my-touch:moved="movedHandler" v-my-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
             .menu-item__vegan(v-if="item.isVegan") Вегетарианское
             .detail__img
@@ -135,6 +135,14 @@ export default {
             isDetailAreaScrolledToTop: false
         }
     },
+    watch: {
+        $route(newVal, oldVal) {
+            console.log(newVal.query.d)
+            if (newVal.query.d == 'false' || !newVal.query.d) {
+                this.closeDetail()
+            }
+        }
+    },
     mounted() {
         this.detailArea = document.getElementById("detail_area")
         this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
@@ -158,14 +166,12 @@ export default {
         //     }
         // },
         movedHandler(direction) {
-            console.log(direction)
             if (direction.type == 'touchmove') {
                 this.startScrollPoint = direction.screenY ? direction.screenY : direction.changedTouches[0].screenY
                 this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
             }
         },
         movingHandler(direction) {
-            console.log(direction)
             if (direction.type == 'touchmove') {
                 if ((direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
                     this.move = false
@@ -214,6 +220,7 @@ export default {
         closeDetail() {
             this.move = true
             this.isAreaVisible = false
+            this.$router.push({path: $nuxt.$route.fullPath, query: {d: false}})
 
             setTimeout(() => {
                 document.documentElement.style.overflow = 'auto'

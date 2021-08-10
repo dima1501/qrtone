@@ -73,6 +73,7 @@ export default {
     },
     methods: {
         openDetail(item) {
+            this.$router.push({path: $nuxt.$route.fullPath, query: {d: true}})
             this.flashCard()
             this.$store.dispatch('guest/openDetail', {
                 item, checkedPrice: this.checkedPrice

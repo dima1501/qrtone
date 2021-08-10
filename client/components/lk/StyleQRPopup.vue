@@ -272,7 +272,7 @@ export default {
                             drawer: type,
                             width: 500,
                             height: 500,
-                            colorLight: 'transparent',
+                            colorLight: '#fff',
                             onRenderingEnd: (e, x) => {
                                 if (type == 'png') {
                                     if (kind == 'files') {
@@ -308,7 +308,6 @@ export default {
                     drawer: type,
                     width: 500,
                     height: 500,
-                    colorLight: 'transparent',
                     onRenderingEnd: (e, x) => {
                         if (type == 'png') {
                             var download = document.createElement('a');
@@ -386,7 +385,6 @@ export default {
                     drawer: 'canvas',
                     width: 500,
                     height: 500,
-                    colorLight: this.$store.state.view.pdf.data.defaultColor ? this.$store.state.view.pdf.data.defaultColor : 'transparent',
                     onRenderingEnd: (e, x) => {
                         this.$store.state.view.pdf.qr = x
                         this.$store.state.view.pdf.link = this.easyqr.text
@@ -445,7 +443,6 @@ export default {
                         drawer: 'canvas',
                         width: 500,
                         height: 500,
-                        colorLight: 'transparent',
                         onRenderingEnd: async (e, x) => {
                             this.$store.state.view.pdf.qr = x
                             this.$store.state.view.pdf.table = tablesArr[i]

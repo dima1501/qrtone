@@ -35,18 +35,18 @@ div
                     .w-cats(ref="cats")
                         .w-cats__inner(:class="{ 'sticky': isHeaderSticky }")
                             vuescroll(:ops="ops" ref="vs")
-                                scrollactive.w-cats__nav(:offset="136" :duration="800" v-on:itemchanged="onItemChanged")
-                                    nuxt-link.w-cats__item.scrollactive-item(
-                                        event=""
-                                        v-for='(item, key) of $store.state.guest.companyData.categories' 
-                                        :key="key" 
-                                        :to="{ path: `${$nuxt.$route.fullPath}`, hash: `#${item._id}` }"
-                                        v-if="$store.state.guest.parsedMenu[item._id]"
+                                scrollactive.w-cats__nav(:offset="130" :duration="600" v-on:itemchanged="onItemChanged" :highlightFirstItem="true")
+                                    a.w-cats__item.scrollactive-item(
+                                        :href="`#${item._id}`"
+                                        v-for='(item, key) of $store.state.guest.companyData.categories.filter(e => $store.state.guest.parsedMenu[e._id] && $store.state.guest.parsedMenu[e._id].length)'
+                                        :key="key + 1"
                                         ) {{item.name}}
                     .menu
-                        .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id")
-                            .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key")
-                                MenuItem(:item="item" :placeId="$nuxt.$route.params.id")
+                        .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id" v-if="$store.state.guest.parsedMenu[cat._id] && $store.state.guest.parsedMenu[cat._id].length")
+                            .menu__section-cat {{cat.name}}
+                            .menu__section-row
+                                .menu__item(v-for='(item, key) of $store.state.guest.parsedMenu[cat._id]' v-bind:key="key")
+                                    MenuItem(:item="item" :placeId="$nuxt.$route.params.id")
 
             transition(name="fade" mode="out-in")
                 .commands(v-if="commands")
@@ -761,8 +761,18 @@ export default {
 
 .menu {
     &__section {
-        display: flex;
-        flex-wrap: wrap;
+        &-cat {
+            font-weight: bold;
+            font-size: 22px;
+            margin-bottom: 5px;
+            @media screen and (min-width: 768px) {
+                font-size: 24px;
+            }
+        }
+        &-row {
+            display: flex;
+            flex-wrap: wrap;
+        }
     }
     &__item {
         width: calc(50% - 4px);
@@ -854,7 +864,6 @@ export default {
 .w-cats {
     margin-left: -15px;
     margin-right: -15px;
-    margin-bottom: 10px;
     height: 61px;
     width: calc(100% + 30px);
     overflow: hidden;

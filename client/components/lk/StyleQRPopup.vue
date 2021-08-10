@@ -263,9 +263,10 @@ export default {
                         }
 
                         const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${place._id}?t=${tablesArr[i]}`
-                        
+                        console.log('ddodo  ')
                         this.downloadQr = await new QRCode(this.$refs.qrcode_generate, {
-                            text: str.replaceAll(' ', '%20'),
+                            // text: str.replaceAll(' ', '%20'),
+                            text: 'http://lalka-palka.xyz/m/Dimas_diner?t=1',
                             colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                             logo: logo,
                             drawer: type,

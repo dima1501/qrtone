@@ -11,7 +11,7 @@ const moment = require('moment')
 const transporter = nodemailer.createTransport({
     host: "smtp.mailtrap.io",
     port: 2525,
-    secure: process.env.NODE_ENV !== 'production' ? false : true,
+    // secure: process.env.NODE_ENV !== 'production' ? false : true,
     sendmail: process.env.NODE_ENV !== 'production' ? false : true,
     auth: {
         user: "e13923d70a29d4",

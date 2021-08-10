@@ -156,12 +156,14 @@ export default {
         //     }
         // },
         movedHandler(direction) {
+            console.log(direction)
             if (direction.type == 'touchmove') {
                 this.startScrollPoint = direction.screenY ? direction.screenY : direction.changedTouches[0].screenY
                 this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
             }
         },
         movingHandler(direction) {
+            console.log(direction)
             if (direction.type == 'touchmove') {
                 if ((direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
                     this.move = false

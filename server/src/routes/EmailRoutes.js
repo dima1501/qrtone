@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
     host: "smtp.mailtrap.io",
     port: 2525,
     // secure: process.env.NODE_ENV !== 'production' ? false : true,
-    secure: false,
+    // secure: false,
     // sendmail: process.env.NODE_ENV !== 'production' ? false : true,
     sendmail: true,
     auth: {

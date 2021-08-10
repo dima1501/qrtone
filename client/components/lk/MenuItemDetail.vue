@@ -2,7 +2,7 @@
     .detail#detail_area
         .detail__bg
         .detail__closer(@click="closeDetail")
-        .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
+        .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-my-touch:moving="movingHandler" v-my-touch:moved="movedHandler" v-my-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
             .menu-item__vegan(v-if="item.isVegan") Вегетарианское
             .detail__img
                 .detail__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
@@ -109,7 +109,9 @@
 import Vue from 'vue'
 import Vue2TouchEvents from 'vue2-touch-events'
 
-Vue.use(Vue2TouchEvents)
+Vue.use(Vue2TouchEvents, {
+    namespace: 'my-touch'
+})
 
 import VueSlickCarousel from 'vue-slick-carousel'
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'

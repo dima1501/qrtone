@@ -1,10 +1,16 @@
 import colors from 'vuetify/es5/util/colors'
 const axios = require("axios")
 
+// const config = {
+//   port: process.env.NODE_ENV !== 'production' ? '3000' : '80',
+//   test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'lalka-palka.xyz',
+//   apiserver: process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' :'http://lalka-palka.xyz:8000',
+// }
+
 const config = {
-  port: process.env.NODE_ENV !== 'production' ? '3000' : '80',
-  test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'lalka-palka.xyz',
-  apiserver: process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' :'http://lalka-palka.xyz:8000',
+  port: '3000',
+  test:'localhost',
+  apiserver: 'http://localhost:8000',
 }
 
 export default {

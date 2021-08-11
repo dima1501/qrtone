@@ -35,11 +35,11 @@ div
                     .w-cats(ref="cats")
                         .w-cats__inner(:class="{ 'sticky': isHeaderSticky }")
                             vuescroll(:ops="ops" ref="vs")
-                                scrollactive.w-cats__nav(:offset="130" :duration="600" v-on:itemchanged="onItemChanged" :highlightFirstItem="true")
+                                scrollactive.w-cats__nav(:offset="130" :scrollOffset="126" :duration="600" v-on:itemchanged="onItemChanged")
                                     a.w-cats__item.scrollactive-item(
                                         :href="`#${item._id}`"
                                         v-for='(item, key) of $store.state.guest.companyData.categories.filter(e => $store.state.guest.parsedMenu[e._id] && $store.state.guest.parsedMenu[e._id].length)'
-                                        :key="key + 1"
+                                        :key="item._id"
                                         ) {{item.name}}
                     .menu
                         .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id" v-if="$store.state.guest.parsedMenu[cat._id] && $store.state.guest.parsedMenu[cat._id].length")
@@ -349,6 +349,7 @@ export default {
             this.commands = false
         },
         onItemChanged(event, currentItem, lastActiveItem) {
+            console.log(currentItem)
             if (currentItem) {
                 this.$refs["vs"].scrollTo(
                     { x: currentItem.offsetLeft - 35 }, 250, "easeInQuad"
@@ -933,7 +934,7 @@ export default {
         background-color: #fff;
         border-radius: 10px;
         padding: 15px 15px 45px 15px;
-        top: 80px;
+        top: 71px;
         &.hasOffset {
             top: 240px;
         }

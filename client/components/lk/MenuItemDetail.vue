@@ -137,7 +137,6 @@ export default {
     },
     watch: {
         $route(newVal, oldVal) {
-            console.log(newVal.query.d)
             if (newVal.query.d == 'false' || !newVal.query.d) {
                 this.closeDetail()
             }

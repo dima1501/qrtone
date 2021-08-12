@@ -35,12 +35,12 @@ div
                     .w-cats(ref="cats")
                         .w-cats__inner(:class="{ 'sticky': isHeaderSticky }")
                             vuescroll(:ops="ops" ref="vs")
-                                scrollactive.w-cats__nav(:offset="130" :scrollOffset="126" :duration="600" v-on:itemchanged="onItemChanged")
+                                scrollactive.w-cats__nav(:offset="125" :scrollOffset="120" :duration="600" :alwaysTrack="true" v-on:itemchanged="onItemChanged")
                                     a.w-cats__item.scrollactive-item(
                                         :href="`#${item._id}`"
                                         v-for='(item, key) of $store.state.guest.companyData.categories.filter(e => $store.state.guest.parsedMenu[e._id] && $store.state.guest.parsedMenu[e._id].length)'
-                                        :key="item._id"
-                                        ) {{item.name}}
+                                        :key="item._id") 
+                                        span {{item.name}}
                     .menu
                         .menu__section(v-for="(cat, key) of $store.state.guest.companyData.categories" v-bind:key="key" :id="cat._id" v-if="$store.state.guest.parsedMenu[cat._id] && $store.state.guest.parsedMenu[cat._id].length")
                             .menu__section-cat {{cat.name}}
@@ -766,6 +766,7 @@ export default {
             font-weight: bold;
             font-size: 22px;
             margin-bottom: 5px;
+            color: $color-black;
             @media screen and (min-width: 768px) {
                 font-size: 24px;
             }
@@ -875,7 +876,7 @@ export default {
         display: flex;
         background-color: #fff;
         // box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        padding: 0  0 0 15px;
+        // padding: 0  0 0 15px;
         margin-right: -15px;
         max-width: 1080px;
         margin: 0 auto;
@@ -892,18 +893,24 @@ export default {
     }
     &__item {
         display: inline-block;
-        margin: 10px 10px 10px 0;
-        background: #F5F7FB;
-        border-radius: 14px;
-        padding: 5px 10px;
-        flex-shrink: 0;
-        font-size: 14px;
+        padding: 10px 5px;
         text-decoration: none;
-        transition: color .3s, background-color .3s;
-        color: rgb(107, 107, 107);
+        cursor: pointer;
+        span {
+            background: #F5F7FB;
+            border-radius: 14px;
+            padding: 5px 10px;
+            flex-shrink: 0;
+            font-size: 15px;
+            transition: color .3s, background-color .3s;
+            color: rgb(107, 107, 107);
+            white-space: nowrap;
+        }
         &.is-active {
-            color: #000;
-            background: #dcdee2;
+            span {
+                color: #000;
+                background: #dcdee2;
+            }
         }
     }
 }

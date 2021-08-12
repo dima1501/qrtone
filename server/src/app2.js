@@ -10,8 +10,8 @@ const path = require('path'),
       net = require('net'),
       sio_redis = require('socket.io-redis'),
       farmhash = require('farmhash'),
-      helmet = require('helmet')
-
+      helmet = require('helmet'),
+      rateLimit = require("express-rate-limit");
 
 app.use(cors({credentials: true, origin: '*'}))
 
@@ -50,6 +50,11 @@ if (cluster.isMaster) {
     console.log('worker')
 	const app = new express();
 
+    const apiLimiter = rateLimit({
+        windowMs: 1 * 60 * 1000,
+        max: 500
+    });
+    app.use(apiLimiter)
     app.use(express.json({limit: '50mb'}))
     app.use(express.static('public'))
     app.use(cookieParser())

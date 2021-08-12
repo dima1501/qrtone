@@ -132,7 +132,11 @@ export default {
             transitionAreaHeight: 0,
             move: true,
             detailArea: null,
-            isDetailAreaScrolledToTop: false
+            isDetailAreaScrolledToTop: false,
+            dir: {
+                value: 0,
+                top: null
+            }
         }
     },
     watch: {
@@ -165,23 +169,30 @@ export default {
         //     }
         // },
         movedHandler(direction) {
+            console.log(1)
             if (direction.type == 'touchmove') {
                 this.startScrollPoint = direction.screenY ? direction.screenY : direction.changedTouches[0].screenY
                 this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
             }
         },
         movingHandler(direction) {
+            if (this.dir.value < direction.changedTouches[0].screenY) {
+                this.dir.top = false
+            } else {
+                this.dir.top = true
+            }
+            this.dir.value = direction.changedTouches[0].screenY
             if (direction.type == 'touchmove') {
                 if ((direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
                     this.move = false
                     this.transitionAreaHeight = (direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint
-                    if (this.transitionAreaHeight > 80) {
-                        this.closeDetail()
-                    }
                 }
             }
         },
-        endHandler() {
+        endHandler(direction) {
+            if (!this.dir.top && this.transitionAreaHeight > 80) {
+                this.closeDetail()
+            }
             this.move = true
             this.transitionAreaHeight = 0
         },
@@ -271,9 +282,6 @@ export default {
         width: 100%;
         transform: translateY(100%);
         margin: auto auto 0;
-        /* max-height: calc(100vh - 47px); */
-        
-        /* background-color: #fff; */
         max-width: 400px;
 
         @media screen and (min-width: 1000px) {

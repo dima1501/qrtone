@@ -54,6 +54,7 @@ if (cluster.isMaster) {
         windowMs: 1 * 60 * 1000,
         max: 500
     });
+    
     app.use(apiLimiter)
     app.use(express.json({limit: '50mb'}))
     app.use(express.static('public'))

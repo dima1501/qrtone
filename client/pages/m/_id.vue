@@ -219,6 +219,7 @@ export default {
     },
     data() {
         return {
+            navigator: null,
             isLoading: true,
             commands: false,
             isCommandSend: false,
@@ -297,7 +298,7 @@ export default {
     },
     mounted() {
         if (this.$store.state.guest.companyData) {
-            this.navigator = navigator.platform
+            this.navigator = navigator.userAgent
             window.addEventListener('scroll', (e) => {
                 this.headerTop = this.$refs.cats.getBoundingClientRect().top;
             })
@@ -349,7 +350,6 @@ export default {
             this.commands = false
         },
         onItemChanged(event, currentItem, lastActiveItem) {
-            console.log(currentItem)
             if (currentItem) {
                 this.$refs["vs"].scrollTo(
                     { x: currentItem.offsetLeft - 35 }, 250, "easeInQuad"

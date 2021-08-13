@@ -76,8 +76,8 @@
                                         v-icon mdi-minus
                                     .menu-item__counter-value.-detail {{ $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length }}
                                     .menu-item__counter-control.plus(@click="plusMulti(i)")
-                                         v-icon mdi-plus
-                                       
+                                        v-icon mdi-plus
+                                    
 
             .detail__dops(v-if="item.dops.length")
                 h4.detail__dops-title Дополнения:
@@ -127,6 +127,7 @@ export default {
     },
     data() {
         return {
+            modalIsOpen: true,
             isAreaVisible: false,
             startScrollPoint: 0,
             transitionAreaHeight: 0,
@@ -149,8 +150,11 @@ export default {
     mounted() {
         this.detailArea = document.getElementById("detail_area")
         this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
+
         document.documentElement.style.overflow = 'hidden'
+        document.documentElement.style.height = '100%'
         document.documentElement.style.overscrollBehavior = 'none'
+
         setTimeout(() => {
             this.isAreaVisible = true
         }, 0);
@@ -169,29 +173,30 @@ export default {
         //     }
         // },
         movedHandler(direction) {
-            console.log(1)
             if (direction.type == 'touchmove') {
-                this.startScrollPoint = direction.screenY ? direction.screenY : direction.changedTouches[0].screenY
+                this.startScrollPoint = direction.changedTouches[0].screenY
                 this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
             }
         },
         movingHandler(direction) {
-            if (this.dir.value < direction.changedTouches[0].screenY) {
-                this.dir.top = false
-            } else {
-                this.dir.top = true
-            }
-            this.dir.value = direction.changedTouches[0].screenY
             if (direction.type == 'touchmove') {
-                if ((direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
+                if (this.dir.value < direction.changedTouches[0].screenY) {
+                    this.dir.top = false
+                } else {
+                    this.dir.top = true
+                }
+                this.dir.value = direction.changedTouches[0].screenY
+
+                if (direction.changedTouches[0].screenY - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
                     this.move = false
-                    this.transitionAreaHeight = (direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint
+                    this.transitionAreaHeight = direction.changedTouches[0].screenY - this.startScrollPoint
                 }
             }
         },
-        endHandler(direction) {
-            if (!this.dir.top && this.transitionAreaHeight > 80) {
+        endHandler() {
+            if (!this.dir.top && this.transitionAreaHeight > 80 || !this.dir.top && this.transitionAreaHeight > 1) {
                 this.closeDetail()
+                this.dir.top = true
             }
             this.move = true
             this.transitionAreaHeight = 0
@@ -233,7 +238,7 @@ export default {
             this.$router.push({path: $nuxt.$route.fullPath, query: {d: false}})
 
             setTimeout(() => {
-                document.documentElement.style.overflow = 'auto'
+                document.documentElement.style.overflow = null
                 document.documentElement.style.overscrollBehavior = null
                 this.$store.dispatch('guest/closeDetail')
             }, 200);
@@ -251,10 +256,10 @@ export default {
     bottom: 0;
     z-index: 21;
     display: flex;
+    padding: 40px 0 80px;
     overflow-y: scroll;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
-    padding: 40px 0 80px;
     @media screen and (max-width: 1000px) {
         padding: 40px 0 0;
     }
@@ -484,4 +489,5 @@ export default {
         }
     }
 }
+
 </style>

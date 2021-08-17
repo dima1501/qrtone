@@ -44,7 +44,6 @@
 
                         .reserve__step(v-if="step == 2" key="reserve_2")
                             .reserve__section
-                                .reserve__title Инфо о бронировании
                                 .reserve__info
                                     .reserve__info-line {{ formatDate(reservation.date) }}, в {{ reservation.time }}
                                     .reserve__info-line Гостей: {{ reservation.guests }}

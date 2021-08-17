@@ -10,26 +10,11 @@
         Sidebar
       .page__content
         Nuxt
-        footer.footer
-          .m-container
-            .footer__inner
-              .footer__item
-                nuxt-link(:to="localePath('/')").footer__item-text Условия использования
-              .footer__item
-                nuxt-link(:to="localePath('/')").footer__item-text Пользовательское соглашение
-            .footer__inner
-              .footer__item
-                a(href="mailto:info@qrtone.com").footer__item-text info@qrtone.com
-              .footer__item
-                a(href="https://www.instagram.com/dima.voropaev" target="_blank").footer__item-text Instagram
-              .footer__item
-                a(href="tel:8(950)046-84-72").footer__item-text 8(950)046-84-72
-            .footer__inner
-              .footer__item
-                .footer__item-text © 2021 Все права защищены. QRTONE
     transition(name="fade")
       AddPlacePopup(v-if="$store.state.view.popup.addPlacePopup.visible")
+    transition(name="fade")
       AddActionPopup(v-if="$store.state.view.popup.addActionPopup")
+    transition(name="fade")
       Onboard(v-if="$store.state.auth.user && !$store.state.auth.user.isOnboardCompleted || $store.state.auth.user && $store.state.view.popup.onboardPopup.visible")
     client-only
       notifications(
@@ -111,6 +96,7 @@ export default {
 <style lang="scss">
 @import '../assets/menu-item.scss';
 @import '../assets/popup.scss';
+@import '../assets/footer.scss';
 
 .vue-notification-wrapper {
   overflow: visible !important;
@@ -169,8 +155,9 @@ export default {
 
   &__burger {
     position: fixed;
-    right: 0;
-    top: 0;
+    right: 10px;
+    top: 10px;
+    border-radius: 6px;
     width: 50px;
     height: 50px;
     z-index: 19;

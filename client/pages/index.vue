@@ -185,7 +185,6 @@ export default {
       loading: false
     }
   },
-  
   methods: {
     start() {
       this.loading = true
@@ -229,6 +228,5 @@ export default {
 @import '../assets/m-welcome.scss';
 @import '../assets/m-form.scss';
 @import '../assets/subs.scss';
-@import '../assets/footer.scss';
 </style>
 

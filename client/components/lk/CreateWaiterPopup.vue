@@ -1,5 +1,5 @@
 <template lang="pug">
-    .popup
+    .popup.z-22
         .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer

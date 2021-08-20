@@ -150,12 +150,13 @@
                                     v-checkbox(@change="togglePlace(place)" :input-value="!!updatedMenuItem.places.find(p => p == place._id)" :label="place.name" hide-details="auto" :id="place.id").mt-1
 
                         .e-card__bottom
-                            v-btn(@click="closePopup" depressed).red--text.e-card__bottom-item Отмена
+                            v-btn(@click="closePopup" depressed large).red--text.e-card__bottom-item Отмена
                             v-btn(
                                 color="primary" 
                                 :disabled="!isAddItemValid"
                                 type="submit"
                                 depressed
+                                large
                             ).e-card__bottom-item.white--text Сохранить
 </template>
 

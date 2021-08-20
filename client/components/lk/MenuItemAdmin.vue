@@ -36,18 +36,20 @@
                             span(v-if="item.modifications[key]") {{ item.modifications[key] }}
 
             .menu-item__bottom
-                .menu-item__bottom-item
+
+                .menu-item__bottom-item.desktop
                     v-btn(
                         depressed
                         color="normal"
                         @click="openEditPopup()"
                     ).e-card__bottom-item Изменить
+
+                .menu-item__bottom-item.mobile
+                    v-icon(light color="primary" @click="openEditPopup()") mdi-pencil-outline
+
                 .menu-item__bottom-item
-                    v-btn.red--text(
-                        depressed
-                        color="normal"
-                        @click="removeMenuItem()"
-                    ).e-card__bottom-item Удалить
+                    v-icon(light color="error" @click="removeMenuItem()") mdi-delete-outline
+
                 .menu-item__bottom-item.handles
                     v-icon(light) mdi-drag
 

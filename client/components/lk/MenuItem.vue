@@ -1,5 +1,6 @@
 <template lang="pug">
     .menu-item(v-bind:class="{ flash: flash }")
+        //- .menu-item__more(@click="openDetail(item)")
         .menu-item__more(@click="openDetail(item)")
         .menu-item__img
             .menu-item__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
@@ -8,14 +9,14 @@
                 source(:srcset="`../../uploads/171-${item.images[0]}.webp 1x, ../../uploads/342-${item.images[0]}.webp 2x`" type="image/webp" media="(max-width: 380px)")
                 source(:srcset="`../../uploads/196-${item.images[0]}.webp 1x, ../../uploads/392-${item.images[0]}.webp 2x`" type="image/webp" media="(max-width: 430px)")
                 source(:srcset="`../../uploads/255-${item.images[0]}.webp 1x, ../../uploads/520-${item.images[0]}.webp 2x`" type="image/webp" media="(min-width: 431px)")
-                img(:src="`../../uploads/400-${item.images[0]}`" :srcset="`../../uploads/400-${item.images[0]} 1x, ../../uploads/800-${item.images[0]} 2x`" alt="Изображения" loading="lazy")
+                img(:src="`../../uploads/400-${item.images[0]}`" :srcset="`../../uploads/400-${item.images[0]} 1x, ../../uploads/800-${item.images[0]} 2x`" :alt="`${item.name}, ${$store.state.guest.companyData.name}, qrtone.com`" loading="lazy")
 
             VueSlickCarousel(:arrows="true" :dots="false" v-if="item.images.length > 1")
                 picture(v-for="(image, key) in item.images" :key="key" ).menu-item__img-pic
                     source(:srcset="`../../uploads/171-${image}.webp 1x, ../../uploads/342-${image}.webp 2x`" type="image/webp" media="(max-width: 380px)")
                     source(:srcset="`../../uploads/196-${image}.webp 1x, ../../uploads/392-${image}.webp 2x`" type="image/webp" media="(max-width: 430px)")
                     source(:srcset="`../../uploads/255-${image}.webp 1x, ../../uploads/520-${image}.webp 2x`" type="image/webp" media="(min-width: 431px)")
-                    img(:src="`../../uploads/400-${image}`" :srcset="`../../uploads/400-${image} 1x, ../../uploads/800-${image} 2x`" alt="Изображения" loading="lazy")
+                    img(:src="`../../uploads/400-${image}`" :srcset="`../../uploads/400-${image} 1x, ../../uploads/800-${image} 2x`" :alt="`${item.name}, ${$store.state.guest.companyData.name}, qrtone.com`" loading="lazy")
 
         .menu-item__content
             .menu-item__content-inner
@@ -73,6 +74,10 @@ export default {
     },
     methods: {
         openDetail(item) {
+            this.$router.push({path: $nuxt.$route.fullPath, query: {d: 1}})
+            document.documentElement.style.overflow = 'hidden'
+        // document.documentElement.style.height = '100%'
+        // document.documentElement.style.overscrollBehavior = 'none'
             this.flashCard()
             this.$store.dispatch('guest/openDetail', {
                 item, checkedPrice: this.checkedPrice

@@ -200,7 +200,6 @@ export default {
             generatedQr: null,
             downloadQr: null,
             isColorPickerActive: false,
-
             generating: false
         }
     },
@@ -213,9 +212,7 @@ export default {
     },
     async mounted() {
         const place = this.$store.state.view.popup.styleQRPopup.place._id
-
-        this.easyqr.text = this.$store.state.view.popup.styleQRPopup.type == "wifi" ? this.$store.state.view.popup.wifiPopup.string :  `${process.env.ORIGIN || "localhost:3000"}/qr/${place}`
-
+        this.easyqr.text = this.$store.state.view.popup.styleQRPopup.type == "wifi" ? this.$store.state.view.popup.wifiPopup.string :  `http://lalka-palka.xyz/qr/${place}`
         this.updateQR()
     },
     methods: {
@@ -224,7 +221,7 @@ export default {
         },
         async downloadSVGorPNG(type) {
             const place = this.$store.state.view.popup.styleQRPopup.place
-            const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.easyqr.logo}`) : ''
+            const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `http://lalka-palka.xyz/uploads/${this.easyqr.logo}`) : ''
             const tablesArr = this.$store.state.view.popup.tablesPopup.tables
 
             if (tablesArr && tablesArr.length) {
@@ -262,8 +259,7 @@ export default {
                             return
                         }
 
-                        const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${place._id}?t=${tablesArr[i]}`
-                        
+                        const str = `http://lalka-palka.xyz/qr/${place._id}?t=${tablesArr[i]}`
                         this.downloadQr = await new QRCode(this.$refs.qrcode_generate, {
                             text: str.replaceAll(' ', '%20'),
                             colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
@@ -271,7 +267,7 @@ export default {
                             drawer: type,
                             width: 500,
                             height: 500,
-                            colorLight: 'transparent',
+                            colorLight: '#fff',
                             onRenderingEnd: (e, x) => {
                                 if (type == 'png') {
                                     if (kind == 'files') {
@@ -307,7 +303,6 @@ export default {
                     drawer: type,
                     width: 500,
                     height: 500,
-                    colorLight: 'transparent',
                     onRenderingEnd: (e, x) => {
                         if (type == 'png') {
                             var download = document.createElement('a');
@@ -323,7 +318,6 @@ export default {
             }
         },
         b64toBlob(dataURI) {
-    
             var byteString = atob(dataURI.split(',')[1]);
             var ab = new ArrayBuffer(byteString.length);
             var ia = new Uint8Array(ab);
@@ -364,7 +358,6 @@ export default {
         async updatePdf(value) {
             this.$store.state.view.loading.pdfUpdating = true
             const el = this.$refs[value ? value : this.$store.state.view.pdf.ref ]
-            console.log(el)
             if (el) {
                 this.preview = await domtoimage.toPng(el)
             }
@@ -385,7 +378,6 @@ export default {
                     drawer: 'canvas',
                     width: 500,
                     height: 500,
-                    colorLight: this.$store.state.view.pdf.data.defaultColor ? this.$store.state.view.pdf.data.defaultColor : 'transparent',
                     onRenderingEnd: (e, x) => {
                         this.$store.state.view.pdf.qr = x
                         this.$store.state.view.pdf.link = this.easyqr.text
@@ -433,8 +425,8 @@ export default {
                         return
                     }
 
-                    const str = `${process.env.ORIGIN || "localhost:3000"}/qr/${place._id}?t=${tablesArr[i]}`
-                    const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `${process.env.ORIGIN || "http://localhost:3000"}/uploads/${this.easyqr.logo}`) : ''
+                    const str = `http://lalka-palka.xyz/qr/${place._id}?t=${tablesArr[i]}`
+                    const logo = this.easyqr.logo ? (this.easyqr.logo.includes('data:image') ? this.easyqr.logo : `http://lalka-palka.xyz/uploads/${this.easyqr.logo}`) : ''
 
                     this.generatedQr.clear()
                     this.generatedQr = await new QRCode(this.$refs.qrcode, {
@@ -444,7 +436,6 @@ export default {
                         drawer: 'canvas',
                         width: 500,
                         height: 500,
-                        colorLight: 'transparent',
                         onRenderingEnd: async (e, x) => {
                             this.$store.state.view.pdf.qr = x
                             this.$store.state.view.pdf.table = tablesArr[i]
@@ -737,8 +728,9 @@ export default {
         }
     }
     &__bottom {
+        display: flex;
+        flex-wrap: wrap;
         @media screen and (min-width: 768px) {
-            display: flex;
             margin-top: auto;
         }
         &-item {

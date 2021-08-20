@@ -194,9 +194,7 @@ hr {
     }
 
     &__form {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
 
     &__edit {
@@ -206,6 +204,12 @@ hr {
     }
 
     &__tables {
+        &.padding {
+            padding-bottom: 84px;
+            @media screen and (min-width: 768px) {
+                padding-bottom: 0;
+            }
+        }
         &-item {
             display: flex;
             align-items: center;
@@ -218,6 +222,32 @@ hr {
                 cursor: pointer;
                 color: $color-red;
                 font-size: 14px;
+            }
+        }
+        &-actions {
+            position: fixed;
+            width: 100%;
+            // right: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+            background-color: #fff;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            @media screen and (min-width: 768px) {
+                position: static;
+                border-radius: 15px;
+                max-width: 400px;
+                transform: none;
+                box-shadow: none;
+                padding: 0;
+                margin-bottom: 15px;
+                // position: static;
+                // padding: 0;
             }
         }
     }

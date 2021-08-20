@@ -8,7 +8,7 @@ let ioCopy = null
 module.exports = {
   start: async(io) => {
     ioCopy = io
-    io.sockets.once('connection', (socket) => {
+    io.sockets.on('connection', (socket) => {
       io.to(socket.id).emit('updateSocketId', socket.id);
       socket.on('disconnect', async () => {
         try {

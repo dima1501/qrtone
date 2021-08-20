@@ -48,6 +48,10 @@ body {
   height: calc(var(--vh, 1vh) * 100);
   width: 100%;
 }
+html {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
 
 .slick-next {
   right: 5px !important;
@@ -62,7 +66,6 @@ body {
 img {
   image-rendering: -webkit-optimize-contrast;
 }
-
 
 </style>
 

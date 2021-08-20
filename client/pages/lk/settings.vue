@@ -242,6 +242,25 @@
             .settings__section
                 .settings__section-top
                     .settings__section-link.-red(@click="logOut()") Выйти из аккаунта
+
+
+            footer.footer
+                .m-container
+                    .footer__inner
+                        .footer__item
+                            nuxt-link(:to="localePath('/')").footer__item-text Условия использования
+                        .footer__item
+                            nuxt-link(:to="localePath('/')").footer__item-text Пользовательское соглашение
+                    .footer__inner
+                        .footer__item
+                            a(href="mailto:info@qrtone.com").footer__item-text info@qrtone.com
+                        .footer__item
+                            a(href="https://www.instagram.com/dima.voropaev" target="_blank").footer__item-text Instagram
+                        .footer__item
+                            a(href="tel:8(950)046-84-72").footer__item-text 8(950)046-84-72
+                    .footer__inner
+                        .footer__item
+                            .footer__item-text © 2021 Все права защищены. QRTONE
             
             transition(name="fade")
                 EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")

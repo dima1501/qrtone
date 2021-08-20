@@ -1,11 +1,12 @@
 <template lang="pug">
+
     .popup.z-22
         .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
-                h2.popup__title Создание действия
+                .onboard__title Создание действия
                 v-form(
                     @submit.prevent="fetchAddAction"
                     v-model="isAddActionValid")
@@ -26,12 +27,14 @@
                                 type="text"
                                 hide-details="auto")
                         .e-card__bottom
-                            v-btn(@click="closePopup" depressed color="error").e-card__bottom-item Отмена
+                            v-btn(@click="closePopup" depressed large).red--text.e-card__bottom-item Отмена
                             v-btn(
                                 depressed 
                                 color="primary"
                                 :disabled="!isAddActionValid"
                                 type="submit"
+                                :loading="$store.state.view.loading.createAction"
+                                large
                             ).e-card__bottom-item Создать
 </template>
 

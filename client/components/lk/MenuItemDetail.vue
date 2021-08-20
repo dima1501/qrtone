@@ -1,8 +1,8 @@
 <template lang="pug">
     .detail#detail_area
         .detail__bg
-        .detail__closer(@click="closeDetail")
-        .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-touch:moving="movingHandler" v-touch:moved="movedHandler" v-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
+        .detail__closer(@click="closeDetail" v-my-touch:start="closeDetail")
+        .detail__area(v-bind:class="{ visible: isAreaVisible, transitionActive: move }" v-my-touch:moving="movingHandler" v-my-touch:moved="movedHandler" v-my-touch:end="endHandler" v-bind:style="{ transform: isAreaVisible ? 'translateY(' + transitionAreaHeight + 'px)' : null }")
             .menu-item__vegan(v-if="item.isVegan") Вегетарианское
             .detail__img
                 .detail__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
@@ -76,8 +76,8 @@
                                         v-icon mdi-minus
                                     .menu-item__counter-value.-detail {{ $store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.find(e => e._id == item._id).cartPrices.filter(e => e == i).length }}
                                     .menu-item__counter-control.plus(@click="plusMulti(i)")
-                                         v-icon mdi-plus
-                                       
+                                        v-icon mdi-plus
+                                    
 
             .detail__dops(v-if="item.dops.length")
                 h4.detail__dops-title Дополнения:
@@ -109,7 +109,9 @@
 import Vue from 'vue'
 import Vue2TouchEvents from 'vue2-touch-events'
 
-Vue.use(Vue2TouchEvents)
+Vue.use(Vue2TouchEvents, {
+    namespace: 'my-touch'
+})
 
 import VueSlickCarousel from 'vue-slick-carousel'
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
@@ -125,19 +127,30 @@ export default {
     },
     data() {
         return {
+            modalIsOpen: true,
             isAreaVisible: false,
             startScrollPoint: 0,
             transitionAreaHeight: 0,
             move: true,
             detailArea: null,
-            isDetailAreaScrolledToTop: false
+            isDetailAreaScrolledToTop: false,
+            dir: {
+                value: 0,
+                top: null
+            }
+        }
+    },
+    watch: {
+        $route(newVal, oldVal) {
+            if (newVal.query.d == '0') {
+                this.closeDetail()
+            }
         }
     },
     mounted() {
         this.detailArea = document.getElementById("detail_area")
         this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
-        document.documentElement.style.overflow = 'hidden'
-        document.documentElement.style.overscrollBehavior = 'none'
+
         setTimeout(() => {
             this.isAreaVisible = true
         }, 0);
@@ -157,24 +170,40 @@ export default {
         // },
         movedHandler(direction) {
             if (direction.type == 'touchmove') {
-                this.startScrollPoint = direction.screenY ? direction.screenY : direction.changedTouches[0].screenY
-                this.detailArea.scrollTop == 0 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
+                this.startScrollPoint = direction.changedTouches[0].screenY + this.detailArea.scrollTop       
+                this.detailArea.scrollTop < 8 ? this.isDetailAreaScrolledToTop = true : this.isDetailAreaScrolledToTop = false
             }
         },
         movingHandler(direction) {
             if (direction.type == 'touchmove') {
-                if ((direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
+                if (this.dir.value < direction.changedTouches[0].screenY) {
+                    this.dir.top = false
+                } else {
+                    this.dir.top = true
+                }
+                this.dir.value = direction.changedTouches[0].screenY
+
+                if (direction.changedTouches[0].screenY - this.startScrollPoint > 0 && this.isDetailAreaScrolledToTop) {
                     this.move = false
-                    this.transitionAreaHeight = (direction.screenY ? direction.screenY : direction.changedTouches[0].screenY) - this.startScrollPoint
-                    if (this.transitionAreaHeight > 80) {
-                        this.closeDetail()
-                    }
+                    this.transitionAreaHeight = direction.changedTouches[0].screenY - this.startScrollPoint
+                } else if (direction.changedTouches[0].screenY - this.startScrollPoint < 0) {
+                    // this.detailArea.scroll(0, direction.changedTouches[0].screenY - this.startScrollPoint + 'px')
+                    this.detailArea.scroll({
+                        top: (direction.changedTouches[0].screenY - this.startScrollPoint) * -1,
+                        behavior: 'auto'
+                    })
                 }
             }
         },
         endHandler() {
-            this.move = true
-            this.transitionAreaHeight = 0
+            if (!this.dir.top && this.transitionAreaHeight > 80 || !this.dir.top && this.transitionAreaHeight > 1) {
+                this.closeDetail()
+                this.dir.top = true
+            } else if (this.dir.top) {
+                this.move = true
+                this.transitionAreaHeight = 0
+            }
+            
         },
         addDopToCart(dop) {
             this.$store.dispatch('guest/addDopToCart', {
@@ -210,10 +239,10 @@ export default {
         closeDetail() {
             this.move = true
             this.isAreaVisible = false
+            this.$router.push({path: $nuxt.$route.fullPath, query: {d: 0}})
+            document.documentElement.style.overflow = 'visible'
 
             setTimeout(() => {
-                document.documentElement.style.overflow = 'auto'
-                document.documentElement.style.overscrollBehavior = null
                 this.$store.dispatch('guest/closeDetail')
             }, 200);
         }
@@ -225,15 +254,17 @@ export default {
 .detail {
     position: fixed;
     left: 0;
-    top: 0;
     right: 0;
+    top: 0;
     bottom: 0;
     z-index: 21;
     display: flex;
-    overflow-y: scroll;
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
     padding: 40px 0 80px;
+    overflow-y: auto;
+    touch-action: none;
+    -webkit-overflow-scrolling: touch;
+    min-height: -webkit-fill-available;
+    overflow-y: scroll;
     @media screen and (max-width: 1000px) {
         padding: 40px 0 0;
     }
@@ -242,12 +273,12 @@ export default {
         left: 0;
         top: 0;
         right: 0;
-        bottom: 0;
+        bottom: -40px;
         pointer-events: none;
         background-color: rgba(0,0,0,0.6);
     }
     &__closer {
-        position: absolute;
+        position: fixed;
         z-index: 1;
         left: 0;
         top: 0;
@@ -261,9 +292,6 @@ export default {
         width: 100%;
         transform: translateY(100%);
         margin: auto auto 0;
-        /* max-height: calc(100vh - 47px); */
-        
-        /* background-color: #fff; */
         max-width: 400px;
 
         @media screen and (min-width: 1000px) {
@@ -466,4 +494,5 @@ export default {
         }
     }
 }
+
 </style>

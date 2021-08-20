@@ -32,6 +32,12 @@
                 height: 100%;
                 display: block;
             }
+            &.placeholder {
+                background-size: contain;
+                padding-bottom: 40%;
+                opacity: 0.2;
+                background-repeat: repeat;
+            }
         }
     }
     &__content {
@@ -50,7 +56,6 @@
         padding: 7px 10px;
         background-color: rgb(224, 223, 223);
         border-radius: 14px;
-        margin-top: 10px;
         font-size: 16px;
         text-transform: none;
         cursor: pointer;
@@ -67,18 +72,36 @@
         }
     }
     &__bottom {
+        position: relative;
         width: 100%;
         display: flex;
         align-items: center;
+        margin-top: 10px;
         &-item {
-            margin-top: 10px;
+            .v-icon {
+                margin-left: 10px;
+            }
             .v-btn {
                 margin-left: 0;
+            }
+            &.desktop {
+                display: none;
+                @media screen and (min-width: 1280px) {
+                    display: block;
+                }
+            }
+            &.mobile {
+                @media screen and (min-width: 1280px) {
+                    display: none;
+                }
             }
             &.handles {
                 cursor: pointer;
                 position: relative;
                 margin-left: auto;
+                .v-icon {
+                    font-size: 30px;
+                }
                 &:after {
                     content: '';
                     position: absolute;

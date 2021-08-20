@@ -7,47 +7,52 @@
             .popup__content
                 h2.popup__title Управление столиками<br>
                     span {{ place.name }}
-                v-form(
-                    @submit.prevent="fetchCreateTable"
-                    v-model="isAddTableValid").place__form
-                    v-text-field(
-                        v-model="newTableStart"
-                        type="text"
-                        label="Новый столик"
-                        :rules="[!!newTableStart && !!newTableStart.length && !newTableStart.includes('?') && !newTableStart.includes('#') && !newTableStart.includes('&') || 'Введите корректное значение']")
-                    v-btn(
-                        depressed
-                        color="primary"
-                        :disabled="!isAddTableValid"
-                        type="submit"
-                        v-if="isAddTableValid"
-                    ).e-card__bottom-item Добавить
-                .place__tables
+                transition(name="slide-fade" mode="out-in")
+                    .cats__add-link(@click="isAddTable = true" v-if="!isAddTable") Новый столик
+                    v-form(
+                        v-if="isAddTable"
+                        @submit.prevent="fetchCreateTable"
+                        v-model="isAddTableValid").place__form
+                        v-text-field(
+                            required
+                            autofocus
+                            v-model="newTableStart"
+                            type="text"
+                            label="Новый столик"
+                            hide-details="auto"
+                            :rules="[!!newTableStart && !!newTableStart.length && !newTableStart.includes('?') && !newTableStart.includes('#') && !newTableStart.includes('&') || 'Введите корректное значение']")
+                transition(name="slide-fade" mode="out-in")
+                    .place__tables-actions(v-if="isAddTable")
+                        v-btn(
+                            depressed
+                            large
+                            @click="isAddTable = false"
+                        ).e-card__bottom-item.red--text Отмена
+                        v-btn(
+                            depressed
+                            color="primary"
+                            :disabled="!isAddTableValid || !newTableStart"
+                            large
+                            @click="fetchCreateTable"
+                            :loading="$store.state.view.loading.createTable"
+                        ).e-card__bottom-item Добавить
+                        
+                .place__tables(:class="{ padding: isAddTable }")
                     .place__tables-inner(v-if="place.tables && place.tables.length")
                         .place__tables-item(v-for="(table, key) in place.tables" :key="key")
                             .place__tables-item-name {{ formatTable(table) }}
                             .place__tables-item-remove(light @click="removeTable(table, key)")
                                 v-icon(light) mdi-trash-can-outline
-
-                        // Добавление диапазона столиков
-                        //- div
-                        //-     input(type="checkbox" id="tablesRange" v-model="isTablesMulti" @change="clearNewTables")
-                        //-     label(for="tablesRange") Диапазон столиков
-
-                        //- label(v-if="!isTablesMulti") Введите название или номер столика
-                        //- label(v-if="isTablesMulti") Введите диапазон столиков, например 1 и 10
                     
 
-                    //- input(:type="!isTablesMulti ? 'text' : 'number'" placeholder="" v-model="newTableStart")
-                    //- span(v-if="isTablesMulti") -
-                    //- input(type="number" placeholder="" v-if="isTablesMulti" v-model="newTableEnd")
 
-                    //- .button.-black(@click="fetchCreateTable") Добавить
 
 
 </template>
 
 <script>
+const axios = require("axios")
+
 export default {
     props: {
         place: Object
@@ -57,7 +62,8 @@ export default {
             isTablesMulti: false,
             newTableStart: null,
             newTableEnd: null,
-            isAddTableValid: true
+            isAddTableValid: true,
+            isAddTable: false
         }
     },
     methods: {
@@ -89,28 +95,40 @@ export default {
         clearNewTables() {
             this.newTableStart = this.newTableEnd = null
         },
-        fetchCreateTable() {
-            if (!this.isTablesMulti) {
+        async fetchCreateTable() {
+            if (!this.isTablesMulti && !!this.newTableStart) {
+                this.$store.state.view.loading.createTable = true
                 if (this.place.tables.indexOf(this.newTableStart.trim().replaceAll(' ', '%20')) == -1) {
                     this.place.tables.push(this.newTableStart.trim().replaceAll(' ', '%20'))
-                    this.$store.dispatch("lk/updateTables", { place: this.place })
+                    const update = await axios({
+                        method: 'post',
+                        url: `/api/update-tables/`,
+                        data: this.place
+                    })
+                    if (update.data) {
+                        this.$store.state.view.loading.createTable = false
+                        this.$nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Столик успешно создан` })
+                    }
                 } else {
                     this.$notify({ group: 'custom-style', type: 'n-alarm', title: 'Столик с таким названием уже существует' })
+                    this.$store.state.view.loading.createTable = false
                 }
-            } else {
-                if (Number(this.newTableStart) < Number(this.newTableEnd)) {
-                    for (let i = Number(this.newTableStart); i < Number(this.newTableEnd) + 1; i++) {
-                        if (this.place.tables.indexOf(Number(i)) == -1) {
-                            this.place.tables.push(Number(i))
-                        }
-                    }
-                    this.$store.dispatch("lk/updateTables", { place: this.place })
-                } else {
-                    alert('Некорректные данные')
-                }
-            }
+            } 
+            // else {
+            //     if (Number(this.newTableStart) < Number(this.newTableEnd)) {
+            //         for (let i = Number(this.newTableStart); i < Number(this.newTableEnd) + 1; i++) {
+            //             if (this.place.tables.indexOf(Number(i)) == -1) {
+            //                 this.place.tables.push(Number(i))
+            //             }
+            //         }
+            //         this.$store.dispatch("lk/updateTables", { place: this.place })
+            //     } else {
+            //         alert('Некорректные данные')
+            //     }
+            // }
             this.newTableStart = ''
             this.newTableEnd = ''
+            this.isAddTable = false
         }
     }
 }

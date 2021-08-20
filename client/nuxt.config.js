@@ -26,7 +26,7 @@ export default {
     title: 'QRTONE',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
       { hid: 'description', name: 'description', content: 'Сервис электронного меню для ресторанов и кафе. С доступом по QR коду и уведомлениями в telegram' }
     ],
     link: [
@@ -73,7 +73,7 @@ export default {
           {
             code: 'ru',
             file: 'ru-RU.js'
-          }
+          },
         ],
         detectBrowserLanguage: true,
         detectBrowserLanguage: {

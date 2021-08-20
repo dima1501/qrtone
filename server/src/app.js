@@ -12,6 +12,8 @@ const routes = require('./routes')
 const cors = require('cors');
 app.use(cors({credentials: true, origin: '*'}));
 
+const rateLimit = require("express-rate-limit");
+
 const server = require("http").createServer(app)
 
 const io = require("socket.io")(server, {
@@ -28,6 +30,12 @@ websocketAPI.start(io)
 server.listen(8000, () => {
     console.log(`:8000`);
 });
+
+const apiLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000,
+    max: 500
+});
+app.use(apiLimiter)
 
 app.use(express.json({limit: '50mb'}))
 app.use(express.static('public'))

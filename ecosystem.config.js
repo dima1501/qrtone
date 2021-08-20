@@ -22,21 +22,6 @@ module.exports = {
       script: './node_modules/nuxt/bin/nuxt.js',
       args: 'dev',
       cwd: './client',
-    },
-    {
-      name: 'bot',
-      exec_mode: 'cluster',
-      instances: 'max',
-      script: 'bot/bot.js',
-      autorestart: true,
-      watch: false,
-      max_memory_restart: '1G',
-      env: {
-        NODE_ENV: 'development'
-      },
-      env_production: {
-        NODE_ENV: 'production'
-      }
     }
   ]
 };

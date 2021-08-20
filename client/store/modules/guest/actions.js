@@ -254,14 +254,15 @@ const acceptOrder = async (store, order) => {
 
 const fastAction = async (store, data) => {
     try {
+        store.rootState.view.loading.sendFastAction._id = data._id
         const action = await axios({
             method: 'post',
             url: '/api/fast-action',
             data: { data }
         })
         if (action) {
-            // console.log('completed')
-            // order.status = 'accepted'
+            store.rootState.view.loading.sendFastAction._id = null
+            store.rootState.view.isCommandSend = true
         }
     } catch (error) {
         console.error(error)

@@ -9,13 +9,16 @@ const auth = require('../middlewares/AuthMiddleware')
 const moment = require('moment')
 
 const transporter = nodemailer.createTransport({
+    name: "smtp.mailtrap.io",
     host: "smtp.mailtrap.io",
     port: 2525,
-    secure: process.env.NODE_ENV !== 'production' ? false : true,
-    sendmail: process.env.NODE_ENV !== 'production' ? false : true,
+    // secure: process.env.NODE_ENV !== 'production' ? false : true,
+    secure: false,
+    // sendmail: process.env.NODE_ENV !== 'production' ? false : true,
+    sendmail: true,
     auth: {
         user: "e13923d70a29d4",
-        pass: "36e942d8a5528e",
+        pass: "e13923d70a29d4",
     }
 })
 

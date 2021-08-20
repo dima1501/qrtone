@@ -51,8 +51,7 @@ export default {
         max-width: 1080px;
         margin: 0 auto;
         display: flex;
-        align-items: center;
-        padding: 30px 0;
+        padding: 70px 0 30px 0;
         min-height: 100vh;
         @media screen and (min-width: 768px) {
             align-items: flex-start;
@@ -67,7 +66,7 @@ export default {
         margin: 0 auto;
         @media screen and (min-width: 1024px) {
             padding: 55px 100px;
-            max-width: 600px;
+            max-width: 550px;
         }
     }
     &__media {

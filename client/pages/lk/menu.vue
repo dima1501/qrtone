@@ -159,6 +159,9 @@ export default {
     &__title {
         position: relative;
         margin-bottom: 10px;
+        &-text {
+            font-size: 22px;
+        }
         &-buttons {
             height: 50px;
             display: flex;
@@ -203,27 +206,44 @@ export default {
     margin-bottom: 15px;
     background: #F5F7FB;
     border-radius: 16px;
-    // width: calc(50% - 15px);
     display: flex;
     align-items: center;
     flex-direction: column;
-    // max-width: 450px;
-    min-width: 290px;
-    width: 100%;
-    @media screen and (min-width: 640px) {
-        margin-right: 15px;
-        width: calc(50% - 15px);
+    width: calc(50% - 5px);
+    margin-right: 10px;
+    &:nth-child(even) {
+        margin-right: 0;
+    }
+    @media screen and (min-width: 500px) {
+        width: calc(33.33333% - 10px);
+        &:nth-child(even) {
+            margin-right: 10px;
+        }
+        &:nth-child(3n) {
+            margin-right: 0;
+        }
     }
     @media screen and (min-width: 1280px) {
-        width: calc(25% - 15px);
+        width: calc(25% - 10px);
+        &:nth-child(3n) {
+            margin-right: 10px;
+        }
+        &:nth-child(4n) {
+            margin-right: 0;
+        }
     }
-    @media screen and (min-width: 1700px) {
-        width: calc(20% - 15px);
+    @media screen and (min-width: 1485px) {
+        width: calc(20% - 10px);
+         &:nth-child(4n) {
+            margin-right: 10px;
+        }
+        &:nth-child(5n) {
+            margin-right: 0;
+        }
     }
     &__img {
         width: 100px;
         margin-bottom: 30px;
-        // height: 100px;
         &-pic {
             width: 100%;
         }

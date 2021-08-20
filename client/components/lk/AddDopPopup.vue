@@ -6,7 +6,7 @@
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
                 h2.popup__title Управление дополнениями
-                .cats
+                .cats(:class="{ padding: addDop }")
                     .cats__add
                         transition(name="slide-fade" mode="out-in")
                             .cats__add-link(@click="addDop = true" v-if="!addDop") Новое дополнение
@@ -16,16 +16,34 @@
                                         ref="newDop"
                                         v-model="newDop.name"
                                         type="text"
-                                        label="Название").mr-5
+                                        label="Название"
+                                        autofocus
+                                        hide-details="auto").mr-5
                                     v-text-field(
                                         ref="newDop"
                                         v-model="newDop.price"
                                         type="number"
                                         label="Цена"
-                                        :prefix="$store.state.auth.user.currencySymbol").short
+                                        :prefix="$store.state.auth.user.currencySymbol"
+                                        hide-details="auto").short
                                     transition(name="slide-fade" mode="out-in")
                                         button.cats__item-controls-btn(type="submit" v-if="newDop.name.length")
                                             v-icon(light) mdi-checkbox-marked-circle-outline
+                        transition(name="slide-fade" mode="out-in")
+                            .place__tables-actions(v-if="addDop")
+                                v-btn(
+                                    depressed
+                                    large
+                                    @click="addDop = false"
+                                ).e-card__bottom-item.red--text Отмена
+                                v-btn(
+                                    depressed
+                                    color="primary"
+                                    :disabled="!newDop.name"
+                                    large
+                                    @click="create"
+                                    :loading="$store.state.view.loading.createDop"
+                                ).e-card__bottom-item Добавить
 
                     DopItem(v-for="(dop, i) in $store.state.auth.user.dops" :key="dop._id" :dop="dop")
 
@@ -78,6 +96,12 @@ export default {
 }
 
 .cats {
+    &.padding {
+        padding-bottom: 84px;
+        @media screen and (min-width: 768px) {
+            padding-bottom: 0;
+        }
+    }
     &__add {
         &-field {
             display: flex;

@@ -39,7 +39,7 @@
 
                 v-form(
                     @submit.prevent="fetchAddWaiter"
-                    v-model="isAddWaiterValid")
+                    v-model="isAddWaiterValid").e-card
                     v-text-field(
                         label="Имя"
                         v-model="newWaiter.name"
@@ -48,25 +48,26 @@
                         required
                         hide-details="auto").mb-3  
                     v-text-field(
-                        label="Id"
+                        label="Ссылка на официанта"
                         v-model="newWaiter.id"
-                        :rules="requiredRule"
-                        type="number"
+                        :rules="linkRules"
+                        type="text"
                         required
-                        hide-details="auto"
-                        prefix="chachachay.me/").mb-3
+                        hint="Полная ссылка, ведущая на страницу официанта").mb-3
                     h4 Заведения
                     .e-card__line-inner.wrap
                         .e-card__place(v-for="place in $store.state.auth.user.places")
                             v-checkbox(@change="togglePlace(place)" :input-value="!!newWaiter.places.find(p => p == place._id)" :label="place.name" hide-details="auto" :id="place._id").mt-1
 
                     .e-card__bottom
-                        v-btn(@click="closePopup" depressed color="error").e-card__bottom-item Отмена
+                        v-btn(@click="closePopup" depressed large).red--text.e-card__bottom-item Отмена
                         v-btn(
                             depressed 
                             color="primary"
                             :disabled="!isAddWaiterValid"
                             type="submit"
+                            :loading="$store.state.view.loading.addWaiter"
+                            large
                         ).e-card__bottom-item Сохранить
 
                 
@@ -110,6 +111,13 @@ export default {
             requiredRule: [
                 (v) => !!v || 'Обязательное поле',
             ],
+            linkRules: [
+                (v) => !!v || 'Обязательное поле',
+                (v) =>
+                    !v ||
+                    /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm.test(v) ||
+                    'Введите корректную ссылку',
+            ],
 
             isAddWaiterValid: true
         }
@@ -129,12 +137,14 @@ export default {
         },
         async fetchAddWaiter() {
             try {
+                this.$store.state.view.loading.addWaiter = true
                 const uploadNewWaiter = async () => {
                     const add = await axios({
                         method: 'post',
                         url: '/api/edit-waiter',
                         data: this.newWaiter
                     })
+                    this.$store.state.view.loading.addWaiter = false
                     if (add.data) {
                         this.$store.state.view.popup.editWaiterPopup.visible = false
                         this.$store.state.auth.user.waiters = add.data

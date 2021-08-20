@@ -377,6 +377,7 @@ export default {
                 border: 3px solid #F5F7FB;
                 box-shadow: 0 0 20px rgb(0 0 0 / 10%);
                 height: calc(100vh - 110px);
+                // height: calc(var(--vh, 1vh) * 100 - 110px);
                 background-color: #eef1f8;
                 overflow: hidden;
                 @media screen and (min-width: 1024px) {

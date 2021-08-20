@@ -5,7 +5,7 @@
         video(:src="require('~/static/travolta.mp4')" autoplay loop muted)
       .p-error__content
         .p-error__num 404
-        .p-error__title Стриница не найдена
+        .p-error__title Страница не найдена
         nuxt-link(:to="localePath('/')").p-error__link На главную
 </template>
 <script>

@@ -127,16 +127,18 @@ const updateCompanyBackground = async (store, data) => {
 
 const addNewPlace = async (store, data) => {
     try {
-        const addNewPlace = await axios({
-            method: 'post',
-            url: '/api/add-new-place',
-            data: data.place
-        })
-        if (addNewPlace) {
-            store.rootState.view.popup.addPlacePopup.visible = false
-            store.rootState.auth.user.places.push(addNewPlace.data)
-            $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Новое заведение успешно создано' })
-        }
+      store.rootState.view.loading.addNewPlace = true
+      const addNewPlace = await axios({
+        method: 'post',
+        url: '/api/add-new-place',
+        data: data.place
+      })
+      store.rootState.view.loading.addNewPlace = false
+      if (addNewPlace) {
+        store.rootState.view.popup.addPlacePopup.visible = false
+        store.rootState.auth.user.places.push(addNewPlace.data)
+        $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Новое заведение успешно создано' })
+      }
     } catch (error) {
       console.error(error)
     }
@@ -160,11 +162,13 @@ const removePlace = async (store, data) => {
 
 const editPlace = async (store, data) => {
   try {
+      store.rootState.view.loading.editPlace = true
       const editPlace = await axios({
           method: 'post',
           url: '/api/edit-place',
           data: data.place
       })
+      store.rootState.view.loading.editPlace = false
       if (editPlace) {
         $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Информация о заведении успешно обновлена' })
         store.rootState.view.popup.editPlacePopup.visible = false
@@ -329,11 +333,13 @@ const updateGood = async (store, data) => {
 
 const addNewAction = async (store, data) => {
   try {
+    store.rootState.view.loading.createAction = true
     const add = await axios({
       method: 'post',
       url: '/api/add-action',
       data: data.action
     })
+    store.rootState.view.loading.createAction = false
     if (add.data) {
       $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: 'Быстрое действие успешно создано' })
       store.rootState.auth.user.actions.push(add.data)

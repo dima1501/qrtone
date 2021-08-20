@@ -52,16 +52,16 @@ div
             .commands(v-if="commands")
                 .commands__back(@click="closeCommands")
                 transition(name="slide-fade" mode="out-in")
-                    .commands__area(v-if="commands && !isCommandSend" key="commands")
+                    .commands__area(v-if="commands && !$store.state.view.isCommandSend" key="commands")
                         .commands__actions
                             v-btn.commands__item.tips(depressed v-if="$store.state.guest.companyData.waiters.length" @click="letTips")
                                 img(v-if="navigator && navigator.match(/iPhone|iPod|iPad|Mac/)" src="https://img.icons8.com/ios-glyphs/60/000000/apple-pay.png" alt="qrtone.com")
                                 img(v-else-if="navigator && navigator.match(/Android/)" src="https://img.icons8.com/nolan/64/google-pay.png" alt="qrtone.com")
                                 img(v-else src="https://img.icons8.com/ios/24/000000/macbook-cards--v3.png" alt="qrtone.com")
                                 span Оставить чаевые
-                            v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-if="action.isActive" v-bind:key="key" depressed @click="fastAction(action)") {{ action.callText }}
+                            v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-if="action.isActive" v-bind:key="key" depressed @click="fastAction(action)" :loading="$store.state.view.loading.sendFastAction._id == action._id") {{ action.callText }}
                             v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
-                    .commands__area(v-if="commands && isCommandSend" key="success")  
+                    .commands__area(v-if="commands && $store.state.view.isCommandSend" key="success")  
                         .commands__success
                             .commands__success-title 💫<br>Уведомление отправлено
                             v-btn.commands__item(depressed @click="closeCommands") Спасибо
@@ -129,7 +129,7 @@ div
                 .cart__bottom(v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length || $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length")
                     .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
                     .cart__bottom-control
-                        v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.t && isAvailable" v-bind:class="{ loading: $store.state.view.loading.sendOrder }") Заказать
+                        v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.t && isAvailable" :loading="$store.state.view.loading.sendOrder") Заказать
                         //- v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
 
         transition(name="fade")
@@ -222,7 +222,6 @@ export default {
             navigator: null,
             isLoading: true,
             commands: false,
-            isCommandSend: false,
             isCartEmpty: true,
             isCartOpened: false,
             isOrdersOpened: false,
@@ -406,7 +405,7 @@ export default {
         },
         toggleCommandsMenu() {
             this.commands = !this.commands
-            this.isCommandSend = false
+            this.$store.state.view.isCommandSend = false
         },
         toggleInfoPopup() {
             this.$store.state.view.popup.infoPopup = !this.$store.state.view.popup.infoPopup
@@ -464,10 +463,10 @@ export default {
             action.table = this.$nuxt.$route.query.t
             this.$store.dispatch('guest/fastAction', action)
 
-            this.isCommandSend = true
+            
         },
         closeCommands() {
-            this.isCommandSend = false
+            this.$store.state.view.isCommandSend = false
             this.commands = false
         },
         openDetail(item, price) {

@@ -73,7 +73,7 @@ export default {
           {
             code: 'ru',
             file: 'ru-RU.js'
-          }
+          },
         ],
         detectBrowserLanguage: true,
         detectBrowserLanguage: {

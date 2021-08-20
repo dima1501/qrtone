@@ -87,13 +87,24 @@ const state = {
     moreOrders: false,
     notifications: false,
     moreNotifications: false,
-    pdfUpdating: false
+    pdfUpdating: false,
+    sendFastAction: {
+      _id: null
+    },
+    createTable: false,
+    createAction: false,
+    addNewPlace: false,
+    editPlace: false,
+    addWaiter: false,
+    createCat: false,
+    createDop: false
   },
   places: {
     isLinkExists: false,
     edit: false,
     newLink: ''
-  }
+  },
+  isCommandSend: false
 }
 
 export default {

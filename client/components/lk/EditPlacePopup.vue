@@ -100,12 +100,14 @@
                                 label="Telegram"
                                 hide-details="auto")
                         .e-card__bottom
-                            v-btn(depressed color="error" @click="closePopup").e-card__bottom-item Отмена
+                            v-btn(depressed @click="closePopup" large).red--text.e-card__bottom-item Отмена
                             v-btn(
                                 depressed
                                 color="primary"
                                 :disabled="!isEditPlaceValid"
                                 type="submit"
+                                large
+                                :loading="$store.state.view.loading.editPlace"
                             ).e-card__bottom-item Сохранить
 </template>
 

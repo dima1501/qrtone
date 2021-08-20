@@ -246,6 +246,7 @@ router.post("/api/upload-company-background", auth(), upload.single("image"), (r
   }
 })
 
+// Ну это да, это красиво
 router.post("/api/delete-pic", auth(), (req, res) => {
 
   const pathToFile = `../client/static/uploads/${req.body.data}`
@@ -278,6 +279,9 @@ router.post("/api/delete-pic", auth(), (req, res) => {
   fs.unlink(path + '342-' + fileName + '.webp', function(err) { if (err) console.error(err) })
   fs.unlink(path + '400-' + fileName + '.webp', function(err) { if (err) console.error(err) })
   fs.unlink(path + '800-' + fileName + '.webp', function(err) { if (err) console.error(err) })
+
+
+  fs.unlink(path + fileName, function(err) { if (err) console.error(err) })
 
   // fs.unlink(pathToFile, function(err) { if (err) console.error(err) })
   // fs.unlink(pathToFile + '.webp', function(err) { if (err) console.error(err) })

@@ -904,6 +904,7 @@ router.post('/api/edit-waiter', auth(), async (req, res) => {
         
         if (set) {
             const user = await req.db.collection("users").findOne({ _id: ObjectId(req.user._id) })
+            console.log(user.waiters)
             res.status(200).send(user.waiters)
         } else {
             res.status(200).send(false)

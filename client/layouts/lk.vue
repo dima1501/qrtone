@@ -155,8 +155,8 @@ export default {
 
   &__burger {
     position: fixed;
-    right: 10px;
-    top: 10px;
+    right: 15px;
+    top: 15px;
     border-radius: 6px;
     width: 50px;
     height: 50px;

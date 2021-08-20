@@ -36,6 +36,7 @@ export default {
                                 method: 'delete',
                                 url: `/api/delete-waiter/${this.waiter._id}`
                             })
+                            if (this.waiter.photo) this.$store.dispatch("lk/deletePic", this.waiter.photo)
                             if (del.data) {
                                 this.$store.state.auth.user.waiters = del.data
                                  this.$notify({ group: 'custom-style', type: 'n-success', title: 'Официант удален' })

@@ -1,4 +1,8 @@
 .e-card {
+    padding-bottom: 66px;
+    @media screen and (min-width: 768px) {
+        padding-bottom: 0;
+    }
     &__img {
         margin-bottom: 20px;
         background: #F5F7FB;
@@ -58,11 +62,25 @@
     &__bottom {
         display: flex;
         align-items: center;
-        justify-content: center;
-        padding: 20px 0;
+        justify-content: flex-end;
+        padding: 15px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        @media screen and (min-width: 768px) {
+            position: static;
+            box-shadow: none;
+            padding: 15px 0 0;
+        }
         &-item {
             margin-right: 7px;
             cursor: pointer;
+            &:last-child {
+                margin-right: 0;
+            }
             @media screen and (min-width: 768px) {
                 margin-right: 10px;
             }

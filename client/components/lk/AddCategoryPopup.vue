@@ -6,7 +6,7 @@
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
                 h2.popup__title Управление категориями
-                .cats
+                .cats(:class="{ padding: addCategory }")
                     .cats__add
                         transition(name="slide-fade" mode="out-in")
                             .cats__add-link(@click="addCategory = true" v-if="!addCategory") Новая категория
@@ -18,10 +18,26 @@
                                         type="text"
                                         label="Новая категория"
                                         hide-details="auto"
-                                        :rules="nameRules")
+                                        :rules="nameRules"
+                                        autofocus)
                                     transition(name="slide-fade" mode="out-in")
                                         button.cats__item-controls-btn(type="submit" v-if="newCat.length")
                                             v-icon(light) mdi-checkbox-marked-circle-outline
+                        transition(name="slide-fade" mode="out-in")
+                            .place__tables-actions(v-if="addCategory")
+                                v-btn(
+                                    depressed
+                                    large
+                                    @click="addCategory = false"
+                                ).e-card__bottom-item.red--text Отмена
+                                v-btn(
+                                    depressed
+                                    color="primary"
+                                    :disabled="!newCat.length"
+                                    large
+                                    @click="create"
+                                    :loading="$store.state.view.loading.createCat"
+                                ).e-card__bottom-item Добавить
 
                     draggable(
                         ref="asdas"
@@ -40,6 +56,7 @@
 </template>
 
 <script>
+const axios = require("axios")
 import draggable from 'vuedraggable'
 
 export default {
@@ -70,11 +87,23 @@ export default {
         change(e) {
             this.$store.dispatch('lk/updateCats')
         },
-        create() {
+        async create() {
             if (this.newCat.length) {
-                this.$store.dispatch('lk/createCat', this.newCat)
-                this.addCategory = false
-                this.newCat = ''
+                // this.$store.dispatch('lk/createCat', this.newCat)
+                this.$store.state.view.loading.createCat = true
+                const create = await axios({
+                    method: 'post',
+                    url: '/api/create-category',
+                    data: { cat: this.newCat }
+                })
+                this.$store.state.view.loading.createCat = false
+                if (create.data) {
+                    this.$store.state.auth.user.categories.unshift(create.data)
+                    this.$store.state.auth.parsedMenu[create.data._id] = []
+                    this.addCategory = false
+                    this.newCat = ''
+
+                }
             }
         }
     },
@@ -98,6 +127,12 @@ export default {
 }
 
 .cats {
+    &.padding {
+        padding-bottom: 84px;
+        @media screen and (min-width: 768px) {
+            padding-bottom: 0;
+        }
+    }
     &__add {
         &-link {
             text-align: center;

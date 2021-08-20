@@ -93,19 +93,19 @@
             .onboard__bottom-item
                 v-btn(plain color="black" @click="closePopup()") Заполню позже
             .onboard__bottom-item
-                v-btn(depressed color="primary" @click="checkStep(step + 1)" x-large) Начнем
+                v-btn(depressed color="primary" @click="checkStep(step + 1)" large) Начнем
 
         .onboard__bottom(v-if="step > 1 && step < 9").flex-end
             .onboard__bottom-item
-                v-btn(depressed color="normal" @click="checkStep(step - 1)" x-large) Назад
+                v-btn(depressed color="normal" @click="checkStep(step - 1)" large) Назад
             .onboard__bottom-item
-                v-btn(depressed color="primary" @click="checkStep(step + 1)" x-large) Далее
+                v-btn(depressed color="primary" @click="checkStep(step + 1)" large) Далее
 
         .onboard__bottom(v-if="step == 9").flex-end
             .onboard__bottom-item
-                v-btn(depressed color="normal" @click="checkStep(step - 1)" x-large) Назад
+                v-btn(depressed color="normal" @click="checkStep(step - 1)" large) Назад
             .onboard__bottom-item
-                v-btn(depressed color="primary" @click="closePopup()" x-large) Спасибо!
+                v-btn(depressed color="primary" @click="closePopup()" large) Спасибо!
 
 </template>
 
@@ -215,7 +215,7 @@ export default {
     &__area {
         position: relative;
         background-color: #fff;
-        padding: 70px 20px 81px;
+        padding: 70px 20px 100px;
         margin: auto;
         width: 100%;
         position: absolute;
@@ -335,6 +335,7 @@ export default {
         background-color: #fff;
         padding: 20px 10px;
         z-index: 15;
+        box-shadow: 0 0 10px rgba(0,0,0,0.15);
         &.flex-end {
             justify-content: flex-end;
         }
@@ -342,6 +343,7 @@ export default {
             padding: 20px 15px;
         }
         @media screen and (min-width: 768px) {
+            box-shadow: none;
             padding: 0;
             position: static;
             justify-content: flex-end;

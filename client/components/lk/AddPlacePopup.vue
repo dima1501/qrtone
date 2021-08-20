@@ -16,7 +16,7 @@
                                 :rules="nameRules"
                                 type="text"
                                 required
-                                label="Название"
+                                label="Название*"
                                 hide-details="auto")
 
                         .e-card__line
@@ -43,10 +43,10 @@
                                 label="Адрес"
                                 hide-details="auto"
                                 @input="inputAddr"
-                                v-lazy-input:debounce="1500"
+                                v-lazy-input:debounce="1200"
                                 v-on:keydown.enter.prevent='inputAddr'
                                 auto-grow
-                                rows="2"
+                                rows="1"
                                 row-height="20")
 
                             .hints
@@ -106,13 +106,16 @@
                                 hide-details="auto")
 
                         .e-card__bottom
-                            v-btn(depressed color="error" @click="closePopup").e-card__bottom-item Отмена
+                            v-btn(depressed @click="closePopup" large).red--text.e-card__bottom-item Отмена
                             v-btn(
                                 depressed
                                 color="primary"
                                 :disabled="!isAddPlaceValid"
                                 type="submit"
+                                large
+                                :loading="$store.state.view.loading.addNewPlace"
                             ).e-card__bottom-item Создать
+
 </template>
 
 <script>
@@ -240,7 +243,6 @@ export default {
     }
 }
 </script>
-// https://geocode-maps.yandex.ru/1.x/?apikey=ваш API-ключ&geocode=Тверская+6
 
 <style lang="scss">
 

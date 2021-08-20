@@ -37,7 +37,7 @@
 
                 v-form(
                     @submit.prevent="fetchAddWaiter"
-                    v-model="isAddWaiterValid")
+                    v-model="isAddWaiterValid").e-card
                     v-text-field(
                         label="Имя"
                         v-model="newWaiter.name"
@@ -58,12 +58,14 @@
                             v-checkbox(@change="togglePlace(place)" :input-value="!!newWaiter.places.find(p => p._id == place._id)" :label="place.name" hide-details="auto" :id="place._id").mt-1
 
                     .e-card__bottom
-                        v-btn(@click="closePopup" depressed color="error").e-card__bottom-item Отмена
+                        v-btn(@click="closePopup" depressed large).red--text.e-card__bottom-item Отмена
                         v-btn(
                             depressed 
                             color="primary"
                             :disabled="!isAddWaiterValid"
                             type="submit"
+                            :loading="$store.state.view.loading.addWaiter"
+                            large
                         ).e-card__bottom-item Создать
 
                 
@@ -128,14 +130,14 @@ export default {
         },
         async fetchAddWaiter() {
             try {
-
+                this.$store.state.view.loading.addWaiter = true
                 const uploadNewWaiter = async () => {
                     const add = await axios({
                         method: 'post',
                         url: '/api/add-new-waiter',
                         data: this.newWaiter
                     })
-
+                    this.$store.state.view.loading.addWaiter = false
                     if (add.data) {
                         this.$store.state.auth.user.waiters.push(add.data)
                         this.$notify({ group: 'custom-style', type: 'n-success', title: 'Официант успешно добавлен' })
@@ -144,7 +146,6 @@ export default {
                 }
 
                 if (this.newWaiter.photo) {
-
                     const bodyFormData = new FormData();
                     bodyFormData.append("image", this.newWaiter.photo);
                 

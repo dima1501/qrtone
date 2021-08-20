@@ -5,25 +5,34 @@
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close
             .popup__content
-                h2.popup__title Бронирование
                 .reserve
                     transition(name="fade" mode="out-in")
                         .reserve__step(v-if="step == 1" key="reserve_1")
-                            .reserve__section
-                                .reserve__title Дата
-                                .reserve__date
-                                    .reserve__date-field
-                                        date-picker(v-model="reservation.date" type="date" :default-value="new Date()" :disabled-date="notBeforeToday" format="DD.MM.YYYY")
-                            .reserve__section
-                                .reserve__title Время
-                                .reserve__date
-                                    .reserve__date-field
-                                        date-picker(
-                                            v-model="reservation.time"
-                                            :minute-step="1"
-                                            format="HH:mm"
-                                            value-type="format"
-                                            type="time")
+                            .reserve__step-title Заявка на<br>бронирование
+                            .reserve__datetime
+                                .reserve__datetime-section
+                                    .reserve__title Дата
+                                    .reserve__date
+                                        .reserve__date-field
+                                            date-picker(
+                                                v-model="reservation.date" 
+                                                type="date" 
+                                                :default-value="new Date()" 
+                                                :disabled-date="notBeforeToday" 
+                                                format="DD.MM.YYYY"
+                                                :clearable="false")
+                                
+                                .reserve__datetime-section
+                                    .reserve__title Время
+                                    .reserve__date
+                                        .reserve__date-field
+                                            date-picker(
+                                                v-model="reservation.time"
+                                                :minute-step="1"
+                                                format="HH:mm"
+                                                value-type="format"
+                                                type="time"
+                                                :clearable="false")
 
                             .reserve__section
                                 .reserve__title Количество гостей
@@ -36,16 +45,17 @@
 
                             .reserve__section
                                 .reserve__title Пожелания
-                                v-textarea(v-model="reservation.comment").reserve__textarea.mt-0.pt-0
+                                v-textarea(v-model="reservation.comment" flat).reserve__textarea.mt-0.pt-0
 
                             .reserve__bottom
                                 .reserve__bottom-item
                                     v-btn(depressed color="blue" @click="nextStep(2)" :disabled=" reservation.time && reservation.date ? false : true ").white--text Далее
 
                         .reserve__step(v-if="step == 2" key="reserve_2")
+                            .reserve__step-title Данные для<br>связи
                             .reserve__section
                                 .reserve__info
-                                    .reserve__info-line {{ formatDate(reservation.date) }}, в {{ reservation.time }}
+                                    .reserve__info-line Бронь: {{ formatDate(reservation.date) }}, в {{ reservation.time }}
                                     .reserve__info-line Гостей: {{ reservation.guests }}
                                     .reserve__info-line {{ reservation.comment }}
                             
@@ -60,7 +70,7 @@
                                     .reserve__bottom-item
                                         v-btn(depressed color="normal" @click="nextStep(1)").blue--text Назад
                                     .reserve__bottom-item
-                                        v-btn(depressed color="blue" type="submit" :disabled="!contactForm").white--text Забронировать
+                                        v-btn(depressed color="blue" type="submit" :disabled="!contactForm" :loading="loading").white--text Забронировать
 
                         .reserve__step(v-if="step == 3" key="reserve_3")
                             .reserve__section
@@ -72,7 +82,7 @@
 
                             .reserve__bottom.center
                                 .reserve__bottom-item
-                                    v-btn(depressed color="normal" @click="closePopup()").blue--text Спасибо
+                                    v-btn(depressed color="normal" @click="closePopup()" x-large).blue--text Спасибо
 
 
 </template>
@@ -91,6 +101,7 @@ export default {
     components: { DatePicker },
     data() {
         return {
+            loading: false,
             lang: {
                 formatLocale: {
                     firstDayOfWeek: 1,
@@ -118,12 +129,14 @@ export default {
         async fetchReserve() {
             try {
                 // this.reservation.date = moment(this.reservation.date).format('DD.MM.YYYY')
+                this.loading = true
                 const res = await axios({
                     method: 'post',
                     url: '/api/reserve',
                     data: this.reservation
                 })
                 if (res.data) {
+                    this.loading = false
                     this.nextStep(3)
                 }
             } catch (error) {
@@ -187,6 +200,29 @@ export default {
 @import '../../assets/popup.scss';
 
 .reserve {
+    padding-bottom: 76px;
+    @media screen and (min-width: 768px) {
+        padding: 20px 0;
+    }
+    &__datetime {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        &-section {
+            width: 48%;
+        }
+    }
+    &__step {
+        &-title {
+            font-weight: bold;
+            font-size: 28px;
+            line-height: 1.2;
+            padding-right: 20px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+    }
     &__section {
         margin-bottom: 15px;
     }
@@ -202,6 +238,10 @@ export default {
         border: none;
         color: $color-blue;
     }
+    .mx-datepicker {
+        width: 100%;
+    }
+    
     textarea {
         resize: none;
         box-shadow: unset;
@@ -218,7 +258,19 @@ export default {
         }
     }
     &__bottom {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 15;
+        background-color: #fff;
+        padding: 20px;
         display: flex;
+        justify-content: flex-end;
+        @media screen and (min-width: 768px) {
+            position: static;
+            padding: 0;
+        }
         &.center {
             justify-content: center;
         }
@@ -234,8 +286,13 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         color: $color-black;
         margin-bottom: 20px;
+        min-height: calc(100vh - 126px);
+        @media screen and (min-width: 768px) {
+            min-height: 0;
+        }
         &-title {
             font-size: 26px;
             font-weight: bold;
@@ -248,6 +305,14 @@ export default {
             max-width: 250px;
             text-align: center;
             line-height: 1.3;
+        }
+    }
+    &__textarea {
+        .v-input__slot {
+            &:before,
+            &:after {
+                display: none;
+            }
         }
     }
 }

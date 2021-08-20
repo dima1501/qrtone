@@ -187,7 +187,6 @@ export default {
                     this.move = false
                     this.transitionAreaHeight = direction.changedTouches[0].screenY - this.startScrollPoint
                 } else if (direction.changedTouches[0].screenY - this.startScrollPoint < 0) {
-                    console.log((direction.changedTouches[0].screenY - this.startScrollPoint) * -1)
                     // this.detailArea.scroll(0, direction.changedTouches[0].screenY - this.startScrollPoint + 'px')
                     this.detailArea.scroll({
                         top: (direction.changedTouches[0].screenY - this.startScrollPoint) * -1,

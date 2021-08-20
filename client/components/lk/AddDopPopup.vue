@@ -50,6 +50,7 @@
 </template>
 
 <script>
+const axios = require("axios")
 
 export default {
     data() {
@@ -67,12 +68,23 @@ export default {
         closePopup() {
             this.$store.state.view.popup.addDopPopup.visible = false
         },
-        create() {
+        async create() {
             if (this.newDop.name) {
-                this.$store.dispatch('lk/createDop', { dop: this.newDop })
-                this.addDop = false
-                this.newDop.name = ''
-                this.newDop.price = null
+                // this.$store.dispatch('lk/createDop', { dop: this.newDop })
+                this.$store.state.view.loading.createDop = true
+                const create = await axios({    
+                    method: 'post',
+                    url: '/api/create-dop',
+                    data: { data: { dop: this.newDop } }
+                })
+                this.$store.state.view.loading.createDop = false
+
+                if (create.data) {
+                    this.addDop = false
+                    this.newDop.name = ''
+                    this.newDop.price = null
+                    this.$store.state.auth.user.dops.unshift(create.data)
+                }
             }
         }
     },

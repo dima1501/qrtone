@@ -507,6 +507,7 @@ router.post('/api/create-category-admin', auth(), async (req, res) => {
 
 router.post('/api/create-dop', auth(), async (req, res) => {
     try {
+        console.log(req.body)
         const dop = await new DopModel(req.body.data.dop)
         const edit = await req.db.collection('users').updateOne(
             { _id: ObjectId(req.user ? req.user._id : req.body.data._id) },

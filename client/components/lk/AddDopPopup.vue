@@ -26,30 +26,27 @@
                                         label="Цена"
                                         :prefix="$store.state.auth.user.currencySymbol"
                                         hide-details="auto").short
-                                    transition(name="slide-fade" mode="out-in")
-                                        button.cats__item-controls-btn(type="submit" v-if="newDop.name.length")
-                                            v-icon(light) mdi-checkbox-marked-circle-outline
-                        transition(name="slide-fade" mode="out-in")
-                            .place__tables-actions(v-if="addDop")
-                                v-btn(
-                                    depressed
-                                    large
-                                    @click="addDop = false"
-                                ).e-card__bottom-item.red--text Отмена
-                                v-btn(
-                                    depressed
-                                    color="primary"
-                                    :disabled="!newDop.name"
-                                    large
-                                    @click="create"
-                                    :loading="$store.state.view.loading.createDop"
-                                ).e-card__bottom-item Добавить
+                                .place__tables-actions
+                                    v-btn(
+                                        depressed
+                                        large
+                                        @click="addDop = false"
+                                    ).e-card__bottom-item.red--text Отмена
+                                    v-btn(
+                                        depressed
+                                        color="primary"
+                                        :disabled="!newDop.name"
+                                        large
+                                        @click="create"
+                                        :loading="$store.state.view.loading.createDop"
+                                    ).e-card__bottom-item Добавить
 
                     DopItem(v-for="(dop, i) in $store.state.auth.user.dops" :key="dop._id" :dop="dop")
 
 </template>
 
 <script>
+const axios = require("axios")
 
 export default {
     data() {
@@ -67,12 +64,21 @@ export default {
         closePopup() {
             this.$store.state.view.popup.addDopPopup.visible = false
         },
-        create() {
+        async create() {
             if (this.newDop.name) {
-                this.$store.dispatch('lk/createDop', { dop: this.newDop })
-                this.addDop = false
-                this.newDop.name = ''
-                this.newDop.price = null
+                this.$store.state.view.loading.createDop = true
+                const create = await axios({
+                    method: 'post',
+                    url: '/api/create-dop',
+                    data: { data: { dop: this.newDop } }
+                })
+                this.$store.state.view.loading.createDop = false
+                if (create.data) {
+                    this.$store.state.auth.user.dops.unshift(create.data)
+                    this.addDop = false
+                    this.newDop.name = ''
+                    this.newDop.price = null
+                }
             }
         }
     },

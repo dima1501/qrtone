@@ -8,7 +8,7 @@
                 h2.popup__title QR-коды для <span>{{ $store.state.view.popup.tablesPopup.place.name }}</span>
                 .p-tables
                     transition(name="slide-fade" mode="out-in")
-                        .p-tables__form(v-if="isAddTableForm" key="qweqewqeqe")
+                        .p-tables__form(v-if="isAddTableForm") 
                             v-form(
                                 @submit.prevent="addTable"
                                 v-model="isAddTableValid")
@@ -17,31 +17,37 @@
                                     :rules="tableRules"
                                     label="Введите название столика"
                                     type="text"
-                                    required)
-                                v-btn(
-                                    depressed
-                                    color="normal"
-                                    :disabled="!isAddTableValid"
-                                    type="submit").mr-5 Готово
-                                v-btn(
-                                    depressed
-                                    color="normal"
-                                    @click="isAddTableForm = false").red--text Отмена
-
-                        .p-tables__content(v-else key="qweqewqeqeqweqe")
+                                    required
+                                    autofocus)
+                                .place__tables-actions
+                                    v-btn(
+                                        large
+                                        depressed
+                                        @click="isAddTableForm = false").red--text.mr-5 Отмена
+                                    v-btn(
+                                        large
+                                        depressed
+                                        color="primary"
+                                        :disabled="!isAddTableValid"
+                                        type="submit") Сохранить
+                                            
+                        .p-tables__content(v-if="!isAddTableForm")
                             .p-tables__title Столики <span v-if="!$store.state.view.popup.tablesPopup.tables.length">не добавлены</span>
                             .p-tables__row
                                 .p-tables__item(v-for="(table, key) in $store.state.view.popup.tablesPopup.tables" :key="key")
-                                    .p-tables__item-name {{ table }}
+                                    .p-tables__item-name {{ table.replaceAll('%20', ' ') }}
                                     .p-tables__item-delete(@click="removeTable(key)")
                                         v-icon(light) mdi-close-circle-outline 
                                 .p-tables__add(@click="isAddTableForm = !isAddTableForm")
-                                    v-icon(light) mdi-plus-circle-outline 
-                            v-btn(
-                                depressed
-                                color="primary"
-                                @click="openStyleQRPopup()"
-                                :disabled="!$store.state.view.popup.tablesPopup.tables.length") Далее
+                                    v-icon(light) mdi-plus-circle-outline
+
+                            .place__tables-actions
+                                v-btn(
+                                    large
+                                    depressed
+                                    color="primary"
+                                    @click="openStyleQRPopup()"
+                                    :disabled="!$store.state.view.popup.tablesPopup.tables.length") Далее
 </template>
 
 <script>
@@ -158,7 +164,6 @@ export default {
 // }
 
 .p-tables {
-    margin-bottom: 10px;
     &__title {
         color: $color-black;
         margin-bottom: 5px;
@@ -173,7 +178,7 @@ export default {
         border-radius: 5px;
         background-color: rgb(230, 230, 230);
         padding: 2px 10px;
-        margin: 0 10px 0px 0;
+        margin: 0 10px 12px 0;
         &-name {
             font-size: 14px;
             color: $color-black;
@@ -202,8 +207,12 @@ export default {
     }
     &__add {
         cursor: pointer;
-        margin: 10px 10px 10px 0;
+        margin: 0 10px 12px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         .v-icon {
+            font-size: 22px;
             color: $color-blue;
         }
     }

@@ -64,7 +64,7 @@ html {
 }
 
 img {
-  image-rendering: -webkit-optimize-contrast;
+  // image-rendering: -webkit-optimize-contrast;
 }
 
 </style>

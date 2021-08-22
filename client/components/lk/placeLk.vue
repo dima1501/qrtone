@@ -245,7 +245,7 @@ hr {
                 transform: none;
                 box-shadow: none;
                 padding: 0;
-                margin-bottom: 15px;
+                // margin-bottom: 15px;
                 // position: static;
                 // padding: 0;
             }

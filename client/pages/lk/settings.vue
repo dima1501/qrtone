@@ -151,11 +151,7 @@
                                     .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Стилизация QR-кода под ваш стиль
-                                    .subs__list-item 
-                                        .subs__list-item-icon
-                                            v-icon(light) mdi-checkbox-marked-circle 
-                                        .subs__list-item-text Готовые PDF шаблоны для печати
+                                        .subs__list-item-text Стилизация QR-кода под ваш стиль и настраиваемые шаблоны для печати
                                     .subs__list-item 
                                         .subs__list-item-icon
                                             v-icon(light) mdi-checkbox-marked-circle 

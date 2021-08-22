@@ -12,9 +12,9 @@
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'wifi'") QR-код Wi-Fi для {{ $store.state.view.popup.styleQRPopup.place.name }}
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'multi'") 
                             span.main QR-коды столиков для {{ $store.state.view.popup.styleQRPopup.place.name }} 
-                            <br>
-                            span.tables(v-for="table in $store.state.view.popup.tablesPopup.tables") {{ table }}
-                            span.edit(@click="openTablesPopup()" v-if="$store.state.view.popup.tablesPopup.tables.length")
+                        .popup__tables
+                            span.popup__tables-item(v-for="table in $store.state.view.popup.tablesPopup.tables") {{ table.replaceAll('%20', ' ') }}
+                            span.popup__tables-edit(@click="openTablesPopup()" v-if="$store.state.view.popup.tablesPopup.tables.length")
                                 v-icon(light) mdi-pencil-outline
 
                         //- img.c-qr__content-preview(:src='preview' v-show="$store.state.view.pdf.ref")
@@ -23,11 +23,19 @@
                             img.c-qr__content-preview(:src='$store.state.view.pdf.qr')
                         img.c-qr__content-preview(:src='preview' v-show="$store.state.view.pdf.ref")
 
-                        .c-qr__templates(@click="openPDFPopup")
-                            .c-qr__templates-title Шаблоны <span v-if="$store.state.view.pdf.ref">({{ $store.state.view.pdf.data.name }})</span>
+                        //- .c-qr__templates(@click="openPDFPopup")
+                        //-     .c-qr__templates-title Шаблоны <span v-if="$store.state.view.pdf.ref">({{ $store.state.view.pdf.data.name }})</span>
 
                         .c-qr__section
                             .c-qr__section-title Внешний вид
+                            .c-qr__section-line
+                                .c-qr__section-line-title Тип
+                                .c-qr__section-line-content
+                                    v-radio-group(v-model="type" hide-details="auto" row).mt-0.mb-3
+                                        v-radio(label="Только код" value="0")
+                                        v-radio(label="С текстом" value="1")
+                                        v-radio(label="Карточка" value="2")
+
                             .c-qr__section-line
                                 .c-qr__section-line-title Цвет кода
                                 .c-qr__section-line-content
@@ -200,7 +208,10 @@ export default {
             generatedQr: null,
             downloadQr: null,
             isColorPickerActive: false,
-            generating: false
+            generating: false,
+
+            // тип 
+            type: '0'
         }
     },
     watch:{
@@ -282,7 +293,11 @@ export default {
                                     if (kind == 'files') {
                                         fileDownload(x, `${place.name}_table_${tablesArr[i]}.${type}`)
                                     } else {
-                                        zip.file(`${place.name}_table_${tablesArr[i]}.${type}`, x)
+                                        // {base64: true}
+                                        var parser = new DOMParser();
+                                        var doc = parser.parseFromString(x, "image/svg+xml")
+                                        console.log(doc)
+                                        zip.file(`${place.name}_table_${tablesArr[i]}.${type}`, doc)
                                     }
                                 }
                                 i++
@@ -601,8 +616,10 @@ export default {
         }
         &-svg {
             canvas {
-                max-width: 100%;
+                width: 90%;
+                max-width: 380px;
                 height: auto;
+                margin: 0 auto;
             }
         }
     }

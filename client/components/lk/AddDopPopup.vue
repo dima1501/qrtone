@@ -66,33 +66,20 @@ export default {
         },
         async create() {
             if (this.newDop.name) {
-<<<<<<< HEAD
-                this.$store.state.view.loading.createDop = true
-                const create = await axios({
-=======
                 // this.$store.dispatch('lk/createDop', { dop: this.newDop })
                 this.$store.state.view.loading.createDop = true
                 const create = await axios({    
->>>>>>> aef35ca1941edb58cc6d73693deae09ec73b34bc
                     method: 'post',
                     url: '/api/create-dop',
                     data: { data: { dop: this.newDop } }
                 })
                 this.$store.state.view.loading.createDop = false
-<<<<<<< HEAD
-                if (create.data) {
-                    this.$store.state.auth.user.dops.unshift(create.data)
-                    this.addDop = false
-                    this.newDop.name = ''
-                    this.newDop.price = null
-=======
 
                 if (create.data) {
                     this.addDop = false
                     this.newDop.name = ''
                     this.newDop.price = null
                     this.$store.state.auth.user.dops.unshift(create.data)
->>>>>>> aef35ca1941edb58cc6d73693deae09ec73b34bc
                 }
             }
         }

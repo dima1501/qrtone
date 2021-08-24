@@ -12,7 +12,7 @@
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'wifi'") QR-код Wi-Fi для {{ $store.state.view.popup.styleQRPopup.place.name }}
                         h2.popup__title(v-if="$store.state.view.popup.styleQRPopup.type == 'multi'") 
                             span.main QR-коды столиков для {{ $store.state.view.popup.styleQRPopup.place.name }} 
-                        .popup__tables
+                        .popup__tables(v-if="$store.state.view.popup.tablesPopup.tables.length")
                             span.popup__tables-item(v-for="table in $store.state.view.popup.tablesPopup.tables") {{ table.replaceAll('%20', ' ') }}
                             span.popup__tables-edit(@click="openTablesPopup()" v-if="$store.state.view.popup.tablesPopup.tables.length")
                                 v-icon(light) mdi-pencil-outline
@@ -23,18 +23,18 @@
                             img.c-qr__content-preview(:src='$store.state.view.pdf.qr')
                         img.c-qr__content-preview(:src='preview' v-show="$store.state.view.pdf.ref")
 
+
                         //- .c-qr__templates(@click="openPDFPopup")
                         //-     .c-qr__templates-title Шаблоны <span v-if="$store.state.view.pdf.ref">({{ $store.state.view.pdf.data.name }})</span>
 
                         .c-qr__section
-                            .c-qr__section-title Внешний вид
                             .c-qr__section-line
                                 .c-qr__section-line-title Тип
                                 .c-qr__section-line-content
-                                    v-radio-group(v-model="type" hide-details="auto" row).mt-0.mb-3
+                                    v-radio-group(v-model="type" hide-details="auto" row @change="updateQR()").mt-0.mb-3
                                         v-radio(label="Только код" value="0")
                                         v-radio(label="С текстом" value="1")
-                                        v-radio(label="Карточка" value="2")
+                                        v-radio(label="Текст + описание" value="2")
 
                             .c-qr__section-line
                                 .c-qr__section-line-title Цвет кода
@@ -75,27 +75,27 @@
                                             input(type="file" id='upload_logo_qr' @change="uploadQRLogo").c-qr__logo-item-file
                                             label(for='upload_logo_qr').c-qr__logo-item-label
 
-                            .c-qr__section-line(v-if="$store.state.view.pdf.ref")
+                            .c-qr__section-line(v-if="type !== '0'")
                                 .c-qr__section-line-title Контент
                                 .c-qr__section-line-content
                                     v-textarea(
-                                        v-if="'title' in $store.state.view.pdf.data"
-                                        v-model="$store.state.view.pdf.data.title"
+                                        v-if="'text' in configs[type]"
+                                        v-model="configs[type].text"
                                         type="text"
-                                        :label="'Заголовок'"
+                                        label="Основной текст"
                                         v-lazy-input:debounce="250"
-                                        @input="updatePdf()"
+                                        @input="updateQR()"
                                         rows="1"
                                         auto-grow
                                         outlined)
 
                                     v-textarea(
-                                        v-if="'subtitle' in $store.state.view.pdf.data"
-                                        v-model="$store.state.view.pdf.data.subtitle"
+                                        v-if="'description' in configs[type]"
+                                        v-model="configs[type].description"
                                         type="text"
-                                        :label="'Текст'"
+                                        :label="'Дополнителььный текст'"
                                         v-lazy-input:debounce="250"
-                                        @input="updatePdf()"
+                                        @input="updateQR()"
                                         rows="1"
                                         auto-grow
                                         outlined)
@@ -154,11 +154,20 @@
                         .c-qr__preview-loader(v-if="$store.state.view.loading.pdfUpdating && $store.state.view.pdf.ref")
                             v-icon(light) mdi-loading
 
-                        .c-qr__preview-svg(v-show="!$store.state.view.pdf.ref")
+                        .c-qr__preview-svg(v-show="type == '0'")
                             div(ref="qrcode")
-                            div(ref="qrcode_generate" hidden)
-                        img.c-qr__preview-image(:src='preview' v-show="$store.state.view.pdf.ref")
+                        //-     div(ref="qrcode_generate" hidden)
+
+                        .c-qr__preview-template(v-if="type !== '0'")
+                            .c-qr__preview-template-svg#svgGenerage
+                            //- .c-qr__preview-template-svg(v-if="type == '1'")
+                            //-     pdf1
+                            //- .c-qr__preview-template-svg(v-if="type == '2'")
+                            //-     pdf2
+
+                            //- img.c-qr__preview-image(:src='preview' v-show="$store.state.view.pdf.ref")
                         //- .c-qr__preview-image(v-html='preview.toDataURL()' v-show="$store.state.view.pdf.ref")
+
 
             .c-qr__preview-loader(v-if="generating")
                 v-icon(light) mdi-loading
@@ -211,7 +220,29 @@ export default {
             generating: false,
 
             // тип 
-            type: '0'
+            type: '0',
+
+            configs: [
+                {
+                    size: 250
+                },
+                {
+                    type: '1',
+                    text: 'Отсканируйте для просмотра меню',
+                    size: 190,
+                    width: 238,
+                    height: 238
+                },
+                {
+                    type: '2',
+                    text: 'Отсканируйте для просмотра меню',
+                    description: 'Сделать заказ, позвать официанта или попросить счет',
+                    background: '',
+                    size: 190,
+                    width: 238,
+                    height: 238
+                }
+            ]
         }
     },
     watch:{
@@ -381,7 +412,8 @@ export default {
         openPDFPopup() {
             this.$store.state.view.popup.PDFPopup.visible = true
         },
-        async updateQR(e) {
+        async updateQR() {
+
             if (this.$refs.qrcode) {
                 if (this.generatedQr) {
                     this.generatedQr.clear()
@@ -390,13 +422,80 @@ export default {
                     text: this.easyqr.text,
                     colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
                     logo:  this.easyqr.logo ? this.easyqr.logo : '',
-                    drawer: 'canvas',
-                    width: 500,
-                    height: 500,
+                    drawer: 'svg',
+                    width: this.configs[this.type].size,
+                    height: this.configs[this.type].size,
                     onRenderingEnd: (e, x) => {
-                        this.$store.state.view.pdf.qr = x
-                        this.$store.state.view.pdf.link = this.easyqr.text
-                        this.updatePdf()
+                        // this.$store.state.view.pdf.qr = x
+                        // this.$store.state.view.pdf.link = this.easyqr.text
+
+                        if (this.type !== '0') {
+                            
+                            const el = document.getElementById("svgGenerage");
+                            el.innerHTML = ""
+
+                            const svg1 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+                            const str = this.configs[this.type].text
+                            const strArr = str.match(/.{1,21}(\s|$)/g) || ['']
+
+                            const description = this.configs[this.type].description
+                            const descriptionArr = description && description.match(/.{1,21}(\s|$)/g) || ['']
+
+                            if (description) {
+                                for(let i in descriptionArr) {
+                                    const descriptionText = document.createElementNS("http://www.w3.org/2000/svg", "text")
+                                    descriptionText.setAttributeNS(null, "x", "50%");     
+                                    descriptionText.setAttributeNS(null, "y", 244 + (16 * i)); 
+                                    descriptionText.setAttributeNS(null, "font-size", 14);
+                                    descriptionText.setAttributeNS(null, "font-weight","medium");
+                                    descriptionText.setAttributeNS(null, "font-family","sans-serif");
+                                    descriptionText.setAttributeNS(null, "letter-spacing","0.02em");
+                                    descriptionText.setAttributeNS(null, "fill","black");
+                                    descriptionText.setAttributeNS(null, 'dominant-baseline', 'middle')
+                                    descriptionText.setAttributeNS(null, 'text-anchor', 'middle')
+                                    descriptionText.innerHTML = descriptionArr[i]
+                                    svg1.appendChild(descriptionText)
+                                }
+                            }
+
+                            svg1.setAttribute("width", "100%");
+                            svg1.setAttribute("viewBox", `0 0 ${this.configs[this.type].width} ${this.configs[this.type].height + (!!description ? (15 + descriptionArr.length * 16) - 5 : 0) + (!!str ? 30 + strArr.length * 18 : 0)}`);
+
+                            const qrcode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                            qrcode.setAttribute("x", "20");
+                            qrcode.setAttribute("y", "20");
+                            qrcode.innerHTML = x
+                            svg1.appendChild(qrcode)
+
+                            const textBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                            textBg.setAttribute("fill", "#4580c2");
+                            textBg.setAttribute("width", "100%");
+                            textBg.setAttribute("height", 30 + strArr.length * 18);
+                            textBg.setAttribute("x", "0");
+                            textBg.setAttribute("y", 238 + (!!description ? (15 + descriptionArr.length * 16) - 5 : 0));
+                            svg1.appendChild(textBg)
+
+
+                            if (str) {
+                                for(let i in strArr) {
+                                    const mainText = document.createElementNS("http://www.w3.org/2000/svg", "text")
+                                    mainText.setAttributeNS(null, "x", "50%");     
+                                    mainText.setAttributeNS(null, "y", 238 + (!!description ? (15 + descriptionArr.length * 16) - 5 : 0) + 25 + (18 * i)); 
+                                    mainText.setAttributeNS(null, "font-size", 17);
+                                    mainText.setAttributeNS(null, "font-weight","medium");
+                                    mainText.setAttributeNS(null, "font-family","sans-serif");
+                                    mainText.setAttributeNS(null, "letter-spacing","0.02em");
+                                    mainText.setAttributeNS(null, "fill","white");
+                                    mainText.setAttributeNS(null, 'dominant-baseline', 'middle')
+                                    mainText.setAttributeNS(null, 'text-anchor', 'middle')
+                                    mainText.innerHTML = strArr[i]
+                                    svg1.appendChild(mainText)
+                                }
+                            }
+
+                            el.appendChild(svg1)
+                        }
                     }
                 })
             }
@@ -508,7 +607,7 @@ export default {
     &__line {
         display: flex;
         align-items: center;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         &-label {
             flex-shrink: 0;
             width: 120px;
@@ -585,6 +684,14 @@ export default {
             justify-content: center;
             align-items: center;
             padding: 30px 15px;
+            align-self: flex-start;
+        }
+        &-template {
+            &-svg {
+                svg {
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }
+            }
         }
         &-image {
             max-width: 100%;

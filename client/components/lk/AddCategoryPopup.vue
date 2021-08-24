@@ -134,6 +134,9 @@ export default {
         }
     }
     &__add {
+        @media screen and (min-width: 768px) {
+            margin-bottom: 15px;
+        }
         &-link {
             text-align: center;
             margin: 15px 0;

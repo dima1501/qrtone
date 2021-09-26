@@ -1,11 +1,17 @@
 <template lang="pug">
   v-app
     Nuxt
+    CookiesAgreement(v-if="!isCookiesAgeed" @closePopup="closePopup()")
 </template>
 
 <script>
 
 export default {
+  data() {
+    return {
+      isCookiesAgeed: true
+    }
+  },
   sockets: {
     async updateSocketId(msg) {
         this.$store.dispatch("guest/setSocketId", msg, { root: true });
@@ -20,6 +26,13 @@ export default {
   mounted() {
     if (!this.$store.state.guest.user) {
       this.$store.dispatch("guest/checkAuth", this.$route.params.id);
+    }
+    this.isCookiesAgeed = localStorage.getItem('cookie')
+  },
+  methods: {
+    closePopup() {
+      localStorage.setItem('cookie', true)
+      this.isCookiesAgeed = true
     }
   }
 }

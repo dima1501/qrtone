@@ -72,7 +72,7 @@
                                     .reserve__bottom-item
                                         v-btn(depressed color="blue" type="submit" :disabled="!contactForm" :loading="loading").white--text Забронировать
 
-                        .reserve__step(v-if="step == 3" key="reserve_3")
+                        .reserve__step.-final(v-if="step == 3" key="reserve_3")
                             .reserve__section
                                 .reserve__success
                                     .reserve__success-icon
@@ -202,7 +202,7 @@ export default {
 .reserve {
     padding-bottom: 76px;
     @media screen and (min-width: 768px) {
-        padding: 20px 0;
+        padding: 0;
     }
     &__datetime {
         display: flex;
@@ -214,13 +214,15 @@ export default {
         }
     }
     &__step {
+        &.-final {
+            padding: 20px 0;
+        }
         &-title {
             font-weight: bold;
             font-size: 28px;
             line-height: 1.2;
             padding-right: 20px;
             margin-bottom: 20px;
-            margin-top: 20px;
         }
     }
     &__section {

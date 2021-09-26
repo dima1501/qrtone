@@ -462,8 +462,6 @@ export default {
             action.place = this.$nuxt.$route.query.place
             action.table = this.$nuxt.$route.query.t
             this.$store.dispatch('guest/fastAction', action)
-
-            
         },
         closeCommands() {
             this.$store.state.view.isCommandSend = false

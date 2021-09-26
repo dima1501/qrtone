@@ -29,7 +29,11 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
                 Markup.callbackButton('Принято', 'like')
             ]).extra()
 
-            const notify = req.body.data.notifyText
+            let notify = req.body.data.notifyText
+
+            if (!notify.includes('@table')) {
+                notify = notify + ` Столик #${req.body.data.table}`
+            }
 
             let data = {
                 _id: nanoid(),
@@ -44,7 +48,6 @@ router.post('/api/fast-action', authGuest(), async (req, res) => {
                 place: place._id,
                 timestamp: Date.now()
             }
-
 
             if (user.telegram[place._id]) {
                 for (let i = 0; i < user.telegram[place._id].length; i++) {

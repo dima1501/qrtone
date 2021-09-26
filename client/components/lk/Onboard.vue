@@ -233,6 +233,7 @@ export default {
             display: block;
             max-width: 400px;
             padding: 20px;
+            overflow: auto;
         }
     }
     &__closer {

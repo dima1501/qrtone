@@ -306,8 +306,14 @@ export default {
 }
 
 .board {
-    min-height: 100vh;
     display: flex;
+    @media screen and (min-width: 768px) {
+        min-height: calc(100vh - 40px);
+    }
+
+    @media screen and (min-width: 1024px) {
+        min-height: calc(100vh - 60px);
+    }
     
     &__choose {
         display: flex;
@@ -466,7 +472,7 @@ export default {
             }
             &-link {
                 text-align: center;
-                margin: 15px 0;
+                padding: 15px 0;
                 color: $color-blue;
                 cursor: pointer;
             }

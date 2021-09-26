@@ -3,12 +3,14 @@
         display: flex;
         align-items: center;
         margin: auto;
-        padding: 100px 0 30px 0;
+        padding: 100px 0 50px 0;
         @media screen and (min-width: 768px) {
-            min-height: 100vh;
+            height: 100vh;
+            min-height: 630px;
+            max-height: 700px;
         }
         @media screen and (min-width: 1020px) {
-            padding: 100px 0;
+            padding: 100px 0 70px;
         }
     }
     &__content {
@@ -27,7 +29,7 @@
     }
     &__title {
         font-weight: 700;
-        font-size: 28px;
+        font-size: 29px;
         line-height: 1.2;
         margin-bottom: 10px;
         @media screen and (min-width: 370px) {
@@ -43,11 +45,24 @@
         }
     }
     &__text {
-        font-size: 20px;
-        line-height: 1.35;
-        margin-bottom: 10px !important;
+        font-size: 18px;
+        line-height: 1.4;
+        margin-bottom: 5px !important;
+        display: none;
+        &.-mobile {
+            display: block;
+        }
         @media screen and (min-width: 768px) {
+            font-size: 20px;
+            display: block;
+            min-height: unset;
             margin-bottom: 16px !important;
+            &.-mobile {
+                display: none;
+            }
+        }
+        span.typed {
+            color: $color-black;
         }
     }
     &__note {
@@ -60,7 +75,7 @@
         font-size: 18px;
         text-decoration: none;
         color: $color-blue;
-        margin-bottom: 20px;
+        margin-left: 15px;
         display: inline-block;
         @media screen and (min-width: 768px) {
             display: none;

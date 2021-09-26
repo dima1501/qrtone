@@ -46,7 +46,7 @@
                     v-btn(
                         depressed
                         color="primary"
-                        to="/lk/settings") Доступно с Premium
+                        :to="localePath('/lk/settings')") Доступно с Premium
 
         .qr__field
             .qr__field-content

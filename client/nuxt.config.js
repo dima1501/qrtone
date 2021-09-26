@@ -46,11 +46,12 @@ export default {
     { src: './plugins/ymap.client.js' },
     { src: './plugins/notify.client.js' },
     { src: './plugins/confirm.client.js' },
-    { src: './plugins/parallax.client.js' }
+    { src: './plugins/parallax.client.js' },
+    { src: './plugins/typer.client.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: ['~/components/lk/', '~/components/auth/', '~/components/pdf/'],
+  components: ['~/components/lk/', '~/components/auth/', '~/components/pdf/', '~/components/public/'],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [

@@ -65,7 +65,7 @@ export default {
       if (typeof table == 'number') {
           return table
       } else {
-          return table.replace('%20', ' ')
+          return table.replaceAll('%20', ' ')
       }
     },
     selectTable(table, item, place) {

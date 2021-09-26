@@ -119,8 +119,10 @@
             // transform: translate(-50%, -50%);
         }
         &-qr {
-            width: 100%;
+            width: 110%;
             margin-bottom: 15px;
+            margin-left: -5%;
+            margin-right: -5%;
         }
         &-text {
             text-align: center;

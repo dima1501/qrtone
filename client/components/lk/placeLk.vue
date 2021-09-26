@@ -19,7 +19,7 @@
                 v-text-field(
                     type="text"
                     label="Введите текст ссылки"
-                    prefix="qrtone.com/m/"
+                    prefix="toffee.menu/m/"
                     v-model="newLink"
                     :rules="linkRules"
                     hide-details="auto"
@@ -36,7 +36,7 @@
                     
 
             div(key="edit_link_bottom" v-if="!edit")
-                a(:href="`https://qrtone.com/m/${ place.link }`" target="_blank").place__link qrtone.com/m/{{ place.link }}
+                a(:href="`https://toffee.menu/m/${ place.link }`" target="_blank").place__link toffee.menu/m/{{ place.link }}
                     v-icon(light @click="copyLink(place.link)") mdi-open-in-new
                 .place__bottom
                     .place__bottom-item(@click="copyLink(place.link)") Копировать
@@ -148,14 +148,14 @@ export default {
             this.$emit('editTables', Object.assign({}, this.place))
         },
         copyLink(link) {
-            const url = `https://qrtone.com/m/${link}`
+            const url = `https://toffee.menu/m/${link}`
             navigator.clipboard.writeText(url)
             this.$notify({ group: 'custom-style', type: 'n-success', title: 'Ссылка скопирована в буфер обмена' })
         },
         shareLink(link) {
-            const url = `https://qrtone.com/m/${link}`
+            const url = `https://toffee.menu/m/${link}`
             navigator.share({
-                title: 'QRTone.com',
+                title: 'Электронное меню toffee.menu',
                 url
             })
         }

@@ -287,7 +287,7 @@ export default {
     },
     async mounted() {
         const place = this.$store.state.view.popup.styleQRPopup.place._id
-        this.easyqr.text = this.$store.state.view.popup.styleQRPopup.type == "wifi" ? this.$store.state.view.popup.wifiPopup.string :  `http://lalka-palka.xyz/qr/${place}`
+        this.easyqr.text = this.$store.state.view.popup.styleQRPopup.type == "wifi" ? this.$store.state.view.popup.wifiPopup.string :  `https://toffee.menu/qr/${place}`
         this.updateQR()
     },
     methods: {
@@ -334,7 +334,7 @@ export default {
                             return
                         }
 
-                        const str = `http://lalka-palka.xyz/qr/${place._id}?t=${tablesArr[i]}`
+                        const str = `https://toffee.menu/qr/${place._id}?t=${tablesArr[i]}`
                         this.downloadQr = await new QRCode(this.$refs.svgGenerate, {
                             text: str.replaceAll(' ', '%20'),
                             colorDark: this.easyqr.colorDark ? this.easyqr.colorDark : '#000',
@@ -403,9 +403,9 @@ export default {
                 }
                 
             } else {
-                const str = `http://lalka-palka.xyz/m/${place.link}`
+                const str = `https://toffee.menu/m/${place.link}`
                 this.$store.state.view.pdf.link = str
-                this.generateTemplate()
+                if (this.type !== '0') this.generateTemplate()
                 if (type == 'png') {
                     svg.saveSvgAsPng(this.$refs.svgToRender.children[0],  `${place.name}_menu_qr.${type}`)
                 } else {
@@ -558,9 +558,9 @@ export default {
                 linkText.setAttributeNS(null, 'text-anchor', 'middle')
 
                 if (this.$store.state.view.popup.styleQRPopup.type == 'multi') {
-                    linkText.innerHTML = `qrtone.com/m/${this.$store.state.view.popup.styleQRPopup.place.link}?t=${this.$store.state.view.pdf.table ? this.$store.state.view.pdf.table.replaceAll('%20', ' ') : 1}`
+                    linkText.innerHTML = `toffee.menu/m/${this.$store.state.view.popup.styleQRPopup.place.link}?t=${this.$store.state.view.pdf.table ? this.$store.state.view.pdf.table.replaceAll('%20', ' ') : 1}`
                 } else {
-                    linkText.innerHTML = `qrtone.com/m/${this.$store.state.view.popup.styleQRPopup.place.link}`
+                    linkText.innerHTML = `toffee.menu/m/${this.$store.state.view.popup.styleQRPopup.place.link}`
                 }
 
                 svg1.appendChild(linkText)

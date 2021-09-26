@@ -233,7 +233,7 @@
                                         .subs__plan-price-value 15600{{$store.state.auth.user.currencySymbol}}
                                         .subs__plan-price-sale 1300{{$store.state.auth.user.currencySymbol}}/мес
 
-                    .subs__note Полный возврат средств в первые 7 дней после покупки.<br> По всем вопросам пишите на <a href="mailto:info@qrtone.com">info@qrtone.com</a>
+                    .subs__note Полный возврат средств в первые 7 дней после покупки.<br> По всем вопросам пишите на <a href="mailto:admin@toffee.menu">admin@toffee.menu</a>
 
             .settings__section
                 .settings__section-top
@@ -244,16 +244,16 @@
                 .m-container
                     .footer__inner
                         .footer__item
-                            nuxt-link(:to="localePath('/')").footer__item-text Условия использования
+                            nuxt-link(:to="localePath('/docs/user_agreement')").footer__item-text Пользовательское соглашение
                         .footer__item
-                            nuxt-link(:to="localePath('/')").footer__item-text Пользовательское соглашение
+                            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Политика конфиденциальности
                     .footer__inner
                         .footer__item
-                            a(href="mailto:info@qrtone.com").footer__item-text info@qrtone.com
+                            a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
                         .footer__item
-                            a(href="https://www.instagram.com/dima.voropaev" target="_blank").footer__item-text Instagram
+                            a(href="https://www.instagram.com/toffee.menu" target="_blank").footer__item-text Instagram
                         .footer__item
-                            a(href="tel:8(950)046-84-72").footer__item-text 8(950)046-84-72
+                            a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
                     .footer__inner
                         .footer__item
                             .footer__item-text © 2021 Все права защищены. QRTONE

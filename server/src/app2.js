@@ -5,6 +5,7 @@ const path = require('path'),
       app = require('express')(),
       routes = require('./routes'),
       cors = require('cors'),
+      fs = require('fs'),
       options = {
         key: fs.readFileSync('../../client/server.key', 'utf8'),
         cert: fs.readFileSync('../../client/certificate.crt', 'utf8')

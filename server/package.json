@@ -19,6 +19,7 @@
     "farmhash": "^3.2.1",
     "helmet": "^4.6.0",
     "http": "0.0.1-security",
+    "https": "^1.0.0",
     "mailchimp-api-v3": "^1.15.0",
     "moment": "^2.29.1",
     "mongodb": "^3.6.6",

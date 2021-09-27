@@ -3,7 +3,7 @@ const axios = require("axios")
 
 const config = {
   port: process.env.NODE_ENV !== 'production' ? '3000' : '80',
-  test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'toffee.menu',
+  test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'http://toffee.menu',
   apiserver: process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' :'http://toffee.menu:8000',
 }
 

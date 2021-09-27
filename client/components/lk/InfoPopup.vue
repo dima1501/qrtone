@@ -14,7 +14,7 @@
 
                 .info-popup__line(v-if="$store.state.guest.companyData.place.address.full")
                     .info-popup__subtitle Адрес:
-                    a(:href="`http://maps.google.com/?q=${$store.state.guest.companyData.name}, ${$store.state.guest.companyData.place.address.value}, ${$store.state.guest.companyData.place.address.description}`" target="_blank").info-popup__address
+                    a(:href="`https://maps.google.com/?q=${$store.state.guest.companyData.name}, ${$store.state.guest.companyData.place.address.value}, ${$store.state.guest.companyData.place.address.description}`" target="_blank").info-popup__address
                         span.info-popup__address-title.link(v-if="!$store.state.guest.companyData.place.address.value") {{ $store.state.guest.companyData.place.address.full }}
                         span.info-popup__address-title.link {{ $store.state.guest.companyData.place.address.value }}<br>
                         span.info-popup__address-descr.link {{ $store.state.guest.companyData.place.address.description }}

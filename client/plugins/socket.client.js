@@ -3,7 +3,7 @@ import VueSocketIO from 'vue-socket.io'
 // import store from '../store'
 import io from 'socket.io-client'
 
-const socketInstance = io(process.env.SERVER, {
+const socketInstance = io(process.env.server, {
   withCredentials: true,
   extraHeaders: {
     'Access-Control-Allow-Credentials': '*'

@@ -9,14 +9,14 @@
                 source(:srcset="`../../uploads/171-${item.images[0]}.webp 1x, ../../uploads/342-${item.images[0]}.webp 2x`" type="image/webp" media="(max-width: 380px)")
                 source(:srcset="`../../uploads/196-${item.images[0]}.webp 1x, ../../uploads/392-${item.images[0]}.webp 2x`" type="image/webp" media="(max-width: 430px)")
                 source(:srcset="`../../uploads/255-${item.images[0]}.webp 1x, ../../uploads/520-${item.images[0]}.webp 2x`" type="image/webp" media="(min-width: 431px)")
-                img(:src="`../../uploads/400-${item.images[0]}`" :srcset="`../../uploads/400-${item.images[0]} 1x, ../../uploads/800-${item.images[0]} 2x`" :alt="`${item.name}, ${$store.state.guest.companyData.name}, qrtone.com`" loading="lazy")
+                img(:src="`../../uploads/400-${item.images[0]}`" :srcset="`../../uploads/400-${item.images[0]} 1x, ../../uploads/800-${item.images[0]} 2x`" :alt="`${item.name}, ${$store.state.guest.companyData.name}, toffee.menu`" loading="lazy")
 
             VueSlickCarousel(:arrows="true" :dots="false" v-if="item.images.length > 1")
                 picture(v-for="(image, key) in item.images" :key="key" ).menu-item__img-pic
                     source(:srcset="`../../uploads/171-${image}.webp 1x, ../../uploads/342-${image}.webp 2x`" type="image/webp" media="(max-width: 380px)")
                     source(:srcset="`../../uploads/196-${image}.webp 1x, ../../uploads/392-${image}.webp 2x`" type="image/webp" media="(max-width: 430px)")
                     source(:srcset="`../../uploads/255-${image}.webp 1x, ../../uploads/520-${image}.webp 2x`" type="image/webp" media="(min-width: 431px)")
-                    img(:src="`../../uploads/400-${image}`" :srcset="`../../uploads/400-${image} 1x, ../../uploads/800-${image} 2x`" :alt="`${item.name}, ${$store.state.guest.companyData.name}, qrtone.com`" loading="lazy")
+                    img(:src="`../../uploads/400-${image}`" :srcset="`../../uploads/400-${image} 1x, ../../uploads/800-${image} 2x`" :alt="`${item.name}, ${$store.state.guest.companyData.name}, toffee.menu`" loading="lazy")
 
         .menu-item__content
             .menu-item__content-inner

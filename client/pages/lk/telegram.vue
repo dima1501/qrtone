@@ -4,7 +4,7 @@
       h1.page__title Телеграм бот
       .telegram
           .telegram__content(v-if="$store.state.auth.user.places.length") 
-            p Перейдите по ссылке <a href="https://t.me/SafetyMenuBot" target="_blank">t.me/SafetyMenuBot</a> или отсканируйте QR код
+            p Перейдите по ссылке <a href="https://t.me/toffeeMenuBot" target="_blank">t.me/toffeeMenuBot</a> или отсканируйте QR код
             p Введите команду <code>/login</code>
             p Введите код <code>{{$store.state.auth.user.bot_token}}</code>
           .telegram__content(v-else) <span @click="openAddPlacePopup"> Создайте заведение</span>, чтобы начать использовать бота
@@ -46,7 +46,7 @@ export default {
     }
   },
   async mounted() {
-    const qr = await QRCode.toString(`https://t.me/SafetyMenuBot`)
+    const qr = await QRCode.toString(`https://t.me/toffeeMenuBot`)
     this.qr = qr
   },
   computed: {

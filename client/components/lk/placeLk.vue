@@ -204,6 +204,7 @@ hr {
     }
 
     &__tables {
+        margin-top: 15px;
         &.padding {
             padding-bottom: 84px;
             @media screen and (min-width: 768px) {

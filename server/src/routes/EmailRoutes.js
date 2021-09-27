@@ -8,19 +8,29 @@ const auth = require('../middlewares/AuthMiddleware')
 
 const moment = require('moment')
 
+// const transporter = nodemailer.createTransport({
+//     name: "smtp.mailtrap.io",
+//     host: "smtp.mailtrap.io",
+//     port: 2525,
+//     // secure: process.env.NODE_ENV !== 'production' ? false : true,
+//     secure: false,
+//     // sendmail: process.env.NODE_ENV !== 'production' ? false : true,
+//     sendmail: true,
+//     auth: {
+//         user: "e13923d70a29d4",
+//         pass: "e13923d70a29d4",
+//     }
+// })
+
 const transporter = nodemailer.createTransport({
-    name: "smtp.mailtrap.io",
-    host: "smtp.mailtrap.io",
-    port: 2525,
-    // secure: process.env.NODE_ENV !== 'production' ? false : true,
-    secure: false,
-    // sendmail: process.env.NODE_ENV !== 'production' ? false : true,
-    sendmail: true,
+    host: "smtp-relay.gmail.com",
+    secureConnection: true,
+    port: 587,
     auth: {
-        user: "e13923d70a29d4",
-        pass: "e13923d70a29d4",
+      user: "admin@toffee.menu",
+      pass: "WHPac_ua3!"
     }
-})
+});
 
 transporter.use(
     "compile",
@@ -33,9 +43,9 @@ transporter.use(
 router.post("/api/send-reg-email", auth(), async (req, res) => {
     if (req.user) {
         const mailOptions = {
-            from: "info@qrtone.com",
+            from: "admin@toffee.menu",
             to: req.user.email,
-            subject: "Регистрация на QRTONE.COM",
+            subject: "Регистрация на toffee.menu",
             template: "registration-email",
             ctx: {
                 name: req.user.name,
@@ -43,6 +53,7 @@ router.post("/api/send-reg-email", auth(), async (req, res) => {
             }
         }
         transporter.sendMail(mailOptions, async (error) => {
+            console.log('qweqwe')
             if (error) {
                 return console.error(error)
             }
@@ -58,9 +69,9 @@ router.post("/api/send-restore-email", async (req, res) => {
     if (user) {
         const code = Math.floor(100000 + Math.random() * 900000)
         const mailOptions = {
-            from: "info@qrtone.com",
+            from: "admin@toffee.menu",
             to: req.body.data.email,
-            subject: "Восстановление пароля на QRTONE.COM",
+            subject: "Восстановление пароля на toffee.menu",
             template: "restore-email",
             ctx: {
                 name: user.name,
@@ -74,6 +85,7 @@ router.post("/api/send-restore-email", async (req, res) => {
         )
 
         transporter.sendMail(mailOptions, async (error) => {
+            console.log('qweqwe')
             if (error) {
                 return console.error(error)
             }
@@ -84,6 +96,8 @@ router.post("/api/send-restore-email", async (req, res) => {
         res.send(false)
     }
 })
+
+
 
 module.exports = router
 

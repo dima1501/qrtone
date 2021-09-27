@@ -256,7 +256,7 @@
                             a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
                     .footer__inner
                         .footer__item
-                            .footer__item-text © 2021 Все права защищены. QRTONE
+                            .footer__item-text © 2021 Все права защищены
             
             transition(name="fade")
                 EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")

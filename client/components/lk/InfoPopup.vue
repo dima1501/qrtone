@@ -7,24 +7,24 @@
             .info-popup__content
                 h2.info-popup__title {{ $store.state.guest.companyData.name }}
                 div.info-popup__descr(v-if="$store.state.guest.companyData.description") {{ $store.state.guest.companyData.description }}
-                div(v-if="$store.state.guest.companyData.place.phone")
+                .info-popup__line(v-if="$store.state.guest.companyData.place.phone")
                     .info-popup__subtitle Телефон:
                     a(:href="`tel:${$store.state.guest.companyData.place.phone}`").info-popup__link
                         span.link {{ $store.state.guest.companyData.place.phone }}
 
-                div(v-if="$store.state.guest.companyData.place.address.full")
+                .info-popup__line(v-if="$store.state.guest.companyData.place.address.full")
                     .info-popup__subtitle Адрес:
                     a(:href="`http://maps.google.com/?q=${$store.state.guest.companyData.name}, ${$store.state.guest.companyData.place.address.value}, ${$store.state.guest.companyData.place.address.description}`" target="_blank").info-popup__address
                         span.info-popup__address-title.link(v-if="!$store.state.guest.companyData.place.address.value") {{ $store.state.guest.companyData.place.address.full }}
                         span.info-popup__address-title.link {{ $store.state.guest.companyData.place.address.value }}<br>
                         span.info-popup__address-descr.link {{ $store.state.guest.companyData.place.address.description }}
 
-                div(v-if="$store.state.guest.companyData.place.website") 
+                .info-popup__line(v-if="$store.state.guest.companyData.place.website") 
                     .info-popup__subtitle Сайт:
                     a(:href="`${$store.state.guest.companyData.place.website.includes('http') ? '' : 'https://'}${$store.state.guest.companyData.place.website}`" target="_blank").info-popup__link
                         span.link {{ $store.state.guest.companyData.place.website }}
                         
-                div(v-if="$store.state.guest.companyData.place.times") 
+                .info-popup__line(v-if="$store.state.guest.companyData.place.times") 
                     .info-popup__subtitle График:
                     div.info-popup__link
                         span {{ $store.state.guest.companyData.place.times }}
@@ -109,12 +109,14 @@ export default {
         color: $color-black;
         opacity: 0.8;
     }
+    &__line {
+        margin-bottom: 10px;
+    }
     &__link {
         display: flex;
         align-items: center;
         text-decoration: none;
         padding-bottom: 5px;
-        margin-bottom: 5px;
         span {
             color: $color-black;
             &.link {
@@ -139,6 +141,7 @@ export default {
                     color: #2787F5;
                 }
                 &.instagram{ 
+                    background-color: #d6249f;
                     background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
                     -webkit-background-clip: text;
                     background-clip: text;

@@ -23,7 +23,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     // titleTemplate: 'My amazing Nuxt application | %s',
-    title: 'QRTONE',
+    title: 'toffee.menu',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
@@ -91,7 +91,7 @@ export default {
   ],
 
   sitemap: {
-    hostname: 'https://qrtone.com/m/',
+    hostname: 'https://toffee.menu/m/',
     gzip: true,
     path: '/sitemap.xml',
     routes: async () => {

@@ -6,7 +6,7 @@ const { MongoClient, ObjectId } = require('mongodb')
 
 const SceneGenerator = require('./Scenes')
 
-const bot = new Telegraf(process.env.TELEGRAF_TOKEN, {polling: true})
+const bot = new Telegraf(process.env.MODE == 'development' ? process.env.TELEGRAF_TOKEN : process.env.TELEGRAF_TOKEN_PROD , {polling: true})
 const api = require("../server/src/websocket")
 
 const curScene = new SceneGenerator()

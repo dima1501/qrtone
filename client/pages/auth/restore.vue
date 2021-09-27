@@ -1,6 +1,6 @@
 <template lang="pug">
     .auth
-        .auth__logo QRTONE
+        .auth__logo toffee.menu
         h1.auth__title Восстановление пароля
         .auth__content(v-if="$store.state.auth.restore.isKeyValid")
             v-form(

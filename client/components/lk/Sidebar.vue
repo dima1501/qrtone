@@ -1,6 +1,6 @@
 <template lang="pug">
   .sidebar(v-if="$store.state.auth.user" :class="{ '-visible': $store.state.view.sidebar.visible }")
-    .sidebar__name QRTone
+    nuxt-link(:to="localePath('/')" target="_blank").sidebar__name toffee.menu
     nuxt-link(:to="localePath('/lk/settings')" @click.native="toggleSidebar").sidebar__settings
     .sidebar__company
       // .sidebar__company-logo(v-bind:style="{ backgroundImage: 'url(' + ($store.state.auth.user.photo ? '../../uploads/' + $store.state.auth.user.photo : '' ) + ')' }")
@@ -64,12 +64,13 @@ export default {
   }
 
   &__name {
-    color: #fff;
+    color: #fff !important;
     font-weight: 400;
-    font-size: 22px;
+    font-size: 18px;
     line-height: 34px;
     letter-spacing: -0.1px;
     margin-bottom: 40px;
+    text-decoration: none;
   }
 
   &__settings {

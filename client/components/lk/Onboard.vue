@@ -13,7 +13,7 @@
         transition(name="slide-fade" mode="out-in")
             .onboard__section(v-if="step == 1" key="onboard_1")
                 .onboard__content
-                    .onboard__title-main Добро пожаловать<br> на <span>qrtone.com</span>
+                    .onboard__title-main Добро пожаловать<br> на <span>toffee.menu</span>
                     .onboard__text Для начала работы необходимо заполнить данные о компании
                     .onboard__text Также будет возможность ознакомиться с основами работы с проектом
                 
@@ -87,7 +87,7 @@
                 .onboard__content
                     .onboard__title Почти закончили
                     .onboard__section-text Осталось только распечатать коды и заполнить меню
-                    .onboard__section-text При наличии подписки мы поможем с заполнением меню, просто отправьте все данные на почту <a href="mailto:info@qrtone.com">info@qrtone.com</a>
+                    .onboard__section-text При наличии подписки мы поможем с заполнением меню, просто отправьте все данные на почту <a href="mailto:admin@toffee.menu">admin@toffee.menu</a>
 
         .onboard__bottom(v-if="step == 1").flex-end
             .onboard__bottom-item
@@ -131,7 +131,7 @@ export default {
         }
     },
     async mounted() {
-        const qr = await QRCode.toString(`https://t.me/SafetyMenuBot`)
+        const qr = await QRCode.toString(`https://t.me/toffeeMenuBot`)
         this.qr = qr
 
         this.mainSettings.newCompanyName = this.$store.state.auth.user.name
@@ -266,7 +266,7 @@ export default {
                 font-size: 42px;
             }
             @media screen and (min-width: 400px) {
-                font-size: 50px;
+                font-size: 46px;
             }
             span {
                 color: $color-blue;

@@ -55,9 +55,9 @@ div
                     .commands__area(v-if="commands && !$store.state.view.isCommandSend" key="commands")
                         .commands__actions
                             v-btn.commands__item.tips(depressed v-if="$store.state.guest.companyData.waiters.length" @click="letTips")
-                                img(v-if="navigator && navigator.match(/iPhone|iPod|iPad|Mac/)" src="https://img.icons8.com/ios-glyphs/60/000000/apple-pay.png" alt="qrtone.com")
-                                img(v-else-if="navigator && navigator.match(/Android/)" src="https://img.icons8.com/nolan/64/google-pay.png" alt="qrtone.com")
-                                img(v-else src="https://img.icons8.com/ios/24/000000/macbook-cards--v3.png" alt="qrtone.com")
+                                img(v-if="navigator && navigator.match(/iPhone|iPod|iPad|Mac/)" src="https://img.icons8.com/ios-glyphs/60/000000/apple-pay.png" alt="toffee.menu")
+                                img(v-else-if="navigator && navigator.match(/Android/)" src="https://img.icons8.com/nolan/64/google-pay.png" alt="toffee.menu")
+                                img(v-else src="https://img.icons8.com/ios/24/000000/macbook-cards--v3.png" alt="toffee.menu")
                                 span Оставить чаевые
                             v-btn.commands__item(v-for="(action, key) in $store.state.guest.companyData.actions" v-if="action.isActive" v-bind:key="key" depressed @click="fastAction(action)" :loading="$store.state.view.loading.sendFastAction._id == action._id") {{ action.callText }}
                             v-btn.commands__item(depressed color="error" @click="toggleCommandsMenu") Закрыть
@@ -95,7 +95,7 @@ div
                                 //- .cart__item-img(v-if="item.images[0]" v-bind:style="{ backgroundImage: 'url(../../uploads/' + item.images[0] + ')' }")
                                 picture.cart__item-img(v-if="item.images[0]")
                                     source(:srcset="`${ '../../uploads/171-' + item.images[0] }.webp 1x, ${ '../../uploads/342-' + item.images[0] }.webp 2x`" type="image/webp")
-                                    img(:src="`${ '../../uploads/171-' + item.images[0] }`" :srcset="`${ '../../uploads/171-' + item.images[0] } 1x, ${ '../../uploads/342-' + item.images[0] } 2x`" :alt="`${item.name}, ${$store.state.guest.companyData.name} qrtone.com`")
+                                    img(:src="`${ '../../uploads/171-' + item.images[0] }`" :srcset="`${ '../../uploads/171-' + item.images[0] } 1x, ${ '../../uploads/342-' + item.images[0] } 2x`" :alt="`${item.name}, ${$store.state.guest.companyData.name} toffee.menu`")
                                 .cart__item-inner(v-for="(price, idx) in getCustomArr(item.cartPrices)")
                                     .cart__item-content
                                         .cart__item-link(@click="openDetail(item, price)")

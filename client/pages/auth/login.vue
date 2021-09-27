@@ -1,6 +1,6 @@
 <template lang="pug">
     .auth
-        .auth__logo QRTONE
+        .auth__logo toffee.menu
         h1.auth__title Вход в аккаунт
         .auth__content
             v-form(

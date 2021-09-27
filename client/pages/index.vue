@@ -3,7 +3,7 @@
     .m-header
       .m-container
         .m-header__inner
-          .m-header__logo QRTONE
+          .m-header__logo toffee.menu
           .m-header__buttons
             .m-header__buttons-item
               nuxt-link(:to="localePath('/auth/login')").button.-transp Войти
@@ -26,8 +26,8 @@
                 .m-form__btn
                   nuxt-link(:to="localePath('/auth/registration')").button.-short.-black Начать бесплатно
                   a.m-welcome__try(:href="localePath('/m/Dimas_diner?t=1')" target="_blank") Демо меню
-              .m-welcome__note Попробуйте QRTONE бесплатно в течение 14 дней,<br> кредитная карта не требуется.
-              //- <br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от QRTone.
+              .m-welcome__note Попробуйте toffee.menu бесплатно в течение 14 дней,<br> кредитная карта не требуется.
+              //- <br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от toffee.menu.
             kinesis-element(:strength="10" type="depth")
               .m-welcome__media
                 kinesis-element(:strength="10" type="depth")
@@ -37,7 +37,7 @@
     
     .m-container
       .m-section
-        .m-section__title Что такое QRTONE?
+        .m-section__title Что такое toffee.menu?
         .m-section__subtitle Сервис предоставляет 2 типа подписки
         .m-section__subtitle 14 дней бесплатного периода с доступом ко всем функциям
 
@@ -118,7 +118,7 @@
             .faq__item-text Для каждого из созданных заведений можно скачать QR-код, распечатать его и разместить на столиках в заведении. Гости смогут сканировать qr-код камерой смартфона, чтобы открыть меню. Также будет сгенерирована ссылка, которую можно разместить в соц. сетях
           .faq__item
             .faq__item-title Как работает Telegram бот?
-            .faq__item-text В него приходят уведомления о заказах, бронировании и быстрых командах. В админке QRTONE можно настроить, с каких столиков будут приходить уведомления
+            .faq__item-text В него приходят уведомления о заказах, бронировании и быстрых командах. В админке toffee.menu можно настроить, с каких столиков будут приходить уведомления
           .faq__item
             .faq__item-title Что за быстрые команды?
             .faq__item-text Это команды, которые доступны гостю всего в два клика. По умолчанию созданы "Позвать официанта" и "Попросить счет", можно редактировать и создавать новые
@@ -253,7 +253,7 @@
             a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
         .footer__inner
           .footer__item
-            .footer__item-text © 2021 Все права защищены. QRTONE
+            .footer__item-text © 2021 Все права защищены
 
 
 </template>
@@ -596,7 +596,7 @@ export default {
 }
 
 .fade-enter-active {
-  animation: go 2s;
+  animation: go .2s;
 }
 
 @keyframes go {

@@ -13,10 +13,10 @@ export default {
     server: config.apiserver
   },
   server: {
-    // https: {
-    //   key: fs.readFileSync('./server.key', 'utf8'),
-    //   cert: fs.readFileSync('./certificate.crt', 'utf8')
-    // },
+    https: {
+      key: fs.readFileSync('./server.key', 'utf8'),
+      cert: fs.readFileSync('./certificate.crt', 'utf8')
+    },
     port: config.port,
     host: config.test
   },

@@ -2,8 +2,8 @@ import colors from 'vuetify/es5/util/colors'
 const axios = require("axios")
 
 const config = {
-  port: process.env.NODE_ENV !== 'production' ? '3000' : '82',
-  test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'toffee.menus',
+  port: process.env.NODE_ENV !== 'production' ? '3000' : '80',
+  test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'toffee.menu:80',
   apiserver: process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' :'http://toffee.menu:8000',
 }
 

@@ -5,7 +5,11 @@ const path = require('path'),
       app = require('express')(),
       routes = require('./routes'),
       cors = require('cors'),
-      server = require("https").createServer(app),
+      options = {
+        key: fs.readFileSync('../../client/server.key', 'utf8'),
+        cert: fs.readFileSync('../../client/certificate.crt', 'utf8')
+      },
+      server = require("https").createServer(options, app),
       cluster = require('cluster'),
       net = require('net'),
       sio_redis = require('socket.io-redis'),

@@ -7,8 +7,8 @@ const path = require('path'),
       cors = require('cors'),
       fs = require('fs'),
       options = {
-        key: fs.readFileSync('./server.key', 'utf8').toString(),
-        cert: fs.readFileSync('./certificate.crt', 'utf8').toString()
+        key: fs.readFileSync('./key.pem'),
+        cert: fs.readFileSync('./cert.pem')
       },
       server = require("https").createServer(options, app),
       cluster = require('cluster'),

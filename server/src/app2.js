@@ -10,7 +10,7 @@ const path = require('path'),
         key: fs.readFileSync('./server.key', 'utf8'),
         cert: fs.readFileSync('./certificate.crt', 'utf8')
       },
-      server = require("https").createServer(options, app),
+      server = require("http").createServer(options, app),
       cluster = require('cluster'),
       net = require('net'),
       sio_redis = require('socket.io-redis'),

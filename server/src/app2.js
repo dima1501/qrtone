@@ -7,10 +7,10 @@ const path = require('path'),
       cors = require('cors'),
       fs = require('fs'),
       options = {
-        key: fs.readFileSync('./server.key', 'utf8'),
-        cert: fs.readFileSync('./certificate.crt', 'utf8')
+        key: fs.readFileSync('./server.key', 'utf8').toString(),
+        cert: fs.readFileSync('./certificate.crt', 'utf8').toString()
       },
-      server = require("http").createServer(options, app),
+      server = require("https").createServer(options, app),
       cluster = require('cluster'),
       net = require('net'),
       sio_redis = require('socket.io-redis'),

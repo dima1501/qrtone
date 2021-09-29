@@ -10,7 +10,7 @@ const path = require('path'),
         key: fs.readFileSync('./key.pem'),
         cert: fs.readFileSync('./cert.pem')
       },
-      server = require("https").createServer(options, app),
+      server = require("https").createServer(options, app), 
       cluster = require('cluster'),
       net = require('net'),
       sio_redis = require('socket.io-redis'),
@@ -24,14 +24,12 @@ const port = 8000,
       num_processes = require('os').cpus().length;
 
 if (cluster.isMaster) {
-    console.log('isMaster')
 	const workers = [];
 
 	const spawn = function(i) {
 		workers[i] = cluster.fork();
 
 		workers[i].on('exit', function(code, signal) {
-			console.log('respawning worker', i);
 			spawn(i);
 		});
     };
@@ -52,7 +50,6 @@ if (cluster.isMaster) {
         console.log(`  Listening on ${config.ORIGIN}:${port}`);
     })
 } else {
-    console.log('worker')
 	const app = new express();
 
     const apiLimiter = rateLimit({
@@ -69,13 +66,14 @@ if (cluster.isMaster) {
 
     app.use('/', routes)
 
-	const server = app.listen(0, 'localhost')
+	const server = app.listen(0, 'localhost', { secure: true })
     const io = require("socket.io")(server, {
         cors: {
             origin: config.ORIGIN,
             credentials: true
         },
-        transport: ['websocket']
+        transport: ['websocket'],
+        secure: true
     })
 
     const websocketAPI = require('./websocket')

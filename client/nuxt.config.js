@@ -9,6 +9,7 @@ const config = {
 }
 
 export default {
+  fs: 'empty',
   env: {
     dev: config.test,
     server: config.apiserver

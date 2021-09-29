@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueSocketIO from 'vue-socket.io'
 // import store from '../store'
 import io from 'socket.io-client'
-const cert = './cert.pem'
+const fs = require('browserify-fs');
 
 const socketInstance = io(process.env.server, {
   withCredentials: true,
@@ -16,7 +16,7 @@ const socketInstance = io(process.env.server, {
   reconnectionDelayMax: 5000,
   reconnectionAttempts: 15,
   secure: true,
-  ca: cert
+  ca: fs.readFileSync("./cert.pem")
 })
 
 export default ({ store }) => {

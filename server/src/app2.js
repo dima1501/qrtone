@@ -69,7 +69,7 @@ if (cluster.isMaster) {
 	const server = app.listen(0, 'localhost')
     const io = require("socket.io")(server, {
         cors: {
-            origin: 'http://toffee.menu',
+            origin: config.ORIGIN,
             credentials: true
         },
         transport: ['websocket']

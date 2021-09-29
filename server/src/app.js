@@ -14,7 +14,17 @@ app.use(cors({credentials: true, origin: '*'}));
 
 const rateLimit = require("express-rate-limit");
 
-const server = require("http").createServer(app)
+const fs = require('fs')
+const options = {
+    key: fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem'),
+    secure: true,
+    passPhrase: 'BarcaReal69244622',
+    reconnect: true,
+    rejectUnauthorized : false
+}
+
+const server = require("https").createServer(options, app)
 
 const io = require("socket.io")(server, {
     cors: {

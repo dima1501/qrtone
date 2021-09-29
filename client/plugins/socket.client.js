@@ -13,8 +13,7 @@ const socketInstance = io(process.env.server, {
   reconnection: true,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
-  reconnectionAttempts: 35,
-  secure: true
+  reconnectionAttempts: 35
 })
 
 export default ({ store }) => {

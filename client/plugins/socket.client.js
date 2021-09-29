@@ -16,7 +16,7 @@ const socketInstance = io(process.env.server, {
   reconnectionDelayMax: 5000,
   reconnectionAttempts: 15,
   secure: true,
-  ca: fs.readFileSync("./cert.pem")
+  ca: fs.readFile("./cert.pem")
 })
 
 export default ({ store }) => {

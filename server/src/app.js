@@ -16,8 +16,8 @@ const rateLimit = require("express-rate-limit");
 
 const fs = require('fs')
 const options = {
-    key: fs.readFileSync('./key.pem'),
-    cert: fs.readFileSync('./cert.pem'),
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./certificate.crt'),
     secure: true,
     passPhrase: 'BarcaReal69244622',
     reconnect: true,

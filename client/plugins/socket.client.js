@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueSocketIO from 'vue-socket.io'
 // import store from '../store'
 import io from 'socket.io-client'
-const fs = require("fs")
+import * as fs from 'fs'
 
 const socketInstance = io(process.env.server, {
   withCredentials: true,

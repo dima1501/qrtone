@@ -66,14 +66,13 @@ if (cluster.isMaster) {
 
     app.use('/', routes)
 
-	const server = app.listen(0, 'localhost', { secure: true })
+	const server = app.listen(0, 'localhost')
     const io = require("socket.io")(server, {
         cors: {
             origin: config.ORIGIN,
             credentials: true
         },
-        transport: ['websocket'],
-        secure: true
+        transport: ['websocket']
     })
 
     const websocketAPI = require('./websocket')

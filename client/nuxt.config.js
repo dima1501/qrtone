@@ -111,7 +111,7 @@ export default {
   },
 
   proxy: {
-    '/api/': config.apiserver
+    '/api/': 'http://toffee.menu:8000'
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

@@ -24,6 +24,8 @@ const options = {
     ]
 }
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
+
 const server = require("https").createServer(options, app)
 
 const io = require("socket.io")(server, {

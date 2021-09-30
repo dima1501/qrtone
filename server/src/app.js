@@ -23,6 +23,8 @@ const options = {
     rejectUnauthorized : false
 }
 
+require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
+
 const server = require("https").createServer(options, app)
 
 const io = require("socket.io")(server, {

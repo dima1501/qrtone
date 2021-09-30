@@ -17,7 +17,10 @@ const rateLimit = require("express-rate-limit");
 const fs = require('fs')
 const options = {
     key: fs.readFileSync('./key.pem'),
-    cert: fs.readFileSync('./cert.pem')
+    cert: fs.readFileSync('./cert.pem'),
+    secure: true,
+    reconnect: true,
+    rejectUnauthorized : false
 }
 
 const server = require("https").createServer(options, app)

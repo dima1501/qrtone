@@ -19,7 +19,6 @@ const options = {
     key: fs.readFileSync('./server.key'),
     cert: fs.readFileSync('./certificate.crt'),
     secure: true,
-    passPhrase: 'BarcaReal69244622',
     reconnect: true,
     rejectUnauthorized : false
 }

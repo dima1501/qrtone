@@ -1,4 +1,5 @@
 const path = require('path')
+var fs = require('fs');
 
 const config = require('./config/config')
 
@@ -14,9 +15,12 @@ app.use(cors({credentials: true, origin: '*'}));
 
 const rateLimit = require("express-rate-limit");
 
-const fs = require('fs')
+const options = {
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./certificate.crt')
+}
 
-const server = require("http").createServer(app)
+const server = require("https").createServer(options, app)
 
 const io = require("socket.io")(server, {
     cors: {

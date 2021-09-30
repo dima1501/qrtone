@@ -16,14 +16,9 @@ const rateLimit = require("express-rate-limit");
 
 const fs = require('fs')
 const options = {
-    key: fs.readFileSync('./server.key'),
-    cert: fs.readFileSync('./certificate.crt'),
-    secure: true,
-    reconnect: true,
-    rejectUnauthorized : false
+    key: fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem')
 }
-
-require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
 
 const server = require("https").createServer(options, app)
 

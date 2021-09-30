@@ -16,7 +16,8 @@ export default {
   server: {
     https: {
       key: fs.readFileSync('./server.key', 'utf8'),
-      cert: fs.readFileSync('./certificate.crt', 'utf8')
+      cert: fs.readFileSync('./certificate.crt', 'utf8'),
+      ca: fs.readFileSync('./cert.pem', 'utf8'),
     },
     port: config.port,
     host: config.test

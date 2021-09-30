@@ -18,7 +18,6 @@ const fs = require('fs')
 const options = {
     cert: fs.readFileSync('./cert.pem'),
     key: fs.readFileSync('./key.pem'),
-    requestCert: true,
     ca: [
         fs.readFileSync('./certificate.crt')
     ]

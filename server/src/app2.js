@@ -20,6 +20,8 @@ const path = require('path'),
 
 app.use(cors({credentials: true, origin: '*'}))
 
+console.log(server.connection)
+
 const port = 8000,
       num_processes = require('os').cpus().length;
 
@@ -42,10 +44,13 @@ if (cluster.isMaster) {
 		return farmhash.fingerprint32(ip) % len;
 	};
 
-	const servers = net.createServer({ pauseOnConnect: true }, function(connection) {
+	const server = net.createServer({ pauseOnConnect: true }, function(connection) {
 		var worker = workers    [worker_index(connection.remoteAddress, num_processes)];
 		worker.send('sticky-session:connection', connection);
 	});
+
+    
+
     server.listen(port, () => {
         console.log(`  Listening on ${config.ORIGIN}:${port}`);
     })

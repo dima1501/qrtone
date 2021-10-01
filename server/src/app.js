@@ -14,7 +14,12 @@ app.use(cors({credentials: true, origin: '*'}))
 
 const rateLimit = require("express-rate-limit")
 
-const server = require("http").createServer(app)
+const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
+}
+
+const server = require("https").createServer(options, app)
 
 const io = require("socket.io")(server, {
     cors: {

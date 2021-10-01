@@ -47,7 +47,7 @@ if (cluster.isMaster) {
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
      }, function(req, res) {
          console.log(req.socket.address())
-		var worker = workers[worker_index(req.socket.address(), num_processes)];
+		var worker = workers[worker_index(req.socket.address().address, num_processes)];
 		worker.send('sticky-session:connection', req.socket);
 	});
 

@@ -48,7 +48,7 @@ if (cluster.isMaster) {
      }, function(req, res) {
          console.log(req.connection)
 		var worker = workers[worker_index(req.socket.address().address, num_processes)];
-		worker.send('sticky-session:connection', req);
+		worker.send('sticky-session:connection', req.connection);
 	});
 
     server.listen(port, () => {

@@ -18,7 +18,7 @@ const path = require('path'),
       helmet = require('helmet'),
       rateLimit = require("express-rate-limit");
 
-console.log(server.remoteAddress)
+console.log(server)
 
 app.use(cors({credentials: true, origin: '*'}))
 

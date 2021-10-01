@@ -18,8 +18,6 @@ const path = require('path'),
       helmet = require('helmet'),
       rateLimit = require("express-rate-limit");
 
-console.log(server)
-
 app.use(cors({credentials: true, origin: '*'}))
 
 const port = 8000,
@@ -45,7 +43,8 @@ if (cluster.isMaster) {
 	};
 
 	const server = net.createServer({ pauseOnConnect: true }, function(connection) {
-		var worker = workers[worker_index(connection.remoteAddress, num_processes)];
+        console.log(connection)
+		var worker = workers    [worker_index(connection.remoteAddress, num_processes)];
 		worker.send('sticky-session:connection', connection);
 	});
     server.listen(port, () => {

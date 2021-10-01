@@ -42,8 +42,7 @@ if (cluster.isMaster) {
 		return farmhash.fingerprint32(ip) % len;
 	};
 
-	const server = net.createServer({ pauseOnConnect: true }, function(connection) {
-        console.log(connection)
+	const servers = net.createServer({ pauseOnConnect: true }, function(connection) {
 		var worker = workers    [worker_index(connection.remoteAddress, num_processes)];
 		worker.send('sticky-session:connection', connection);
 	});

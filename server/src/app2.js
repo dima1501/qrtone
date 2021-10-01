@@ -16,8 +16,7 @@ const path = require('path'),
       sio_redis = require('socket.io-redis'),
       farmhash = require('farmhash'),
       helmet = require('helmet'),
-      rateLimit = require("express-rate-limit"),
-      nanoid = require('nanoid');
+      rateLimit = require("express-rate-limit");
 
 app.use(cors({credentials: true, origin: '*'}))
 
@@ -45,14 +44,10 @@ if (cluster.isMaster) {
 		return farmhash.fingerprint32(ip) % len;
 	};
 
-	// const server = net.createServer({ pauseOnConnect: true }, function(connection) {
-	// 	var worker = workers    [worker_index(connection.remoteAddress, num_processes)];
-	// 	worker.send('sticky-session:connection', connection);
-	// });
-
-    const server = require("https").createServer(options, app)
-    var worker = workers[worker_index(nanoid(), num_processes)];
-    worker.send('sticky-session:connection', server);
+	const server = require("https").createServer({ pauseOnConnect: true }, function(connection) {
+		var worker = workers[worker_index(connection.remoteAddress, num_processes)];
+		worker.send('sticky-session:connection', connection);
+	});
 
     server.listen(port, () => {
         console.log(`  Listening on ${config.ORIGIN}:${port}`);

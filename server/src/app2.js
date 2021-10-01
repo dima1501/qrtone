@@ -47,10 +47,10 @@ if (cluster.isMaster) {
 	const server = require("https").createServer({ 
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
-     }, function(connection) {
-         console.log(connection)
-		var worker = workers[worker_index('qweqwe', num_processes)];
-		worker.send('sticky-session:connection', connection);
+     }, function(req, res) {
+         console.log(req.socket)
+		var worker = workers[worker_index(req.socket.remoteAddress, num_processes)];
+		worker.send('sticky-session:connection', req.socket);
 	});
 
     server.listen(port, () => {

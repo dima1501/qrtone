@@ -18,6 +18,8 @@ const path = require('path'),
       helmet = require('helmet'),
       rateLimit = require("express-rate-limit");
 
+console.log(server.remoteAddress)
+
 app.use(cors({credentials: true, origin: '*'}))
 
 const port = 8000,

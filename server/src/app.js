@@ -1,5 +1,4 @@
 const path = require('path')
-var fs = require('fs');
 
 const config = require('./config/config')
 
@@ -11,16 +10,11 @@ const app = require('express')()
 const routes = require('./routes')
 
 const cors = require('cors');
-app.use(cors({credentials: true, origin: '*'}));
+app.use(cors({credentials: true, origin: '*'}))
 
-const rateLimit = require("express-rate-limit");
+const rateLimit = require("express-rate-limit")
 
-const options = {
-    key: fs.readFileSync('./server.key'),
-    cert: fs.readFileSync('./certificate.crt')
-}
-
-const server = require("https").createServer(options, app)
+const server = require("http").createServer(app)
 
 const io = require("socket.io")(server, {
     cors: {
@@ -34,7 +28,7 @@ const websocketAPI = require('./websocket')
 websocketAPI.start(io)
 
 server.listen(8000, () => {
-    console.log(`:8000`);
+    console.log(`:8000`)
 });
 
 const apiLimiter = rateLimit({

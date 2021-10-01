@@ -20,8 +20,6 @@ const path = require('path'),
 
 app.use(cors({credentials: true, origin: '*'}))
 
-console.log(server.connection)
-
 const port = 8000,
       num_processes = require('os').cpus().length;
 
@@ -48,8 +46,8 @@ if (cluster.isMaster) {
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
      }, function(req, res) {
-         console.log(req.socket)
-		var worker = workers[worker_index(req.socket.remoteAddress, num_processes)];
+         console.log(req.socket.address())
+		var worker = workers[worker_index(req.socket.address(), num_processes)];
 		worker.send('sticky-session:connection', req.socket);
 	});
 

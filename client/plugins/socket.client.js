@@ -8,13 +8,12 @@ const socketInstance = io(process.env.server, {
   extraHeaders: {
     'Access-Control-Allow-Credentials': '*'
   },
-  transport: ['websocket', 'polling'],
+  transport: ['websocket'],
   rejectUnauthorized: false,
   reconnection: true,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
-  reconnectionAttempts: 35,
-  secure: true
+  reconnectionAttempts: 35
 })
 
 export default ({ store }) => {

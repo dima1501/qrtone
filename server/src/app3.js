@@ -30,7 +30,7 @@ const io = require("socket.io")(server, {
         origin: config.ORIGIN,
         credentials: true
     },
-    transports: ['websocket', 'polling']
+    transports: ['websocket']
 })
 
 io.adapter(sio_redis({ host: 'localhost', port: 6379 }));

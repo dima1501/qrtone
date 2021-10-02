@@ -20,11 +20,10 @@ export default {
         this.$store.state.guest.user.orders.find(e => e.orderId === data).status = 'accepted'
     }
   },
-  created() {
+  created() {a
       // this.$store.dispatch("guest/loadData", {id: this.$route.params.id, place: this.$route.query.place }, { root: true })
   },
   mounted() {
-    console.log(this.$route.params.id)
     if (!this.$store.state.guest.user) {
       this.$store.dispatch("guest/checkAuth", this.$route.params.id);
     }

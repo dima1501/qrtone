@@ -25,12 +25,12 @@ const options = {
 
 const server = require("https").createServer(options, app)
 
-const io = require("socket.io")(server, {
+global.io = require("socket.io")(server, {
     cors: {
         origin: config.ORIGIN,
         credentials: true
     },
-    transport: ['websocket', 'polling']
+    transports: ['websocket']
 })
 
 io.adapter(sio_redis({ host: 'localhost', port: 6379 }));

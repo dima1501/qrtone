@@ -69,7 +69,12 @@ if (cluster.isMaster) {
 
     app.use('/', routes)
 
-	const server = app.listen(443, 'localhost')
+	// const server = app.listen(443, 'localhost')
+    const server = require("https").createServer(options, app)
+
+    server.listen(0, () => {
+        console.log('worker listen')
+    })
 
     const io = require("socket.io")(server, {
         cors: {

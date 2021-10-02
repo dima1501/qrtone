@@ -28,7 +28,7 @@ const io = require("socket.io")(server, {
         origin: config.ORIGIN,
         credentials: true
     },
-    transport: ['websocket', 'polling']
+    transports: ['websocket', 'polling']
 })
 
 const websocketAPI = require('./websocket')

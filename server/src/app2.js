@@ -23,6 +23,10 @@ app.use(cors({credentials: true, origin: '*'}))
 const port = 8000,
       num_processes = require('os').cpus().length;
 
+server.listen(port, () => {
+    console.log(`  Listening on ${config.ORIGIN}:${port}`);
+})
+
 if (cluster.isMaster) {
 	const workers = [];
 
@@ -42,18 +46,12 @@ if (cluster.isMaster) {
 		return farmhash.fingerprint32(ip) % len;
 	};
 
-	const server = net.createServer({
-        key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
-    }, function(req) {
-        console.log(req.remoteAddress)
-		var worker = workers[worker_index(req.remoteAddress, num_processes)];
-		worker.send('sticky-session:connection', req);
+	net.createServer({ pauseOnConnect: true }, function(connection) {
+        console.log(connection.remoteAddress)
+		var worker = workers[worker_index(connection.remoteAddress, num_processes)];
+		worker.send('sticky-session:connection', connection);
 	});
-
-    server.listen(port, () => {
-        console.log(`  Listening on ${config.ORIGIN}:${port}`);
-    })
+    
 } else {
 	const app = new express();
 

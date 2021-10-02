@@ -46,7 +46,7 @@ if (cluster.isMaster) {
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
     }, function(connection, res) {
-        console.log(Object.keys(connection))
+        console.log(Object.keys(connection.socket))
         console.log(1)
         console.log(connection.remoteAddress)
         console.log(2)

@@ -33,10 +33,10 @@ global.io = require("socket.io")(server, {
     transports: ['websocket']
 })
 
-io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
+global.io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
 
 const websocketAPI = require('./websocket')
-websocketAPI.start(io)
+websocketAPI.start(global.io)
 
 server.listen(8000, () => {
     console.log(`:8000`)

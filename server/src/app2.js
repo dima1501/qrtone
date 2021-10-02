@@ -10,13 +10,14 @@ const path = require('path'),
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
       },
-      server = null, 
       cluster = require('cluster'),
       net = require('net'),
       sio_redis = require('socket.io-redis'),
       farmhash = require('farmhash'),
       helmet = require('helmet'),
       rateLimit = require("express-rate-limit");
+
+let server = null
 
 app.use(cors({credentials: true, origin: '*'}))
 

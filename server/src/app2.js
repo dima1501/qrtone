@@ -10,14 +10,13 @@ const path = require('path'),
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
       },
+      server = require("https").createServer(options, app), 
       cluster = require('cluster'),
       net = require('net'),
       sio_redis = require('socket.io-redis'),
       farmhash = require('farmhash'),
       helmet = require('helmet'),
       rateLimit = require("express-rate-limit");
-
-let server = null
 
 app.use(cors({credentials: true, origin: '*'}))
 
@@ -71,7 +70,7 @@ if (cluster.isMaster) {
     app.use('/', routes)
 
 	// const server = app.listen(0, 'localhost')
-    server = require("https").createServer(options, app)
+    // const server = require("https").createServer(options, app)
     const io = require("socket.io")(server, {
         cors: {
             origin: config.ORIGIN,

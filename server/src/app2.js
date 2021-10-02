@@ -69,7 +69,7 @@ if (cluster.isMaster) {
 
     app.use('/', routes)
 
-	const server = app.listen(0, 'https://toffee.menu:8000')
+	const server = app.listen(443, 'toffee.menu')
 
     const io = require("socket.io")(server, {
         cors: {

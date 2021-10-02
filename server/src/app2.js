@@ -69,8 +69,8 @@ if (cluster.isMaster) {
 
     app.use('/', routes)
 
-	// const server = app.listen(0, 'localhost')
-    // const server = require("https").createServer(options, app)
+	const server = app.listen(0, 'toffee.menu')
+
     const io = require("socket.io")(server, {
         cors: {
             origin: config.ORIGIN,

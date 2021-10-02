@@ -69,7 +69,7 @@ if (cluster.isMaster) {
 
     app.use('/', routes)
 
-	const server = app.listen(0, 'toffee.menu')
+	// const server = app.listen(0, 'localhost')
 
     const io = require("socket.io")(server, {
         cors: {
@@ -82,7 +82,7 @@ if (cluster.isMaster) {
     const websocketAPI = require('./websocket')
     websocketAPI.start(io)
 
-	io.adapter(sio_redis({ host: 'toffee.menu', port: 6379 }));
+	io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
 
 	process.on('message', function(message, connection) {
 		if (message !== 'sticky-session:connection') {

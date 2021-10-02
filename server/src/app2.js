@@ -48,7 +48,7 @@ if (cluster.isMaster) {
 		worker.send('sticky-session:connection', connection);
 	});
     
-    server.listen(port, () => {
+    server.listen(8001, () => {
         console.log(`  Listening on ${config.ORIGIN}:${port}`);
     })
     
@@ -69,7 +69,11 @@ if (cluster.isMaster) {
 
     app.use('/', routes)
 
-	const server = app.listen(0, 'localhost')
+	const server = require("https").createServer(options, app)
+
+    server.listen(port, () => {
+        console.log(`  Listening on ${config.ORIGIN}:${port}`);
+    })
 
     const io = require("socket.io")(server, {
         cors: {

@@ -44,7 +44,8 @@ if (cluster.isMaster) {
 
 	const server = net.createServer({ pauseOnConnect: true }, function(connection) {
         console.log(connection)
-		var worker = workers    [worker_index(connection.remoteAddress, num_processes)];
+        console.log(connection.remoteAddress)
+		var worker = workers[worker_index(connection.remoteAddress, num_processes)];
 		worker.send('sticky-session:connection', connection);
 	});
 
@@ -91,8 +92,6 @@ if (cluster.isMaster) {
 		connection.resume();
 	});
 }
-
-
 
 module.exports = {
   app,

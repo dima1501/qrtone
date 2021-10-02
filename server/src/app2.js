@@ -72,7 +72,7 @@ if (cluster.isMaster) {
 	// const server = app.listen(443, 'localhost')
     const server = require("https").createServer(options, app)
 
-    server.listen(0, () => {
+    server.listen(8000, () => {
         console.log('worker listen')
     })
 

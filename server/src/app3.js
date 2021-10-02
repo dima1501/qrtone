@@ -25,18 +25,18 @@ const options = {
 
 const server = require("https").createServer(options, app)
 
-global.io = require("socket.io")(server, {
+const io = require("socket.io")(server, {
     cors: {
         origin: config.ORIGIN,
         credentials: true
     },
-    transports: ['websocket']
+    transports: ['websocket', 'polling']
 })
 
-global.io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
+io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
 
 const websocketAPI = require('./websocket')
-websocketAPI.start(global.io)
+websocketAPI.start(io)
 
 server.listen(8000, () => {
     console.log(`:8000`)

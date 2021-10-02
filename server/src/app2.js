@@ -42,10 +42,10 @@ if (cluster.isMaster) {
 		return farmhash.fingerprint32(ip) % len;
 	};
 
-	const server = require("https").createServer({
+	const server = net.createServer({
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
-    }, function(req, res) {
+    }, function(req) {
         console.log(typeof req.socket)
 		var worker = workers[worker_index(req.socket.remoteAddress, num_processes)];
 		worker.send('sticky-session:connection', req.socket);

@@ -48,7 +48,7 @@ if (cluster.isMaster) {
 		worker.send('sticky-session:connection', connection);
 	});
     
-    server.listen(8001, () => {
+    server.listen(port, () => {
         console.log(`  Listening on ${config.ORIGIN}:${port}`);
     })
     
@@ -69,11 +69,7 @@ if (cluster.isMaster) {
 
     app.use('/', routes)
 
-	const server = require("https").createServer(options, app)
-
-    server.listen(port, () => {
-        console.log(`  Listening on ${config.ORIGIN}:${port}`);
-    })
+	const server = app.listen(0, 'toffee.menu')
 
     const io = require("socket.io")(server, {
         cors: {
@@ -86,7 +82,7 @@ if (cluster.isMaster) {
     const websocketAPI = require('./websocket')
     websocketAPI.start(io)
 
-	io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
+	io.adapter(sio_redis({ host: 'toffee.menu', port: 6379 }));
 
 	process.on('message', function(message, connection) {
 		if (message !== 'sticky-session:connection') {

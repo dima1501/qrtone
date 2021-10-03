@@ -75,8 +75,6 @@ httpServer.listen(8000, () => {
     console.log(`listen bla bla`)
 });
 
-
-
 const io = require("socket.io")(httpServer, {
     cors: {
         origin: config.ORIGIN,
@@ -84,6 +82,7 @@ const io = require("socket.io")(httpServer, {
     },
     transport: ['websocket']
 })
+console.log(io)
 
 io.adapter(createAdapter());
 

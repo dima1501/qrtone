@@ -3,7 +3,7 @@ import VueSocketIO from 'vue-socket.io'
 // import store from '../store'
 import io from 'socket.io-client'
 
-const socketInstance = io('https://toffee.menu:8080', {
+const socketInstance = io('https://toffee.menu:8000', {
   withCredentials: true,
   extraHeaders: {
     'Access-Control-Allow-Credentials': '*'

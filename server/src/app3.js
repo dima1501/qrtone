@@ -84,13 +84,13 @@ io.on("connection", (socket) => {
     console.log('connected to socket' + socket.id)
 });
 
+io.adapter(createAdapter());
+
+setupWorker(io);
+
 httpServer.listen(8000, () => {
     console.log('server listen 8000')
 });
-
-// io.adapter(createAdapter());
-
-// setupWorker(io);
 
 const websocketAPI = require('./websocket')
 websocketAPI.start(io)

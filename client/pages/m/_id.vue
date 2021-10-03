@@ -297,14 +297,14 @@ export default {
         }
     },
     mounted() {
-        // if (this.$store.state.guest.companyData) {
-        //     this.navigator = navigator.userAgent
-        //     window.addEventListener('scroll', (e) => {
-        //         this.headerTop = this.$refs.cats.getBoundingClientRect().top;
-        //     })
-        // } else {
-        //     this.$router.push($nuxt.localePath({ name: 'error' }))
-        // }
+        if (this.$store.state.guest.companyData) {
+            this.navigator = navigator.userAgent
+            window.addEventListener('scroll', (e) => {
+                this.headerTop = this.$refs.cats.getBoundingClientRect().top;
+            })
+        } else {
+            this.$router.push($nuxt.localePath({ name: 'error' }))
+        }
     },
     watch: {
         headerTop(newValue) {

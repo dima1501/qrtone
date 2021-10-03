@@ -4,9 +4,7 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const routes = require('./routes')
 const cors = require('cors');
-
-
-// const rateLimit = require("express-rate-limit")
+const rateLimit = require("express-rate-limit")
 
 // const sio_redis = require('socket.io-redis')
 

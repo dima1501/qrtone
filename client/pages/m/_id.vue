@@ -266,34 +266,35 @@ export default {
         }
     },
     async fetch () {
-        try {
-            if (this.$route.params.id) {
-                const id = this.$route.params.id
+        console.log('lalka')
+        // try {
+        //     if (this.$route.params.id) {
+        //         const id = this.$route.params.id
 
-                const user = await axios({
-                    method: 'get',
-                    url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}`
-                })
+        //         const user = await axios({
+        //             method: 'get',
+        //             url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}`
+        //         })
 
-                if (user.data) {
-                    this.$store.state.guest.companyData = user.data
-                    this.$store.state.guest.parsedMenu = {}
-                    for (let item of this.$store.state.guest.companyData.goods) {
-                        if (this.$store.state.guest.parsedMenu[item.category]) {
-                            this.$store.state.guest.parsedMenu[item.category].push(item)
-                        } else {
-                            this.$store.state.guest.parsedMenu[item.category] = [item]
-                        }
-                        this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
-                    }
-                }
+        //         if (user.data) {
+        //             this.$store.state.guest.companyData = user.data
+        //             this.$store.state.guest.parsedMenu = {}
+        //             for (let item of this.$store.state.guest.companyData.goods) {
+        //                 if (this.$store.state.guest.parsedMenu[item.category]) {
+        //                     this.$store.state.guest.parsedMenu[item.category].push(item)
+        //                 } else {
+        //                     this.$store.state.guest.parsedMenu[item.category] = [item]
+        //                 }
+        //                 this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
+        //             }
+        //         }
 
-                this.isLoading = false
+        //         this.isLoading = false
                 
-            }
-        } catch (error) {
-            console.error(error)
-        }
+        //     }
+        // } catch (error) {
+        //     console.error(error)
+        // }
     },
     mounted() {
         if (this.$store.state.guest.companyData) {

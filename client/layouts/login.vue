@@ -11,7 +11,7 @@ v-app
                         kinesis-element(:strength="7" type="depth")
                             .m-welcome__media
                                 kinesis-element(:strength="7" type="depth")
-                                    //- img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
+                                    img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
                                 kinesis-element(:strength="7" type="depth")
                                     .m-welcome__media-text Отсканируйте для просмотра демо меню или <a href='https://toffee.menu/m/Dimas_diner?t=1' target="_blank">перейдите по ссылке</a>
 

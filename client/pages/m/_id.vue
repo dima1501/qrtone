@@ -3,14 +3,14 @@ div
     .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
-                //- img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
+                img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
             span {{$store.state.guest.companyData.name}}
         div(v-else)
             header.header
                 .header__inner  
                     .header__logo
                         // nuxt-link(to="https://google.com" target="_blank").header__logo-link
-                        //- img(v-if="$store.state.guest.companyData.photo" :src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
+                        img(v-if="$store.state.guest.companyData.photo" :src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
                         transition(name="slide-up")
                             h3.header__logo-text(v-if="isHeaderSticky") {{ $store.state.guest.companyData.name }}
                     .header__controls
@@ -296,14 +296,14 @@ export default {
         }
     },
     mounted() {
-        if (this.$store.state.guest.companyData) {
-            this.navigator = navigator.userAgent
-            window.addEventListener('scroll', (e) => {
-                this.headerTop = this.$refs.cats.getBoundingClientRect().top;
-            })
-        } else {
-            this.$router.push($nuxt.localePath({ name: 'error' }))
-        }
+        // if (this.$store.state.guest.companyData) {
+        //     this.navigator = navigator.userAgent
+        //     window.addEventListener('scroll', (e) => {
+        //         this.headerTop = this.$refs.cats.getBoundingClientRect().top;
+        //     })
+        // } else {
+        //     this.$router.push($nuxt.localePath({ name: 'error' }))
+        // }
     },
     watch: {
         headerTop(newValue) {

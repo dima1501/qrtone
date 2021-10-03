@@ -3,7 +3,7 @@ import VueSocketIO from 'vue-socket.io'
 // import store from '../store'
 import io from 'socket.io-client'
 
-const socketInstance = io(process.env.server, {
+const socketInstance = io('http://toffee.menu:8080', {
   withCredentials: true,
   extraHeaders: {
     'Access-Control-Allow-Credentials': '*'
@@ -13,8 +13,7 @@ const socketInstance = io(process.env.server, {
   reconnection: true,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
-  reconnectionAttempts: 35,
-  secure: true
+  reconnectionAttempts: 35
 })
 
 export default ({ store }) => {

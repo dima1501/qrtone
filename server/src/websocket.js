@@ -1,7 +1,6 @@
 const config = require('./config/config')
 
 const axios = require("axios")
-const e = require('express')
 
 let ioCopy = null
 

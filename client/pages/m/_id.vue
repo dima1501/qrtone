@@ -269,11 +269,10 @@ export default {
         try {
             if (this.$route.params.id) {
                 const id = this.$route.params.id
-                console.log(process.env.SERVER)
 
                 const user = await axios({
                     method: 'get',
-                    url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}`
+                    url: `https://toffee.menu:8000/api/get-user-data/${id}`
                 })
                 console.log(user)
 

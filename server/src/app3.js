@@ -92,5 +92,5 @@ httpServer.listen(8000, () => {
 
 // setupWorker(io);
 
-// const websocketAPI = require('./websocket')
-// websocketAPI.start(io)
+const websocketAPI = require('./websocket')
+websocketAPI.start(io)

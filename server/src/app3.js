@@ -72,10 +72,6 @@ app.use('/', routes)
 
 const httpServer = createServer(options, app);
 
-httpServer.listen(8000, () => {
-    console.log(`listen bla bla`)
-});
-
 const io = new Server(httpServer, {
     cors: {
         origin: config.ORIGIN,

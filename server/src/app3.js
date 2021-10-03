@@ -7,6 +7,7 @@ const cors = require('cors');
 const rateLimit = require("express-rate-limit")
 
 const { createServer } = require("https");
+import { Server } from "socket.io";
 const { createAdapter } = require("@socket.io/cluster-adapter");
 const { setupWorker } = require("@socket.io/sticky");
 
@@ -71,21 +72,29 @@ app.use('/', routes)
 
 const httpServer = createServer(options, app);
 
-const io = require("socket.io")(httpServer, {
+httpServer.listen(8000, () => {
+    console.log(`listen bla bla`)
+});
+
+const io = new Server(httpServer, {
     cors: {
         origin: config.ORIGIN,
         credentials: true
     },
     transport: ['websocket']
-})
-
-httpServer.listen(8000, () => {
-    console.log(`listen bla bla`)
 });
 
-io.adapter(createAdapter());
+io.on("connection", (socket) => {
+    console.log('connected to socket' + socket.id)
+});
 
-setupWorker(io);
+httpServer.listen(8000, () => {
+    console.log('server listen 8000')
+});
 
-const websocketAPI = require('./websocket')
-websocketAPI.start(io)
+// io.adapter(createAdapter());
+
+// setupWorker(io);
+
+// const websocketAPI = require('./websocket')
+// websocketAPI.start(io)

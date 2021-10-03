@@ -249,8 +249,6 @@ router.post('/api/accept-order', auth(), async (req, res) => {
             { 'orders.orderId': req.body.order.orderId },
             { $set: { 'orders.$.status': 'accepted' } } )
 
-        console.log(req.body.order)
-
         const guest = await req.db.collection('guests').findOne({ _id: ObjectId(req.body.order.guestId) })
 
         if (guest.socket) {

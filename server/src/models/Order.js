@@ -1,8 +1,9 @@
 const { nanoid } = require('nanoid')
+const { ObjectId } = require('mongodb').ObjectID
 
 const Order = class Order {
   constructor(id, data, place) {
-    this.orderId = nanoid(),
+    this.orderId = ObjectId(nanoid()),
     this.goods = data.goods,
     this.dops = data.dops,
     this.guestId = id,

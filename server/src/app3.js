@@ -81,7 +81,8 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-    console.log('connected to socket' + socket.id)
+    console.log('new connection')
+    io.to(socket.id).emit('updateSocketId', socket.id);
 });
 
 io.adapter(createAdapter());

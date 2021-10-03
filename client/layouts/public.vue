@@ -7,12 +7,7 @@
 <script>
 
 export default {
-  sockets: {
-    async updateSocketId(msg) {
-      console.log('update socket id guest')
-        this.$store.dispatch("guest/setSocketId", msg, { root: true });
-    }
-  },
+  
 }
 </script>
 

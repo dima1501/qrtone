@@ -14,6 +14,7 @@ export default {
   },
   sockets: {
     async updateSocketId(msg) {
+      console.log('layout updateSocketId')
         this.$store.dispatch("guest/setSocketId", msg, { root: true });
     },
     async acceptOrder(data) {

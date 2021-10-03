@@ -269,11 +269,13 @@ export default {
         try {
             if (this.$route.params.id) {
                 const id = this.$route.params.id
+                console.log(process.env.SERVER)
 
                 const user = await axios({
                     method: 'get',
                     url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}`
                 })
+                console.log(user)
 
                 if (user.data) {
                     this.$store.state.guest.companyData = user.data

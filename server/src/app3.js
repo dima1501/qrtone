@@ -71,21 +71,21 @@ app.use('/', routes)
 
 const httpServer = createServer(options, app);
 
-const io = require("socket.io")(httpServer, {
-    cors: {
-        origin: config.ORIGIN,
-        credentials: true
-    },
-    transport: ['websocket']
-})
+// const io = require("socket.io")(httpServer, {
+//     cors: {
+//         origin: config.ORIGIN,
+//         credentials: true
+//     },
+//     transport: ['websocket']
+// })
 
 httpServer.listen(8000, () => {
     console.log(`listen bla bla`)
 });
 
-io.adapter(createAdapter());
+// io.adapter(createAdapter());
 
-setupWorker(io);
+// setupWorker(io);
 
-const websocketAPI = require('./websocket')
-websocketAPI.start(io)
+// const websocketAPI = require('./websocket')
+// websocketAPI.start(io)

@@ -13,7 +13,8 @@ const socketInstance = io('https://toffee.menu:8080', {
   reconnection: true,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
-  reconnectionAttempts: 35
+  reconnectionAttempts: 35,
+  secure: true
 })
 
 export default ({ store }) => {

@@ -251,7 +251,7 @@ router.post('/api/accept-order', auth(), async (req, res) => {
 
         console.log(req.body.order)
 
-        const guest = await req.db.collection('guests').findOne({ _id: req.body.order.guestId })
+        const guest = await req.db.collection('guests').findOne({ _id: ObjectId(req.body.order.guestId) })
 
         if (guest.socket) {
             websocket.acceptOrder({

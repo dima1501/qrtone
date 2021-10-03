@@ -299,7 +299,6 @@ export default {
         }
     },
     mounted() {
-        console.log('mounted _id')
         if (this.$store.state.guest.companyData) {
             this.navigator = navigator.userAgent
             window.addEventListener('scroll', (e) => {

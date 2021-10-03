@@ -118,6 +118,7 @@ router.post('/api/set-socket-id', auth(), async (req, res) => {
 })
 
 router.post('/api/set-socket-id-guest', authGuest(), async (req, res) => {
+  console.log('set guest socket id')
   if (!req.user) {
     return
   }

@@ -7,7 +7,7 @@ const cors = require('cors');
 const rateLimit = require("express-rate-limit")
 
 const { createServer } = require("https");
-import { Server } from "socket.io";
+const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/cluster-adapter");
 const { setupWorker } = require("@socket.io/sticky");
 

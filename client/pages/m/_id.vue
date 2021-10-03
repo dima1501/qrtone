@@ -212,7 +212,7 @@ const axios = require('axios').default
 
 export default {
     name: 'main-page',
-    layout: 'main',
+    // layout: 'main',
     components: {
         VueSlickCarousel,
         vuescroll

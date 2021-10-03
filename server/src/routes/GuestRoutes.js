@@ -122,6 +122,7 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
     const user = await req.db.collection('users').findOne({ 'places.link': req.body.data.order.place })
 
     const place = user.places.find(e => e.link == req.body.data.order.place)
+    console.log(req.user._id)
 
     const order = new OrderModel(req.user._id, req.body.data.order, place._id)
 

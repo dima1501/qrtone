@@ -52,32 +52,28 @@ const apiLimiter = rateLimit({
     max: 500
 });
 
-const httpServer = createServer(options, app);
-
-httpServer.listen(8000, () => {
-    console.log(`listen bla bla`)
-});
-
+const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
+}
 
 app.use(cors({credentials: true, origin: '*'}))
-
 app.use(apiLimiter)
-
 app.use(express.json({limit: '50mb'}))
 app.use(express.static('public'))
 app.use(cookieParser())
 app.use('/static', express.static(path.join(__dirname, '/static')))
 app.use('/', routes)
 
+const httpServer = createServer(options, app);
+
+httpServer.listen(8000, () => {
+    console.log(`listen bla bla`)
+});
+
 const { createServer } = require("https");
 const { createAdapter } = require("@socket.io/cluster-adapter");
 const { setupWorker } = require("@socket.io/sticky");
-
-const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
-}
-
 
 const io = require("socket.io")(httpServer, {
     cors: {
@@ -86,7 +82,6 @@ const io = require("socket.io")(httpServer, {
     },
     transport: ['websocket']
 })
-
 
 io.adapter(createAdapter());
 

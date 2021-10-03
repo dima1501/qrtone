@@ -71,10 +71,6 @@ app.use('/', routes)
 
 const httpServer = createServer(options, app);
 
-httpServer.listen(8000, () => {
-    console.log(`listen bla bla`)
-});
-
 const io = require("socket.io")(httpServer, {
     cors: {
         origin: config.ORIGIN,
@@ -82,7 +78,10 @@ const io = require("socket.io")(httpServer, {
     },
     transport: ['websocket']
 })
-console.log(io)
+
+httpServer.listen(8000, () => {
+    console.log(`listen bla bla`)
+});
 
 io.adapter(createAdapter());
 

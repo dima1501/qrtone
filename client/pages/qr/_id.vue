@@ -18,6 +18,10 @@ export default {
                 table: this.$route.query.t
             })
         }
+
+        if (!this.$store.state.guest.user) {
+            this.$store.dispatch("guest/checkAuth", this.$route.params.id);
+        }
     }
 }
 </script>

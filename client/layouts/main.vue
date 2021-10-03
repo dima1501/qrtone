@@ -24,10 +24,8 @@ export default {
       // this.$store.dispatch("guest/loadData", {id: this.$route.params.id, place: this.$route.query.place }, { root: true })
   },
   mounted() {
-    console.log(this.$socket)
-    if (!this.$store.state.guest.user) {
-      this.$store.dispatch("guest/checkAuth", this.$route.params.id);
-    }
+    this.$store.dispatch("guest/setSocketId", this.$socket.id, { root: true });
+    this.$store.dispatch("guest/checkAuth", this.$route.params.id);
     this.isCookiesAgeed = this.$route.params.id == 'Dimas_diner' ? true : localStorage.getItem('cookie')
   },
   methods: {

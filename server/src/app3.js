@@ -67,7 +67,15 @@ const options = {
 }
 
 const httpServer = createServer(options, app);
-const io = new Server(httpServer);
+
+const io = require("socket.io")(httpServer, {
+    cors: {
+        origin: config.ORIGIN,
+        credentials: true
+    },
+    transport: ['websocket']
+})
+
 
 io.adapter(createAdapter());
 

@@ -3,12 +3,12 @@ import VueSocketIO from 'vue-socket.io'
 // import store from '../store'
 import io from 'socket.io-client'
 
-const socketInstance = io("https://toffee.menu:8080", {
+const socketInstance = io(process.env.server, {
   withCredentials: true,
   extraHeaders: {
     'Access-Control-Allow-Credentials': '*'
   },
-  transport: ['websocket', 'polling'],
+  transport: ['websocket'],
   rejectUnauthorized: false,
   reconnection: true,
   reconnectionDelay: 1000,

@@ -80,13 +80,7 @@ const io = new Server(httpServer, {
     transport: ['websocket']
 });
 
-io.on("connection", (socket) => {
-    console.log('new connection')
-    io.to(socket.id).emit('updateSocketId', socket.id);
-});
-
 io.adapter(createAdapter());
-
 setupWorker(io);
 
 httpServer.listen(8000, () => {

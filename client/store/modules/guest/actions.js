@@ -35,7 +35,6 @@ const loadOrders = async (store, data) => {
 }
 
 const setSocketId = async (store, socketId) => {
-    console.log('action setSocketId' + socketId)
     try {
       await axios({
         method: 'post',

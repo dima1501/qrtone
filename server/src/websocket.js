@@ -8,7 +8,7 @@ module.exports = {
   start: async(io) => {
     ioCopy = io
     io.sockets.on('connection', (socket) => {
-      
+      io.to(socket.id).emit('updateSocketId', socket.id);
       socket.on('disconnect', async () => {
         try {
           await axios({

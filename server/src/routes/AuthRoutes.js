@@ -42,7 +42,7 @@ router.post("/api/login", auth(), async (req, res) => {
     
     const preloadUser = await new PreloadUserModel(user)
     const sessionId = await new SessionService().createSession(req, user._id)
-    res.cookie("sessionId", sessionId, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true }).send(preloadUser)
+    res.cookie("sessionId", sessionId, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: true }).send(preloadUser)
   } catch (err) {
     console.error(err)
   }
@@ -58,7 +58,7 @@ router.post('/api/registration', auth(), async (req, res) => {
           const preloadUser = await new PreloadUserModel(createUser)
           if (createUser) {
               const sessionId = await new SessionService().createSession(req, createUser._id)
-              res.cookie("sessionId", sessionId, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true }).send(preloadUser)
+              res.cookie("sessionId", sessionId, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: true }).send(preloadUser)
           } else {
               res.status(200).send(false)
           }
@@ -73,7 +73,7 @@ router.post('/api/registration-guest', authGuest(), async (req, res) => {
     const createUser = await new UserService().createGuest(req)
     if (createUser) {
         const sessionId = await new SessionService().createSession(req, createUser._id)
-        res.cookie("guestSessionId", sessionId, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true }).send(createUser)
+        res.cookie("guestSessionId", sessionId, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: true }).send(createUser)
     } else {
         res.status(200).send(false)
     }

@@ -6,6 +6,10 @@ const routes = require('./routes')
 const cors = require('cors');
 const rateLimit = require("express-rate-limit")
 
+const { createServer } = require("https");
+const { createAdapter } = require("@socket.io/cluster-adapter");
+const { setupWorker } = require("@socket.io/sticky");
+
 // const sio_redis = require('socket.io-redis')
 
 
@@ -71,9 +75,7 @@ httpServer.listen(8000, () => {
     console.log(`listen bla bla`)
 });
 
-const { createServer } = require("https");
-const { createAdapter } = require("@socket.io/cluster-adapter");
-const { setupWorker } = require("@socket.io/sticky");
+
 
 const io = require("socket.io")(httpServer, {
     cors: {

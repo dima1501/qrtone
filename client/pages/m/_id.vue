@@ -287,6 +287,8 @@ export default {
                         }
                         this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
                     }
+                } else {
+                    this.$store.state.guest.companyData = false
                 }
 
                 this.isLoading = false

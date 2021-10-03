@@ -31,7 +31,7 @@
             kinesis-element(:strength="10" type="depth")
               .m-welcome__media
                 kinesis-element(:strength="10" type="depth")
-                  img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
+                  //- img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
                 kinesis-element(:strength="10" type="depth")
                   .m-welcome__media-text Отсканируйте для просмотра демо меню или <a :href="localePath('/m/Dimas_diner?t=1')" target="_blank">перейдите по ссылке</a>
     
@@ -59,7 +59,7 @@
       .m-container
         .fe-section__inner
           .fe-section__image
-            img.fe-section__image-file(:src="require(`~/static/table-tent.png`)")
+            //- img.fe-section__image-file(:src="require(`~/static/table-tent.png`)")
           .fe-section__content
             .fe-section__title Удобнее печатного меню
             .fe-section__text Не нужно ждать, пока официант принесет меню
@@ -77,7 +77,7 @@
             .fe-section__btn
               nuxt-link(:to="localePath('/auth/registration')" target="_blank").button.-black Начать бесплатно
           .fe-section__image
-            img.fe-section__image-file(:src="require(`~/static/create-icon.jpg`)")
+            //- img.fe-section__image-file(:src="require(`~/static/create-icon.jpg`)")
 
     .steps
       .m-container

@@ -3,14 +3,14 @@ div
     .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
-                img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
+                //- img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
             span {{$store.state.guest.companyData.name}}
         div(v-else)
             header.header
                 .header__inner  
                     .header__logo
                         // nuxt-link(to="https://google.com" target="_blank").header__logo-link
-                        img(v-if="$store.state.guest.companyData.photo" :src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
+                        //- img(v-if="$store.state.guest.companyData.photo" :src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
                         transition(name="slide-up")
                             h3.header__logo-text(v-if="isHeaderSticky") {{ $store.state.guest.companyData.name }}
                     .header__controls
@@ -212,7 +212,7 @@ const axios = require('axios').default
 
 export default {
     name: 'main-page',
-    // layout: 'main',
+    layout: 'main',
     components: {
         VueSlickCarousel,
         vuescroll
@@ -266,35 +266,34 @@ export default {
         }
     },
     async fetch () {
-        console.log('lalka')
-        // try {
-        //     if (this.$route.params.id) {
-        //         const id = this.$route.params.id
+        try {
+            if (this.$route.params.id) {
+                const id = this.$route.params.id
 
-        //         const user = await axios({
-        //             method: 'get',
-        //             url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}`
-        //         })
+                const user = await axios({
+                    method: 'get',
+                    url: `${process.env.SERVER || "http://localhost:8000"}/api/get-user-data/${id}`
+                })
 
-        //         if (user.data) {
-        //             this.$store.state.guest.companyData = user.data
-        //             this.$store.state.guest.parsedMenu = {}
-        //             for (let item of this.$store.state.guest.companyData.goods) {
-        //                 if (this.$store.state.guest.parsedMenu[item.category]) {
-        //                     this.$store.state.guest.parsedMenu[item.category].push(item)
-        //                 } else {
-        //                     this.$store.state.guest.parsedMenu[item.category] = [item]
-        //                 }
-        //                 this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
-        //             }
-        //         }
+                if (user.data) {
+                    this.$store.state.guest.companyData = user.data
+                    this.$store.state.guest.parsedMenu = {}
+                    for (let item of this.$store.state.guest.companyData.goods) {
+                        if (this.$store.state.guest.parsedMenu[item.category]) {
+                            this.$store.state.guest.parsedMenu[item.category].push(item)
+                        } else {
+                            this.$store.state.guest.parsedMenu[item.category] = [item]
+                        }
+                        this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
+                    }
+                }
 
-        //         this.isLoading = false
+                this.isLoading = false
                 
-        //     }
-        // } catch (error) {
-        //     console.error(error)
-        // }
+            }
+        } catch (error) {
+            console.error(error)
+        }
     },
     mounted() {
         if (this.$store.state.guest.companyData) {
@@ -305,7 +304,6 @@ export default {
         } else {
             this.$router.push($nuxt.localePath({ name: 'error' }))
         }
-        
     },
     watch: {
         headerTop(newValue) {

@@ -4,7 +4,11 @@
 
 <script>
 export default {
-    layout: 'main',
+    sockets: {
+        async updateSocketId(msg) {
+            this.$store.dispatch("guest/setSocketId", msg, { root: true });
+        }
+    },
     mounted() {
         if (!this.$route.params.id) {
             this.$router.push($nuxt.localePath({ path: '/' }))

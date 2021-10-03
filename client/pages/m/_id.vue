@@ -274,7 +274,6 @@ export default {
                     method: 'get',
                     url: `https://toffee.menu:8000/api/get-user-data/${id}`
                 })
-                console.log(user)
 
                 if (user.data) {
                     this.$store.state.guest.companyData = user.data

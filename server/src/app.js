@@ -38,6 +38,10 @@ server.listen(8000, () => {
     console.log(`:8000`)
 });
 
+server.listen(8080, () => {
+    console.log(`asdadsas`)
+});
+
 const apiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     max: 500

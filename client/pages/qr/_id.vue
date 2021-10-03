@@ -4,11 +4,6 @@
 
 <script>
 export default {
-    sockets: {
-        async updateSocketId(msg) {
-            this.$store.dispatch("guest/setSocketId", msg, { root: true });
-        }
-    },
     mounted() {
         if (!this.$route.params.id) {
             this.$router.push($nuxt.localePath({ path: '/' }))
@@ -17,10 +12,6 @@ export default {
                 placeId: this.$route.params.id,
                 table: this.$route.query.t
             })
-        }
-
-        if (!this.$store.state.guest.user) {
-            this.$store.dispatch("guest/checkAuth", this.$route.params.id);
         }
     }
 }

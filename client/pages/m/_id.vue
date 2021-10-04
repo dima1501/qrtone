@@ -208,8 +208,6 @@ import moment from 'moment';
 Vue.use(VueScrollactive);
 Vue.use(vuescroll);
 
-const axios = require('axios').default
-
 export default {
     name: 'main-page',
     layout: 'main',

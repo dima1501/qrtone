@@ -266,6 +266,7 @@ export default {
         }
     },
     async fetch () {
+        console.log('fetch async')
         try {
             if (this.$route.params.id) {
                 const id = this.$route.params.id
@@ -304,7 +305,7 @@ export default {
                 this.headerTop = this.$refs.cats.getBoundingClientRect().top;
             })
         } else {
-            this.$router.push($nuxt.localePath({ name: 'error' }))
+            // this.$router.push($nuxt.localePath({ name: 'error' }))
         }
     },
     watch: {

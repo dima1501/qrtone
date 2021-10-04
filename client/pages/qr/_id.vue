@@ -4,6 +4,7 @@
 
 <script>
 export default {
+    layout: 'main',
     mounted() {
         if (!this.$route.params.id) {
             this.$router.push($nuxt.localePath({ path: '/' }))

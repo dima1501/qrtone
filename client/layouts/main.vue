@@ -24,7 +24,7 @@ export default {
       // this.$store.dispatch("guest/loadData", {id: this.$route.params.id, place: this.$route.query.place }, { root: true })
   },
   mounted() {
-    console.log(this.$route.params.id)
+    this.$store.dispatch("guest/setSocketId", this.$socket.id, { root: true });
     if (!this.$store.state.guest.user) {
       this.$store.dispatch("guest/checkAuth", this.$route.params.id);
     }

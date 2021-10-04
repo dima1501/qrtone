@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
+    .public(v-if="$store.state.guest.user && $store.state.guest.companyData")
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
                 img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
@@ -265,38 +265,6 @@ export default {
             }
         }
     },
-    async fetch () {
-        try {
-            if (this.$route.params.id) {
-                const id = this.$route.params.id
-
-                const user = await axios({
-                    method: 'get',
-                    url: `https://toffee.menu:8000/api/get-user-data/${id}`
-                })
-
-                if (user.data) {
-                    this.$store.state.guest.companyData = user.data
-                    this.$store.state.guest.parsedMenu = {}
-                    for (let item of this.$store.state.guest.companyData.goods) {
-                        if (this.$store.state.guest.parsedMenu[item.category]) {
-                            this.$store.state.guest.parsedMenu[item.category].push(item)
-                        } else {
-                            this.$store.state.guest.parsedMenu[item.category] = [item]
-                        }
-                        this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
-                    }
-                } else {
-                    this.$store.state.guest.companyData = false
-                }
-
-                this.isLoading = false
-                
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    },
     mounted() {
         if (this.$store.state.guest.companyData) {
             this.navigator = navigator.userAgent
@@ -305,7 +273,7 @@ export default {
             })
         } else {
             console.log('data not loaded')
-            this.$router.push($nuxt.localePath({ name: 'error' }))
+            // this.$router.push($nuxt.localePath({ name: 'error' }))
         }
     },
     watch: {

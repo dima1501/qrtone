@@ -1,7 +1,7 @@
 <template lang="pug">
   v-app
-    Nuxt
-    CookiesAgreement(v-if="!isCookiesAgeed" @closePopup="closePopup()")
+    Nuxt(v-if="!isLoading")
+    //- CookiesAgreement(v-if="!isCookiesAgeed" @closePopup="closePopup()")
 </template>
 
 <script>
@@ -9,7 +9,8 @@
 export default {
   data() {
     return {
-      isCookiesAgeed: true
+      isCookiesAgeed: true,
+      isLoading: true
     }
   },
   sockets: {
@@ -23,7 +24,43 @@ export default {
   created() {
       // this.$store.dispatch("guest/loadData", {id: this.$route.params.id, place: this.$route.query.place }, { root: true })
   },
+  async fetch () {
+    try {
+        if (this.$route.params.id) {
+            const id = this.$route.params.id
+
+            const user = await axios({
+                method: 'get',
+                url: `https://toffee.menu:8000/api/get-user-data/${id}`
+            })
+
+            if (user.data) {
+                this.$store.state.guest.companyData = user.data
+                this.$store.state.guest.parsedMenu = {}
+                for (let item of this.$store.state.guest.companyData.goods) {
+                    if (this.$store.state.guest.parsedMenu[item.category]) {
+                        this.$store.state.guest.parsedMenu[item.category].push(item)
+                    } else {
+                        this.$store.state.guest.parsedMenu[item.category] = [item]
+                    }
+                    this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
+                }
+            } else {
+                this.$store.state.guest.companyData = false
+            }
+
+            this.isLoading = false
+            
+        }
+    } catch (error) {
+        console.error(error)
+    }
+  },
   mounted() {
+    if (!this.$store.state.guest.companyData) {
+      this.$router.push($nuxt.localePath({ name: 'error' }))
+    }
+    
     this.$store.dispatch("guest/setSocketId", this.$socket.id, { root: true });
     if (!this.$store.state.guest.user) {
       this.$store.dispatch("guest/checkAuth", this.$route.params.id);

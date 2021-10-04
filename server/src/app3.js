@@ -11,8 +11,6 @@ const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/cluster-adapter");
 const { setupWorker } = require("@socket.io/sticky");
 
-const sio_redis = require('socket.io-redis');
-
 // const sio_redis = require('socket.io-redis')
 
 
@@ -82,8 +80,7 @@ const io = new Server(httpServer, {
     transport: ['websocket']
 });
 
-// io.adapter(createAdapter());
-io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
+io.adapter(createAdapter());
 setupWorker(io);
 
 httpServer.listen(8000, () => {

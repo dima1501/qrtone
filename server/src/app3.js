@@ -11,7 +11,7 @@ const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/cluster-adapter");
 const { setupWorker } = require("@socket.io/sticky");
 
-const sio_redis = require('socket.io-redis'),
+const sio_redis = require('socket.io-redis');
 
 // const sio_redis = require('socket.io-redis')
 

@@ -258,7 +258,7 @@ router.post('/api/load-orders', authGuest(), async (req, res) => {
         const orders = await req.db.collection("users").aggregate([
             { $match: { 'places.link': req.body.data } },
             { $unwind: '$orders' },
-            { $match: {'orders.guestId': req.user._id } },
+            { $match: {'orders.guestId': ObjectId(req.user._id).toString() } },
             { $sort: { 'orders.timestamp': -1 } },
             { $group: {_id: '$_id', list: {$push: '$orders'} } }
         ]).toArray()

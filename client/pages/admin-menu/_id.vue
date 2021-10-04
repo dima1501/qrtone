@@ -91,7 +91,7 @@ export default {
 
             const user = await axios({
                 method: 'get',
-                url: `${process.env.SERVER || "http://localhost:8000"}/api/admin/get-user-data/${this.$nuxt.$route.params.id}`
+                url: `https://toffee.menu:8000/api/admin/get-user-data/${this.$nuxt.$route.params.id}`
             })
             this.$store.state.admin.user = user.data
             for (let item of this.$store.state.admin.user.goods) {

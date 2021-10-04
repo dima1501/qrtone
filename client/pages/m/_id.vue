@@ -1,6 +1,7 @@
 <template lang="pug">
 div
-    .public(v-if="$store.state.guest.user && $store.state.guest.companyData")
+    h1(v-if="isNotFound") not found
+    .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
                 img(:src="require(`~/static/uploads/${$store.state.guest.companyData.photo}`)" :alt="$store.state.guest.companyData.name").header__logo-img
@@ -208,6 +209,8 @@ import moment from 'moment';
 Vue.use(VueScrollactive);
 Vue.use(vuescroll);
 
+const axios = require('axios').default
+
 export default {
     name: 'main-page',
     layout: 'main',
@@ -217,6 +220,7 @@ export default {
     },
     data() {
         return {
+            isNotFound: false,
             navigator: null,
             isLoading: true,
             commands: false,
@@ -261,6 +265,39 @@ export default {
                     disable: false
                 }
             }
+        }
+    },
+    async fetch () {
+        try {
+            if (this.$route.params.id) {
+                const id = this.$route.params.id
+
+                const user = await axios({
+                    method: 'get',
+                    url: `https://toffee.menu:8000/api/get-user-data/${id}`
+                })
+
+                if (user.data) {
+                    this.$store.state.guest.companyData = user.data
+                    this.$store.state.guest.parsedMenu = {}
+                    for (let item of this.$store.state.guest.companyData.goods) {
+                        if (this.$store.state.guest.parsedMenu[item.category]) {
+                            this.$store.state.guest.parsedMenu[item.category].push(item)
+                        } else {
+                            this.$store.state.guest.parsedMenu[item.category] = [item]
+                        }
+                        this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
+                    }
+                } else {
+                    this.$store.state.guest.companyData = false
+                    this.isNotFound = true
+                }
+
+                this.isLoading = false
+                
+            }
+        } catch (error) {
+            console.error(error)
         }
     },
     mounted() {

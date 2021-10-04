@@ -308,15 +308,10 @@ export default {
         }
     },
     mounted() {
-        if (this.$store.state.guest.companyData) {
-            this.navigator = navigator.userAgent
-            window.addEventListener('scroll', (e) => {
-                this.headerTop = this.$refs.cats.getBoundingClientRect().top;
-            })
-        } else {
-            console.log('data not loaded')
-            // this.$router.push($nuxt.localePath({ name: 'error' }))
-        }
+        this.navigator = navigator.userAgent
+        window.addEventListener('scroll', (e) => {
+            this.headerTop = this.$refs.cats.getBoundingClientRect().top;
+        })
     },
     watch: {
         headerTop(newValue) {

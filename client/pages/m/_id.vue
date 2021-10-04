@@ -1,6 +1,13 @@
 <template lang="pug">
 div
-    h1(v-if="isNotFound") not found
+    .p-error(v-if="isNotFound")
+      .p-error__video
+        video(:src="require('~/static/travolta.mp4')" autoplay loop muted)
+      .p-error__content
+        .p-error__num 404
+        .p-error__title Страница не найдена
+        nuxt-link(:to="localePath('/')").p-error__link На главную
+
     .public(v-if="$store.state.guest.user && $store.state.guest.companyData && !isLoading")
         .geser(v-if="!isSubscriptionActive")
             div(v-if="$store.state.guest.companyData.photo")
@@ -1113,6 +1120,50 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.p-error {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  height: 100%; 
+  &__video {
+    video {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      object-fit: cover;
+      width: 100%;
+      min-height: 100%;
+      opacity: 0.7;
+    }
+  }
+  &__content {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    text-align: center;
+    padding-top: 100px;
+  }
+  &__title {
+    font-size: 36px;
+    font-weight: lighter;
+    margin-bottom: 15px;
+  }
+  &__num {
+    font-weight: bold;
+    font-size: 170px;
+    line-height: 1;
+  }
+  &__link {
+    color: $color-blue;
+    text-decoration: none;
+    font-size: 18px;
+  }
 }
 </style>
 

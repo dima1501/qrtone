@@ -251,8 +251,8 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 })
 
 router.post('/api/load-orders', authGuest(), async (req, res) => {
+    console.log(req.body.data)
     const user = await req.db.collection('users').findOne({ 'places.link': req.body.data })
-    console.log(user._id)
 
     if (user) {
         const orders = await req.db.collection("users").aggregate([

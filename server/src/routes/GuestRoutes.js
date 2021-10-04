@@ -252,6 +252,7 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 
 router.post('/api/load-orders', authGuest(), async (req, res) => {
     const user = await req.db.collection('users').findOne({ 'places.link': req.body.data })
+    console.log(user._id)
 
     if (user) {
         const orders = await req.db.collection("users").aggregate([
@@ -261,6 +262,7 @@ router.post('/api/load-orders', authGuest(), async (req, res) => {
             { $sort: { 'orders.timestamp': -1 } },
             { $group: {_id: '$_id', list: {$push: '$orders'} } }
         ]).toArray()
+        console.log(orders)
         if (orders[0] && orders[0].list) {
             res.status(200).json(orders[0].list)
         } else {

@@ -14,12 +14,15 @@ const fs = require('fs'),
     cors = require('cors'),
     cookieParser = require('cookie-parser'),
     path = require('path'),
-    config = require('./config/config')
+    config = require('./config/config');
+
+let server = null,
+    app = null
 
 if (cluster.isMaster) {
   // we create a HTTP server, but we do not use listen
   // that way, we have a socket.io server that doesn't accept connections
-  var server = require('https').createServer(options);
+  server = require('https').createServer(options);
   const io = require('socket.io')(server, {
     cors: {
         origin: config.ORIGIN,
@@ -58,7 +61,7 @@ if (cluster.isWorker) {
   app.use('/', routes)
 
   var http = require('https');
-  var server = http.createServer(options, app);
+  server = http.createServer(options, app);
 
   const io = require('socket.io')(server, {
     cors: {
@@ -77,3 +80,8 @@ if (cluster.isWorker) {
 
   server.listen(8000 + process.env.NODE_APP_INSTANCE);
 }
+
+module.exports = {
+  app,
+  server,
+};

@@ -1,4 +1,5 @@
 const cluster = require("cluster"),
+    express = require('express'),
     https = require("https"),
     config = require('./config/config'),
     path = require('path'),
@@ -33,7 +34,7 @@ if (cluster.isMaster) {
     cluster.on("listening", (worker) => console.log("worker " + worker.process.pid + " is now connected to " + address.address + ":" + address.port ))
     cluster.on("exit", (worker) => console.log("worker " + worker.process.pid + " died"))
 } else {
-    let app = require("express")()
+    let app = express()
     app.use(cors({credentials: true, origin: config.ORIGIN}))
     app.use(apiLimiter)
     app.use(express.json({limit: '50mb'}))

@@ -51,7 +51,7 @@ if (cluster.isMaster) {
 
 if (cluster.isWorker) {
   var express = require('express');
-  var app = express();
+  app = express();
   app.use(cors({credentials: true, origin: config.ORIGIN}))
   app.use(apiLimiter)
   app.use(express.json({limit: '50mb'}))

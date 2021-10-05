@@ -10,7 +10,16 @@ const cluster = require("cluster"),
     options = {
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')},
-    sio_redis = require('socket.io-redis')
+    sio_redis = require('socket.io-redis'),
+    cors = require('cors'),
+    cookieParser = require('cookie-parser'),
+    rateLimit = require("express-rate-limit"),
+    routes = require('./routes'),
+    apiLimiter = rateLimit({
+        windowMs: 1 * 60 * 1000,
+        max: 500
+    })
+
 
 if (cluster.isMaster) {
     let i = 0

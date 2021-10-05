@@ -15,7 +15,9 @@ if (cluster.isMaster) {
   // we create a HTTP server, but we do not use listen
   // that way, we have a socket.io server that doesn't accept connections
   var server = require('https').createServer(options);
-  var io = require('socket.io').listen(server);
+
+  var Server = require('socket.io');
+  var io = new Server().listen(server);
   var redis = require('socket.io-redis');
 
   io.adapter(redis({ host: 'localhost', port: 6379 }));

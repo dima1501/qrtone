@@ -31,7 +31,7 @@ if (cluster.isMaster) {
         i++
     }
     cluster.on("fork", (worker) => console.log('forked worker ' + worker.process.pid))
-    cluster.on("listening", (worker) => console.log("worker " + worker.process.pid + " is now connected to " + address.address + ":" + address.port ))
+    cluster.on("listening", (worker, address) => console.log("worker " + worker.process.pid + " is now connected to " + address.address + ":" + address.port ))
     cluster.on("exit", (worker) => console.log("worker " + worker.process.pid + " died"))
 } else {
     let app = express()

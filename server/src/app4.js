@@ -52,6 +52,9 @@ if (cluster.isMaster) {
         transport: ['websocket']
     })
 
+    const Server = require('socket.io');
+    const io = new Server().listen(server);
+
     // io.set("store", new RedisStore({
     //     redisPub: pub,
     //     redisSub: sub,

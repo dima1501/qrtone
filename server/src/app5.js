@@ -15,9 +15,7 @@ if (cluster.isMaster) {
   // we create a HTTP server, but we do not use listen
   // that way, we have a socket.io server that doesn't accept connections
   var server = require('https').createServer(options);
-
-  var Server = require('socket.io');
-  var io = new Server().listen(server);
+  var io = require('socket.io')(server).listen(server);
   var redis = require('socket.io-redis');
 
   io.adapter(redis({ host: 'localhost', port: 6379 }));
@@ -50,8 +48,7 @@ if (cluster.isWorker) {
   var http = require('https');
   var server = http.createServer(options, app);
 
-  const Server = require('socket.io');
-  const io = new Server().listen(server);
+  const io = require('socket.io')(8000).listen(server);
 
   io.adapter(redis({ host: 'localhost', port: 6379 }));
   io.on('connection', function(socket) {

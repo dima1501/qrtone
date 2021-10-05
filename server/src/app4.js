@@ -1,5 +1,7 @@
 const cluster = require("cluster"),
     https = require("https"),
+    config = require('./config/config'),
+    path = require('path'),
     numCPUs = require("os").cpus().length,
     // RedisStore = require("socket.io/lib/stores/redis"),
     // redis = require("socket.io/node_modules/redis"),

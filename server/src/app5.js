@@ -78,7 +78,7 @@ if (cluster.isWorker) {
     socket.emit('data', 'connected to worker: ' + cluster.worker.id);
   });
 
-  server.listen(8000 + process.env.NODE_APP_INSTANCE);
+  server.listen(8000);
 }
 
 module.exports = {

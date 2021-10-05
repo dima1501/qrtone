@@ -5,7 +5,12 @@ const fs = require('fs'),
     options = {
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')},
+    rateLimit = require("express-rate-limit"),
     routes = require('./routes'),
+    apiLimiter = rateLimit({
+        windowMs: 1 * 60 * 1000,
+        max: 500
+    }),
     cors = require('cors'),
     cookieParser = require('cookie-parser'),
     path = require('path'),

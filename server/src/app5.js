@@ -47,8 +47,9 @@ if (cluster.isWorker) {
 
   var http = require('https');
   var server = http.createServer(options, app);
-  var io = require('socket.io').listen(server);
-  var redis = require('socket.io-redis');
+
+  const Server = require('socket.io');
+  const io = new Server().listen(server);
 
   io.adapter(redis({ host: 'localhost', port: 6379 }));
   io.on('connection', function(socket) {

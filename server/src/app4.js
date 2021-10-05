@@ -44,7 +44,13 @@ if (cluster.isMaster) {
     app.use('/', routes)
 
     let server = https.createServer(options, app)
-    let io = require("socket.io").listen(server)
+    let io = require("socket.io")(server, {
+        cors: {
+            origin: config.ORIGIN,
+            credentials: true
+        },
+        transport: ['websocket']
+    })
 
     // io.set("store", new RedisStore({
     //     redisPub: pub,

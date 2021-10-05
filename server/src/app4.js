@@ -6,6 +6,7 @@ const cluster = require("cluster"),
     // pub = redis.createClient(),
     // sub = redis.createClient(),
     // client = redis.createClient(),
+    fs = require('fs'),
     options = {
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')},

@@ -44,10 +44,6 @@ const sio_redis = require('socket.io-redis')
 
 // 
 
-// module.exports = {
-//   app,
-//   server,
-// };
 const fs = require('fs')
 
 const app = require('express')()
@@ -70,9 +66,9 @@ app.use(cookieParser())
 app.use('/static', express.static(path.join(__dirname, '/static')))
 app.use('/', routes)
 
-const httpServer = createServer(options, app);
+const server = createServer(options, app);
 
-const io = new Server(httpServer, {
+const io = new Server(server, {
     cors: {
         origin: config.ORIGIN,
         credentials: true
@@ -82,9 +78,14 @@ const io = new Server(httpServer, {
 
 io.adapter(sio_redis({ host: 'localhost', port: 6379 }));
 
-httpServer.listen(8000, () => {
+server.listen(8000, () => {
     console.log('server listen 8000')
 });
 
 const websocketAPI = require('./websocket')
 websocketAPI.start(io)
+
+module.exports = {
+    app,
+    server,
+};

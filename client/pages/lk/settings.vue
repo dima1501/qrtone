@@ -451,6 +451,7 @@ export default {
 .settings {
     &__title {
         margin-bottom: 20px;
+        font-size: 28px;
         .v-icon {
             color: $color-blue;
             margin-left: 15px;

@@ -1,57 +1,67 @@
-var cluster = require('cluster');
-var os = require('os');
+const cluster = require("cluster");
+const http = require("https");
+const { Server } = require("socket.io");
+const numCPUs = require("os").cpus().length;
+const { setupMaster, setupWorker } = require("@socket.io/sticky");
+const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
 
-const fs = require('fs'),
-    options = {
-        key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')},
-    rateLimit = require("express-rate-limit"),
-    routes = require('./routes'),
-    apiLimiter = rateLimit({
-        windowMs: 1 * 60 * 1000,
-        max: 500
-    }),
-    cors = require('cors'),
-    cookieParser = require('cookie-parser'),
-    path = require('path'),
-    config = require('./config/config');
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
+}
 
-let server = null,
-    app = null
+const cors = require('cors'),
+      rateLimit = require("express-rate-limit"),
+      routes = require('./routes'),
+      apiLimiter = rateLimit({
+          windowMs: 1 * 60 * 1000,
+          max: 500}),
+      config = require('./config/config'),
+      express = require('express'),
+      cookieParser = require('cookie-parser'),
+      path = require('path')
+
+let httpServer = null,
+    app = null;
 
 if (cluster.isMaster) {
-  // we create a HTTP server, but we do not use listen
-  // that way, we have a socket.io server that doesn't accept connections
-  server = require('https').createServer(options);
-  const io = require('socket.io')(server, {
-    cors: {
-        origin: config.ORIGIN,
-        credentials: true
-    },
-    transport: ['websocket']
-  }).listen(server);
+  console.log(`Master ${process.pid} is running`);
 
-  var redis = require('socket.io-redis');
+  httpServer = http.createServer(options);
 
-  io.adapter(redis({ host: 'localhost', port: 6379 }));
+  // setup sticky sessions
+  setupMaster(httpServer, {
+    loadBalancingMethod: "least-connection",
+  });
 
-  setInterval(function() {
-    // all workers will receive this in Redis, and emit
-    io.emit('data', 'payload');
-  }, 1000);
+  // setup connections between the workers
+  setupPrimary();
 
-  for (var i = 0; i < os.cpus().length; i++) {
+  // needed for packets containing buffers (you can ignore it if you only send plaintext objects)
+  // Node.js < 16.0.0
+  cluster.setupMaster({
+    serialization: "advanced",
+  });
+  // Node.js > 16.0.0
+  // cluster.setupPrimary({
+  //   serialization: "advanced",
+  // });
+
+  httpServer.listen(8000);
+
+  for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
 
-  cluster.on('exit', function(worker, code, signal) {
-    console.log('worker ' + worker.process.pid + ' died');
-  }); 
-}
+  cluster.on("exit", (worker) => {
+    console.log(`Worker ${worker.process.pid} died`);
+    cluster.fork();
+  });
+} else {
+  console.log(`Worker ${process.pid} started`);
 
-if (cluster.isWorker) {
-  var express = require('express');
-  app = express();
+  app = require('express')()
+
   app.use(cors({credentials: true, origin: config.ORIGIN}))
   app.use(apiLimiter)
   app.use(express.json({limit: '50mb'}))
@@ -60,28 +70,28 @@ if (cluster.isWorker) {
   app.use('/static', express.static(path.join(__dirname, '/static')))
   app.use('/', routes)
 
-  var http = require('https');
-  server = http.createServer(options, app);
-
-  const io = require('socket.io')(server, {
+  const httpServer = http.createServer(options);
+  const io = new Server(httpServer, {
     cors: {
         origin: config.ORIGIN,
         credentials: true
     },
     transport: ['websocket']
-  }).listen(server);
-
-  var redis = require('socket.io-redis');
-
-  io.adapter(redis({ host: 'localhost', port: 6379 }));
-  io.on('connection', function(socket) {
-    socket.emit('data', 'connected to worker: ' + cluster.worker.id);
   });
 
-  server.listen(8000);
+  // use the cluster adapter
+  io.adapter(createAdapter());
+
+  // setup connection with the primary process
+  setupWorker(io);
+
+  io.on("connection", (socket) => {
+    console.log('socket connected ' + socket.id)
+    /* ... */
+  });
 }
 
 module.exports = {
   app,
   server,
-};
+}

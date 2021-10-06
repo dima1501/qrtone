@@ -5,22 +5,24 @@ const numCPUs = require("os").cpus().length;
 const { setupMaster, setupWorker } = require("@socket.io/sticky");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
 
+
+
+const cors = require('cors'),
+  rateLimit = require("express-rate-limit"),
+  routes = require('./routes'),
+  apiLimiter = rateLimit({
+      windowMs: 1 * 60 * 1000,
+      max: 500}),
+  config = require('./config/config'),
+  express = require('express'),
+  cookieParser = require('cookie-parser'),
+  path = require('path'),
+  fs = require('fs')
+
 const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
   cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
 }
-
-const cors = require('cors'),
-      rateLimit = require("express-rate-limit"),
-      routes = require('./routes'),
-      apiLimiter = rateLimit({
-          windowMs: 1 * 60 * 1000,
-          max: 500}),
-      config = require('./config/config'),
-      express = require('express'),
-      cookieParser = require('cookie-parser'),
-      path = require('path'),
-      fs = require('fs')
 
 let httpServer = null,
     app = null;

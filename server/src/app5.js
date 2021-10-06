@@ -19,7 +19,8 @@ const cors = require('cors'),
       config = require('./config/config'),
       express = require('express'),
       cookieParser = require('cookie-parser'),
-      path = require('path')
+      path = require('path'),
+      fs = require('fs')
 
 let httpServer = null,
     app = null;

@@ -24,16 +24,16 @@ const options = {
   cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
 }
 
-let httpServer = null,
+let server = null,
     app = null;
 
 if (cluster.isMaster) {
   console.log(`Master ${process.pid} is running`);
 
-  httpServer = http.createServer(options);
+  server = http.createServer(options);
 
   // setup sticky sessions
-  setupMaster(httpServer, {
+  setupMaster(server, {
     loadBalancingMethod: "least-connection",
   });
 
@@ -50,7 +50,7 @@ if (cluster.isMaster) {
   //   serialization: "advanced",
   // });
 
-  httpServer.listen(8000);
+  server.listen(8000);
 
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
@@ -73,8 +73,8 @@ if (cluster.isMaster) {
   app.use('/static', express.static(path.join(__dirname, '/static')))
   app.use('/', routes)
 
-  const httpServer = http.createServer(options);
-  const io = new Server(httpServer, {
+  server = http.createServer(options);
+  const io = new Server(server, {
     cors: {
         origin: config.ORIGIN,
         credentials: true
@@ -96,5 +96,5 @@ if (cluster.isMaster) {
 
 module.exports = {
   app,
-  httpServer,
+  server,
 }

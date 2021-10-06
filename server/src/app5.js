@@ -5,8 +5,6 @@ const numCPUs = require("os").cpus().length;
 const { setupMaster, setupWorker } = require("@socket.io/sticky");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
 
-
-
 const cors = require('cors'),
   rateLimit = require("express-rate-limit"),
   routes = require('./routes'),
@@ -73,7 +71,7 @@ if (cluster.isMaster) {
   app.use('/static', express.static(path.join(__dirname, '/static')))
   app.use('/', routes)
 
-  server = http.createServer(options);
+  server = http.createServer(options, app);
   const io = new Server(server, {
     cors: {
         origin: config.ORIGIN,

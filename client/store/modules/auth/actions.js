@@ -17,6 +17,11 @@ const checkAuth = async (store, data) => {
           store.dispatch('lk/loadOrders', { place, items: 0 }, {root: true})
           store.dispatch('lk/loadActions', { place, items: 0 }, {root: true})
         }
+
+        store.dispatch("auth/setSocketId", {
+          socketId: $nuxt.$socket.id,
+          place: localStorage.getItem('place')
+        }, { root: true });
       }
 
       // todo n строчек ниже - хлам

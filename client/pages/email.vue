@@ -1,3 +1,24 @@
+<template lang="pug">
+    .mail
+        .mail__top
+            a(href="https://toffee.menu" target="_blank").mail__top-logo TOFFEE.MENU
+            a(href="https://toffee.menu/lk/settings" target="_blank").mail__top-btn ВОЙТИ
+        .mail__content
+            .mail__title Привет, <span>#{name}</span>!
+            .mail__text Вы успешно зарегистрировались на <a href="https://toffee.menu" target="_blank">toffee.menu</a>
+            .mail__text Бесплатный пробный период составит <span>14 дней</span> и продлится до <span>#{plan}</span>
+            .mail__text В этот период вам доступны все возможности сервиса
+            a(href="https://toffee.menu/lk/settings").mail__btn Перейти в личный кабинет
+        .mail__soc
+            a(href="https://t.me/toffee_menu").mail__soc-item
+                //- img(src="../assets/icon-telegram.jpg")
+            a(href="https://www.instagram.com/toffee.menu").mail__soc-item
+                //- img(src="../assets/icon-instagram.jpg")
+            a(href="https://vk.com/toffee.menu").mail__soc-item
+                //- img(src="../assets/icon-vk.jpg")
+</template>
+
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500;900&display=swap');
 
 body {
@@ -88,3 +109,4 @@ body {
     max-width: 100%;
     height: auto;
 }
+</style>

@@ -254,7 +254,8 @@ input[type=number] {
 
 .v-textarea textarea {
   line-height: 1.35rem;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 </style>

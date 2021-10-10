@@ -25,41 +25,7 @@
                             .board__main-content-section-content(v-else key="orders_content")
                                 vuescroll(:ops="ops" ref="vss")
                                     transition-group(type="transition" name="flip-list")
-                                        .sorder(v-for="(order, key) in $store.state.auth.user.orders" :key="order.orderId" )
-                                            .sorder__top
-                                                .sorder__table Столик <span>{{ order.table }}</span>
-                                                .sorder__time {{ getTime(order.timestamp) }}
-                                                .sorder__status.wait(v-if="order.status === 'pending'") Ожидание
-                                                .sorder__status.accepted(v-else) Подтвержден
-                                            .sorder__goods
-                                                .sorder__line(v-for="(good, i) in order.goods" v-bind:key="i + 'good'")
-                                                    .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
-                                                        .sorder__line-content
-                                                            h4.sorder__line-name {{ good.name }}
-                                                            .sorder__line-descr(v-if="good.modifications[price]") {{ good.modifications[price] }}
-                                                            .sorder__line-data {{ good.prices[price] }}{{ $store.state.auth.user.currencySymbol }} <span v-if="good.weights[price]">{{ good.weights[price] }}г</span>
-                                                        .sorder__line-count 
-                                                            span.note x
-                                                            span.value {{ good.cartPrices.filter(e => e == price).length }}
-
-                                            div(v-if="order.dops.length")
-                                                h4.sorder__subtitle Дополнения:
-                                                .sorder__goods
-                                                    .sorder__line(v-for="(dop, key) in order.dops" v-bind:key="key")
-                                                        .sorder__line-item(v-for="(price, idx) in getCustomArr(dop.cartPrices)")
-                                                            .sorder__line-content
-                                                                h4.sorder__line-name {{ dop.name }}
-                                                                .sorder__line-data(v-if="dop.prices[price] || dop.prices[price] > 0") {{dop.prices[price]}}{{$store.state.auth.user.currencySymbol}}
-                                                                .sorder__line-data(v-else) Бесплатно
-                                                            .sorder__line-count 
-                                                                span.note x
-                                                                span.value {{ dop.cartPrices.filter(e => e == price).length }}
-                                            .sorder__bottom
-                                                .sorder__btn
-                                                    v-btn(depressed color="primary" @click='acceptOrder(order)' v-if="order.status == 'pending'") Подтвердить
-                                                .sorder__price 
-                                                    span.note Итого:
-                                                    span.value  {{ getOrderPrice(order) }}{{$store.state.auth.user.currencySymbol}}
+                                        OrderCard(v-for="(order, key) in $store.state.auth.user.orders" :key="order.orderId" v-bind:order="order")
 
                                     .board__main-content-link(@click="loadMoreOrders" v-if="$store.state.auth.user.orders.length && !$store.state.view.loading.moreOrders") Загрузить еще 
 
@@ -75,50 +41,12 @@
                             .board__main-content-section-content(v-else key="notify_content")
                                 vuescroll(:ops="ops" ref="vsss")
                                     transition-group(type="transition" name="flip-list")
-                                        .sorder(v-for="(notify, key) in $store.state.auth.user.notifications" :key="notify._id")
-                                            div(v-if="notify.reservation")
-                                                .sorder__top
-                                                    .sorder__table Бронь
-                                                    .sorder__time {{ getTime(notify.timestamp) }}
-                                                    .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
-                                                    .sorder__status.accepted(v-else) Принято
-
-                                                .sorder__goods
-                                                    .sorder__line
-                                                        .sorder__line-item
-                                                            .sorder__line-content
-                                                                h4.sorder__line-name На {{ formatDate(notify.reservation.date) }}, в {{ notify.reservation.time }}
-                                                                .sorder__line-data Количество гостей: {{ notify.reservation.guests }} 
-                                                                .sorder__line-data 
-                                                                    a(:href="`tel: ${notify.reservation.phone}`").phone {{ notify.reservation.phone }}
-                                                                    span , {{ notify.reservation.name }}
-                                                                .sorder__line-data {{ notify.reservation.comment }}
-                                                .sorder__bottom(v-if="notify.status == 'pending'")
-                                                    .sorder__btn
-                                                        v-btn(depressed color="primary" @click='accept(notify)') Принято
-
-                                            div(v-else)
-                                                .sorder__top
-                                                    .sorder__table Столик <span>{{ notify.table }}</span>
-                                                    .sorder__time {{ getTime(notify.timestamp) }}
-                                                    .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
-                                                    .sorder__status.accepted(v-else) Принято
-
-                                                .sorder__goods
-                                                    .sorder__line
-                                                        .sorder__line-item
-                                                            .sorder__line-content
-                                                                h4.sorder__line-name {{ notify.notify.replace('@table', notify.table) }}
-                                                .sorder__bottom(v-if="notify.status == 'pending'")
-                                                    .sorder__btn
-                                                        v-btn(depressed color="primary" @click='accept(notify)') Принято
+                                        NotificationCard(v-for="(notify, key) in $store.state.auth.user.notifications" :key="notify._id" v-bind:notify="notify")
 
                                     .board__main-content-link(@click="loadMoreNotifications" v-if="$store.state.auth.user.notifications.length && !$store.state.view.loading.moreNotifications") Загрузить еще 
 
                                     .board__main-content-loader(v-if="$store.state.view.loading.moreNotifications")
                                         v-icon(light) mdi-loading     
-
-        
 
 </template>
 
@@ -212,42 +140,6 @@ export default {
         loadMoreNotifications() {
             this.$store.dispatch('lk/loadMoreActions', { place: this.place, items: this.$store.state.auth.user.notifications.length } )
         },
-        async accept(data) {
-            try {
-                const accept = await axios({
-                    method: 'post',
-                    url: '/api/accept-fast-action',
-                    data: { data }
-                })
-                if (accept.data) {
-                    this.$notify({ group: 'custom-style', type: 'n-success', title: 'Успешно подтверждено' })
-                    data.status = 'accepted'
-                }
-            } catch (error) {
-                console.error(error)
-            }
-        },
-        getCustomArr(arr) {
-            const newArr = []
-            for (let i in arr) {
-                if (newArr.indexOf(arr[i]) == -1) {
-                    newArr.push(arr[i])
-                }
-            }
-            return newArr.sort(function(a, b) { return a - b; })
-        },
-        getOrderPrice(item) {
-            let total = 0
-            for (let o of ['goods', 'dops']) {
-                for (let i of item[o]) {
-                    for (let n in i.cartPrices) {
-                        let price = +i.prices[+i.cartPrices[n]] ? parseFloat(+i.prices[+i.cartPrices[n]]) : 0
-                        total += +parseFloat(price)
-                    }
-                }
-            }
-            return +total.toFixed(2).toString()
-        },
         changePlace(place) {
             if (place) {
                 this.place = place
@@ -260,40 +152,6 @@ export default {
             })
             this.$store.dispatch('lk/loadOrders', { place: this.place, items: 0 } )
             this.$store.dispatch('lk/loadActions', { place: this.place, items: 0 })
-        },
-        async acceptOrder(order) {
-            try {
-                const accept = await axios({
-                    method: 'post',
-                    url: '/api/accept-order',
-                    data: { order }
-                })
-                if (accept) {
-                    this.$notify({ group: 'custom-style', type: 'n-success', title: 'Заказ успешно подтвержден' })
-                    order.status = 'accepted'
-                }
-            } catch (error) {
-                console.error(error)
-            }
-        },
-        formatTime(time) {
-            return moment(time).local().locale('ru').calendar();
-            // return moment(time).format('DD.MM.YYYY HH:MM')
-        },
-        getCustomArr(arr) {
-            const newArr = []
-            for (let i in arr) {
-                if (newArr.indexOf(arr[i]) == -1) {
-                    newArr.push(arr[i])
-                }
-            }
-            return newArr.sort(function(a, b) { return a - b; })
-        },
-        getTime(time) {
-            return moment(time).format('DD.MM.YYYY HH:MM')
-        },
-        formatDate(date) {
-            return moment(date).format('DD.MM.YYYY')
         }
     },
 }

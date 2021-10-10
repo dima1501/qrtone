@@ -40,6 +40,8 @@
 </template>
 
 <script>
+const Isemail = require('isemail')
+
 export default {
     name: 'registration',
     layout: 'login',
@@ -56,11 +58,7 @@ export default {
                 (v) => !!v || 'Введите название компании',
             ],
             emailRules: [
-                (v) => !!v || 'Введите адрес электронной почты',
-                (v) =>
-                !v ||
-                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-                'Ошибка в адресе электронной почты',
+                (v) => Isemail.validate(v) || 'Введите адрес электронной почты',
             ],
             passwordRules: [
                 (v) => !!v || 'Введите пароль',

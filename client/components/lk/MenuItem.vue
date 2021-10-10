@@ -3,6 +3,9 @@
         //- .menu-item__more(@click="openDetail(item)")
         .menu-item__more(@click="openDetail(item)")
         .menu-item__img
+            v-overlay(:value="true" :absolute="true" :opacity="0")
+                v-progress-circular(indeterminate size="40" color="red")
+        
             .menu-item__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
 
             picture(v-if="item.images.length == 1").menu-item__img-pic
@@ -29,6 +32,7 @@
                     
                 .menu-item__data
                     .menu-item__data-calories(v-if="item.weights[0]") {{ item.weights[0] }}г 
+                    .menu-item__data-calories(v-if="item.calories[0]") {{ item.calories[0] }}ккал
                 
                 .menu-item__options(v-if="item.prices.length > 1")
                     span.menu-item__options-label Еще {{ item.prices.length - 1 }} 

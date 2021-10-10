@@ -23,12 +23,18 @@ const moment = require('moment')
 // })
 
 const transporter = nodemailer.createTransport({
-    host: "smtp-relay.gmail.com",
-    secureConnection: true,
-    port: 587,
+    // host: "smtp-relay.gmail.com",
+    host: "smtp.mailtrap.io",
+    // secureConnection: true,
+    // port: 587,
+    port: 2525,
+    // auth: {
+    //   user: "admin@toffee.menu",
+    //   pass: "WHPac_ua3!"
+    // }
     auth: {
-      user: "admin@toffee.menu",
-      pass: "WHPac_ua3!"
+        user: "e13923d70a29d4",
+        pass: "36e942d8a5528e",
     }
 });
 
@@ -53,7 +59,6 @@ router.post("/api/send-reg-email", auth(), async (req, res) => {
             }
         }
         transporter.sendMail(mailOptions, async (error) => {
-            console.log('qweqwe')
             if (error) {
                 return console.error(error)
             }
@@ -97,7 +102,32 @@ router.post("/api/send-restore-email", async (req, res) => {
     }
 })
 
-
+router.post("/api/send-subscription-email", auth(), async (req, res) => {
+    console.log(req.body.length)
+    if (req.user) {
+        const mailOptions = {
+            from: "admin@toffee.menu",
+            to: req.user.email,
+            subject: "Подписка на toffee.menu успешно оформлена ",
+            template: "subscription-email",
+            ctx: {
+                name: req.user.name,
+                type: req.body[req.body.length - 1].type,
+                start: moment(req.body[req.body.length - 1].started).format('DD.MM.YYYY'),
+                price: req.body[req.body.length - 1].price,
+                end: moment(req.body[req.body.length - 1].expires).format('DD.MM.YYYY')
+            }
+        }
+        transporter.sendMail(mailOptions, async (error) => {
+            if (error) {
+                return console.error(error)
+            }
+        })
+        res.sendStatus(200)
+    } else {
+        res.sendStatus(304)
+    }
+})
 
 module.exports = router
 

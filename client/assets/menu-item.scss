@@ -13,7 +13,11 @@
         transform: scale(0.95);
     }
     &__img {
+        position: relative;
+        z-index: 2;
         .slick-slider {
+            position: relative;
+            z-index: 6;
             margin-bottom: -6px;
         }
         &-pic {
@@ -22,6 +26,7 @@
             padding-bottom: 100%;
             display: block;
             position: relative;
+            z-index: 6;
             img {
                 position: absolute;
                 left: 0;
@@ -214,9 +219,14 @@
     }
     &__data {
         color: $color-black;
+        display: flex;
         &-calories {
             font-size: 12px;
             opacity: .9;
+            margin-right: 10px;
+            &:last-child {
+                margin-right: 0;
+            }
             span {
                 display: block;
                 margin-right: 5px;

@@ -23,9 +23,9 @@
                     .detail__single-name {{ item.name }}
                     .detail__single-descr {{ item.description }}
                     .detail__single-info
-                        .detail__single-weight(v-if="item.weights.length") Вес: {{ item.weights[0] }}г
-                        .detail__single-weight(v-if="item.calories.length") Ккал: {{ item.calories[0] }}
-                        .detail__single-weight(v-if="item.proteins.length && item.fats.length && item.carbo.length") БЖУ: {{item.proteins[0]}}-{{item.fats[0]}}-{{item.carbo[0]}}
+                        .detail__single-weight(v-if="!!item.weights[0]") Вес: {{ item.weights[0] }}г
+                        .detail__single-weight(v-if="!!item.calories[0]") Ккал: {{ item.calories[0] }}
+                        .detail__single-weight(v-if="!!item.proteins[0] && !!item.fats[0] && !!item.carbo[0]") БЖУ: {{item.proteins[0]}}-{{item.fats[0]}}-{{item.carbo[0]}}
 
                     .detail__single-btn
                         transition(name="slide-fade" mode="out-in")

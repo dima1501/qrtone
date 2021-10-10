@@ -7,8 +7,19 @@ html(lang="en")
             include ../style/main.css
     body
         .mail
+            .mail__top
+                a(href="https://toffee.menu" target="_blank").mail__top-logo TOFFEE.MENU
+                a(href="https://toffee.menu/lk/settings" target="_blank").mail__top-btn ВОЙТИ
             .mail__content
-                h2 Восстановление пароля на <span>toffee.menu</span>
-                p Был запрошен сброс пароля для компании <span>"#{name}"</span>
-                p Код для восстановления пароля <span>#{code}</span>
-                p Проигнорируйте данное сообщение, если это были не вы
+                .mail__title Восстановление пароля
+                .mail__text Был запрошен сброс пароля для компании <span>"#{name}"</span>
+                .mail__text Код для восстановления пароля <span>#{code}</span>
+                .mail__text Проигнорируйте данное сообщение, если это были не вы
+            .mail__soc
+                a(href="https://t.me/toffee_menu").mail__soc-item
+                    img(src="../assets/icon-telegram.svg")
+                a(href="https://www.instagram.com/toffee.menu").mail__soc-item
+                    img(src="../assets/icon-instagram.svg")
+                a(href="https://vk.com/toffee.menu").mail__soc-item
+                    img(src="../assets/icon-vk.svg")
+

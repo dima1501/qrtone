@@ -759,10 +759,9 @@ router.post('/api/subscribe', auth(), async (req, res) => {
             req.user.subscription.push(sub)
         }
 
-        req.db.collection("users").updateOne(
-            { _id: ObjectId(req.user._id) },
-            { $set: { 'subscription': req.user.subscription } }
-        )
+        // req.db.collection("users").updateOne(
+        //     { _id: ObjectId(req.user._id) },
+        //     { $set: { 'subscription': req.user.subscription } } )
 
         res.status(200).send(req.user.subscription)
     } catch (error) {

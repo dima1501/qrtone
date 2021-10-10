@@ -11,7 +11,7 @@
                     :rules="nameRules"
                     required
                     :disabled="editCompany ? false : true"
-                    hide-details="auto")
+                    hide-details="auto").mb-5
 
             .settings__section-item
                 .settings__section-input

@@ -720,6 +720,17 @@ const subscribe = async (store, data) => {
     })
     if (subscribe) {
       store.rootState.auth.user.subscription = subscribe.data
+      
+      const sentMail = await axios({
+        method: 'post',
+        url: '/api/send-subscription-email',
+        data: subscribe.data
+      })
+      if (sentMail.data) {
+        console.log('sent')
+      } else {
+        console.log('error')
+      }
     }
   } catch (error) {
     console.error(error)

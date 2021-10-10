@@ -5,7 +5,7 @@
         .m-header__inner
           .m-header__logo toffee.menu
           .m-header__buttons
-            .m-header__buttons-item
+            .m-header__buttons-item.-xs-hidden
               nuxt-link(:to="localePath('/auth/login')").button.-transp Войти
             .m-header__buttons-item
               nuxt-link(:to="localePath('/auth/registration')").button.-black Регистрация
@@ -30,10 +30,8 @@
               //- <br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от toffee.menu.
             kinesis-element(:strength="10" type="depth")
               .m-welcome__media
-                kinesis-element(:strength="10" type="depth")
-                  img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
-                kinesis-element(:strength="10" type="depth")
-                  .m-welcome__media-text Отсканируйте для просмотра демо меню или <a :href="localePath('/m/Dimas_diner?t=1')" target="_blank">перейдите по ссылке</a>
+                img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
+                .m-welcome__media-text Отсканируйте для просмотра демо меню или <a :href="localePath('/m/Dimas_diner?t=1')" target="_blank">перейдите по ссылке</a>
     
     .m-container
       .m-section
@@ -241,11 +239,6 @@
       .m-container
         .footer__inner
           .footer__item
-            nuxt-link(:to="localePath('/docs/user_agreement')").footer__item-text Пользовательское соглашение
-          .footer__item
-            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Политика конфиденциальности
-        .footer__inner
-          .footer__item
             a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
           .footer__item
             a(href="https://www.instagram.com/toffee.menu" target="_blank").footer__item-text Instagram
@@ -253,7 +246,17 @@
             a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
         .footer__inner
           .footer__item
+            nuxt-link(:to="localePath('/docs/user_agreement')").footer__item-text Пользовательское соглашение
+          .footer__item
+            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Политика конфиденциальности
+        .footer__inner
+          .footer__item
+            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Использование файлов cookie
+        .footer__inner
+          .footer__item
             .footer__item-text © 2021 Все права защищены
+
+    CookiesAgreement(v-if="!isCookiesAgeed" @closePopup="closePopup()")
 
 
 </template>
@@ -267,8 +270,12 @@ export default {
       email: null,
       isButtonClicked: false,
       isEmailFocused: false,
-      loading: false
+      loading: false,
+      isCookiesAgeed: true
     }
+  },
+  mounted() {
+    this.isCookiesAgeed = this.$route.params.id == 'Dimas_diner' ? true : localStorage.getItem('cookie')
   },
   methods: {
     scrollMeTo(refName) {
@@ -308,6 +315,10 @@ export default {
     validEmail: function (email) {
       var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
+    },
+    closePopup() {
+      localStorage.setItem('cookie', true)
+      this.isCookiesAgeed = true
     }
   }
 }

@@ -244,11 +244,6 @@
                 .m-container
                     .footer__inner
                         .footer__item
-                            nuxt-link(:to="localePath('/docs/user_agreement')").footer__item-text Пользовательское соглашение
-                        .footer__item
-                            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Политика конфиденциальности
-                    .footer__inner
-                        .footer__item
                             a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
                         .footer__item
                             a(href="https://www.instagram.com/toffee.menu" target="_blank").footer__item-text Instagram
@@ -256,8 +251,15 @@
                             a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
                     .footer__inner
                         .footer__item
+                            nuxt-link(:to="localePath('/docs/user_agreement')").footer__item-text Пользовательское соглашение
+                        .footer__item
+                            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Политика конфиденциальности
+                    .footer__inner
+                        .footer__item
+                            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Использование файлов cookie
+                        .footer__item
                             .footer__item-text © 2021 Все права защищены
-            
+                
             transition(name="fade")
                 EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")
             transition(name="fade")

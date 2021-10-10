@@ -33,7 +33,7 @@ export default {
             }
             const users = await axios({
                 method: 'get',
-                url: `${process.env.SERVER || "http://localhost:8000"}/api/admin/get-users`
+                url: `${process.env.server || "http://localhost:8000"}/api/admin/get-users`
             })
             this.users = users.data
         } catch (error) {

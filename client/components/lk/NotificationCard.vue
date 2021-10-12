@@ -3,7 +3,7 @@
         div(v-if="notify.reservation")
             .sorder__top
                 .sorder__table Бронь
-                .sorder__time {{ getTime }}
+                .sorder__time {{ getTime }} asd
                 .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
                 .sorder__status.accepted(v-else) Принято
 
@@ -53,10 +53,10 @@ export default {
     },
     computed: {
         getTime: function () {
-            return moment(this.notify.timestamp).format('DD.MM.YYYY HH:MM')
+            return moment(this.notify.timestamp).local().format('DD.MM.YYYY h:mm')
         },
         formatDate: function () {
-            return moment(this.notify.reservation.date).format('DD.MM.YYYY')
+            return moment(this.notify.reservation.date).local().format('DD.MM.YYYY')
         }
     },
     methods: {

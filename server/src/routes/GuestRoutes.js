@@ -122,7 +122,6 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
     const user = await req.db.collection('users').findOne({ 'places.link': req.body.data.order.place })
 
     const place = user.places.find(e => e.link == req.body.data.order.place)
-    console.log(req.user._id)
 
     const order = new OrderModel(req.user._id, req.body.data.order, place._id)
 
@@ -251,7 +250,6 @@ router.post('/api/make-order', authGuest(), async (req, res) => {
 })
 
 router.post('/api/load-orders', authGuest(), async (req, res) => {
-    console.log(req.body.data)
     const user = await req.db.collection('users').findOne({ 'places.link': req.body.data })
 
     if (user) {
@@ -262,7 +260,6 @@ router.post('/api/load-orders', authGuest(), async (req, res) => {
             { $sort: { 'orders.timestamp': -1 } },
             { $group: {_id: '$_id', list: {$push: '$orders'} } }
         ]).toArray()
-        console.log(orders)
         if (orders[0] && orders[0].list) {
             res.status(200).json(orders[0].list)
         } else {

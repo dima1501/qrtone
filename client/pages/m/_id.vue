@@ -151,13 +151,13 @@ div
                                 v-icon(light) mdi-close
                         .orders__content
                             h3.orders__empty(v-if="!$store.state.guest.user.orders.length") Заказов пока нет
-                            .sorder(v-for="(item, key) in $store.state.guest.user.orders" v-bind:key="key")
+                            .sorder(v-for="(item, key) in $store.state.guest.user.orders" v-bind:key="item.orderId")
                                 .sorder__top
                                     .sorder__status.wait(v-if="item.status === 'pending'") Ожидание
                                     .sorder__status.accepted(v-else) Подтвержден
                                     .sorder__time {{ getTime(item.timestamp) }}
                                 .sorder__goods
-                                    .sorder__line(v-for="(good, key) in item.goods" v-bind:key="key")
+                                    .sorder__line(v-for="(good, key) in item.goods" v-bind:key="good._id")
                                         .sorder__line-item(v-for="(price, idx) in getCustomArr(good.cartPrices)")
                                             .sorder__line-content
                                                 .sorder__line-link(v-if="$store.state.guest.parsedMenu[good.category] && $store.state.guest.parsedMenu[good.category].find(e => e._id == good._id)" @click="openDetail(good, price)")
@@ -199,6 +199,31 @@ div
 
             client-only
                 vue-confirm-dialog
+
+            footer.footer
+                .m-container
+                    .footer__inner
+                        .footer__item
+                            a(href="https://t.me/toffee_menu" target="_blank")
+                                img(src="/icon-telegram.svg")
+                        .footer__item
+                            a(href="https://www.instagram.com/toffee.menu")
+                                img(src="/icon-instagram.svg" target="_blank")
+                    .footer__inner
+                        .footer__item
+                            a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
+                        .footer__item
+                            a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
+                    .footer__inner
+                        .footer__item
+                            nuxt-link(:to="localePath('/docs/cookie')").footer__item-text Пользовательское соглашение
+                        .footer__item
+                            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Политика конфиденциальности
+                    .footer__inner
+                        .footer__item
+                            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Использование файлов cookie
+                        .footer__item
+                            .footer__item-text © 2021 Все права защищены
 
 </template>
 
@@ -409,7 +434,7 @@ export default {
         },
         getTime(time) {
             // return moment(time).local().locale('ru').calendar()
-            return moment(time).format('DD.MM.YYYY, HH:MM')
+            return moment(+time).local().locale('ru').format('DD.MM.YYYY, h:mm')
         },
         toggleCommandsMenu() {
             this.commands = !this.commands
@@ -436,7 +461,8 @@ export default {
                     status: 'pending',
                     table: this.$nuxt.$route.query.t,
                     place: this.$nuxt.$route.params.id,
-                    price: this.getTotalPrice
+                    price: this.getTotalPrice,
+                    timestamp: new Date().getTime()
                 },
                 id: this.$nuxt.$route.params.id
             })
@@ -949,13 +975,13 @@ export default {
         background-color: #fff;
         border-radius: 10px;
         padding: 0 15px 45px 15px;
-        top: 71px;
+        margin-top: 71px;
         &.hasOffset {
-            top: 240px;
+            margin-top: 240px;
         }
         @media screen and (min-width: 580px) {
             &.hasOffset {
-                top: 290px;
+                margin-top: 290px;
                 border-radius: 0;
             }
         }

@@ -51,7 +51,7 @@ export default {
     },
     computed: {
         getTime: function () {
-            return moment(this.order.timestamp).format('DD.MM.YYYY HH:MM')
+            return moment(+this.order.timestamp).format('DD.MM.YYYY h:mm')
         },
         getOrderPrice: function () {
             let total = 0

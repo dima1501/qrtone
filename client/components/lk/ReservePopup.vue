@@ -110,7 +110,7 @@ export default {
             },
             reservation: {
                 date: new Date(),
-                time: moment().format('HH:mm'),
+                time: moment().format('h:mm'),
                 guests: 2,
                 comment: '',
                 phone: '',

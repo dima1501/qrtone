@@ -30,14 +30,14 @@
                         span {{ $store.state.guest.companyData.place.times }}
                 .info-popup__soc
                     a(:href="`https://t.me/${$store.state.guest.companyData.place.telegram}`" target="_blank" v-if="$store.state.guest.companyData.place.telegram").info-popup__soc-item
-                        v-icon.telegram mdi-telegram
+                        img(src="/icon-telegram.svg")
                     a(:href="`https://vk.com/${$store.state.guest.companyData.place.vk}`" target="_blank" v-if="$store.state.guest.companyData.place.vk").info-popup__soc-item
-                        v-icon.vk mdi-vk
+                        img(src="/icon-vk.svg")
                     a(:href="`https://www.instagram.com/${$store.state.guest.companyData.place.instagram}`" target="_blank"  v-if="$store.state.guest.companyData.place.instagram").info-popup__soc-item
-                        v-icon.instagram mdi-instagram 
+                        img(src="/icon-instagram.svg")
                     a(:href="`https://wa.me/${$store.state.guest.companyData.place.whatsapp}`" target="_blank"  v-if="$store.state.guest.companyData.place.whatsapp").info-popup__soc-item
-                        v-icon.whatsapp mdi-whatsapp
-                .info-popup__reserve(v-if="isAvailable")
+                        img(src="/icon-whatsapp.svg")
+                .info-popup__reserve(v-if="isAvailable && $store.state.guest.companyData.place.reservationsEnabled")
                     v-btn(
                         depressed
                         @click="openReservePopup"

@@ -1,8 +1,8 @@
 .footer {
     background-color: $color-black;
-    padding: 15px 0;
+    padding: 15px 0 70px;
     @media screen and (min-width: 768px) {
-        padding: 20px 0;
+        padding: 20px 0 70px;
     }
     &__inner {
         display: flex;

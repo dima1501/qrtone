@@ -1,11 +1,10 @@
 <template lang="pug">
     .board(v-if="$store.state.auth.user && !loading")
-        transition(name="slide-fade" mode="out-in")
             .board__choose(v-if="!place" key="check_place")
                 .board__choose-content
                     .board__choose-title Выберите заведение
                     .board__choose-row
-                        .board__choose-item(v-for="(place, key) in $store.state.auth.user.places" :key="key")
+                        .board__choose-item(v-for="(place, key) in $store.state.auth.user.places" :key="place._id")
                             .board__choose-item-name {{ place.name }}
                             .board__choose-item-addr {{ place.address.full }}
                             v-btn(depressed color="normal" @click="changePlace(place._id)").board__choose-item-btn Выбрать

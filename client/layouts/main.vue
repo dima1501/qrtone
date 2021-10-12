@@ -15,6 +15,7 @@ export default {
   sockets: {
     async updateSocketId(msg) {
         this.$store.dispatch("guest/setSocketId", msg, { root: true })
+        this.$store.dispatch('guest/checkAuth', this.$route.params.id, { root: true })
     },
     async acceptOrder(data) {
         this.$store.state.guest.user.orders.find(e => e.orderId === data).status = 'accepted'
@@ -28,7 +29,7 @@ export default {
     if (!this.$store.state.guest.user) {
       this.$store.dispatch("guest/checkAuth", this.$route.params.id, { root: true })
     }
-    this.isCookiesAgeed = this.$route.params.id == 'Dimas_diner' ? true : localStorage.getItem('cookie')
+    this.isCookiesAgeed = this.$route.params.id == 'toffee.menu' ? true : localStorage.getItem('cookie')
   },
   methods: {
     closePopup() {

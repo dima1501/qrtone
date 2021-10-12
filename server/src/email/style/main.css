@@ -82,9 +82,28 @@ body {
     display: block;
     width: 40px;
     height: 40px;
-    margin: 0 15px;
+    margin: 0 10    px;
 }
 .mail__soc-item img {
     max-width: 100%;
     height: auto;
+}
+
+@media screen and (max-width: 400px) {
+    .mail {
+        padding: 20px 10px;
+    }
+    .mail__top-logo {
+        font-size: 16px;
+    }
+    .mail__top-btn {
+        font-size: 16px;
+        padding: 8px 12px 8px 12px;
+    }
+    .mail__content {
+        padding: 15px;
+    }
+    .mail__title {
+        font: bold 28px/34px 'arial' , 'helvetica neue' , 'helvetica' , 'freesans' , sans-serif;
+    }
 }

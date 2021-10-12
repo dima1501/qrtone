@@ -25,17 +25,17 @@
                   .m-form__error.error-label {{ emailValidationErrors[0] }}
                 .m-form__btn
                   nuxt-link(:to="localePath('/auth/registration')").button.-short.-black Начать бесплатно
-                  a.m-welcome__try(:href="localePath('/m/Dimas_diner?t=1')" target="_blank") Демо меню
+                  a.m-welcome__try(:href="localePath('/m/toffee_menu?t=1')" target="_blank") Демо меню
               .m-welcome__note Попробуйте toffee.menu бесплатно в течение 14 дней,<br> кредитная карта не требуется.
               //- <br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от toffee.menu.
             kinesis-element(:strength="10" type="depth")
               .m-welcome__media
                 img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
-                .m-welcome__media-text Отсканируйте для просмотра демо меню или <a :href="localePath('/m/Dimas_diner?t=1')" target="_blank">перейдите по ссылке</a>
+                .m-welcome__media-text Отсканируйте для просмотра демо меню или <a :href="localePath('/m/toffee_menu?t=1')" target="_blank">перейдите по ссылке</a>
     
     .m-container
       .m-section
-        .m-section__title Что такое toffee.menu?
+        .m-section__title Что такое toffee_menu?
         .m-section__subtitle Сервис предоставляет 2 типа подписки
         .m-section__subtitle 14 дней бесплатного периода с доступом ко всем функциям
 
@@ -63,7 +63,7 @@
             .fe-section__text Не нужно ждать, пока официант принесет меню
             .fe-section__text Электронное меню можно быстро обновить, нет необходимости перепечатывать меню
             .fe-section__btn
-              nuxt-link(:to="localePath('/m/Dimas_diner?t=1')" target="_blank").button.-black Посмотреть пример меню
+              nuxt-link(:to="localePath('/m/toffee_menu?t=1')" target="_blank").button.-black Посмотреть пример меню
 
     .fe-section.-white
       .m-container
@@ -107,7 +107,7 @@
             .faq__item-text Электронное меню доступно гостю сразу, не нужно ждать официанта. Его не нужно перепечатывать в случае изменений, достаточно отредактировать позицию на сайте. 
           .faq__item
             .faq__item-title Как будет выглядеть меню?
-            .faq__item-text Посмотреть пример заполненного меню можно посмотреть по <a href="https://toffee.menu/m/Dimas_diner?t=1" target="_blank">ссылке</a>
+            .faq__item-text Посмотреть пример заполненного меню можно посмотреть по <a href="https://toffee.menu/m/toffee_menu?t=1" target="_blank">ссылке</a>
           .faq__item
             .faq__item-title А что если у меня несколько заведений?
             .faq__item-text Можно создать неограниченное количество заведений. Для каждого из них будут созданы ссылки и QR-коды, а отображение позиций меню можно настроить отдельно для каждого из заведений
@@ -239,14 +239,19 @@
       .m-container
         .footer__inner
           .footer__item
-            a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
+            a(href="https://t.me/toffee_menu")
+              img(src="/icon-telegram.svg")
           .footer__item
-            a(href="https://www.instagram.com/toffee.menu" target="_blank").footer__item-text Instagram
+            a(href="https://www.instagram.com/toffee.menu")
+              img(src="/icon-instagram.svg")
+        .footer__inner
+          .footer__item
+            a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
           .footer__item
             a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
         .footer__inner
           .footer__item
-            nuxt-link(:to="localePath('/docs/user_agreement')").footer__item-text Пользовательское соглашение
+            nuxt-link(:to="localePath('/docs/cookie')").footer__item-text Пользовательское соглашение
           .footer__item
             nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Политика конфиденциальности
         .footer__inner
@@ -275,7 +280,7 @@ export default {
     }
   },
   mounted() {
-    this.isCookiesAgeed = this.$route.params.id == 'Dimas_diner' ? true : localStorage.getItem('cookie')
+    this.isCookiesAgeed = this.$route.params.id == 'toffee.menu' ? true : localStorage.getItem('cookie')
   },
   methods: {
     scrollMeTo(refName) {

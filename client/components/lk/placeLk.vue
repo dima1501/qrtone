@@ -7,6 +7,26 @@
         h4(v-if="!place.tables || !place.tables.length") Столики не добавлены
         .place__edit(@click="editTables") Управление столиками
         hr
+        v-tooltip(top v-if="!isAvailable")
+            template(v-slot:activator="{ on, attrs }")
+                .ntfcs__item(v-bind="attrs" v-on="on")
+                    v-switch(
+                        inset
+                        :label='`Кнопка "Забронировать" на странице заведения`'
+                        hide-details="auto"
+                        :disabled="!isAvailable").mb-4
+            span Доступно с подпиской Premium
+        .ntfcs__item(v-else)
+            v-switch(
+                inset
+                @change="toggleReservation($event)"
+                v-model="place.reservationsEnabled"
+                :label='`Кнопка "Забронировать" на странице заведения`'
+                hide-details="auto"
+                :disabled="!isAvailable"
+                :loading="isReservationTogglerLoading").mb-4
+        
+        hr
         h4 Ссылка на меню заведения
         p Можно поделиться в социальных сетях или добавить как ссылку на меню в Google Maps
         
@@ -48,6 +68,7 @@
 <script>
 import { transliterate as tr } from 'transliteration'
 import {lazyInput} from 'vue-lazy-input'
+import moment from 'moment';
 
 const axios = require('axios').default
 
@@ -69,7 +90,16 @@ export default {
                 (v) => !!v && !v.includes('?') && !v.includes('#') && !v.includes('&') && !v.includes('/') || 'Введите корректное значение'
             ],
             checkedLink: '',
-            isLoading: false
+            isLoading: false,
+            isReservationTogglerLoading: false
+        }
+    },
+    computed: {
+        isAvailable() {
+            const isStandart = this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].type == 'standart'
+            const isNotExpired = !moment(this.$store.state.auth.user.subscription[this.$store.state.auth.user.subscription.length - 1].expires).isBefore()
+            const isTrial = !moment(this.$store.state.auth.user.subscription[0].expires).isBefore()
+            return !isStandart && isNotExpired || isTrial
         }
     },
     mounted() {
@@ -77,20 +107,48 @@ export default {
         this.newLink = this.place.link
     },
     methods: {
+        async toggleReservation(e) {
+            try {
+                this.isReservationTogglerLoading = true
+                const set = await axios({
+                    method: 'post',
+                    url: `/api/toggle-place-reservation`,
+                    data: {
+                        place: this.place._id,
+                        status: e
+                    }
+                })
+                if (set.data) {
+                    this.place.reservationsEnabled = e
+                    this.$notify({ group: 'custom-style', type: 'n-success', title: 'Изменения сохранены' })
+                } else {
+                    this.place.reservationsEnabled = !e
+                    this.$notify({ group: 'custom-style', type: 'n-alarm', title: 'Что-то пошло не так, попробуйте обновить страницу и попробовать снова' })
+                }
+            } catch (error) {
+                console.error(error)
+            } finally {
+                this.isReservationTogglerLoading = false
+            }
+        },
         async inputLink(e) {
             if (!!e) {
-                this.isLoading = true
-                const isLinkExists = await axios({
-                    method: 'get',
-                    url: `/api/check-place-link/${e}`
-                })
-                if (!isLinkExists.data) {
-                    this.isLinkExists = false
-                } else {
-                    this.isLinkExists = true
+                try {
+                    this.isLoading = true
+                    const isLinkExists = await axios({
+                        method: 'get',
+                        url: `/api/check-place-link/${e}`
+                    })
+                    if (!isLinkExists.data) {
+                        this.isLinkExists = false
+                    } else {
+                        this.isLinkExists = true
+                    }
+                    this.checkedLink = e
+                    this.isLoading = false
+                } catch (error) {
+                    console.error(error)
                 }
-                this.checkedLink = e
-                this.isLoading = false
             }
         },
         remove() {

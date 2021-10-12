@@ -38,8 +38,9 @@
                 display: block;
             }
             &.placeholder {
+                position: relative;
+                z-index: 2;
                 background-size: contain;
-                padding-bottom: 40%;
                 opacity: 0.2;
                 background-repeat: repeat;
             }

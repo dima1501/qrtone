@@ -15,6 +15,8 @@ const Places = class Places {
         
         this.tables = [],
         this.link = data.link
+
+        this.reservationsEnabled = false
     }
   }
   

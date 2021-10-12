@@ -19,7 +19,7 @@
 
             .settings__section
                 .settings__section-block
-                    h3 Уведомления
+                    h3 Общее
                     .ntfcs
                         .ntfcs__item(v-if="notificationsEnabled == 'denied'")
                             p Уведомления отключены в браузере, <a href="https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop" target="_blank">как включить</a>
@@ -30,6 +30,7 @@
                                 :label="`${notificationsEnabledLocal ? 'Уведомления в браузере включены' : 'Уведомления в браузере отключены'}`"
                                 v-model="notificationsEnabledLocal"
                                 hide-details="auto")
+                        
 
                 // Это когда до международной версии дойду todo
                 //- .settings__section-block
@@ -44,7 +45,7 @@
                                 v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
                             <span>Новое зведение</span>
                 .places(v-if="$store.state.auth.user.places.length")
-                    placeLk(v-for="(place, key) in $store.state.auth.user.places" :key="key" :place="place" v-on:openEditPlacePopup="openEditPlacePopup" v-on:editTables="editTables")
+                    placeLk(v-for="(place, key) in $store.state.auth.user.places" :key="place._id" :place="place" v-on:openEditPlacePopup="openEditPlacePopup" v-on:editTables="editTables")
 
                 h4(v-if="!$store.state.auth.user.places.length") Для начала работы добавьте заведение
                 
@@ -78,7 +79,7 @@
                                 v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
                             <span>Добавить официанта</span>
 
-                p(v-if="!isAvailable").red--text Активно с подпиской <b>Premium</b>
+                p(v-if="!isAvailable").red--text Доступно с подпиской <b>Premium</b>
                 //- p Добавьте данные об официантах, зарегистрированных<br> на <a target="_blank" href="https://10q.ru/1075852">chachachay.me</a> для быстрого получения чаевых
                 p Добавьте данные об официантах, зарегистрированных<br> в системах для получения чаевых, например в <a target="_blank" href="https://10q.ru/1075852">chachachay.me</a>
 
@@ -244,9 +245,14 @@
                 .m-container
                     .footer__inner
                         .footer__item
-                            a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
+                            a(href="https://t.me/toffee_menu" target="_blank")
+                                img(src="/icon-telegram.svg")
                         .footer__item
-                            a(href="https://www.instagram.com/toffee.menu" target="_blank").footer__item-text Instagram
+                            a(href="https://www.instagram.com/toffee.menu")
+                                img(src="/icon-instagram.svg" target="_blank")
+                    .footer__inner
+                        .footer__item
+                            a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
                         .footer__item
                             a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
                     .footer__inner

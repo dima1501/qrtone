@@ -759,9 +759,9 @@ router.post('/api/subscribe', auth(), async (req, res) => {
             req.user.subscription.push(sub)
         }
 
-        // req.db.collection("users").updateOne(
-        //     { _id: ObjectId(req.user._id) },
-        //     { $set: { 'subscription': req.user.subscription } } )
+        req.db.collection("users").updateOne(
+            { _id: ObjectId(req.user._id) },
+            { $set: { 'subscription': req.user.subscription } } )
 
         res.status(200).send(req.user.subscription)
     } catch (error) {
@@ -934,5 +934,20 @@ router.delete('/api/delete-waiter/:id', auth(), async (req, res) => {
 
 
 
+router.post('/api/toggle-place-reservation', auth(), async (req, res) => {
+    try {
+        const set = await req.db.collection('users').updateOne(
+            { _id: ObjectId(req.user._id), "places._id": req.body.place },
+            { $set: { "places.$.reservationsEnabled": req.body.status } }
+        )
+        if (set.modifiedCount) {
+            res.status(200).send(true)
+        } else {
+            res.status(200).send(false)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
 
 module.exports = router

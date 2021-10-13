@@ -97,7 +97,9 @@ const state = {
     editPlace: false,
     addWaiter: false,
     createCat: false,
-    createDop: false
+    createDop: false,
+    addNewMenuItem: false,
+    toggleFastActions: false
   },
   places: {
     isLinkExists: false,

@@ -513,20 +513,23 @@ export default {
             const link = this.configs[this.type].link
 
             const calcHeight = this.configs[this.type].height + (!!description ? (16 + descriptionArr.length * 16) - 5 : 0) + (!!str ? 30 + strArr.length * 18 : 0) + (table ? 20 : 0) + (link ? 20 : 0)
+            
+            const multyplier = 1.3
 
             if (table) {
+                
                 const tableBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 tableBg.setAttribute("fill", "black");
-                tableBg.setAttribute("width", 238);
-                tableBg.setAttribute("height", 24);
+                tableBg.setAttribute("width", 238 * multyplier);
+                tableBg.setAttribute("height", 24 * multyplier);
                 tableBg.setAttribute("x", 0);
-                tableBg.setAttribute("y", link ? calcHeight - 42 : calcHeight - 22);
+                tableBg.setAttribute("y", link ? (calcHeight - 42) * multyplier : (calcHeight - 22) * multyplier);
                 svg1.appendChild(tableBg)
 
                 const tableText = document.createElementNS("http://www.w3.org/2000/svg", "text")
                 tableText.setAttributeNS(null, "x", "50%");     
-                tableText.setAttributeNS(null, "y", link ? calcHeight - 31 : calcHeight - 11); 
-                tableText.setAttributeNS(null, "font-size", 10);
+                tableText.setAttributeNS(null, "y", link ? (calcHeight - 31) * multyplier : (calcHeight - 11) * multyplier); 
+                tableText.setAttributeNS(null, "font-size", 10 * multyplier);
                 tableText.setAttributeNS(null, "font-weight","medium");
                 tableText.setAttributeNS(null, "font-family","sans-serif");
                 tableText.setAttributeNS(null, "letter-spacing","0.02em");
@@ -540,16 +543,16 @@ export default {
             if (link) {
                 const linkBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 linkBg.setAttribute("fill", "black");
-                linkBg.setAttribute("width", 238);
-                linkBg.setAttribute("height", 20);
+                linkBg.setAttribute("width", 238 * multyplier);
+                linkBg.setAttribute("height", 20 * multyplier);
                 linkBg.setAttribute("x", 0);
-                linkBg.setAttribute("y", calcHeight - 20);
+                linkBg.setAttribute("y", (calcHeight - 20) * multyplier);
                 svg1.appendChild(linkBg)
 
                 const linkText = document.createElementNS("http://www.w3.org/2000/svg", "text")
                 linkText.setAttributeNS(null, "x", "50%");     
-                linkText.setAttributeNS(null, "y", calcHeight - 11);
-                linkText.setAttributeNS(null, "font-size", 10);
+                linkText.setAttributeNS(null, "y", (calcHeight - 11) * multyplier);
+                linkText.setAttributeNS(null, "font-size", 10 * multyplier);
                 linkText.setAttributeNS(null, "font-weight","medium");
                 linkText.setAttributeNS(null, "font-family","sans-serif");
                 linkText.setAttributeNS(null, "letter-spacing","0.02em");
@@ -570,18 +573,18 @@ export default {
                 const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 bgRect.setAttribute("fill", this.configs[this.type].background.color);
                 bgRect.setAttribute("width", "100%");
-                bgRect.setAttribute("height", 258 + (!!description ? (16 + descriptionArr.length * 16) - 4 : 0));
+                bgRect.setAttribute("height", (258 + (!!description ? (16 + descriptionArr.length * 16) - 4 : 0)) * multyplier);
                 bgRect.setAttribute("x", 0);
                 bgRect.setAttribute("y", 0);
                 svg1.appendChild(bgRect)
 
                 const svgBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 svgBg.setAttribute("fill", "white");
-                svgBg.setAttribute("width", 198);
-                svgBg.setAttribute("height", 198);
-                svgBg.setAttribute("x", 20);
-                svgBg.setAttribute("y", 20);
-                svgBg.setAttribute("rx", 10);
+                svgBg.setAttribute("width", 198 * multyplier);
+                svgBg.setAttribute("height", 198 * multyplier);
+                svgBg.setAttribute("x", 20 * multyplier);
+                svgBg.setAttribute("y", 20 * multyplier);
+                svgBg.setAttribute("rx", 10 * multyplier);
                 svg1.appendChild(svgBg)
             }
 
@@ -589,8 +592,8 @@ export default {
                 for(let i in descriptionArr) {
                     const descriptionText = document.createElementNS("http://www.w3.org/2000/svg", "text")
                     descriptionText.setAttributeNS(null, "x", "50%");     
-                    descriptionText.setAttributeNS(null, "y", 244 + (16 * i)); 
-                    descriptionText.setAttributeNS(null, "font-size", 14);
+                    descriptionText.setAttributeNS(null, "y", (244 + (16 * i)) * multyplier); 
+                    descriptionText.setAttributeNS(null, "font-size", 14 * multyplier);
                     descriptionText.setAttributeNS(null, "font-weight","medium");
                     descriptionText.setAttributeNS(null, "font-family","sans-serif");
                     descriptionText.setAttributeNS(null, "letter-spacing","0.02em");
@@ -604,31 +607,31 @@ export default {
 
             svg1.setAttribute("width", "100%");
             
-            svg1.setAttribute("viewBox", `0 0 ${this.configs[this.type].width} ${calcHeight}`);
+            svg1.setAttribute("viewBox", `0 0 ${this.configs[this.type].width * multyplier} ${calcHeight * multyplier}`);
 
             var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
-            svgimg.setAttribute("width", this.configs[this.type].background && this.configs[this.type].background.visible ? 158 : 198);
-            svgimg.setAttribute("height", this.configs[this.type].background && this.configs[this.type].background.visible ? 158 : 198);
+            svgimg.setAttribute("width", this.configs[this.type].background && this.configs[this.type].background.visible ? 158 * multyplier : 198 * multyplier);
+            svgimg.setAttribute("height", this.configs[this.type].background && this.configs[this.type].background.visible ? 158 * multyplier : 198 * multyplier);
             svgimg.setAttributeNS('http://www.w3.org/1999/xlink','href', this.$store.state.view.pdf.qr);
-            svgimg.setAttribute("x", this.configs[this.type].background && this.configs[this.type].background.visible ? "40" : "20");
-            svgimg.setAttribute("y", this.configs[this.type].background && this.configs[this.type].background.visible ? "40" : "20");
+            svgimg.setAttribute("x", this.configs[this.type].background && this.configs[this.type].background.visible ? 40 * multyplier : 20 * multyplier);
+            svgimg.setAttribute("y", this.configs[this.type].background && this.configs[this.type].background.visible ? 40 * multyplier : 20 * multyplier);
             svgimg.setAttributeNS(null, 'visibility', 'visible');
             svg1.appendChild(svgimg);
 
             const textBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
             textBg.setAttribute("fill", "#000");
             textBg.setAttribute("width", "100%");
-            textBg.setAttribute("height", 32 + strArr.length * 18);
+            textBg.setAttribute("height", (32 + strArr.length * 18) * multyplier);
             textBg.setAttribute("x", "0");
-            textBg.setAttribute("y", 238 + (!!description ? (16 + descriptionArr.length * 16) - 4 : 0));
+            textBg.setAttribute("y", (238 + (!!description ? (16 + descriptionArr.length * 16) - 4 : 0)) * multyplier);
             svg1.appendChild(textBg)
 
             if (str) {
                 for(let i in strArr) {
                     const mainText = document.createElementNS("http://www.w3.org/2000/svg", "text")
                     mainText.setAttributeNS(null, "x", "50%");     
-                    mainText.setAttributeNS(null, "y", 238 + (!!description ? (16 + descriptionArr.length * 16) - 4 : 0) + 25 + (18 * i)); 
-                    mainText.setAttributeNS(null, "font-size", 17);
+                    mainText.setAttributeNS(null, "y", (238 + (!!description ? (16 + descriptionArr.length * 16) - 4 : 0) + 25 + (18 * i)) * multyplier); 
+                    mainText.setAttributeNS(null, "font-size", 17 * multyplier);
                     mainText.setAttributeNS(null, "font-weight","medium");
                     mainText.setAttributeNS(null, "font-family","sans-serif");
                     mainText.setAttributeNS(null, "letter-spacing","0.02em");

@@ -206,6 +206,7 @@ const addNewMenuItem = async (store, data) => {
       })
 
       if (add.data) {
+        store.rootState.view.loading.addNewMenuItem = false
         $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `Позиция "${data.item.name}" добавлена в меню` })
         store.rootState.view.popup.addMenuItemPopup.visible = false
 
@@ -289,6 +290,7 @@ const editMenuItem = async (store, data) => {
           Vue.set(store.rootState.auth.user.goods, parsedIndex, add.data)
         }
         store.rootState.view.popup.editMenuItemPopup.visible = false
+        store.rootState.view.loading.addNewMenuItem = false
       }
     }
 
@@ -819,6 +821,7 @@ const toggleFastActions = async (store, data) => {
       data: { data }
     })
     if (fetch.data) {
+      store.rootState.view.loading.toggleFastActions = false
       $nuxt.$notify({ group: 'custom-style', type: 'n-success', title: `${data ? 'Быстрые действия включены' : 'Быстрые действия отключены'}` })
       store.rootState.auth.user.fastActionsEnabled = data
     }

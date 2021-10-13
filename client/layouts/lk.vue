@@ -38,11 +38,7 @@ export default {
         socketId: msg,
         place: localStorage.getItem('place')
       }, { root: true });
-      const place = localStorage.getItem("place")
-      if (place) {
-        this.$store.dispatch('lk/loadOrders', { place, items: 0 }, {root: true})
-        this.$store.dispatch('lk/loadActions', { place, items: 0 }, {root: true})
-      }
+      this.$store.dispatch("auth/checkAuth")
     },
     async newOrder(data) {
       this.$notify({ group: 'custom-style', type: 'n-info', title: 'Новый заказ', text: 'Столик #' + data.order.table })

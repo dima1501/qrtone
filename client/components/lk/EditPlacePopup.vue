@@ -24,7 +24,8 @@
                                 :rules="editablePlace.phone.length ? phoneRules : [true]"
                                 placeholder="+7(xxx)xxx-xx-xx"
                                 label="Телефон"
-                                hide-details="auto")
+                                hide-details="auto"
+                                type="number")
                         .e-card__line
                             v-text-field(
                                 v-model="editablePlace.website"
@@ -86,10 +87,10 @@
                         .e-card__line
                             v-text-field(
                                 v-model="editablePlace.whatsapp"
-                                type="text"
                                 hint="Номер телефона в WhatsApp"
                                 label="WhatsApp"
                                 hide-details="auto"
+                                type="number"
                                 :rules="editablePlace.whatsapp.length ? phoneRules : [true]")
                         
                         .e-card__line
@@ -130,9 +131,9 @@ export default {
                 name: ''
             },
             nameRules: [
-                (v) => !!v || 'error_company_name',
+                (v) => !!v || 'Введите название компании',
             ],
-            phoneRules: [v => !!v || 'Required', v => /\d{6}/.test(v) || 'Invalid format'],
+            phoneRules: [v => !!v || 'Обязательное поле', v => /\d{6}/.test(v) || 'Некорректный формат'],
             isMapVisible: false,
             hints: [],
             markerIcon: {

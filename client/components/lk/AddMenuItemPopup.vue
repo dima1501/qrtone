@@ -151,6 +151,7 @@
                                 type="submit"
                                 depressed
                                 large
+                                :loading="$store.state.view.loading.addNewMenuItem"
                             ).e-card__bottom-item.white--text Создать
 </template>
 
@@ -228,6 +229,7 @@ export default {
             this.$refs.dropzone.removeFile(file)
         },
         fetchAddItem() {
+            this.$store.state.view.loading.addNewMenuItem = true
             this.$store.dispatch('lk/addNewMenuItem', {
                 images: this.uploadImages,
                 item: this.newItem

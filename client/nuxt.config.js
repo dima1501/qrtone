@@ -30,9 +30,9 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
       { hid: 'description', name: 'description', content: 'Сервис электронного меню для ресторанов и кафе. С доступом по QR коду и уведомлениями в telegram' }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    // link: [
+    //   { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    // ]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -88,7 +88,18 @@ export default {
         langDir: 'lang/',
       }
     ],
-    '@nuxtjs/sitemap'
+    '@nuxtjs/sitemap',
+    [
+      '@nuxtjs/yandex-metrika',
+      {
+        id: '85879209',
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true,
+        ecommerce:"dataLayer"
+      }
+    ],
   ],
 
   sitemap: {

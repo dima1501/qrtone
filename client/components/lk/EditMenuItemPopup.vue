@@ -157,6 +157,7 @@
                                 type="submit"
                                 depressed
                                 large
+                                :loading="$store.state.view.loading.addNewMenuItem"
                             ).e-card__bottom-item.white--text Сохранить
 </template>
 
@@ -239,6 +240,7 @@ export default {
             this.updatedMenuItem.images.splice(index, 1)
         },
         fetchEditItem() {
+            this.$store.state.view.loading.addNewMenuItem = true
             this.$store.dispatch('lk/editMenuItem', {
                 item: this.updatedMenuItem
             })

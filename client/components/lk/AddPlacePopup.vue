@@ -25,7 +25,8 @@
                                 :rules="addPlace.phone.length ? phoneRules : [true]"
                                 placeholder="+7(xxx)xxx-xx-xx"
                                 label="Телефон"
-                                hide-details="auto")
+                                hide-details="auto"
+                                type="number")
 
                         .e-card__line
                             v-text-field(
@@ -91,7 +92,7 @@
                         .e-card__line
                             v-text-field(
                                 v-model="addPlace.whatsapp"
-                                type="text"
+                                type="number"
                                 hint="Номер телефона в WhatsApp"
                                 label="WhatsApp"
                                 hide-details="auto"
@@ -153,9 +154,9 @@ export default {
                 }
             },
             nameRules: [
-                (v) => !!v || 'error_company_name',
+                (v) => !!v || 'Введите название компании',
             ],
-            phoneRules: [v => !!v || 'Required', v => /\d{6}/.test(v) || 'Invalid format'],
+            phoneRules: [v => !!v || 'Обязательное поле', v => /\d{6}/.test(v) || 'Некорректный формат'],
             hints: [],
             isMapVisible: false,
             mapCenter: [],

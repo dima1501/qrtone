@@ -55,10 +55,11 @@
                         v-if="isAvailable"
                         inset
                         @change="fastActionsToggler($event)"
-                        v-model="$store.state.auth.user.fastActionsEnabled")
+                        v-model="$store.state.auth.user.fastActionsEnabled"
+                        :loading="$store.state.view.loading.toggleFastActions")
 
                     h2.settings__section-title Быстрые действия
-                    .settings__section-link(@click="addFastAction" v-if="isAvailable")
+                    .settings__section-link(@click="addFastAction" v-if="isAvailable")  
                         v-tooltip(top)
                             template(v-slot:activator="{ on, attrs }")
                                 v-icon(v-bind="attrs" v-on="on") mdi-plus-circle-outline 
@@ -332,6 +333,7 @@ export default {
             this.$store.state.view.popup.addWaiterPopup.visible = true
         },
         fastActionsToggler(e) {
+            this.$store.state.view.loading.toggleFastActions = true
             this.$store.dispatch("lk/toggleFastActions", e)               
         },
         setCurrency(value) {

@@ -12,17 +12,18 @@ const checkAuth = async (store, data) => {
      
       if (data) {
         $nuxt.$router.push($nuxt.localePath({ path: '/lk/settings' }))
-        const place = localStorage.getItem("place")
-        if (place) {
-          store.dispatch('lk/loadOrders', { place, items: 0 }, {root: true})
-          store.dispatch('lk/loadActions', { place, items: 0 }, {root: true})
-        }
-
-        store.dispatch("auth/setSocketId", {
-          socketId: $nuxt.$socket.id,
-          place: localStorage.getItem('place')
-        }, { root: true });
       }
+
+      const place = localStorage.getItem("place")
+      if (place) {
+        store.dispatch('lk/loadOrders', { place, items: 0 }, {root: true})
+        store.dispatch('lk/loadActions', { place, items: 0 }, {root: true})
+      }
+
+      store.dispatch("auth/setSocketId", {
+        socketId: $nuxt.$socket.id,
+        place: localStorage.getItem('place')
+      }, { root: true });
 
       // todo n строчек ниже - хлам
       store.state.parsedMenu = {}

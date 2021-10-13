@@ -261,7 +261,7 @@
           .footer__item
             .footer__item-text © 2021 Все права защищены
 
-    CookiesAgreement(v-if="!isCookiesAgeed" @closePopup="closePopup()")
+    CookiesAgreement(v-if="!isCookiesAgreed" @closePopup="closePopup()")
 
 
 </template>
@@ -276,11 +276,11 @@ export default {
       isButtonClicked: false,
       isEmailFocused: false,
       loading: false,
-      isCookiesAgeed: true
+      isCookiesAgreed: true
     }
   },
   mounted() {
-    this.isCookiesAgeed = this.$route.params.id == 'toffee.menu' ? true : localStorage.getItem('cookie')
+    this.isCookiesAgreed = this.$route.params.id == 'toffee.menu' ? true : localStorage.getItem('cookie')
   },
   methods: {
     scrollMeTo(refName) {
@@ -323,7 +323,7 @@ export default {
     },
     closePopup() {
       localStorage.setItem('cookie', true)
-      this.isCookiesAgeed = true
+      this.isCookiesAgreed = true
     }
   }
 }

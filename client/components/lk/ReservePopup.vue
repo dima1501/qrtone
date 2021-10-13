@@ -64,7 +64,7 @@
                                     v-text-field(v-model="reservation.name" :rules="nameRules" label="Имя" hide-details="auto")
 
                                 .reserve__section
-                                    v-text-field(v-model="reservation.phone" :rules="phoneRules" label="Телефон" hide-details="auto").mb-10
+                                    v-text-field(v-model="reservation.phone" :rules="phoneRules" label="Телефон" hide-details="auto" type="number").mb-10
 
                                 .reserve__bottom
                                     .reserve__bottom-item

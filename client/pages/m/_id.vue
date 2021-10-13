@@ -93,7 +93,8 @@ div
                     .cart__overlay(@click="closeCart")
                     .cart__area
                         .cart__top
-                            h2.cart__title Корзина
+                            h2.cart__title(v-if="$nuxt.$route.query.t && isAvailable") Корзина
+                            h2.cart__title(v-if="!$nuxt.$route.query.t") Заказ
                             .cart__back(@click="closeCart")
                                 v-icon(light) mdi-close
                         .cart__content
@@ -136,9 +137,9 @@ div
                                             v-icon mdi-plus
 
                     .cart__bottom(v-if="$store.state.guest.user.cart[$store.state.guest.companyData.place._id].goods.length || $store.state.guest.user.cart[$store.state.guest.companyData.place._id].dops.length")
-                        .cart__bottom-price {{getTotalPrice}} {{$store.state.guest.companyData.currencySymbol}}
-                        .cart__bottom-control
-                            v-btn(depressed color="yellow" @click="makeOrder" v-if="this.$nuxt.$route.query.t && isAvailable" :loading="$store.state.view.loading.sendOrder") Заказать
+                        .cart__bottom-price Итого: {{getTotalPrice}}{{$store.state.guest.companyData.currencySymbol}}
+                        .cart__bottom-control(v-if="this.$nuxt.$route.query.t && isAvailable")
+                            v-btn(depressed color="yellow" @click="makeOrder" :loading="$store.state.view.loading.sendOrder") Заказать
                             //- v-btn(depressed color="yellow" v-else) кнопка, если столик не указан
 
             transition(name="fade")
@@ -300,40 +301,51 @@ export default {
             }
         }
     },
-    async fetch () {
+    // async fetch () {
+    async asyncData({ params }) {
         try {
-            if (this.$route.params.id) {
-                const id = this.$route.params.id
-
+            if (params.id) {
                 const user = await axios({
                     method: 'get',
-                    url: `${process.env.server || "http://localhost:8000"}/api/get-user-data/${id}`
+                    url: `${process.env.server || "http://localhost:8000"}/api/get-user-data/${params.id}`
                 })
 
                 if (user.data) {
-                    this.$store.state.guest.companyData = user.data
-                    this.$store.state.guest.parsedMenu = {}
-                    for (let item of this.$store.state.guest.companyData.goods) {
-                        if (this.$store.state.guest.parsedMenu[item.category]) {
-                            this.$store.state.guest.parsedMenu[item.category].push(item)
-                        } else {
-                            this.$store.state.guest.parsedMenu[item.category] = [item]
-                        }
-                        this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
+                    return {
+                        user: user.data
                     }
-                } else {
-                    this.$store.state.guest.companyData = false
-                    this.isNotFound = true
                 }
-
-                this.isLoading = false
-                
             }
         } catch (error) {
             console.error(error)
         }
     },
+    head() {
+        return {
+            title: this.user.name,
+            meta: [
+                { hid: this.user.name },
+                { name: "description", content: this.user.name + ' ' + this.user.description + ' ' + this.user.place.phone + ' ' + this.user.place.website + ' ' + this.user.place.address.full },
+            ]
+        }
+    },
     mounted() {
+        if (this.user) {
+            this.$store.state.guest.companyData = this.user
+            this.$store.state.guest.parsedMenu = {}
+            for (let item of this.$store.state.guest.companyData.goods) {
+                if (this.$store.state.guest.parsedMenu[item.category]) {
+                    this.$store.state.guest.parsedMenu[item.category].push(item)
+                } else {
+                    this.$store.state.guest.parsedMenu[item.category] = [item]
+                }
+                this.$store.state.guest.parsedMenu[item.category] = this.$store.state.guest.parsedMenu[item.category].sort(function(a, b) { return a.order - b.order })
+            }
+        } else {
+            this.$store.state.guest.companyData = false
+            this.isNotFound = true
+        }
+        this.isLoading = false
         this.navigator = navigator.userAgent
         window.addEventListener('scroll', (e) => {
             this.headerTop = this.$refs.cats.getBoundingClientRect().top;
@@ -749,18 +761,19 @@ export default {
         border-top: 1px solid rgb(226, 226, 226);
         box-shadow: 0 0 20px rgba(0,0,0,0.15);
         background-color: #fff;
+        justify-content: center;
         @media screen and (min-width: 450px) {
             border-radius: 14px;
         }
         &-price {
-            min-width: 90px;
             flex-shrink: 0;
-            margin-right: 15px;
+            flex-shrink: 0;
             font-weight: bold;
             font-size: 18px;
         }
         &-control {
             flex-grow: 1;
+            margin-left: 15px;
             .v-btn {
                 width: 100%;
                 &.loading {

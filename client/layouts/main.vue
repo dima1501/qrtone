@@ -1,7 +1,7 @@
 <template lang="pug">
   v-app
     Nuxt
-    CookiesAgreement(v-if="!isCookiesAgeed" @closePopup="closePopup()")
+    CookiesAgreement(v-if="!isCookiesAgreed" @closePopup="closePopup()")
 </template>
 
 <script>
@@ -9,7 +9,7 @@
 export default {
   data() {
     return {
-      isCookiesAgeed: true
+      isCookiesAgreed: true
     }
   },
   sockets: {
@@ -29,12 +29,12 @@ export default {
     if (!this.$store.state.guest.user) {
       this.$store.dispatch("guest/checkAuth", this.$route.params.id, { root: true })
     }
-    this.isCookiesAgeed = this.$route.params.id == 'toffee.menu' ? true : localStorage.getItem('cookie')
+    this.isCookiesAgreed = this.$route.params.id == 'toffee.menu' ? true : localStorage.getItem('cookie')
   },
   methods: {
     closePopup() {
       localStorage.setItem('cookie', true)
-      this.isCookiesAgeed = true
+      this.isCookiesAgreed = true
     }
   }
 }

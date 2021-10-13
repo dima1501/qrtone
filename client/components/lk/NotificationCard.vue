@@ -3,7 +3,7 @@
         div(v-if="notify.reservation")
             .sorder__top
                 .sorder__table Бронь
-                .sorder__time {{ getTime }} asd
+                .sorder__time {{ getTime }}
                 .sorder__status.wait(v-if="notify.status === 'pending'") Ожидание
                 .sorder__status.accepted(v-else) Принято
 

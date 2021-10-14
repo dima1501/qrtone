@@ -223,6 +223,19 @@
                                     .subs__plan-price
                                         .subs__plan-price-value 1500{{$store.state.auth.user.currencySymbol}}
 
+                                <form name="TinkoffPayForm" onsubmit="pay(this); return false;">
+                                    <input class="tinkoffPayRow" type="hidden" name="terminalkey" value="1634222512502DEMO">
+                                    <input class="tinkoffPayRow" type="hidden" name="frame" value="true">
+                                    <input class="tinkoffPayRow" type="hidden" name="language" value="ru"> 
+                                    <input class="tinkoffPayRow" type="text" placeholder="Сумма заказа" name="amount" required>
+                                    <input class="tinkoffPayRow" type="text" placeholder="Номер заказа" name="order">
+                                    <input class="tinkoffPayRow" type="text" placeholder="Описание заказа" name="description">
+                                    <input class="tinkoffPayRow" type="text" placeholder="ФИО плательщика" name="name">
+                                    <input class="tinkoffPayRow" type="text" placeholder="E-mail" name="email">
+                                    <input class="tinkoffPayRow" type="text" placeholder="Контактный телефон" name="phone">
+                                    <input class="tinkoffPayRow" type="submit" value="Оплатить">
+                                </form>
+
                                 .subs__plan.-orange(@click="subscribe('premium', 6, 8400)")
                                     .subs__plan-period 6 месяцев
                                     .subs__plan-price
@@ -325,6 +338,14 @@ export default {
             cur.push(currencies[key])
         })
         this.navigator = navigator
+    },
+    head: {
+        script: [
+            { 
+                src: "https://securepay.tinkoff.ru/html/payForm/js/tinkoff_v2.js",
+                body: true, 
+            }
+        ]
     },
     computed: {
         isAvailable() {

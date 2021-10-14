@@ -950,4 +950,14 @@ router.post('/api/toggle-place-reservation', auth(), async (req, res) => {
     }
 })
 
+router.post('/api/payment', auth(), async (req, res) => {
+    try {
+        console.log(req.body)
+        console.log('got payment data')
+        res.status(200).send(true)
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 module.exports = router

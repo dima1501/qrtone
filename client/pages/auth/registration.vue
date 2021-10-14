@@ -24,6 +24,8 @@
                 :type="showPassword ? 'text' : 'password'"
                 label="Пароль"
                 @click:append="showPassword = !showPassword")
+                .auth__disclamer Регистрируясь, вы соглашаетесь с 
+                    nuxt-link(:to="localePath('/docs/privacy_policy')" target="_blank") политикой обработки персональных данных
                 .auth__buttons.mt-5
                     v-btn(
                     depressed
@@ -93,6 +95,10 @@ export default {
 .auth {
     &__title {
         margin-bottom: 20px;
+    }
+    &__disclamer {
+        font-size: 14px;
+        line-height: 1.23;
     }
 }
 </style>

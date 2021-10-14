@@ -1,7 +1,7 @@
 <template lang="pug">
   v-app
     Nuxt
-    CookiesAgreement(v-if="!isCookiesAgreed" @closePopup="closePopup()")
+    //- CookiesAgreement(v-if="!isCookiesAgreed" @closePopup="closePopup()")
 </template>
 
 <script>

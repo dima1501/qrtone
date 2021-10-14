@@ -203,13 +203,13 @@ div
 
             footer.footer
                 .m-container
-                    .footer__inner
+                    .footer__inner.-row
                         .footer__item
-                            a(href="https://t.me/toffee_menu" target="_blank")
-                                img(src="/icon-telegram.svg")
+                            a(href="https://t.me/toffee_menu")
+                            img(src="/icon-telegram.svg")
                         .footer__item
                             a(href="https://www.instagram.com/toffee.menu")
-                                img(src="/icon-instagram.svg" target="_blank")
+                            img(src="/icon-instagram.svg")
                     .footer__inner
                         .footer__item
                             a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
@@ -217,14 +217,20 @@ div
                             a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
                     .footer__inner
                         .footer__item
-                            nuxt-link(:to="localePath('/docs/cookie')").footer__item-text Пользовательское соглашение
+                            nuxt-link(:to="localePath('/docs/user_agreement')" target="_blank").footer__item-text Пользовательское соглашение
                         .footer__item
-                            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Политика конфиденциальности
+                            nuxt-link(:to="localePath('/docs/privacy_policy')" target="_blank").footer__item-text Политика обработки персональных данных
+                        //- .footer__inner
+                        //-   .footer__item
+                        //-     nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Использование файлов cookie
                     .footer__inner
                         .footer__item
-                            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Использование файлов cookie
+                            .footer__item-text ИП Воропаев Дмитрий Владимирович
+                    .footer__inner
                         .footer__item
-                            .footer__item-text © 2021 Все права защищены
+                            .footer__item-text ИНН: 780103380065
+                        .footer__item
+                            .footer__item-text ОГРН: 321784700303897
 
 </template>
 

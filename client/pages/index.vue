@@ -25,17 +25,17 @@
                   .m-form__error.error-label {{ emailValidationErrors[0] }}
                 .m-form__btn
                   nuxt-link(:to="localePath('/auth/registration')").button.-short.-black Начать бесплатно
-                  a.m-welcome__try(:href="localePath('/m/toffee_menu?t=1')" target="_blank") Демо меню
+                  a.m-welcome__try(:href="localePath('/m/toffee.menu?t=1')" target="_blank") Демо меню
               .m-welcome__note Попробуйте toffee.menu бесплатно в течение 14 дней,<br> кредитная карта не требуется.
               //- <br>Вводя свой email, вы соглашаетесь получать маркетинговые электронные письма от toffee.menu.
             kinesis-element(:strength="10" type="depth")
               .m-welcome__media
                 img.m-welcome__media-qr(:src="require(`~/static/main-qr-white.png`)")
-                .m-welcome__media-text Отсканируйте для просмотра демо меню или <a :href="localePath('/m/toffee_menu?t=1')" target="_blank">перейдите по ссылке</a>
+                .m-welcome__media-text Отсканируйте для просмотра демо меню или <a :href="localePath('/m/toffee.menu?t=1')" target="_blank">перейдите по ссылке</a>
     
     .m-container
       .m-section
-        .m-section__title Что такое toffee_menu?
+        .m-section__title Что такое toffee.menu?
         .m-section__subtitle Сервис предоставляет 2 типа подписки
         .m-section__subtitle 14 дней бесплатного периода с доступом ко всем функциям
 
@@ -63,7 +63,7 @@
             .fe-section__text Не нужно ждать, пока официант принесет меню
             .fe-section__text Электронное меню можно быстро обновить, нет необходимости перепечатывать меню
             .fe-section__btn
-              nuxt-link(:to="localePath('/m/toffee_menu?t=1')" target="_blank").button.-black Посмотреть пример меню
+              nuxt-link(:to="localePath('/m/toffee.menu?t=1')" target="_blank").button.-black Посмотреть пример меню
 
     .fe-section.-white
       .m-container
@@ -107,7 +107,7 @@
             .faq__item-text Электронное меню доступно гостю сразу, не нужно ждать официанта. Его не нужно перепечатывать в случае изменений, достаточно отредактировать позицию на сайте. 
           .faq__item
             .faq__item-title Как будет выглядеть меню?
-            .faq__item-text Посмотреть пример заполненного меню можно посмотреть по <a href="https://toffee.menu/m/toffee_menu?t=1" target="_blank">ссылке</a>
+            .faq__item-text Посмотреть пример заполненного меню можно посмотреть по <a href="https://toffee.menu/m/toffee.menu?t=1" target="_blank">ссылке</a>
           .faq__item
             .faq__item-title А что если у меня несколько заведений?
             .faq__item-text Можно создать неограниченное количество заведений. Для каждого из них будут созданы ссылки и QR-коды, а отображение позиций меню можно настроить отдельно для каждого из заведений
@@ -237,7 +237,7 @@
 
     footer.footer
       .m-container
-        .footer__inner
+        .footer__inner.-row
           .footer__item
             a(href="https://t.me/toffee_menu")
               img(src="/icon-telegram.svg")
@@ -251,17 +251,33 @@
             a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
         .footer__inner
           .footer__item
-            nuxt-link(:to="localePath('/docs/cookie')").footer__item-text Пользовательское соглашение
+            nuxt-link(:to="localePath('/docs/user_agreement')" target="_blank").footer__item-text Пользовательское соглашение
           .footer__item
-            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Политика конфиденциальности
+            nuxt-link(:to="localePath('/docs/privacy_policy')" target="_blank").footer__item-text Политика обработки персональных данных
+        //- .footer__inner
+        //-   .footer__item
+        //-     nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Использование файлов cookie
         .footer__inner
           .footer__item
-            nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Использование файлов cookie
+            .footer__item-text ИП Воропаев Дмитрий Владимирович
         .footer__inner
           .footer__item
-            .footer__item-text © 2021 Все права защищены
+            .footer__item-text ИНН: 780103380065
+          .footer__item
+            .footer__item-text ОГРН: 321784700303897
 
-    CookiesAgreement(v-if="!isCookiesAgreed" @closePopup="closePopup()")
+    .sweets(v-if="!isCookiesAgreed")
+      .sweets__content
+        .sweets__text Мы используем
+          //- nuxt-link(:to="localePath('/docs/cookie')" target="_blank") 
+          span  файлы <a href="https://ru.wikipedia.org/wiki/Cookie" target="blank">cookie</a>
+        .sweets__close
+          v-btn(
+            small
+            depressed
+            color="primary"
+            type="submit"
+            @click="closePopup()") OK
 
 
 </template>
@@ -336,6 +352,34 @@ export default {
 @import '../assets/m-welcome.scss';
 @import '../assets/m-form.scss';
 @import '../assets/subs.scss';
+
+.sweets {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 22;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  width: 100%;
+  max-width: 300px;
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  &__text {
+    font-size: 14px;
+  }
+  &__close {
+    .v-btn {
+      padding: 8px;
+      min-width: 0;
+    }
+  }
+}
 
 .m-section {
   padding: 0 0 30px 0;

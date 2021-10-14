@@ -1,7 +1,7 @@
 <template lang="pug">
     div
         .docs__title Политика использования cookie файлов
-        .docs__content as asd adsd a d
+        .docs__content
 </template>
 
 <script>

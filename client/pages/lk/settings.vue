@@ -228,9 +228,9 @@
                                     <input class="tinkoffPayRow" type="hidden" name="frame" value="true">
                                     <input class="tinkoffPayRow" type="hidden" name="language" value="ru"> 
                                     <input class="tinkoffPayRow" type="text" placeholder="Сумма заказа" name="amount" required>
-                                    <input class="tinkoffPayRow" type="text" placeholder="Номер заказа" name="order" value="666">
                                     <input class="tinkoffPayRow" type="text" placeholder="Описание заказа" name="description" value="Подписка Premium, сроком на 1 месяц">
                                     <input class="tinkoffPayRow" type="text" placeholder="E-mail" name="email" value="admin@toffee.menu">
+                                    <input class="tinkoffPayRow" type="hidden" name="customerKey" value="dima">
                                     <input class="tinkoffPayRow" type="submit" value="Оплатить">
                                 </form>
 

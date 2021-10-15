@@ -223,16 +223,17 @@
                                     .subs__plan-price
                                         .subs__plan-price-value 1500{{$store.state.auth.user.currencySymbol}}
 
-                                <form name="TinkoffPayForm" onsubmit="pay(this); return false;">
-                                    <input class="tinkoffPayRow" type="hidden" name="terminalkey" value="1634222512502DEMO">
-                                    <input class="tinkoffPayRow" type="hidden" name="frame" value="true">
-                                    <input class="tinkoffPayRow" type="hidden" name="language" value="ru"> 
-                                    <input class="tinkoffPayRow" type="text" placeholder="Сумма заказа" name="amount" required>
-                                    <input class="tinkoffPayRow" type="text" placeholder="Описание заказа" name="description" value="Подписка Premium, сроком на 1 месяц">
-                                    <input class="tinkoffPayRow" type="text" placeholder="E-mail" name="email" value="admin@toffee.menu">
-                                    <input class="tinkoffPayRow" type="hidden" name="customerKey" value="dima">
-                                    <input class="tinkoffPayRow" type="submit" value="Оплатить">
-                                </form>
+                                //- <form name="TinkoffPayForm" onsubmit="pay(this); return false;">
+                                //-     <input class="tinkoffPayRow" type="hidden" name="terminalkey" value="1634222512502DEMO">
+                                //-     <input class="tinkoffPayRow" type="hidden" name="frame" value="true">
+                                //-     <input class="tinkoffPayRow" type="hidden" name="language" value="ru"> 
+                                //-     <input class="tinkoffPayRow" type="text" placeholder="Сумма заказа" name="amount" required>
+                                //-     <input class="tinkoffPayRow" type="text" placeholder="Номер заказа" name="order" value="666">
+                                //-     <input class="tinkoffPayRow" type="text" placeholder="Описание заказа" name="description" value="Подписка Premium, сроком на 1 месяц">
+                                //-     <input class="tinkoffPayRow" type="text" placeholder="E-mail" name="email">
+                                //-     <input class="tinkoffPayRow" type="hidden" name="customerKey" value="dima">
+                                //-     <input class="tinkoffPayRow" type="submit" value="Оплатить">
+                                //- </form>
 
                                 .subs__plan.-orange(@click="subscribe('premium', 6, 8400)")
                                     .subs__plan-period 6 месяцев

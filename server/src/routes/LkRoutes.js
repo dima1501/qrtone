@@ -954,7 +954,7 @@ router.post('/api/payment', auth(), async (req, res) => {
     try {
         console.log(req.body)
         console.log('got payment data')
-        res.status(200).send(true)
+        res.status(200).send('OK')
     } catch (error) {
         console.error(error)
     }

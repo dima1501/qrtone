@@ -10,9 +10,9 @@ const path = require('path'),
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
       },
-      server = require("https").createServer(options, app), 
+      server = {}, 
       cluster = require('cluster'),
-      net = require('net'),
+      tls = require('tls'),
       sio_redis = require('socket.io-redis'),
       farmhash = require('farmhash'),
       helmet = require('helmet'),
@@ -42,7 +42,11 @@ if (cluster.isMaster) {
 		return farmhash.fingerprint32(ip) % len;
 	};
 
-	const server = net.createServer({ pauseOnConnect: true }, function(connection) {
+	server = tls.createServer({ 
+        pauseOnConnect: true,
+        key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')
+    }, function(connection) {
         console.log(connection.remoteAddress)
 		var worker = workers[worker_index(connection.remoteAddress, num_processes)];
 		worker.send('sticky-session:connection', connection);

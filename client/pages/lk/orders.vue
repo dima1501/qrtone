@@ -1,6 +1,12 @@
 <template lang="pug">
     .board(v-if="$store.state.auth.user && !loading")
-            .board__choose(v-if="!place" key="check_place")
+            .board__choose(v-if="!$store.state.auth.user.places.length")
+                .board__choose
+                    .board__choose-content
+                        .board__choose-title Заведения не добавлены
+                        v-btn(depressed color="normal" @click="openAddPlacePopup()").board__choose-item-btn Создать заведение
+
+            .board__choose(v-if="!place && $store.state.auth.user.places.length" key="check_place")
                 .board__choose-content
                     .board__choose-title Выберите заведение
                     .board__choose-row
@@ -9,7 +15,7 @@
                             .board__choose-item-addr {{ place.address.full }}
                             v-btn(depressed color="normal" @click="changePlace(place._id)").board__choose-item-btn Выбрать
 
-            .board__main(v-if="place" key="place_checked")
+            .board__main(v-if="place && $store.state.auth.user.places.length" key="place_checked")
                 .board__main-select
                     v-select(:items="$store.state.auth.user.places" v-model="place" label="Выберите заведение" item-text="name" item-value="_id" @change="changePlace")
                 .board__main-content
@@ -130,6 +136,9 @@ export default {
         }
     },
     methods: {
+        openAddPlacePopup() {
+            this.$store.state.view.popup.addPlacePopup.visible = true
+        },
         toggleMobileSection(name) {
             this.mobileVisible = name
         },

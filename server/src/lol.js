@@ -10,7 +10,7 @@ const fs = require('fs'),
         key: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/privkey.pem', 'utf8'),
         cert: fs.readFileSync('/etc/letsencrypt/live/toffee.menu/fullchain.pem', 'utf8')};
 
-// const config = require('./config/config');
+const config = require('./config/config');
 
 // if (cluster.isMaster) {
 
@@ -59,12 +59,17 @@ const fs = require('fs'),
 
 
 const { createServer } = require("https");
-const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/cluster-adapter");
 const { setupWorker } = require("@socket.io/sticky");
 
 const httpServer = createServer(options);
-const io = new Server(httpServer);
+const io = require("socket.io")(httpServer, {
+    cors: {
+        origin: config.ORIGIN,
+        credentials: true
+    },
+    transport: ['websocket']
+})
 
 io.adapter(createAdapter());
 

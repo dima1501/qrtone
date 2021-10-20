@@ -962,7 +962,7 @@ router.post('/api/payment', auth(), async (req, res) => {
 
     try {
         console.log(req.body)
-        const userId = req.body.order.split('_')[0]
+        const userId = req.body.OrderId.split('_')[0]
         console.log(userId)
         const user = await req.db.collection('users').findOne({ _id: ObjectId() })
         // const currentPlan = moment(req.user.subscription[req.user.subscription.length - 1].expires).isBefore() ? moment()._d : req.user.subscription[req.user.subscription.length - 1].expires

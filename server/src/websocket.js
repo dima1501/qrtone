@@ -102,6 +102,7 @@ module.exports = {
   updateSubscription: async (data) => {
     console.log('socket update')
     data.sockets.forEach(e => {
+      console.log(e)
       ioCopy.to(e).emit('updateSubscription', data.subscription);
     });
   }

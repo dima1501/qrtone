@@ -970,30 +970,30 @@ router.post('/api/payment', auth(), async (req, res) => {
 
         const plans = {
             standart: {
-                750: {
+                75000: {
                     month: 1
                 },
-                4200: {
+                420000: {
                     month: 6
                 },
-                7800: {
+                780000: {
                     month: 12
                 }
             },
             premium: {
-                1500: {
+                150000: {
                     month: 1
                 },
-                8400: {
+                840000: {
                     month: 6
                 },
-                15600: {
+                1560000: {
                     month: 12
                 }
             }
         }
 
-        if (plans[type][price].month && plans[type][price].month == month) {
+        if (plans[type][req.body.Amount].month && plans[type][req.body.Amount].month == month) {
             console.log('norm')
         } else {
             console.log('net')

@@ -75,7 +75,8 @@ export default {
     async newTGUser() {
       this.$store.dispatch("lk/updateTGUsers")
     },
-    async updateSubscriptions(data) {
+    async updateSubscription(data) {
+      console.log('layoout update')
       this.$store.state.auth.user.subscription = data
 
       const element = this.$refs.subs;

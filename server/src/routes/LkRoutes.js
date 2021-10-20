@@ -1015,6 +1015,8 @@ router.post('/api/payment', auth(), async (req, res) => {
                     { _id: ObjectId(userId) },
                     { $set: { 'subscription': user.subscription } } )
 
+                console.log(updateSubscription)
+
                 if (updateSubscription.modifiedCount) {
                     websocket.updateSubscription({
                         sockets: user.sockets,

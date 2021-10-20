@@ -966,7 +966,6 @@ router.post('/api/payment', auth(), async (req, res) => {
         const price = req.body.OrderId.split('_')[1]
         const type = req.body.OrderId.split('_')[2]
         const month = req.body.OrderId.split('_')[3]
-        console.log(userId)
         const user = await req.db.collection('users').findOne({ _id: ObjectId(userId) })
 
         if (user) {
@@ -980,8 +979,8 @@ router.post('/api/payment', auth(), async (req, res) => {
                 price: price
             }
 
-            if (user.subscription[req.user.subscription.length - 1].type == type) {
-                user.subscription[req.user.subscription.length - 1].expires = sub.expires
+            if (user.subscription[user.subscription.length - 1].type == type) {
+                user.subscription[user.subscription.length - 1].expires = sub.expires
             } else {
                 user.subscription.push(sub)
             }

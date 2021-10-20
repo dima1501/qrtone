@@ -963,26 +963,33 @@ router.post('/api/payment', auth(), async (req, res) => {
     try {
         console.log(req.body)
         const userId = req.body.OrderId.split('_')[0]
+        const price = req.body.OrderId.split('_')[1]
+        const type = req.body.OrderId.split('_')[2]
+        const month = req.body.OrderId.split('_')[3]
         console.log(userId)
-        const user = await req.db.collection('users').findOne({ _id: ObjectId() })
-        // const currentPlan = moment(req.user.subscription[req.user.subscription.length - 1].expires).isBefore() ? moment()._d : req.user.subscription[req.user.subscription.length - 1].expires
-        // const sub = {
-        //     type: req.body.data.type,
-        //     started: currentPlan,
-        //     expires: moment(currentPlan).add(req.body.data.month, 'month')._d,
-        //     month: req.body.data.month,
-        //     price: req.body.data.price
-        // }
+        const user = await req.db.collection('users').findOne({ _id: ObjectId(userId) })
 
-        // if (req.user.subscription[req.user.subscription.length - 1].type == req.body.data.type) {
-        //     req.user.subscription[req.user.subscription.length - 1].expires = sub.expires
-        // } else {
-        //     req.user.subscription.push(sub)
-        // }
+        if (user) {
+            const currentPlan = moment(user.subscription[user.subscription.length - 1].expires).isBefore() ? moment()._d : user.subscription[user.subscription.length - 1].expires
 
-        // req.db.collection("users").updateOne(
-        //     { _id: ObjectId(req.user._id) },
-        //     { $set: { 'subscription': req.user.subscription } } )
+            const sub = {
+                type: type,
+                started: currentPlan,
+                expires: moment(currentPlan).add(month, 'month')._d,
+                month: month,
+                price: price
+            }
+
+            if (user.subscription[req.user.subscription.length - 1].type == type) {
+                user.subscription[req.user.subscription.length - 1].expires = sub.expires
+            } else {
+                user.subscription.push(sub)
+            }
+    
+            req.db.collection("users").updateOne(
+                { _id: ObjectId(userId) },
+                { $set: { 'subscription': user.subscription } } )
+        }
 
         res.status(200).send("OK")
     } catch (error) {

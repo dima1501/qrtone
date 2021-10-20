@@ -1011,7 +1011,7 @@ router.post('/api/payment', auth(), async (req, res) => {
                     user.subscription.push(sub)
                 }
         
-                const updateSubscription = req.db.collection("users").updateOne(
+                const updateSubscription = await req.db.collection("users").updateOne(
                     { _id: ObjectId(userId) },
                     { $set: { 'subscription': user.subscription } } )
 

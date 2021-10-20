@@ -229,7 +229,7 @@
                                             input(type="hidden" name="frame" value="true")
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="1500" required)
-                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 1500 + '_' + 'premium' + '_' + '1' + Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6)" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 1500 + '_' + 'premium' + '_' + '1' + '_' + Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6)" required)
                                             input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
                                             input(class="tinkoffPayRow subs__plan-btn" type="submit" value="bla bla")
                                         </form>

@@ -224,14 +224,15 @@
                                     .subs__plan-price
                                         .subs__plan-price-value 1500{{$store.state.auth.user.currencySymbol}}
 
-                                        <form name="TinkoffPayForm" onsubmit="pay(this); return false;">
+                                        <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="premium_1">
+                                            input(type="hidden" name="receipt" value="")
                                             input(type="hidden" name="terminalkey" value="1634222512502DEMO")
                                             input(type="hidden" name="frame" value="true")
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="1500" required)
                                             input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 1500 + '_' + 'premium' + '_' + '1' + '_' + Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6)" required)
                                             input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
-                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="bla bla")
+                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_1', 'Подписка premium, 1 месяц', 1500)")
                                         </form>
 
                                 .subs__plan.-orange(@click="subscribe('premium', 6, 8400)")
@@ -354,6 +355,31 @@ export default {
         }
     },
     methods: {
+        tinkoffPayFunction(ref, name, amount) {
+            let form = this.$refs[ref];
+
+            if (ref && name && amount) {
+                form.receipt.value = JSON.stringify({
+                    "Email": this.$store.state.auth.user.email,
+                    "Phone": '8(995)626-84-72',
+                    "EmailCompany": "admin@toffee.menu",
+                    "Taxation": "patent",
+                    "Items": [
+                        {
+                            "Name": name,
+                            "Price": amount + '00',
+                            "Quantity": 1.00,
+                            "Amount": amount + '00',
+                            "PaymentMethod": "full_prepayment",
+                            "PaymentObject": "service",
+                            "Tax": "none"
+                        }
+                    ]
+                });
+                pay(form);
+            } else alert("Не все обязательные поля заполнены")
+            return false;
+        },
         addWaiter() {
             this.$store.state.view.popup.addWaiterPopup.visible = true
         },

@@ -994,32 +994,28 @@ router.post('/api/payment', auth(), async (req, res) => {
         }
 
         if (plans[type][req.body.Amount] && plans[type][req.body.Amount].month && plans[type][req.body.Amount].month == month) {
-            console.log('norm')
-        } else {
-            console.log('net')
-        }
-
-        // if (user && req.body.status == "CONFIRMED") {
-        //     const currentPlan = moment(user.subscription[user.subscription.length - 1].expires).isBefore() ? moment()._d : user.subscription[user.subscription.length - 1].expires
-
-        //     const sub = {
-        //         type: type,
-        //         started: currentPlan,
-        //         expires: moment(currentPlan).add(month, 'month')._d,
-        //         month: month,
-        //         price: price
-        //     }
-
-        //     if (user.subscription[user.subscription.length - 1].type == type) {
-        //         user.subscription[user.subscription.length - 1].expires = sub.expires
-        //     } else {
-        //         user.subscription.push(sub)
-        //     }
+            if (user && req.body.status == "CONFIRMED") {
+                const currentPlan = moment(user.subscription[user.subscription.length - 1].expires).isBefore() ? moment()._d : user.subscription[user.subscription.length - 1].expires
     
-        //     req.db.collection("users").updateOne(
-        //         { _id: ObjectId(userId) },
-        //         { $set: { 'subscription': user.subscription } } )
-        // }
+                const sub = {
+                    type: type,
+                    started: currentPlan,
+                    expires: moment(currentPlan).add(month, 'month')._d,
+                    month: month,
+                    price: price
+                }
+    
+                if (user.subscription[user.subscription.length - 1].type == type) {
+                    user.subscription[user.subscription.length - 1].expires = sub.expires
+                } else {
+                    user.subscription.push(sub)
+                }
+        
+                req.db.collection("users").updateOne(
+                    { _id: ObjectId(userId) },
+                    { $set: { 'subscription': user.subscription } } )
+            }
+        }
 
         res.status(200).send("OK")
     } catch (error) {

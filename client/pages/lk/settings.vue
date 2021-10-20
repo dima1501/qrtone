@@ -114,7 +114,7 @@
                             .subscription__bubbles-item._3
                             .subscription__bubbles-item._4
 
-                .subs
+                .subs#subs
                     h2.subs__title Выберите подписку
                     .subs__subtitle Подходящую под ваши требования
                     .subs__inner
@@ -168,17 +168,53 @@
                                     .subs__plan-price
                                         .subs__plan-price-value 750{{$store.state.auth.user.currencySymbol}}
 
+                                        <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="standart_1">
+                                            input(type="hidden" name="receipt" value="")
+                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="frame" value="true")
+                                            input(type="hidden" name="language" value="ru")
+                                            input(type="hidden" placeholder="Сумма заказа" name="amount" value="750" required)
+                                            input(type="hidden" placeholder="Описание" name="description" value="Стандартная подписка на 1 месяц" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 750 + '_' + 'standart' + '_' + '1' + '_' + this.$store.state.lk.randomOrderHash" required)
+                                            input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
+                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('standart_1', 'Стандартная подписка на 1 месяц', 750)")
+                                        </form>
+
                                 .subs__plan.-orange(@click="subscribe('standart', 6, 4200)")
                                     .subs__plan-period 6 месяцев
                                     .subs__plan-price
                                         .subs__plan-price-value 4200{{$store.state.auth.user.currencySymbol}}
                                         .subs__plan-price-sale 700{{$store.state.auth.user.currencySymbol}}/мес
 
+                                        <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="standart_2">
+                                            input(type="hidden" name="receipt" value="")
+                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="frame" value="true")
+                                            input(type="hidden" name="language" value="ru")
+                                            input(type="hidden" placeholder="Сумма заказа" name="amount" value="4200" required)
+                                            input(type="hidden" placeholder="Описание" name="description" value="Стандартная подписка на 6 месяцев" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 4200 + '_' + 'standart' + '_' + '6' + '_' + this.$store.state.lk.randomOrderHash" required)
+                                            input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
+                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('standart_2', 'Стандартная подписка на 6 месяцев', 4200)")
+                                        </form>
+
                                 .subs__plan.-voilet(@click="subscribe('standart', 12, 7800)")
                                     .subs__plan-period 12 месяцев
                                     .subs__plan-price
                                         .subs__plan-price-value 7800{{$store.state.auth.user.currencySymbol}}
                                         .subs__plan-price-sale 650{{$store.state.auth.user.currencySymbol}}/мес
+
+                                        <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="standart_3">
+                                            input(type="hidden" name="receipt" value="")
+                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="frame" value="true")
+                                            input(type="hidden" name="language" value="ru")
+                                            input(type="hidden" placeholder="Сумма заказа" name="amount" value="7800" required)
+                                            input(type="hidden" placeholder="Описание" name="description" value="Стандартная подписка на 12 месяцев" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 7800 + '_' + 'standart' + '_' + '12' + '_' + this.$store.state.lk.randomOrderHash" required)
+                                            input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
+                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('standart_2', 'Стандартная подписка на 12 месяцев', 7800)")
+                                        </form>
 
                                     
                         .subs__item
@@ -231,7 +267,7 @@
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="1500" required)
                                             input(type="hidden" placeholder="Описание" name="description" value="Премиум подписка на 1 месяц" required)
-                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 1500 + '_' + 'premium' + '_' + '1' + '_' + Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6)" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 1500 + '_' + 'premium' + '_' + '1' + '_' + this.$store.state.lk.randomOrderHash" required)
                                             input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
                                             input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_1', 'Подписка premium, 1 месяц', 1500)")
                                         </form>
@@ -242,11 +278,35 @@
                                         .subs__plan-price-value 8400{{$store.state.auth.user.currencySymbol}}
                                         .subs__plan-price-sale 1400{{$store.state.auth.user.currencySymbol}}/мес
 
+                                        <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="premium_2">
+                                            input(type="hidden" name="receipt" value="")
+                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="frame" value="true")
+                                            input(type="hidden" name="language" value="ru")
+                                            input(type="hidden" placeholder="Сумма заказа" name="amount" value="8400" required)
+                                            input(type="hidden" placeholder="Описание" name="description" value="Премиум подписка на 6 месяцев" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 8400 + '_' + 'premium' + '_' + '6' + '_' + this.$store.state.lk.randomOrderHash" required)
+                                            input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
+                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_2', 'Премиум подписка на 6 месяцев', 8400)")
+                                        </form>
+
                                 .subs__plan.-voilet(@click="subscribe('premium', 12, 15600)")
                                     .subs__plan-period 12 месяцев
                                     .subs__plan-price
                                         .subs__plan-price-value 15600{{$store.state.auth.user.currencySymbol}}
                                         .subs__plan-price-sale 1300{{$store.state.auth.user.currencySymbol}}/мес
+
+                                        <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="premium_3">
+                                            input(type="hidden" name="receipt" value="")
+                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="frame" value="true")
+                                            input(type="hidden" name="language" value="ru")
+                                            input(type="hidden" placeholder="Сумма заказа" name="amount" value="15600" required)
+                                            input(type="hidden" placeholder="Описание" name="description" value="Премиум подписка на 12 месяцев" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 15600 + '_' + 'premium' + '_' + '12' + '_' + this.$store.state.lk.randomOrderHash" required)
+                                            input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
+                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_2', 'Премиум подписка на 12 месяцев', 15600)")
+                                        </form>
 
                     .subs__note Полный возврат средств в первые 7 дней после покупки.<br> По всем вопросам пишите на <a href="mailto:admin@toffee.menu">admin@toffee.menu</a>
 

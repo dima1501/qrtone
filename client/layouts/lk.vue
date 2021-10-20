@@ -76,12 +76,9 @@ export default {
       this.$store.dispatch("lk/updateTGUsers")
     },
     async updateSubscription(data) {
-      console.log('layoout update')
       this.$store.state.auth.user.subscription = data
-
-      const element = this.$refs.subs;
-      var top = element.offsetTop;
-      window.scrollTo(0, top);
+      this.$router.push({path: $nuxt.$route.fullPath, hash: '#subs'})
+      this.$store.state.lk.randomOrderHash = Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6)
     }
   },
   methods: {

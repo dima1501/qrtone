@@ -993,7 +993,7 @@ router.post('/api/payment', auth(), async (req, res) => {
             }
         }
 
-        if (plans[type][req.body.Amount].month && plans[type][req.body.Amount].month == month) {
+        if (plans[type][req.body.Amount] && plans[type][req.body.Amount].month && plans[type][req.body.Amount].month == month) {
             console.log('norm')
         } else {
             console.log('net')

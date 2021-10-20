@@ -239,7 +239,7 @@ export default {
         closeDetail() {
             this.move = true
             this.isAreaVisible = false
-            this.$router.push({path: $nuxt.$route.fullPath, query: {d: 0}})
+            this.$router.push({path: $nuxt.$route.fullPath, query: {d: false}})
             document.documentElement.style.overflow = 'visible'
 
             setTimeout(() => {

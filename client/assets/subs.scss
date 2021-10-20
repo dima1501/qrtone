@@ -92,6 +92,7 @@
         }
     }
     &__plan {
+        position: relative;
         margin-bottom: 15px;
         border-radius: 10px;
         color: #fff !important;
@@ -118,6 +119,15 @@
         }
         &:last-child {
             margin-bottom: 0;
+        }
+        &-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            cursor: pointer;
         }
         &-period {
             font-size: 18px;

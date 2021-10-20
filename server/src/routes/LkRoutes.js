@@ -951,13 +951,45 @@ router.post('/api/toggle-place-reservation', auth(), async (req, res) => {
 })
 
 router.post('/api/payment', auth(), async (req, res) => {
+    // try {
+    //     console.log(req.body)
+    //     console.log('got payment data')
+    //     res.status(200).send('OK')
+    // } catch (error) {
+    //     console.error(error)
+    // }
+
+
     try {
         console.log(req.body)
-        console.log('got payment data')
-        res.status(200).send('OK')
+        const userId = req.body.order.split('_')[0]
+        console.log(userId)
+        const user = await req.db.collection('users').findOne({ _id: ObjectId() })
+        // const currentPlan = moment(req.user.subscription[req.user.subscription.length - 1].expires).isBefore() ? moment()._d : req.user.subscription[req.user.subscription.length - 1].expires
+        // const sub = {
+        //     type: req.body.data.type,
+        //     started: currentPlan,
+        //     expires: moment(currentPlan).add(req.body.data.month, 'month')._d,
+        //     month: req.body.data.month,
+        //     price: req.body.data.price
+        // }
+
+        // if (req.user.subscription[req.user.subscription.length - 1].type == req.body.data.type) {
+        //     req.user.subscription[req.user.subscription.length - 1].expires = sub.expires
+        // } else {
+        //     req.user.subscription.push(sub)
+        // }
+
+        // req.db.collection("users").updateOne(
+        //     { _id: ObjectId(req.user._id) },
+        //     { $set: { 'subscription': req.user.subscription } } )
+
+        res.status(200).send("OK")
     } catch (error) {
         console.error(error)
     }
+
+
 })
 
 module.exports = router

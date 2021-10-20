@@ -87,7 +87,7 @@
                 .chay
                     Waiter(v-for="waiter in $store.state.auth.user.waiters" :waiter="waiter" :key="waiter._id")
 
-            .settings__section(ref="subs")
+            .settings__section#subs
                 div(v-if="!isDateBefore($store.state.auth.user.subscription[$store.state.auth.user.subscription.length - 1].expires)")
                     .settings__section-top
                         h2.settings__section-title Подписка
@@ -114,7 +114,7 @@
                             .subscription__bubbles-item._3
                             .subscription__bubbles-item._4
 
-                .subs#subs
+                .subs
                     h2.subs__title Выберите подписку
                     .subs__subtitle Подходящую под ваши требования
                     .subs__inner
@@ -163,7 +163,7 @@
                                 .subs__plan-period Перейти на Standart <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
 
                             div(v-else)
-                                .subs__plan.-blue(@click="subscribe('standart', 1, 750)")
+                                .subs__plan.-blue
                                     .subs__plan-period 1 месяц
                                     .subs__plan-price
                                         .subs__plan-price-value 750{{$store.state.auth.user.currencySymbol}}
@@ -180,7 +180,7 @@
                                             input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('standart_1', 'Стандартная подписка на 1 месяц', 750)")
                                         </form>
 
-                                .subs__plan.-orange(@click="subscribe('standart', 6, 4200)")
+                                .subs__plan.-orange
                                     .subs__plan-period 6 месяцев
                                     .subs__plan-price
                                         .subs__plan-price-value 4200{{$store.state.auth.user.currencySymbol}}
@@ -198,7 +198,7 @@
                                             input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('standart_2', 'Стандартная подписка на 6 месяцев', 4200)")
                                         </form>
 
-                                .subs__plan.-voilet(@click="subscribe('standart', 12, 7800)")
+                                .subs__plan.-voilet
                                     .subs__plan-period 12 месяцев
                                     .subs__plan-price
                                         .subs__plan-price-value 7800{{$store.state.auth.user.currencySymbol}}
@@ -254,7 +254,6 @@
                                 .subs__plan-period Улучшить до Premium <span>Произойдет перерасчет оставшегося времени согласно действующим тарифам</span>
 
                             div(v-else)
-                                //- .subs__plan.-blue(@click="subscribe('premium', 1, 1500)")
                                 .subs__plan.-blue
                                     .subs__plan-period 1 месяц
                                     .subs__plan-price
@@ -272,7 +271,7 @@
                                             input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_1', 'Подписка premium, 1 месяц', 1500)")
                                         </form>
 
-                                .subs__plan.-orange(@click="subscribe('premium', 6, 8400)")
+                                .subs__plan.-orange
                                     .subs__plan-period 6 месяцев
                                     .subs__plan-price
                                         .subs__plan-price-value 8400{{$store.state.auth.user.currencySymbol}}
@@ -290,7 +289,7 @@
                                             input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_2', 'Премиум подписка на 6 месяцев', 8400)")
                                         </form>
 
-                                .subs__plan.-voilet(@click="subscribe('premium', 12, 15600)")
+                                .subs__plan.-voilet
                                     .subs__plan-period 12 месяцев
                                     .subs__plan-price
                                         .subs__plan-price-value 15600{{$store.state.auth.user.currencySymbol}}

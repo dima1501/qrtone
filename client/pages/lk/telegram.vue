@@ -125,9 +125,9 @@ export default {
   }
 
   span {
-    background-color: rgb(224, 224, 224);
-    padding: 2px 5px;
-    border-radius: 3px;
+    font-weight: bold;
+    color: $color-blue;
+    cursor: pointer;
   }
 }
 

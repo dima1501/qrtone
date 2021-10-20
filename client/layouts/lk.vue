@@ -74,6 +74,13 @@ export default {
     },
     async newTGUser() {
       this.$store.dispatch("lk/updateTGUsers")
+    },
+    async updateSubscriptions(data) {
+      this.$store.state.auth.user.subscription = data
+
+      const element = this.$refs.subs;
+      var top = element.offsetTop;
+      window.scrollTo(0, top);
     }
   },
   methods: {

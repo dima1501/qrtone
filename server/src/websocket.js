@@ -98,5 +98,10 @@ module.exports = {
     data.sockets.forEach(e => {
       ioCopy.to(e).emit('newTGUser');
     });
+  },
+  updateSubscription: async (data) => {
+    data.sockets.forEach(e => {
+      ioCopy.to(e).emit('updateSubscriptions', data.subscription);
+    });
   }
 }

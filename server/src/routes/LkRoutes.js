@@ -994,7 +994,7 @@ router.post('/api/payment', auth(), async (req, res) => {
         }
 
         if (plans[type][req.body.Amount] && plans[type][req.body.Amount].month && plans[type][req.body.Amount].month == month) {
-            if (user && req.body.status == "CONFIRMED") {
+            if (user && req.body.Success && req.body.status == "CONFIRMED") {
                 const currentPlan = moment(user.subscription[user.subscription.length - 1].expires).isBefore() ? moment()._d : user.subscription[user.subscription.length - 1].expires
     
                 const sub = {
@@ -1011,9 +1011,16 @@ router.post('/api/payment', auth(), async (req, res) => {
                     user.subscription.push(sub)
                 }
         
-                req.db.collection("users").updateOne(
+                const updateSubscription = req.db.collection("users").updateOne(
                     { _id: ObjectId(userId) },
                     { $set: { 'subscription': user.subscription } } )
+
+                if (updateSubscription.modifiedCount) {
+                    websocket.updateSubscription({
+                        sockets: user.sockets,
+                        subscription: user.subscription
+                    })
+                }
             }
         }
 

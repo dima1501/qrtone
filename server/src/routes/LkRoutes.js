@@ -611,7 +611,7 @@ router.post('/api/set-place-socket-id', auth(), async (req, res) => {
                     { $push: { 'sockets': {place: req.body.data.place, socketId: req.body.data.socketId } } }
                 )
             }
-
+ 
             await req.db.collection('users').updateOne(
                 { _id: ObjectId(req.user._id) },
                 { $push: { 'publicSockets': req.body.data.socketId } }
@@ -1015,11 +1015,9 @@ router.post('/api/payment', auth(), async (req, res) => {
                     { _id: ObjectId(userId) },
                     { $set: { 'subscription': user.subscription } } )
 
-                console.log(updateSubscription)
-
                 if (updateSubscription.modifiedCount) {
                     websocket.updateSubscription({
-                        sockets: user.sockets,
+                        sockets: user.publicSockets,
                         subscription: user.subscription
                     })
                 }

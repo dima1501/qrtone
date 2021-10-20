@@ -119,13 +119,13 @@ const loginAction = async (store, data) => {
 
 const setSocketId = async (store, data) => {
   try {
-    if (data.place) {
+    // if (data.place) {
       await axios({
         method: 'post',
         url: '/api/set-place-socket-id',
         data: { data }
       })
-    }
+    // }
   } catch (error) {
     console.error(error)
   }

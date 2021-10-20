@@ -968,27 +968,58 @@ router.post('/api/payment', auth(), async (req, res) => {
         const month = req.body.OrderId.split('_')[3]
         const user = await req.db.collection('users').findOne({ _id: ObjectId(userId) })
 
-        if (user) {
-            const currentPlan = moment(user.subscription[user.subscription.length - 1].expires).isBefore() ? moment()._d : user.subscription[user.subscription.length - 1].expires
-
-            const sub = {
-                type: type,
-                started: currentPlan,
-                expires: moment(currentPlan).add(month, 'month')._d,
-                month: month,
-                price: price
+        const plans = {
+            standart: {
+                750: {
+                    month: 1
+                },
+                4200: {
+                    month: 6
+                },
+                7800: {
+                    month: 12
+                }
+            },
+            premium: {
+                1500: {
+                    month: 1
+                },
+                8400: {
+                    month: 6
+                },
+                15600: {
+                    month: 12
+                }
             }
-
-            if (user.subscription[user.subscription.length - 1].type == type) {
-                user.subscription[user.subscription.length - 1].expires = sub.expires
-            } else {
-                user.subscription.push(sub)
-            }
-    
-            req.db.collection("users").updateOne(
-                { _id: ObjectId(userId) },
-                { $set: { 'subscription': user.subscription } } )
         }
+
+        if (plans[type][price].month && plans[type][price].month == month) {
+            console.log('norm')
+        } else {
+            console.log('net')
+        }
+
+        // if (user && req.body.status == "CONFIRMED") {
+        //     const currentPlan = moment(user.subscription[user.subscription.length - 1].expires).isBefore() ? moment()._d : user.subscription[user.subscription.length - 1].expires
+
+        //     const sub = {
+        //         type: type,
+        //         started: currentPlan,
+        //         expires: moment(currentPlan).add(month, 'month')._d,
+        //         month: month,
+        //         price: price
+        //     }
+
+        //     if (user.subscription[user.subscription.length - 1].type == type) {
+        //         user.subscription[user.subscription.length - 1].expires = sub.expires
+        //     } else {
+        //         user.subscription.push(sub)
+        //     }
+    
+        //     req.db.collection("users").updateOne(
+        //         { _id: ObjectId(userId) },
+        //         { $set: { 'subscription': user.subscription } } )
+        // }
 
         res.status(200).send("OK")
     } catch (error) {

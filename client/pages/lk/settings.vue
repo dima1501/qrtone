@@ -170,7 +170,7 @@
 
                                         <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="standart_1">
                                             input(type="hidden" name="receipt" value="")
-                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="terminalkey" value="1634222512502")
                                             input(type="hidden" name="frame" value="true")
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="750" required)
@@ -188,7 +188,7 @@
 
                                         <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="standart_2">
                                             input(type="hidden" name="receipt" value="")
-                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="terminalkey" value="1634222512502")
                                             input(type="hidden" name="frame" value="true")
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="4200" required)
@@ -206,7 +206,7 @@
 
                                         <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="standart_3">
                                             input(type="hidden" name="receipt" value="")
-                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="terminalkey" value="1634222512502")
                                             input(type="hidden" name="frame" value="true")
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="7800" required)
@@ -261,7 +261,7 @@
 
                                         <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="premium_1">
                                             input(type="hidden" name="receipt" value="")
-                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="terminalkey" value="1634222512502")
                                             input(type="hidden" name="frame" value="true")
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="1500" required)
@@ -279,7 +279,7 @@
 
                                         <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="premium_2">
                                             input(type="hidden" name="receipt" value="")
-                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="terminalkey" value="1634222512502")
                                             input(type="hidden" name="frame" value="true")
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="8400" required)
@@ -297,7 +297,7 @@
 
                                         <form name="TinkoffPayForm" onsubmit="pay(this); return false;" ref="premium_3">
                                             input(type="hidden" name="receipt" value="")
-                                            input(type="hidden" name="terminalkey" value="1634222512502DEMO")
+                                            input(type="hidden" name="terminalkey" value="1634222512502")
                                             input(type="hidden" name="frame" value="true")
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="15600" required)

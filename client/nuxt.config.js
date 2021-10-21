@@ -24,7 +24,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     // titleTemplate: 'My amazing Nuxt application | %s',
-    title: 'toffee.menu',
+    title: 'Сервис электроннрго меню toffee.menu',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },

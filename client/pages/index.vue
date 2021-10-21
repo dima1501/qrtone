@@ -257,9 +257,9 @@
         //- .footer__inner
         //-   .footer__item
         //-     nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Использование файлов cookie
-        .footer__inner
-          .footer__item
-            .footer__item-text ИП Воропаев Дмитрий Владимирович
+        //- .footer__inner
+        //-   .footer__item
+        //-     .footer__item-text ИП Воропаев Дмитрий Владимирович
         .footer__inner
           .footer__item
             .footer__item-text ИНН: 780103380065

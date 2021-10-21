@@ -266,7 +266,7 @@
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="1500" required)
                                             input(type="hidden" placeholder="Описание" name="description" value="Премиум подписка на 1 месяц" required)
-                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 1500 + '_' + 'premium' + '_' + '1' + '_' + this.$store.state.lk.randomOrderHash" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 1500 + '_' + 'premium' + '_' + '1' + '_' + $store.state.lk.randomOrderHash" required)
                                             input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
                                             input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_1', 'Подписка premium, 1 месяц', 1500)")
                                         </form>
@@ -284,7 +284,7 @@
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="8400" required)
                                             input(type="hidden" placeholder="Описание" name="description" value="Премиум подписка на 6 месяцев" required)
-                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 8400 + '_' + 'premium' + '_' + '6' + '_' + this.$store.state.lk.randomOrderHash" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 8400 + '_' + 'premium' + '_' + '6' + '_' + $store.state.lk.randomOrderHash" required)
                                             input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
                                             input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_2', 'Премиум подписка на 6 месяцев', 8400)")
                                         </form>
@@ -302,7 +302,7 @@
                                             input(type="hidden" name="language" value="ru")
                                             input(type="hidden" placeholder="Сумма заказа" name="amount" value="15600" required)
                                             input(type="hidden" placeholder="Описание" name="description" value="Премиум подписка на 12 месяцев" required)
-                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 15600 + '_' + 'premium' + '_' + '12' + '_' + this.$store.state.lk.randomOrderHash" required)
+                                            input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 15600 + '_' + 'premium' + '_' + '12' + '_' + $store.state.lk.randomOrderHash" required)
                                             input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
                                             input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_3', 'Премиум подписка на 12 месяцев', 15600)")
                                         </form>
@@ -397,6 +397,8 @@ export default {
             cur.push(currencies[key])
         })
         this.navigator = navigator
+        
+        this.$store.state.lk.randomOrderHash = Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6)
     },
     head: {
         script: [

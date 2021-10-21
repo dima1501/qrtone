@@ -89,7 +89,6 @@ router.post("/api/send-restore-email", async (req, res) => {
 })
 
 router.post("/api/send-subscription-email", auth(), async (req, res) => {
-    console.log(req.body.length)
     if (req.user) {
         const mailOptions = {
             from: "admin@toffee.menu",

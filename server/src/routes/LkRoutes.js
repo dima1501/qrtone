@@ -611,11 +611,13 @@ router.post('/api/set-place-socket-id', auth(), async (req, res) => {
                     { $push: { 'sockets': {place: req.body.data.place, socketId: req.body.data.socketId } } }
                 )
             }
- 
-            await req.db.collection('users').updateOne(
-                { _id: ObjectId(req.user._id) },
-                { $push: { 'publicSockets': req.body.data.socketId } }
-            )
+
+            if (req.user.publicSockets.indexOf(req.body.data.socketId) == -1) {
+                await req.db.collection('users').updateOne(
+                    { _id: ObjectId(req.user._id) },
+                    { $push: { 'publicSockets': req.body.data.socketId } }
+                )
+            }
         }
         res.status(200).send(true)
     } catch (error) {

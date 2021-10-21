@@ -213,7 +213,7 @@
                                             input(type="hidden" placeholder="Описание" name="description" value="Стандартная подписка на 12 месяцев" required)
                                             input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 7800 + '_' + 'standart' + '_' + '12' + '_' + this.$store.state.lk.randomOrderHash" required)
                                             input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
-                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('standart_2', 'Стандартная подписка на 12 месяцев', 7800)")
+                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('standart_3', 'Стандартная подписка на 12 месяцев', 7800)")
                                         </form>
 
                                     
@@ -304,7 +304,7 @@
                                             input(type="hidden" placeholder="Описание" name="description" value="Премиум подписка на 12 месяцев" required)
                                             input(type="hidden" placeholder="Номер заказа" name="order" :value="$store.state.auth.user._id + '_' + 15600 + '_' + 'premium' + '_' + '12' + '_' + this.$store.state.lk.randomOrderHash" required)
                                             input(type="hidden" name="customerKey" :value="$store.state.auth.user._id")
-                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_2', 'Премиум подписка на 12 месяцев', 15600)")
+                                            input(class="tinkoffPayRow subs__plan-btn" type="submit" value="" @click="tinkoffPayFunction('premium_3', 'Премиум подписка на 12 месяцев', 15600)")
                                         </form>
 
                     .subs__note Полный возврат средств в первые 7 дней после покупки.<br> По всем вопросам пишите на <a href="mailto:admin@toffee.menu">admin@toffee.menu</a>

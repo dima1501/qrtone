@@ -1,40 +1,26 @@
 const express = require('express')
 const router = express.Router()
-
 const nodemailer = require('nodemailer')
 const { pugEngine } = require('nodemailer-pug-engine')
-
 const auth = require('../middlewares/AuthMiddleware')
-
 const moment = require('moment')
 
 // const transporter = nodemailer.createTransport({
-//     name: "smtp.mailtrap.io",
 //     host: "smtp.mailtrap.io",
 //     port: 2525,
-//     // secure: process.env.NODE_ENV !== 'production' ? false : true,
-//     secure: false,
-//     // sendmail: process.env.NODE_ENV !== 'production' ? false : true,
-//     sendmail: true,
 //     auth: {
 //         user: "e13923d70a29d4",
-//         pass: "e13923d70a29d4",
+//         pass: "36e942d8a5528e",
 //     }
-// })
+// });
 
 const transporter = nodemailer.createTransport({
-    // host: "smtp-relay.gmail.com",
-    host: "smtp.mailtrap.io",
-    // secureConnection: true,
-    // port: 587,
-    port: 2525,
-    // auth: {
-    //   user: "admin@toffee.menu",
-    //   pass: "WHPac_ua3!"
-    // }
+    host: "smtp-relay.gmail.com",
+    secureConnection: true,
+    port: 587,
     auth: {
-        user: "e13923d70a29d4",
-        pass: "36e942d8a5528e",
+      user: "admin@toffee.menu",
+      pass: "WHPac_ua3!"
     }
 });
 

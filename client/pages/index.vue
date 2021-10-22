@@ -297,6 +297,25 @@ export default {
   },
   mounted() {
     this.isCookiesAgreed = this.$route.params.id == 'toffee.menu' ? true : localStorage.getItem('cookie')
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-210939869-1');
+  },
+  head: {
+    script: [
+      { 
+        src: "https://securepay.tinkoff.ru/html/payForm/js/tinkoff_v2.js",
+        body: true, 
+      },
+      { 
+        src: "https://www.googletagmanager.com/gtag/js?id=UA-210939869-1",
+        body: true,
+        async: true,
+      }
+    ]
   },
   methods: {
     scrollMeTo(refName) {

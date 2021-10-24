@@ -98,7 +98,6 @@ module.exports = {
     });
   },
   updateSubscription: async (data) => {
-    console.log(data)
     data.sockets.forEach(e => {
       console.log(e)
       ioCopy.to(e).emit('updateSubscription', data.subscription);

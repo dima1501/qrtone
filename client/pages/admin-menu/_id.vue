@@ -31,9 +31,23 @@
                                     .m-item__controls-item(@click="removeMenuItem(good)") удалить
 
                                 .m-item__img(v-if="good.images.length")
-                                    img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
-                                    VueSlickCarousel(:arrows="false" :dots="true" v-if="good.images.length > 1")
-                                        img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`")
+                                    //- img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`" v-if="good.images.length == 1").m-item__img-pic
+                                    //- VueSlickCarousel(:arrows="false" :dots="true" v-if="good.images.length > 1")
+                                    //-     img(v-for="(image, key) in good.images" :key="key" :src="`../../uploads/${image}`")
+
+
+                                    picture(v-if="good.images.length == 1").menu-item__img-pic
+                                        source(:srcset="`../../uploads/171-${good.images[0]}.webp 1x, ../../uploads/342-${good.images[0]}.webp 2x`" type="image/webp" media="(max-width: 380px)")
+                                        source(:srcset="`../../uploads/196-${good.images[0]}.webp 1x, ../../uploads/392-${good.images[0]}.webp 2x`" type="image/webp" media="(max-width: 430px)")
+                                        source(:srcset="`../../uploads/255-${good.images[0]}.webp 1x, ../../uploads/520-${good.images[0]}.webp 2x`" type="image/webp" media="(min-width: 431px)")
+                                        img(:src="`../../uploads/400-${good.images[0]}`" :srcset="`../../uploads/400-${good.images[0]} 1x, ../../uploads/800-${good.images[0]} 2x`" :alt="`${good.name}, ${user.name}, toffee.menu`" loading="lazy")
+
+                                    VueSlickCarousel(:arrows="true" :dots="false" v-if="good.images.length > 1")
+                                        picture(v-for="(image, key) in good.images" :key="key" ).menu-item__img-pic
+                                            source(:srcset="`../../uploads/171-${image}.webp 1x, ../../uploads/342-${image}.webp 2x`" type="image/webp" media="(max-width: 380px)")
+                                            source(:srcset="`../../uploads/196-${image}.webp 1x, ../../uploads/392-${image}.webp 2x`" type="image/webp" media="(max-width: 430px)")
+                                            source(:srcset="`../../uploads/255-${image}.webp 1x, ../../uploads/520-${image}.webp 2x`" type="image/webp" media="(min-width: 431px)")
+                                            img(:src="`../../uploads/400-${image}`" :srcset="`../../uploads/400-${image} 1x, ../../uploads/800-${image} 2x`" :alt="`${good.name}, ${user.name}, toffee.menu`" loading="lazy")
 
                                 .m-item__name {{ good.name }}
                                 .m-item__name {{ good.translation }}
@@ -58,6 +72,9 @@
         AddMenuItemPopupAdmin(v-if='$store.state.view.popup.addMenuItemPopup.visible' :user="$store.state.admin.user")
         AddCategoryPopupAdmin(v-if='$store.state.view.popup.addCategoryPopup.visible' :user="$store.state.admin.user")
         AddDopPopupAdmin(v-if='$store.state.view.popup.addDopPopup.visible')
+
+        client-only
+            vue-confirm-dialog
 
 </template>
 
@@ -91,7 +108,7 @@ export default {
 
             const user = await axios({
                 method: 'get',
-                url: `https://toffee.menu:8000/api/admin/get-user-data/${this.$nuxt.$route.params.id}`
+                url: `${process.env.server || "http://localhost:8000"}/api/admin/get-user-data/${this.$nuxt.$route.params.id}`
             })
             this.$store.state.admin.user = user.data
             for (let item of this.$store.state.admin.user.goods) {

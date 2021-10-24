@@ -4,7 +4,7 @@
         .menu-item__more(@click="openDetail(item)")
         .menu-item__img
             v-overlay(:value="true" :absolute="true" :opacity="0" v-if="item.images.length")
-                v-progress-circular(indeterminate size="40" color="red")
+                v-progress-circular(indeterminate size="40" color="grey")
         
             .menu-item__img-pic.placeholder(v-if="!item.images.length" v-bind:style="{ backgroundImage: 'url(../../food-placeholder.png)' }")
 

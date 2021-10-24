@@ -76,7 +76,6 @@ router.post("/api/send-restore-email", async (req, res) => {
         )
 
         transporter.sendMail(mailOptions, async (error) => {
-            console.log('qweqwe')
             if (error) {
                 return console.error(error)
             }

@@ -30,7 +30,8 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
       { hid: 'description', name: 'description', content: 'Сервис электронного меню для ресторанов и кафе. С доступом по QR коду и уведомлениями в telegram' },
       { name: "msapplication-TileColor", content: "#da532c" },
-      { name: "theme-color", content: "#ffffff" }
+      { name: "theme-color", content: "#ffffff" },
+      { name: "yandex-verification", content: "48f08cead508c7e0" }
     ],
     link: [
       { rel: "apple-touch-icon", sizes: "60x60", href: "/apple-touch-icon.png" },

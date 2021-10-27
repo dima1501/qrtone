@@ -328,7 +328,7 @@ export default {
     },
     head() {
         return {
-            title: this.user.name + '| Онлайн менюю',
+            title: this.user.name + '| Онлайн меню',
             meta: [
                 { hid: this.user.name },
                 { name: "description", content: this.user.name + ' ' + this.user.description + ' ' + this.user.place.phone + ' ' + this.user.place.website + ' ' + this.user.place.address.full },

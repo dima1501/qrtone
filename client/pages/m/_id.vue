@@ -968,11 +968,16 @@ export default {
     }
 }
 
+.menu {
+    min-height: 100vh;
+}
+
 .welcome {
     margin-top: 71px;
     position: relative;
     max-width: 1080px;
     margin: 0 auto;
+    min-height: 100vh;
     &__bg {
         position: fixed;
         left: 0;
@@ -985,6 +990,7 @@ export default {
         width: 100%;
         left: 50%;
         transform: translateX(-50%);
+        overflow: hidden;
         @media screen and (min-width: 580px) {
             height: 300px;
         }

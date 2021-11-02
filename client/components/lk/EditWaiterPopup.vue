@@ -1,6 +1,5 @@
 <template lang="pug">
     .popup.z-22
-        .popup__overlay(@click="closePopup")
         .popup__container
             .popup__closer
                 v-icon(dark @click="closePopup") mdi-close

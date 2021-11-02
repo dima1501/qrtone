@@ -991,6 +991,10 @@ export default {
         left: 50%;
         transform: translateX(-50%);
         overflow: hidden;
+        img {
+            max-width: 100%;
+            height: auto;
+        }
         @media screen and (min-width: 580px) {
             height: 300px;
         }

@@ -5,8 +5,7 @@ import fs from 'fs';
 const config = {
   port: process.env.NODE_ENV !== 'production' ? '3000' : '443',
   test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'toffee.menu',
-  apiserver:
-    process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' : 'https://toffee.menu:8000',
+  apiserver: process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' : 'toffee.menu:8000',
 };
 
 export default {

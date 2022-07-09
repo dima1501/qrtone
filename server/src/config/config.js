@@ -6,8 +6,8 @@ const config = {
   DB_URI: process.env.DB_URI,
   PORT: process.env.PORT || 3000,
   ORIGIN: process.env.ORIGIN || 'toffee.menu',
-  SERVER: process.env.SERVER || 'toffee.menu:8000',
-  API_SERVER: process.env.API_SERVER || 'toffee.menu:8000',
+  SERVER: process.env.SERVER || 'http://toffee.menu:8000',
+  API_SERVER: process.env.API_SERVER || 'http://toffee.menu:8000',
 };
 
 module.exports = config;

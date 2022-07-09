@@ -1,5 +1,6 @@
 import colors from 'vuetify/es5/util/colors';
 const axios = require('axios');
+import fs from 'fs';
 
 const config = {
   port: process.env.NODE_ENV !== 'production' ? '3000' : '443',

@@ -3,7 +3,7 @@ const axios = require('axios');
 import fs from 'fs';
 
 const config = {
-  port: process.env.NODE_ENV !== 'production' ? '3000' : '443',
+  port: process.env.NODE_ENV !== 'production' ? '3000' : '3000',
   test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'toffee.menu',
   apiserver:
     process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' : 'http://toffee.menu:8000',
@@ -15,10 +15,10 @@ export default {
     server: config.apiserver,
   },
   server: {
-    https: {
-      key: fs.readFileSync('./server.key', 'utf8'),
-      cert: fs.readFileSync('./certificate.crt', 'utf8'),
-    },
+    // https: {
+    //   key: fs.readFileSync('./server.key', 'utf8'),
+    //   cert: fs.readFileSync('./certificate.crt', 'utf8'),
+    // },
     port: config.port,
     host: config.test,
   },

@@ -249,22 +249,22 @@
             a(href="mailto:admin@toffee.menu").footer__item-text admin@toffee.menu
           .footer__item
             a(href="tel:+7(995)626-84-72").footer__item-text +7(995)626-84-72
-        .footer__inner
-          .footer__item
-            nuxt-link(:to="localePath('/docs/user_agreement')" target="_blank").footer__item-text Пользовательское соглашение
-          .footer__item
-            nuxt-link(:to="localePath('/docs/privacy_policy')" target="_blank").footer__item-text Политика обработки персональных данных
+        //- .footer__inner
+        //-   .footer__item
+        //-     nuxt-link(:to="localePath('/docs/user_agreement')" target="_blank").footer__item-text Пользовательское соглашение
+        //-   .footer__item
+        //-     nuxt-link(:to="localePath('/docs/privacy_policy')" target="_blank").footer__item-text Политика обработки персональных данных
         //- .footer__inner
         //-   .footer__item
         //-     nuxt-link(:to="localePath('/docs/privacy_policy')").footer__item-text Использование файлов cookie
         //- .footer__inner
         //-   .footer__item
         //-     .footer__item-text ИП Воропаев Дмитрий Владимирович
-        .footer__inner
-          .footer__item
-            .footer__item-text ИНН: 780103380065
-          .footer__item
-            .footer__item-text ОГРН: 321784700303897
+        //- .footer__inner
+        //-   .footer__item
+        //-     .footer__item-text ИНН: 780103380065
+        //-   .footer__item
+        //-     .footer__item-text ОГРН: 321784700303897
 
     .sweets(v-if="!isCookiesAgreed")
       .sweets__content

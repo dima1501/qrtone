@@ -1,17 +1,11 @@
 import colors from 'vuetify/es5/util/colors';
 const axios = require('axios');
 
-// const config = {
-//   port: process.env.NODE_ENV !== 'production' ? '3000' : '443',
-//   test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'toffee.menu',
-//   apiserver:
-//     process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' : 'https://toffee.menu:8000',
-// };
-
 const config = {
-  port: '3000',
-  test: '89.108.98.207',
-  apiserver: 'http://89.108.98.207:8000',
+  port: process.env.NODE_ENV !== 'production' ? '3000' : '443',
+  test: process.env.NODE_ENV !== 'production' ? 'localhost' : 'toffee.menu',
+  apiserver:
+    process.env.NODE_ENV !== 'production' ? 'http://localhost:8000' : 'https://toffee.menu:8000',
 };
 
 export default {
@@ -20,10 +14,10 @@ export default {
     server: config.apiserver,
   },
   server: {
-    // https: {
-    //   key: fs.readFileSync('./server.key', 'utf8'),
-    //   cert: fs.readFileSync('./certificate.crt', 'utf8')
-    // },
+    https: {
+      key: fs.readFileSync('./server.key', 'utf8'),
+      cert: fs.readFileSync('./certificate.crt', 'utf8'),
+    },
     port: config.port,
     host: config.test,
   },

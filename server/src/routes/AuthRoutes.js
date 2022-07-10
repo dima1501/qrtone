@@ -43,7 +43,7 @@ router.post('/api/login', auth(), async (req, res) => {
       .cookie('sessionId', sessionId, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: true,
+        // secure: true,
       })
       .send(preloadUser);
   } catch (err) {
@@ -66,7 +66,7 @@ router.post('/api/registration', auth(), async (req, res) => {
           .cookie('sessionId', sessionId, {
             maxAge: 30 * 24 * 60 * 60 * 1000,
             httpOnly: true,
-            secure: true,
+            // secure: true,
           })
           .send(preloadUser);
       } else {
@@ -87,7 +87,7 @@ router.post('/api/registration-guest', authGuest(), async (req, res) => {
         .cookie('guestSessionId', sessionId, {
           maxAge: 30 * 24 * 60 * 60 * 1000,
           httpOnly: true,
-          secure: true,
+          // secure: true,
         })
         .send(createUser);
     } else {

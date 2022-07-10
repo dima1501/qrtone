@@ -339,11 +339,11 @@
                     //- .footer__inner
                     //-     .footer__item
                     //-         .footer__item-text ИП Воропаев Дмитрий Владимирович
-                    .footer__inner
-                        .footer__item
-                            .footer__item-text ИНН: 780103380065
-                        .footer__item
-                            .footer__item-text ОГРН: 321784700303897
+                    //- .footer__inner
+                    //-     .footer__item
+                    //-         .footer__item-text ИНН: 780103380065
+                    //-     .footer__item
+                    //-         .footer__item-text ОГРН: 321784700303897
                 
             transition(name="fade")
                 EditPlacePopup(v-if="$store.state.view.popup.editPlacePopup.visible" :editablePlace="editablePlace")

@@ -19,7 +19,7 @@ export default {
     //   key: fs.readFileSync('./server.key', 'utf8'),
     //   cert: fs.readFileSync('./certificate.crt', 'utf8'),
     // },
-    port: config.port,
+    // port: config.port,
     host: config.test,
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
